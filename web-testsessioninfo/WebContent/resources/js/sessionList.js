@@ -4606,6 +4606,7 @@ function registerDelegate(tree){
 		   		 hasAssignFormConfig = obj.hasAssignFormRosterConfig;
 		   		 hasAssignFormRosterTopLevelConfig = obj.hasAssignFormRosterTopLevelConfig;
 		   		 isTopLevelAdmin = obj.isTopLevelAdmin;
+		   		 isTopLevelAdminCord = obj.isTopLevelAdminCord;
 		   		 hasTopLevelInvalidationOnly = obj.hasTopLevelInvalidationOnlyConfig;
 		   		 isTopLevelUser = obj.isTopLevelUser;
 		   		 hasShowRosterAccomAndHierarchyConfig = obj.hasShowRosterAccomAndHierarchyConfig;
@@ -4630,7 +4631,7 @@ function registerDelegate(tree){
 		   		 }
 		   		 if(subtestValAllowed == 'false') {
 		   		 	if(hasTopLevelInvalidationOnly) {
-		   		 		if(isTopLevelUser) {
+		   		 		if(isTopLevelAdmin || isTopLevelAdminCord) {
 								$("#toggleValidation").show();
 						} else {
 								$("#toggleValidation").hide();
@@ -4999,7 +5000,7 @@ function registerDelegate(tree){
 							var html = '<tr class="rosterSubtestHeader">';
 							if(data.subtestValidationAllowed) {
 								if(data.hasTopLevelInvalidationOnlyConfig) {
-		   		 					if(data.isTopLevelUser) {
+		   		 					if(data.isTopLevelAdmin || data.isTopLevelAdminCord) {
 										html += '<th class="alignCenter rosterSubtestHeader"><span>'+$("#itemsSelectLbl").val()+'</span></th>';
 									} 
 		   		 				} else {
@@ -5054,7 +5055,7 @@ function registerDelegate(tree){
            					}
            					if(data.subtestValidationAllowed && data.isLaslinkSession) {
 			           			if(data.hasTopLevelInvalidationOnlyConfig) {
-		   		 					if(data.isTopLevelUser) {
+		   		 					if(data.isTopLevelAdmin || data.isTopLevelAdminCord) {
 										html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
 		               					html += '&nbsp;&nbsp;<span>'+$("#invalidationReasonLbl").val()+'</span>';
 		           						html += '</th>';
@@ -5074,7 +5075,7 @@ function registerDelegate(tree){
 								if(row.itemSetType == 'TS') {
 									if(data.subtestValidationAllowed) {
 											if(data.hasTopLevelInvalidationOnlyConfig) {
-		   		 								if(data.isTopLevelUser) {
+		   		 								if(data.isTopLevelAdmin || data.isTopLevelAdminCord) {
 													html += '<td class="sortable alignCenter">&nbsp;</td>';
 												}
 											} else {
@@ -5087,7 +5088,7 @@ function registerDelegate(tree){
 								} else {
 									if(data.subtestValidationAllowed) {
 										if(data.hasTopLevelInvalidationOnlyConfig) {
-		   		 								if(data.isTopLevelUser) {
+		   		 								if(data.isTopLevelAdmin || data.isTopLevelAdminCord) {
 													html += '<td class="sortable alignCenter"><input type="checkbox" name="toggleSubtest" class="toggleSubtest" onclick="changeToggleButton()" value="'+row.itemSetId+'"/></td>';
 												}
 											} else {
@@ -5154,7 +5155,7 @@ function registerDelegate(tree){
 									if(data.subtestValidationAllowed && data.isLaslinkSession) {
 										if(data.hasTopLevelInvalidationOnlyConfig) 
 										{
-		   		 							if(data.isTopLevelUser) 
+		   		 							if(data.isTopLevelAdmin || data.isTopLevelAdminCord) 
 		   		 							{
 													if(row.invalidationReason == undefined || row.invalidationReason == null ) {
 													var temp = 'PS';
@@ -5241,7 +5242,7 @@ function registerDelegate(tree){
 							$("#subtestList").html(html);
 							if(data.subtestValidationAllowed) {
 								if(data.hasTopLevelInvalidationOnlyConfig) {
-		   		 					if(data.isTopLevelUser) {
+		   		 					if(data.isTopLevelAdmin || data.isTopLevelAdminCord) {
 										$("#toggleValidationSubTest").show();
 										setAnchorButtonState('toggleValidationSubtestButton', true);
 									} else {

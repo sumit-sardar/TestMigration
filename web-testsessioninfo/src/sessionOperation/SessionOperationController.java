@@ -7350,6 +7350,8 @@ public class SessionOperationController extends PageFlowController {
 		    	base.setSubtestValidationAllowed(this.subtestValidationAllowed);
 				base.setHasTopLevelInvalidationOnlyConfig(hasTopLevelInvalidationOnlyConfig());
 				base.setTopLevelUser(isTopLevelUser());
+				base.setTopLevelAdmin(isAdminUser() && isTopLevelUser());
+				base.setTopLevelAdminCord(isAdminCoordinatotUser() && isTopLevelUser());
 		    	createGson(base);
 		        return null;
 		    }
