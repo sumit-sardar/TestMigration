@@ -368,9 +368,11 @@ public class CreateFile {
 		String localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
 		System.out.println("LocalFilePath :: "+localFilePath);
 		String fileName = customerState + "_" + testDate.substring(0,6) + "_" 
-		//+ customerId + "_" + orderFile.getOrgTestingProgram() + "_"
+		+ orderFile.getCustomerId() + "_" 
+		//+ orderFile.getOrgTestingProgram() + "_"
 		+ MFid.trim() + "_"
-		+ orderFile.getCustomerName().trim() + "_" + group + "_"
+		+ orderFile.getCustomerName().trim() + "_" 
+		+ group + "_"
 		+ DATAFILE + "_" + fileDateOutputFormat.format(new Date())
 		+ ".dat";
 		if(!(new File(localFilePath)).exists()){
