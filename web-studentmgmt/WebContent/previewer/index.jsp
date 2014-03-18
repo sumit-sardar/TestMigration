@@ -45,7 +45,9 @@ function updateLDB()
     String eliminatorResource = "eliminator.swf";
     String url = request.getRequestURL().toString().trim();
     int lastSlash = url.lastIndexOf("/");
-    url = url.substring(0,lastSlash).trim().replaceAll("https:","http:").replaceAll(":443",":80");
+    
+    // Commented on 18-Mar-2014 for Defect #77508
+    url = url.substring(0,lastSlash).trim(); //.replaceAll("https:","http:").replaceAll(":443",":80");
 %>
 
 <!--SA041005 start -->
