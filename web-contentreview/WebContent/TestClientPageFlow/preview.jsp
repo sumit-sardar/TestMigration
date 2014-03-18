@@ -926,6 +926,7 @@ function isAnswered(){
         if(elem.contentWindow){
             if(elem.contentWindow.accomPkg){
                 elem.contentWindow.accomPkg.setState(htmlContent,jsonContent,checkedVals);
+                gController.unlockUI();
             }else{
                 setTimeout(function(){
                 setState(htmlContent,jsonContent,checkedVals);
