@@ -88,7 +88,8 @@ public class OASOracleSource implements OASRDBSource
 			"						from " +
 			"							prepop_table " +
 			"						where " +
-			"							node_id is null" +
+			"							node_id is null " +
+			"							and cluster_id = ? " +
 			"				) where " +
 			"					rownum <= " + TestDeliveryContextListener.batchSize + "" +
 			"			) " +
@@ -111,7 +112,7 @@ public class OASOracleSource implements OASRDBSource
 			"                    and stu.student_id = tr.student_id " +
 			"                    and tais.test_Admin_id = ta.test_admin_id " +
 			"			) OR not exists (select test_roster_id from test_roster where test_roster_id = prepop.test_roster_id))";
-	private static final String SWEEP_ACTIVE_ROSTERS_SQL = "delete from prepop_table where node_id = ?";
+	private static final String SWEEP_ACTIVE_ROSTERS_SQL = "delete from prepop_table where node_id = ? and cluster_id = ?";
 	private static final String GET_ACTIVE_ROSTERS_SQL = "" +
 	"                select distinct " +
 	"                    stu.user_name as username, " +
@@ -127,6 +128,7 @@ public class OASOracleSource implements OASRDBSource
 	"                    test_admin ta " +
 	"                where " +
 	"                    prepop.node_id = ? " +
+	"					 and prepop.cluster_id = ? " +
 	"                    and tr.test_roster_id = prepop.test_roster_id " +
 	"                    and ta.test_Admin_id = tr.test_Admin_id " +
 	"                    and sysdate > (TA.LOGIN_START_DATE - 1) " + 
@@ -146,13 +148,14 @@ public class OASOracleSource implements OASRDBSource
 	"					prepop_table prepop " +
 	"				where " +
 	"					prepop.node_id = ?" +
+	"					and prepop.cluster_id = ?" +
 	"					and not exists (select test_roster_id from test_roster where test_roster_id = prepop.test_roster_id)";
 	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		return OracleSetup.getOASConnection();
 	}
 	
-	public void markActiveRosters(Connection con, String clusterName, int nodeid) {
+	public void markActiveRosters(Connection con, String clusterName, int clusterId, int nodeid) {
 		PreparedStatement stmt1 = null;
     	try {
     		String prepopTable = "TMS_PRIM_CACHE_PREPOP";
@@ -161,6 +164,7 @@ public class OASOracleSource implements OASRDBSource
     		}
     		stmt1 = con.prepareStatement(MARK_ACTIVE_ROSTERS_SQL.replaceAll("prepop_table", prepopTable));
     		stmt1.setInt(1, nodeid);
+    		stmt1.setInt(2, clusterId);
 			stmt1.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -173,7 +177,7 @@ public class OASOracleSource implements OASRDBSource
 		}
 	}
 	
-	public StudentCredentials[] getActiveRosters(Connection con, String clusterName, int nodeid) {
+	public StudentCredentials[] getActiveRosters(Connection con, String clusterName, int clusterId, int nodeid) {
     	PreparedStatement stmt1 = null;
     	int recordCount = 0;
     	try {
@@ -183,7 +187,9 @@ public class OASOracleSource implements OASRDBSource
     		}
     		stmt1 = con.prepareStatement(GET_ACTIVE_ROSTERS_SQL.replaceAll("prepop_table", prepopTable));
     		stmt1.setInt(1, nodeid);
-    		stmt1.setInt(2, nodeid);
+    		stmt1.setInt(2, clusterId);
+    		stmt1.setInt(3, nodeid);
+    		stmt1.setInt(4, clusterId);
 			ResultSet rs1 = stmt1.executeQuery();
 			ArrayList<StudentCredentials> dataList = new ArrayList<StudentCredentials>();
 			while (rs1.next()) {
@@ -210,7 +216,7 @@ public class OASOracleSource implements OASRDBSource
 		}
 	}
 	
-	public void sweepActiveRosters(Connection con, String clusterName, int nodeid) {
+	public void sweepActiveRosters(Connection con, String clusterName, int clusterId, int nodeid) {
 		PreparedStatement stmt1 = null;
     	try {
     		String prepopTable = "TMS_PRIM_CACHE_PREPOP";
@@ -219,6 +225,7 @@ public class OASOracleSource implements OASRDBSource
     		}
     		stmt1 = con.prepareStatement(SWEEP_ACTIVE_ROSTERS_SQL.replaceAll("prepop_table", prepopTable));
     		stmt1.setInt(1, nodeid);
+    		stmt1.setInt(2, clusterId);
 			stmt1.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
