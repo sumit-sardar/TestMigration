@@ -315,7 +315,7 @@ public class PreviewerController extends PageFlowController
         
         String calculator = "0";
         String magnifier = "0";
-        String screenReader = "1";
+        String screenReader = "0";
         String untimed = "0";
         String rest_break = "0";        
         String timeLimit = "0";
