@@ -49,6 +49,7 @@
    			<eviction-policy>LRU</eviction-policy>
    			<high-units>268435456</high-units>
    			<unit-calculator>BINARY</unit-calculator>
+   			<expiry-delay>24h</expiry-delay>
 		</local-scheme>
     	<local-scheme>
    			<scheme-name>ResponseBackMemoryScheme</scheme-name>
