@@ -2410,7 +2410,7 @@ public class ScheduleTestImpl implements ScheduleTest
             Integer testAdminId = newSession.getTestSession().getTestAdminId();
             //Integer userId = new Integer(Integer.parseInt(newSession.getTestSession().getCreatedBy()));
             Integer customerId = newSession.getTestSession().getCustomerId();
-            boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue();
+            boolean isWVCustomer = false;//rosters.isWVCustomer(customerId).booleanValue(); // Commented for WV Password logic revert back
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             SessionStudent [] scheduledStudents = newSession.getStudents();
             String form = newSession.getTestSession().getPreferredForm();
@@ -2604,7 +2604,7 @@ public class ScheduleTestImpl implements ScheduleTest
             Integer testAdminId = newSession.getTestSession().getTestAdminId();
             String [] validForms = itemSet.getFormsForTest(itemSetId);
             Integer customerId = newSession.getTestSession().getCustomerId();
-            boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue();
+            boolean isWVCustomer = false;//rosters.isWVCustomer(customerId).booleanValue(); // Commented for WV Password logic revert back
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             FormAssignmentCount [] formCounts = null;
             if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
@@ -3176,7 +3176,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 roster.setOrgNodeId(sessionStudent.getOrgNodeId());
                 roster.setOverrideTestWindow("F");
                 String password = null;
-                boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue();
+                boolean isWVCustomer = false;//rosters.isWVCustomer(customerId).booleanValue();// Commented for WV Password logic revert back
                 if(isWVCustomer)
                 	password = PasswordGenerator.generatePasswordForWV(student.getFirstName(), student.getLastName());
                 else
