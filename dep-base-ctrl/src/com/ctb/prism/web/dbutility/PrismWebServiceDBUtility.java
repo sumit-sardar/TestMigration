@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -1004,7 +1005,7 @@ public class PrismWebServiceDBUtility {
 				if(rs.getDate("test_taken_dt")!=null){
 					java.util.Date testTakenDate = new java.util.Date(rs.getDate("test_taken_dt").getTime());
 					if(sessionTimeZone != null && !"".equals(sessionTimeZone)){
-						testTakenDt = com.ctb.util.DateUtils.formatDateToDateString(com.ctb.util.DateUtils.getAdjustedDate(testTakenDate,"GMT",sessionTimeZone,testTakenDate));
+						testTakenDt = formatDateToDateString(com.ctb.util.DateUtils.getAdjustedDate(testTakenDate,"GMT",sessionTimeZone,testTakenDate));
 					}
 				}
 			}
@@ -1016,6 +1017,24 @@ public class PrismWebServiceDBUtility {
 		}
 		return testTakenDt;
 	}
+	
+	public static String formatDateToDateString(Date date){
+		String DATE_FORMAT = "MMddyy";
+        String result = null;
+        if (date == null)
+            return result;
+
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern(DATE_FORMAT);
+        try{
+            result = sdf.format(date);
+        }
+        catch (Exception e){
+        	System.err.println("Error in parsing teh test taken date");
+            e.printStackTrace();
+        }
+        return result;
+    }
 	
 	/**
 	 * Get the content status code
