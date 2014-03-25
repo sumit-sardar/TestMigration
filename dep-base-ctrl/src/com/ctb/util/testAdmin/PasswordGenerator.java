@@ -34,7 +34,7 @@ public class PasswordGenerator
         return password;
     }
     
-    public static String generatePasswordForWV(String fName, String lName) throws CTBBusinessException{
+    public static String generatePasswordForWV(String fName, String lName, Integer productId) throws CTBBusinessException{
     	String password = null;
     	
     	fName=fName.replaceAll("[^a-zA-Z0-9]+","");
@@ -49,6 +49,18 @@ public class PasswordGenerator
     	
 		password = fName.substring(0,1)+ lName.substring(0,4);
 		password = password.toUpperCase();
+		
+		/*
+		 * Block added on 21 March,14 to change password of WV based on Test type.
+		 * Practice test password =  First name (1st letter) + last Name (first  4 letter’s) + Character “P”
+		 * Breach test password = First name (1st letter) + last Name (first  4 letter’s) + Character “B”
+		 * Operational test password = First name (1st letter) + last Name (first  4 letter’s) 
+		 * */
+		if (productId == 5501)
+			password = password+"B";
+		else if(productId == 5503)
+			password = password+"P";
+		
     	return password;
     }
 } 

@@ -2410,7 +2410,7 @@ public class ScheduleTestImpl implements ScheduleTest
             Integer testAdminId = newSession.getTestSession().getTestAdminId();
             //Integer userId = new Integer(Integer.parseInt(newSession.getTestSession().getCreatedBy()));
             Integer customerId = newSession.getTestSession().getCustomerId();
-            boolean isWVCustomer = false;//rosters.isWVCustomer(customerId).booleanValue(); // Commented for WV Password logic revert back
+            boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue(); 
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             SessionStudent [] scheduledStudents = newSession.getStudents();
             String form = newSession.getTestSession().getPreferredForm();
@@ -2457,7 +2457,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     roster.setOverrideTestWindow("F");
                     String password = null;
                     if(isWVCustomer)
-                    	password = PasswordGenerator.generatePasswordForWV(student.getFirstName(), student.getLastName());
+                    	password = PasswordGenerator.generatePasswordForWV(student.getFirstName(), student.getLastName() , productId);
                     else
                     	password = PasswordGenerator.generatePassword();
                     
@@ -2604,7 +2604,7 @@ public class ScheduleTestImpl implements ScheduleTest
             Integer testAdminId = newSession.getTestSession().getTestAdminId();
             String [] validForms = itemSet.getFormsForTest(itemSetId);
             Integer customerId = newSession.getTestSession().getCustomerId();
-            boolean isWVCustomer = false;//rosters.isWVCustomer(customerId).booleanValue(); // Commented for WV Password logic revert back
+            boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue(); 
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             FormAssignmentCount [] formCounts = null;
             if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
@@ -2647,7 +2647,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     String password = null;
                     
                     if(isWVCustomer)
-                    	password = PasswordGenerator.generatePasswordForWV(newUnit.getFirstName(), newUnit.getLastName());
+                    	password = PasswordGenerator.generatePasswordForWV(newUnit.getFirstName(), newUnit.getLastName(),productId);
                     else
                     	password = PasswordGenerator.generatePassword();
                     re.setPassword(password);
@@ -3176,9 +3176,9 @@ public class ScheduleTestImpl implements ScheduleTest
                 roster.setOrgNodeId(sessionStudent.getOrgNodeId());
                 roster.setOverrideTestWindow("F");
                 String password = null;
-                boolean isWVCustomer = false;//rosters.isWVCustomer(customerId).booleanValue();// Commented for WV Password logic revert back
+                boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue();
                 if(isWVCustomer)
-                	password = PasswordGenerator.generatePasswordForWV(student.getFirstName(), student.getLastName());
+                	password = PasswordGenerator.generatePasswordForWV(student.getFirstName(), student.getLastName(),productId);
                 else
                 	password = PasswordGenerator.generatePassword();
                 roster.setPassword(password);
