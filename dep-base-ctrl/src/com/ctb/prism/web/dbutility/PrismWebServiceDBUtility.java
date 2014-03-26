@@ -1003,7 +1003,7 @@ public class PrismWebServiceDBUtility {
 			rs = pst.executeQuery();
 			while(rs.next()){
 				if(rs.getDate("test_taken_dt")!=null){
-					java.util.Date testTakenDate = new java.util.Date(rs.getDate("test_taken_dt").getTime());
+					java.util.Date testTakenDate = rs.getTimestamp("test_taken_dt");
 					if(sessionTimeZone != null && !"".equals(sessionTimeZone)){
 						testTakenDt = formatDateToDateString(com.ctb.util.DateUtils.getAdjustedDate(testTakenDate,"GMT",sessionTimeZone,testTakenDate));
 					}
@@ -1030,7 +1030,7 @@ public class PrismWebServiceDBUtility {
             result = sdf.format(date);
         }
         catch (Exception e){
-        	System.err.println("Error in parsing teh test taken date");
+        	System.err.println("Error in parsing the test taken date");
             e.printStackTrace();
         }
         return result;
