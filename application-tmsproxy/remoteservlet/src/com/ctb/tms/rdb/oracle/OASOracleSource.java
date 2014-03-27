@@ -395,10 +395,16 @@ public class OASOracleSource implements OASRDBSource
 	                		(manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
 	                		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
 	                		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS))) {
-	                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
+	                	ConsolidatedRestartData restartData = null;
+	                	if (loginResponse.getConsolidatedRestartDataArray() != null && loginResponse.getConsolidatedRestartDataArray().length > 0)
+	                		restartData = loginResponse.getConsolidatedRestartDataArray(0);
+	                	else
+	                		restartData = loginResponse.addNewConsolidatedRestartData();
 	                	ItemResponseData[] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
 	                    RosterData.generateRestartData(loginResponse, manifestData[i], itemResponseData, restartData);
-	                    gotRestart = true;
+	                    if (manifestData[i].getIsSample() != null && "F".equals(manifestData[i].getIsSample())) {
+	                    	gotRestart = true;
+	                    }
 	                }
 	            }
 	        }
