@@ -29,7 +29,7 @@
 	</target>
 	
 	<target name="build" depends="generate">
-		<javac classpathref="build.class.path" destdir="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes">
+		<javac debug="true" debuglevel="lines,source" classpathref="build.class.path" destdir="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes">
 			<src path="remoteservlet/src" />
 			<src path="localservlet/src" />
 			<include name="**/*.java" />
