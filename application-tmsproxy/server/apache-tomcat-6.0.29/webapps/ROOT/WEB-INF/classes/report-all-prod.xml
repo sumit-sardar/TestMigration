@@ -3,7 +3,7 @@
               xmlns="http://xmlns.oracle.com/coherence/coherence-report-group-config"
               xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-report-group-config coherence-report-group-config.xsd">
 
-  <frequency>1m</frequency>
+  <frequency>60m</frequency>
   <output-directory>/var/tmp/cohReports/CoherenceReports</output-directory>
   <report-list>
     <report-config>

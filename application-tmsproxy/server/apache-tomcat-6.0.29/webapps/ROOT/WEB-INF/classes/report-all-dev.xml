@@ -3,9 +3,13 @@
               xmlns="http://xmlns.oracle.com/coherence/coherence-report-group-config"
               xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-report-group-config coherence-report-group-config.xsd">
 
-  <frequency>1m</frequency>
+  <frequency>60m</frequency>
   <output-directory>/tmp/CoherenceReports</output-directory>
   <report-list>
+    <report-config>
+      <location>reports/report-cache-size.xml</location>
+    </report-config>
+<!-- The followings are not used here.    
     <report-config>
       <location>reports/report-node.xml</location>
     </report-config>
@@ -22,9 +26,6 @@
       <location>reports/report-service.xml</location>
     </report-config>
     <report-config>
-      <location>reports/report-cache-size.xml</location>
-    </report-config>
-    <report-config>
       <location>reports/report-cache-effectiveness.xml</location>
     </report-config>
     <report-config>
@@ -33,7 +34,7 @@
     <report-config>
       <location>reports/report-management.xml</location>
     </report-config>
-	<!-- The followings are not used here.
+
     <report-config>
       <location>reports/report-ramjournal.xml</location>
     </report-config>
