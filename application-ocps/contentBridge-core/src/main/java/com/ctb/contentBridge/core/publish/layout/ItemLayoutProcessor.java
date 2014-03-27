@@ -1375,6 +1375,14 @@ public class ItemLayoutProcessor {
 						Element stimulus_tab = new Element("stimulus_tab");
 						stimulus_tab.setAttribute("title", getAttributeValue(
 								thisElement, "TabTitle"));
+				/*		//setting alt_text attribute for stimulus_tab 
+						if(thisElement.getAttribute("AltText") != null)
+						{
+							System.out.println("Inside Graphic of Stimulus tab");
+							stimulus_tab.setAttribute("alt_text", getAttributeValue(
+									thisElement, "AltText"));
+						}
+				*/		
 						List childLMLList = new ArrayList();
 						getProcessableChildInOrder(thisElement, childLMLList);
 						cleanTextBuffer(childLMLList);
@@ -1686,6 +1694,15 @@ public class ItemLayoutProcessor {
 						Element stimulus_tab = new Element("stimulus_tab");
 						stimulus_tab.setAttribute("title", getAttributeValue(
 								thisElement, "TabTitle"));
+			/*			
+						//setting alt_text attribute for stimulus_tab 
+						if(thisElement.getAttribute("AltText") != null)
+						{
+							System.out.println("Inside Passage of Stimulus tab");
+							stimulus_tab.setAttribute("alt_text", getAttributeValue(
+									thisElement, "AltText"));
+						}
+			*/			
 
 						String newID = getAttributeValue(thisElement, "ID");
 						if (newID == null) { // if ID not in Passage, then
@@ -1803,6 +1820,15 @@ public class ItemLayoutProcessor {
 						Element stimulus_tab = new Element("stimulus_tab");
 						stimulus_tab.setAttribute("title", getAttributeValue(
 								thisElement, "TabTitle"));
+			/*			
+						//setting alt_text attribute for stimulus_tab 
+						if(thisElement.getAttribute("AltText") != null)
+						{
+							System.out.println("Inside Text of Stimulus tab");
+							stimulus_tab.setAttribute("alt_text", getAttributeValue(
+									thisElement, "AltText"));
+						}
+			*/			
 						// Element tabElement = new Element( passage_widget );
 						// stimulus_tab.addContent( tabElement );
 						List childLMLList = new ArrayList();
@@ -3213,7 +3239,28 @@ public class ItemLayoutProcessor {
 	    zip.close();
 	  }
 
-	  static private void addFileToZip(String path, String srcFile, ZipOutputStream zip)
+	// Changes for Defect # 77677
+	static private void addFileToZip(String path, String srcFile, ZipOutputStream zip)
+			throws Exception {
+
+		File folder = new File(srcFile);
+		ZipEntry zipEntry = null;
+		
+		if (folder.isDirectory()) {
+			addFolderToZip(path, srcFile, zip);
+		} else {
+			byte[] buf = new byte[1024];
+			int len;
+			FileInputStream in = new FileInputStream(srcFile);
+			zipEntry = new ZipEntry(path + "/" + folder.getName());
+			zipEntry.setTime(0l);
+			zip.putNextEntry(zipEntry);
+			while ((len = in.read(buf)) > 0) {
+				zip.write(buf, 0, len);
+			}
+		}
+	}
+	 /* static private void addFileToZip(String path, String srcFile, ZipOutputStream zip)
 	      throws Exception {
 
 	    File folder = new File(srcFile);
@@ -3228,7 +3275,7 @@ public class ItemLayoutProcessor {
 	        zip.write(buf, 0, len);
 	      }
 	    }
-	  }
+	  }*/
 
 	  static private void addFolderToZip(String path, String srcFolder, ZipOutputStream zip)
 	      throws Exception {
@@ -3259,7 +3306,7 @@ public class ItemLayoutProcessor {
 		/*Properties prop = new Properties();
 		prop.load(new FileInputStream(adsConfig.getFile()));*/
 		String tePackagePath ="/iwmnt/default/main/OAS/WORKAREA/highwire/images/TEAssets/";
-		
+		//String tePackagePath ="D:\\OCPS_Local_File\\Assets";
 		//String sourcs=prop.getProperty("te.package.path")+"\\"+itemID;
 		//String destination=prop.getProperty("pakagePath")+"\\"+itemID;
 		//String destination=prop.getProperty("te.package.path")+"\\"+itemID+"zip";
