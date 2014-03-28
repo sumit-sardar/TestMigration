@@ -34,8 +34,8 @@ public class TestDeliveryContextListener implements
 
 	public static final int batchSize = 10000;
 
-	private static int checkFrequency = 30; //default to 30
-	private static int postFrequency = 5;
+	private static int checkFrequency = 120; // was default to 30
+//	private static int postFrequency = 5;
 	private static RosterThread rosterThread;
 	private static ScoringThread scoringThread;
 	private static ConcurrentLinkedQueue<ScoringMessage> rosterQueue;
@@ -43,10 +43,10 @@ public class TestDeliveryContextListener implements
 	public static String clusterName;
 	static Logger logger = Logger.getLogger(TestDeliveryContextListener.class);
 
-    private static int PREPOP_THREAD_COUNT = 10; //default to 10
+    private static int PREPOP_THREAD_COUNT = 3; //default to 3
     static {
     	try {
-    		PREPOP_THREAD_COUNT = Integer.valueOf(System.getProperty("PREPOP_THREAD_COUNT", "10")).intValue();
+    		PREPOP_THREAD_COUNT = Integer.valueOf(System.getProperty("PREPOP_THREAD_COUNT", "3")).intValue();
     	}
     	catch (NumberFormatException nfe) {
     		logger.error("Incorrect system property PREPOP_THREAD_COUNT: "+nfe.getMessage());    		
@@ -54,7 +54,7 @@ public class TestDeliveryContextListener implements
     	logger.info("PREPOP_THREAD_COUNT="+PREPOP_THREAD_COUNT);
 
     	try {
-    		checkFrequency = Integer.valueOf(System.getProperty("PREPOP_INTERVAL", "30")).intValue();
+    		checkFrequency = Integer.valueOf(System.getProperty("PREPOP_INTERVAL", "120")).intValue();
     	}
     	catch (NumberFormatException nfe) {
     		logger.error("Incorrect system property PREPOP_INTERVAL: "+nfe.getMessage());    		
