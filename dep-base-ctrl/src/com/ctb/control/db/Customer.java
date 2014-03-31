@@ -128,6 +128,12 @@ public interface Customer extends JdbcControl
     void createTASCCustomerConfiguration(Integer CustomerId) throws SQLException;
     
     /**
+     * @jc:sql statement="call setup_tascreadiness_customer({CustomerId})"
+     */
+    @JdbcControl.SQL(statement = "call setup_tascreadiness_customer({CustomerId})")
+    void createTASCReadinessCustomerConfiguration(Integer CustomerId) throws SQLException;
+
+    /**
      * @jc:sql statement::
      * select seq_customer_configuration_id.nextval
      * from dual::
@@ -275,10 +281,10 @@ public interface Customer extends JdbcControl
      *           cc.created_date_time           as createdDateTime
      *      from customer_configuration cc
      *     where cc.customer_id = {customerId}
-     *     and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer','LL_Customer','LLESPANOL_Customer','TASC_Customer')::
+     *     and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer','LL_Customer','LLESPANOL_Customer','TASC_Customer','TASCReadiness_Customer')::
      */
      //START - Changes for LASLINK Product
-    @JdbcControl.SQL(statement = "select  cc.customer_configuration_id  as customerConfigurationId,  cc.customer_configuration_name as customerConfigurationName,  cc.editable  as editable,  cc.default_value  as defaultValue,  cc.created_by  as createdBy,  cc.created_date_time  as createdDateTime  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer','LL_Customer','LLESPANOL_Customer','TASC_Customer')")
+    @JdbcControl.SQL(statement = "select  cc.customer_configuration_id  as customerConfigurationId,  cc.customer_configuration_name as customerConfigurationName,  cc.editable  as editable,  cc.default_value  as defaultValue,  cc.created_by  as createdBy,  cc.created_date_time  as createdDateTime  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer','LL_Customer','LLESPANOL_Customer','TASC_Customer','TASCReadiness_Customer')")
     com.ctb.bean.testAdmin.CustomerConfig[] getCustomerConfigurations(Integer customerId) throws SQLException;
 	//END - Changes for LASLINK Product
     

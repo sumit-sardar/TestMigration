@@ -443,6 +443,15 @@ public class CustomerManagementImpl implements CustomerManagement
             }
             //END - Changes for TASC PRODUCT
             
+            //START - Changes for TASCReadiness PRODUCT 
+            else if(CTBConstants.TASCREADINESS_CUSTOMER.equalsIgnoreCase
+                    (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
+               
+                customers.createTASCReadinessCustomerConfiguration(customerId);
+                    
+            }
+            //END - Changes for TASCReadiness PRODUCT
+            
             else if(CTBConstants.OTHER_CUSTOMER.equalsIgnoreCase
                     (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
                 saveCustomerEmail(customer);
@@ -838,6 +847,16 @@ public class CustomerManagementImpl implements CustomerManagement
                                                     
                 }
                 //END - Changes for TASC PRODUCT
+                
+                //START - Changes for TASCReadiness PRODUCT
+                else if ( customerConfigurations[0].getCustomerConfigurationName().equals(
+                        CTBConstants.DB_TASCREADINESS_CUSTOMER)){
+                            
+                	customerConfigurations[0].setCustomerConfigurationName(
+                        CTBConstants.TASCREADINESS_CUSTOMER);
+                                                    
+                }
+                //END - Changes for TASCReadiness PRODUCT
                 
                 customer.setCustomerConfiguration(customerConfigurations);
             } 

@@ -2081,6 +2081,9 @@ public class ManageCustomerController extends PageFlowController
         //START - Changes for TASC PRODUCT
         customerOptions.put(CTBConstants.TASC_CUSTOMER,CTBConstants.TASC_CUSTOMER);
         //END - Changes for TASC PRODUCT
+        //START - Changes for TASCReadiness PRODUCT
+        customerOptions.put(CTBConstants.TASCREADINESS_CUSTOMER,CTBConstants.TASCREADINESS_CUSTOMER);
+        //END - Changes for TASCReadiness PRODUCT
         customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);
         
        

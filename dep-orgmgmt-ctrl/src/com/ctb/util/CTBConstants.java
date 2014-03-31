@@ -53,6 +53,10 @@ public final class CTBConstants {
     public static final String TASC_CUSTOMER = "TASC Customer";
     public static final String DB_TASC_CUSTOMER = "TASC_Customer";
     //END - Changes for TASC PRODUCT
+    //START - Changes for TASCReadiness PRODUCT
+    public static final String TASCREADINESS_CUSTOMER = "TASC Readiness Customer";
+    public static final String DB_TASCREADINESS_CUSTOMER = "TASCReadiness_Customer";
+    //END - Changes for TASCReadiness PRODUCT
     
     public static final Integer MAX_CTB_CUSTOMER = new Integer(10);
 	public static final int MAX_PAGE = 5;
