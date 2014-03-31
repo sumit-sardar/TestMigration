@@ -51,6 +51,7 @@ import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
+import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.ProgramData;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
@@ -119,7 +120,6 @@ import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
 import com.google.gson.Gson;
 import com.ctb.control.db.OrgNode;
-import com.ctb.control.db.ProductBean;
 
 
 
@@ -199,6 +199,7 @@ public class SessionOperationController extends PageFlowController {
 	public boolean isWVCustomer = false;
 	public boolean isTABECustomer = false;
 	public boolean isTASCCustomer = false;
+	public boolean isTERRANOVA_Customer = false;
 	private boolean forceTestBreak = false;
 	private boolean selectGE = false;
 	private boolean isTABELocatorOnlyTest = false;
@@ -317,6 +318,23 @@ public class SessionOperationController extends PageFlowController {
 		getLoggedInUserPrincipal();		
 		getUserDetails();
 
+		try
+		{
+			//** Story: TerraNova – Program Validity Check (Defect#75548)
+			//** Apply to shelf products: TABE/TABE ADAPT, TN, LAS, TASC 
+			//** If program status is "IN" or it's expired (end_date<today), don't allow user to schedule new sessions.
+			boolean ActiveNotExp = true;
+			if (isTABECustomer || isTASCCustomer || isLasLinkCustomer || isTERRANOVA_Customer)
+			{
+				ActiveNotExp = this.scheduleTest.isActiveUserProgramExpired(this.customerId, new Date());
+			}
+			getSession().setAttribute("isActiveProgramExpiredOrInactive",!ActiveNotExp);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        
     	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
 		if (accessNewUI(customerConfigs)) {
 			setupUserPermission(customerConfigs);
@@ -5089,6 +5107,11 @@ public class SessionOperationController extends PageFlowController {
 	            	isTABECustomer = true;
 	            	continue;
 	            }
+				// For TERRANOVA Customer
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TERRANOVA_Customer")) {
+	            	isTERRANOVA_Customer = true;
+	            	continue;
+	            }
 				// For Upload Download
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload")
 						&& cc.getDefaultValue().equals("T")) {
@@ -5254,6 +5277,9 @@ public class SessionOperationController extends PageFlowController {
      	
      	getStudentGrades(customerConfigs);     	
      	
+     	//** Story: TASC - 2014 - View Status Page - Student# should be replaced with TASC ID.doc
+     	if (this.isTASCCustomer)
+     		getConfigSessionStudentIdLabel(customerConfigs);
    }
 		
 	
@@ -5293,6 +5319,39 @@ public class SessionOperationController extends PageFlowController {
 
 		}
 		this.getSession().setAttribute("studentIdLabelName",valueForStudentId[0]);
+		
+	}
+
+	/**
+     * get Session "Student Test #" Label from customer_configuration.
+     * for now, don't use new configuration value, use Configurable_Student_ID
+     */
+	private void getConfigSessionStudentIdLabel(CustomerConfiguration[] customerConfigurations) 
+	{     
+		//boolean isStudentIdConfigurable = false;
+		Integer configId=0;
+		String []valueForStudentId = new String[8] ;
+		valueForStudentId[0] = "Student ID";
+		for (int i=0; i < customerConfigurations.length; i++)
+		{
+			CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+			{
+				//isStudentIdConfigurable = true; 
+				configId = cc.getId();
+				CustomerConfigurationValue[] customerConfigurationsValue = customerConfigurationValues(configId);
+				//By default there should be 3 entries for customer configurations
+				valueForStudentId = new String[8];
+				for(int j=0; j<customerConfigurationsValue.length; j++){
+					int sortOrder = customerConfigurationsValue[j].getSortOrder();
+					valueForStudentId[sortOrder-1] = customerConfigurationsValue[j].getCustomerConfigurationValue();
+				}	
+				valueForStudentId[0] = valueForStudentId[0]!= null ? valueForStudentId[0] : "Student ID" ;
+
+			}
+
+		}
+		this.getSession().setAttribute("sessionStudentIdLabelName",valueForStudentId[0]);
 		
 	}
 	

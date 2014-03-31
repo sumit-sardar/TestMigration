@@ -22,6 +22,7 @@
 	 Boolean isTASCCustomer = (Boolean)session.getAttribute("isTascCustomer");
 	 Boolean isAdminUser = (Boolean)session.getAttribute("adminUser");
 	 
+	 Boolean isActiveProgramExpiredOrInactive = (Boolean) session.getAttribute("isActiveProgramExpiredOrInactive");
 %>
 	
 	<input type="hidden" id="userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
@@ -42,6 +43,8 @@
 	
 	<input type="hidden" id="isTASCCustomer" name="isTASCCustomer" value='<%=isTASCCustomer%>' />
 	<input type="hidden" id="isAdminUser" name="isAdminUser" value='<%=isAdminUser%>' />
+	
+	<input type="hidden" id="isActiveProgramExpiredOrInactive" name="isActiveProgramExpiredOrInactive" value='<%=isActiveProgramExpiredOrInactive%>' />
 	 
 	<table width="100%" cellspacing="0" cellpadding="0"> 
 		<tr>
@@ -178,6 +181,19 @@
 		<center>
 			<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:fetchDataOnConfirmation(); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
+</div>
+<div id="ExpiredProgramPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="sessionList.noprogram.programepired" />
+		</div>
+	</div>
+	<div style="padding:10px;">		
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('ExpiredProgramPopup'); return false;" class="ui-widget-header">
 		</center>
 	</div>	
 </div>

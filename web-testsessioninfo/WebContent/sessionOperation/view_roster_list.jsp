@@ -1,7 +1,13 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="label.tld" prefix="lb" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <lb:bundle baseName="testsessionApplicationResource" />
+
+<%
+    Boolean isTascCustomer = (Boolean)session.getAttribute("isTascCustomer");
+	String sessionStudentIdLabelName = (String)session.getAttribute("sessionStudentIdLabelName");
+%>
 
 <link href="<%=request.getContextPath()%>/resources/css/jtip.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jtip.js"></script>
@@ -110,7 +116,12 @@
 	<div>
 		<input type="hidden" name="lastNameLbl" id="lastNameLbl" value=<lb:label key="viewStatus.text.lastNameLbl" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="firstNameLbl" id="firstNameLbl" value=<lb:label key="viewStatus.text.firstNameLbl" prefix="'" suffix="'"/>/>
+		<c:if test="${isTascCustomer}">
+		<input type="hidden" name="studentIdLbl" id="studentIdLbl" value="<%=sessionStudentIdLabelName%>"/>/>
+		</c:if>        
+		<c:if test="${! isTascCustomer}">		
 		<input type="hidden" name="studentIdLbl" id="studentIdLbl" value=<lb:label key="viewStatus.text.studentId" prefix="'" suffix="'"/>/>
+		</c:if>
 		<input type="hidden" name="loginIdLbl" id="loginIdLbl" value=<lb:label key="viewStatus.text.loginId" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="passwordLbl" id="passwordLbl" value=<lb:label key="viewStatus.text.password" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value=<lb:label key="viewStatus.text.validationStatus" prefix="'" suffix="'"/>/>

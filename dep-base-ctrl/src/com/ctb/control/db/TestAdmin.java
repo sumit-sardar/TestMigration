@@ -886,4 +886,21 @@ public interface TestAdmin extends JdbcControl
 	@JdbcControl.SQL(statement = "SELECT SUM(COL.AVAILABLE) AS LICENSEQUANTITY , COL.SUBTEST_MODEL as subtestModel FROM CUSTOMER_ORGNODE_LICENSE COL WHERE COL.CUSTOMER_ID = {customerId} AND {sql: OrgIds} GROUP BY COL.SUBTEST_MODEL ", 
 			arrayMaxLength = 10)
 	LASLicenseNode getLicenseInfo(Integer customerId,String OrgIds)throws SQLException;
+	
+	/**
+     * @jc:sql statement::
+     * select
+     *     min(pr.PROGRAM_ID) as programId  
+     * from 
+     *      program pr
+     * where 
+     *      pr.CUSTOMER_ID = {customerId}
+     *  and activation_status='AC'
+     *  and trunc(pr.program_end_date) >= trunc({startDate})::
+     *  array-max-length="all"
+     */
+    @JdbcControl.SQL(statement = "select  min(pr.PROGRAM_ID) as programId  from  program pr where  pr.CUSTOMER_ID = {customerId} and activation_status='AC' and trunc(pr.program_end_date) >= trunc({startDate}) ",
+                     arrayMaxLength = 100000)
+    Integer [] getActiveProgramIdForCustomer(Integer customerId, Date startDate) throws SQLException;
+    
 }

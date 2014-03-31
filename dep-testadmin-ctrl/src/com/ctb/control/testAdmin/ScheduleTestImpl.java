@@ -4399,4 +4399,19 @@ public class ScheduleTestImpl implements ScheduleTest
  	   return isSeletedTestInvalid;
     }
     
+    public boolean isActiveUserProgramExpired (Integer customerId,java.util.Date now) throws com.ctb.exception.CTBBusinessException{
+    	try
+    	{
+	    	Integer [] programIds = admins.getActiveProgramIdForCustomer(customerId,now);
+	        if(programIds.length > 1 ){
+	            throw new InvalidNoOfProgramsException("This customer has more no of programs for this product");
+	        }  
+	        if(programIds != null && programIds.length ==1)
+	            return true;
+    	} catch (SQLException e) {
+    		e.printStackTrace(); 
+    	}
+        return false;
+    }
+    
 } 

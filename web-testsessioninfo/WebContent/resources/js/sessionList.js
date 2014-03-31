@@ -1200,6 +1200,23 @@ function registerDelegate(tree){
 		 
 	}	
 	
+	function openExpiredProgramPopup(){
+	$("#ExpiredProgramPopup").dialog({  
+		title:$("#programAlert").val(),  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#ExpiredProgramPopup").css('height',120);
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#ExpiredProgramPopup").parent().css("top",toppos);
+		 $("#ExpiredProgramPopup").parent().css("left",leftpos);	
+		 
+	}	
+	
 	function removeStuConfirmationPopup(){
 	$("#removeStuConfirmationPopup").dialog({  
 		title:$("#confirmAlrt").val(),  
@@ -1730,6 +1747,12 @@ function registerDelegate(tree){
 	
 	
 	function scheduleNewSession() {
+	var isActiveProgramExpiredOrInactive = $('#isActiveProgramExpiredOrInactive').val();
+	if (isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE")
+	{
+		openExpiredProgramPopup();
+		return false;
+	}
 	$('#showSaveTestMessage').hide();
 	hideSubtestWarningMessage();
 	document.getElementById("modifyTestDiv").style.display = "none";

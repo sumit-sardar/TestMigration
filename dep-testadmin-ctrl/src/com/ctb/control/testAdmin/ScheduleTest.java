@@ -646,4 +646,14 @@ public interface ScheduleTest
 	 * @throws com.ctb.exception.CTBBusinessException
 	 */
 	boolean checkSelectedTestInvalid(Integer customerId,Integer itemsetIdTC,Integer orgNodeId)throws com.ctb.exception.CTBBusinessException;
+	
+	/**
+	 * Checks if user's active program has expired
+	 * @param customerId
+	 * @param now
+	 * @return boolean
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+	boolean isActiveUserProgramExpired(Integer customerId,java.util.Date now)throws com.ctb.exception.CTBBusinessException;
+	
 } 
