@@ -1173,7 +1173,7 @@ public interface StudentManagement extends JdbcControl
     @JdbcControl.SQL(statement = "select sdd.value_name from student_demographic_data sdd, customer_demographic cd where sdd.student_id = {studentId} and sdd.customer_demographic_id= cd.customer_demographic_id and cd.customer_id = {customerId} and cd.label_name = 'Ethnicity'")
     String studentEthnicityValue (int customerId,int studentId) throws SQLException;
     
-    @JdbcControl.SQL(statement = "select opunit from test_roster where student_id  = {studentId}  and activation_status = 'AC' and opunit is not null and rownum = 1")
+    @JdbcControl.SQL(statement = "select litho_code from test_roster where student_id  = {studentId}  and activation_status = 'AC' and litho_code is not null and rownum = 1")
     String getIsStudentExtracted (Integer studentId) throws SQLException;
     
     //Check whether a particular customer configuration is present for the student or not. Currently used to check disable delete student.
