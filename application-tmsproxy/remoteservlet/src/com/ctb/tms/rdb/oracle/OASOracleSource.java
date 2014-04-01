@@ -402,9 +402,9 @@ public class OASOracleSource implements OASRDBSource
 	                		restartData = loginResponse.addNewConsolidatedRestartData();
 	                	ItemResponseData[] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
 	                    RosterData.generateRestartData(loginResponse, manifestData[i], itemResponseData, restartData);
-	                    if (manifestData[i].getIsSample() != null && "F".equals(manifestData[i].getIsSample())) {
-	                    	gotRestart = true;
-	                    }
+//	                    if (manifestData[i].getIsSample() != null && "F".equals(manifestData[i].getIsSample())) {
+//	                    	gotRestart = true;
+//	                    }
 	                }
 	            }
 	        }
