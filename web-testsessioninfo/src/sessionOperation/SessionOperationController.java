@@ -323,12 +323,12 @@ public class SessionOperationController extends PageFlowController {
 			//** Story: TerraNova – Program Validity Check (Defect#75548)
 			//** Apply to shelf products: TABE/TABE ADAPT, TN, LAS, TASC 
 			//** If program status is "IN" or it's expired (end_date<today), don't allow user to schedule new sessions.
-			boolean ActiveNotExp = true;
+			boolean ActiveOrExp = false;
 			if (isTABECustomer || isTASCCustomer || isLasLinkCustomer || isTERRANOVA_Customer)
 			{
-				ActiveNotExp = this.scheduleTest.isActiveUserProgramExpired(this.customerId, new Date());
+				ActiveOrExp = this.scheduleTest.isActiveUserProgramExpired(this.customerId, new Date());
 			}
-			getSession().setAttribute("isActiveProgramExpiredOrInactive",!ActiveNotExp);
+			getSession().setAttribute("isActiveProgramExpiredOrInactive",ActiveOrExp);
         }
         catch (CTBBusinessException be)
         {
