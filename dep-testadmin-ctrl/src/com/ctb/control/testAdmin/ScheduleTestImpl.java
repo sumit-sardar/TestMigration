@@ -4407,11 +4407,11 @@ public class ScheduleTestImpl implements ScheduleTest
 	            throw new InvalidNoOfProgramsException("This customer has more no of programs for this product");
 	        }  
 	        if(programIds != null && programIds.length ==1)
-	            return true;
+	            return false;
     	} catch (SQLException e) {
     		e.printStackTrace(); 
     	}
-        return false;
+        return true;
     }
     
 } 
