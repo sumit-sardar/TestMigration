@@ -890,7 +890,7 @@ public interface TestAdmin extends JdbcControl
 	/**
      * @jc:sql statement::
      * select
-     *     min(pr.PROGRAM_ID) as programId  
+     *     pr.PROGRAM_ID as programId  
      * from 
      *      program pr
      * where 
@@ -899,7 +899,7 @@ public interface TestAdmin extends JdbcControl
      *  and trunc(pr.program_end_date) >= trunc({startDate})::
      *  array-max-length="all"
      */
-    @JdbcControl.SQL(statement = "select  min(pr.PROGRAM_ID) as programId  from  program pr where  pr.CUSTOMER_ID = {customerId} and activation_status='AC' and trunc(pr.program_end_date) >= trunc({startDate}) ",
+    @JdbcControl.SQL(statement = "select  pr.PROGRAM_ID as programId  from  program pr where  pr.CUSTOMER_ID = {customerId} and activation_status='AC' and trunc(pr.program_end_date) >= trunc({startDate}) ",
                      arrayMaxLength = 100000)
     Integer [] getActiveProgramIdForCustomer(Integer customerId, Date startDate) throws SQLException;
     
