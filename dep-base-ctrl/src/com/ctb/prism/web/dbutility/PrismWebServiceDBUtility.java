@@ -321,7 +321,7 @@ public class PrismWebServiceDBUtility {
 	 * @return
 	 * @throws CTBBusinessException
 	 */
-	public static ItemResponsesDetailsTO getItemResponsesDetail(long rosterID, long itemSetId, Integer studentId, long sessionId) {
+	public static ItemResponsesDetailsTO getItemResponsesDetail(long rosterID, long itemSetId, Integer studentId, long sessionId, boolean invStatus) {
 		Connection con = null;
 		PreparedStatement pstSR = null;
 		ResultSet rsSR = null;
@@ -430,20 +430,24 @@ public class PrismWebServiceDBUtility {
 				grItmPresent = true;
 				grScoreVal.append(formatResponse(rsGR.getString("response"), 16));
 				String respStatus =  rsGR.getString("respstatus");
-				if(respStatus != null && !"".equals(respStatus) && "O".equals(respStatus)){
-					respStatusMap.put(rsGR.getString("itemid"), "O");
+				if(invStatus){
+					respStatusMap.put(rsGR.getString("itemid"), "I");
 				}else{
-					respStatusMap.put(rsGR.getString("itemid"), " ");
-					if(wrRespStatusItmId != null && wrRespStatusItmId.length() != 0){
-						wrRespStatusItmId.append(" , ");
+					if(respStatus != null && !"".equals(respStatus) && "O".equals(respStatus)){
+						respStatusMap.put(rsGR.getString("itemid"), "O");
+					}else{
+						respStatusMap.put(rsGR.getString("itemid"), " ");
+						if(wrRespStatusItmId != null && wrRespStatusItmId.length() != 0){
+							wrRespStatusItmId.append(" , ");
+						}
+						wrRespStatusItmId.append("'" + rsGR.getString("itemid") + "'");
 					}
-					wrRespStatusItmId.append("'" + rsGR.getString("itemid") + "'");
 				}
 			}
 			
 			grItemResponseTO.setScoreValue(grScoreVal.toString());
 			if(grItmPresent){
-				if(wrRespStatusItmId != null && wrRespStatusItmId.length() > 0){
+				if(!invStatus && wrRespStatusItmId != null && wrRespStatusItmId.length() > 0){
 					respStatusMap = getGRResponseStatus(wrRespStatusItmId, studentId, sessionId, respStatusMap);
 				}
 				ItemResponseTO grResponseStatusTO = new ItemResponseTO();
@@ -644,18 +648,6 @@ public class PrismWebServiceDBUtility {
 						}
 					}
 					
-					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
-					if(contentCode == PrismWebServiceConstant.wrContentCode){
-						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
-						if(!isCRScorePresent){
-							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
-							sendELA = false;
-							sendOverAll = false;
-							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(rosterId, itemSetId, sessionId, PrismWebServiceConstant.OmittedContentStatusCode, contentCode, studentId);
-							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
-							continue;
-						}
-					}
 					
 					contentDetailsTO.setDateTestTaken(getContentTestTakenDt(rosterId, itemSetId, sessionTimeZone));
 					
@@ -669,7 +661,7 @@ public class PrismWebServiceDBUtility {
 					String scoringStatus = (String) contentScoreDetailsObjs[1];
 					
 					if(PrismWebServiceConstant.InvalidContentStatusCode.equalsIgnoreCase(statusCode)){//For the invalid test special handling
-						ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId);
+						ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId, true);
 						contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 						if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
 							sendELA = false;
@@ -678,6 +670,19 @@ public class PrismWebServiceDBUtility {
 						objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(rosterId, itemSetId, sessionId, statusCode, contentCode, studentId);
 						contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 						continue;
+					}
+					
+					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
+					if(contentCode == PrismWebServiceConstant.wrContentCode){
+						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
+						if(!isCRScorePresent){
+							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
+							sendELA = false;
+							sendOverAll = false;
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(rosterId, itemSetId, sessionId, PrismWebServiceConstant.OmittedContentStatusCode, contentCode, studentId);
+							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
+							continue;
+						}
 					}
 					
 					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
@@ -707,7 +712,7 @@ public class PrismWebServiceDBUtility {
 							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}else if(PrismWebServiceConstant.SuppressedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Suppressed Content
-							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId);
+							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId, false);
 							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 							if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
 								sendELA = false;
@@ -724,7 +729,7 @@ public class PrismWebServiceDBUtility {
 					ContentScoreDetailsTO contentScoreDetailsTO = (ContentScoreDetailsTO) contentScoreDetailsObjs[0];
 					contentDetailsTO.setContentScoreDetailsTO(contentScoreDetailsTO);
 					
-					ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId);
+					ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId, false);
 					contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 					
 					objectiveScoreDetailsList = getObjectiveScoreDetails(itemSetId, rosterId, sessionId, studentId, contentCode);
