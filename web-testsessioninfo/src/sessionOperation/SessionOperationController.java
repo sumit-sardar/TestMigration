@@ -317,23 +317,6 @@ public class SessionOperationController extends PageFlowController {
     /* Changes for DEX Story - Add intermediate screen : End */	
 		getLoggedInUserPrincipal();		
 		getUserDetails();
-
-		try
-		{
-			//** Story: TerraNova – Program Validity Check (Defect#75548)
-			//** Apply to shelf products: TABE/TABE ADAPT, TN, LAS, TASC 
-			//** If program status is "IN" or it's expired (end_date<today), don't allow user to schedule new sessions.
-			boolean ActiveOrExp = false;
-			if (isTABECustomer || isTASCCustomer || isLasLinkCustomer || isTERRANOVA_Customer)
-			{
-				ActiveOrExp = this.scheduleTest.isActiveUserProgramExpired(this.customerId, new Date());
-			}
-			getSession().setAttribute("isActiveProgramExpiredOrInactive",ActiveOrExp);
-        }
-        catch (CTBBusinessException be)
-        {
-            be.printStackTrace();
-        }
         
     	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
 		if (accessNewUI(customerConfigs)) {
@@ -5280,6 +5263,23 @@ public class SessionOperationController extends PageFlowController {
      	//** Story: TASC - 2014 - View Status Page - Student# should be replaced with TASC ID.doc
      	if (this.isTASCCustomer)
      		getConfigSessionStudentIdLabel(customerConfigs);
+     	
+		try
+		{
+			//** [IAA] Story: TerraNova – Program Validity Check (Defect#75548)
+			//** Apply to shelf products: TABE/TABE ADAPT, TN, LAS, TASC 
+			//** If program status is "IN" or it's expired (end_date<today), don't allow user to schedule new sessions.
+			boolean ActiveOrExp = false;
+			if (isTABECustomer || isTASCCustomer || isLasLinkCustomer || isTERRANOVA_Customer)
+			{
+				ActiveOrExp = this.scheduleTest.isActiveUserProgramExpired(this.customerId, new Date());
+			}
+			getSession().setAttribute("isActiveProgramExpiredOrInactive",ActiveOrExp);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
    }
 		
 	
