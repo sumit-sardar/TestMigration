@@ -5893,6 +5893,12 @@ function validNumber(str){
 	function copyTestSession(element){
 	    if (isButtonDisabled(element) ) {
 			return true;
+		}		
+		var isActiveProgramExpiredOrInactive = $('#isActiveProgramExpiredOrInactive').val();
+		if (isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE")
+		{
+			openExpiredProgramPopup();
+			return false;
 		}
 	    var action = "copySession"; 
 	    editTestSession(action);

@@ -5082,6 +5082,7 @@ public class SessionOperationController extends PageFlowController {
 				// For LasLink Customer
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")) {
 	            	laslinkCustomer = true;
+	            	isLasLinkCustomer = true;
 	            	continue;
 	            }
 				// For TABE Customer
