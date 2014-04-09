@@ -52,6 +52,8 @@ public class SoftwareOperationController extends PageFlowController {
 	private boolean isUserLinkSelected = false;
    /* Changes for DEX Story - Add intermediate screen : End */
 	
+	public boolean isLASLinkCustomer = false;
+	
 	/**
 	 * @return the userName
 	 */
@@ -85,7 +87,8 @@ public class SoftwareOperationController extends PageFlowController {
      * @jpf:forward name="success" path="installSoftware.jsp"
      */
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success", path = "installSoftware.jsp")
+        @Jpf.Forward(name = "success", path = "installSoftware.jsp"),
+        @Jpf.Forward(name = "lasLinkSuccess", path = "llinstallSoftware.jsp")
     })
     protected Forward begin() throws CTBBusinessException
     {   
@@ -158,6 +161,10 @@ public class SoftwareOperationController extends PageFlowController {
         this.getRequest().setAttribute("runURI_PC", "location.href=" + RUN_PC_URI);
         this.getRequest().setAttribute("runURI_MAC", "location.href=" + RUN_MAC_URI);
         this.getRequest().setAttribute("runURI_LINUX", "location.href=" + RUN_LINUX_URI);
+        
+        if(this.isLASLinkCustomer){
+        	return new Forward("lasLinkSuccess");
+        }
         
    		return new Forward("success");
     }
@@ -949,6 +956,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
 						&& cc.getDefaultValue().equals("T")) {
 	            	laslinkCustomer = true;
+	            	this.isLASLinkCustomer =true;
 	            	continue;
 	            }
 				// For Upload Download
