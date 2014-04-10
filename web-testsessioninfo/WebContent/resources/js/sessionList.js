@@ -1748,7 +1748,8 @@ function registerDelegate(tree){
 	
 	function scheduleNewSession() {
 	var isActiveProgramExpiredOrInactive = $('#isActiveProgramExpiredOrInactive').val();
-	if (isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE")
+	var LLExpiredOrInactivePrograms = $('#LLExpiredOrInactivePrograms').val();
+	if (isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE" && LLExpiredOrInactivePrograms.length==0)
 	{
 		openExpiredProgramPopup();
 		return false;
@@ -3906,10 +3907,15 @@ function registerDelegate(tree){
     
     function saveTest(checkRestricted) {
 
+        if(!validateProgramBeforeSave())
+        {
+        	openExpiredProgramPopup();
+        	return false;
+        }
+        
         if(!validateEndDateBeforeSave())
         	return;
-        
-        
+        	        
         $('#displayMessage').hide();
 	    $('#showSaveTestMessage').hide();
 	    
@@ -5895,7 +5901,8 @@ function validNumber(str){
 			return true;
 		}		
 		var isActiveProgramExpiredOrInactive = $('#isActiveProgramExpiredOrInactive').val();
-		if (isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE")
+		var LLExpiredOrInactivePrograms = $('#LLExpiredOrInactivePrograms').val();
+		if (isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE" && LLExpiredOrInactivePrograms.length==0)
 		{
 			openExpiredProgramPopup();
 			return false;
@@ -6691,3 +6698,27 @@ function validNumber(str){
 	 			.replace(/~/g, '%7E');
 	}
 	
+	function validateProgramBeforeSave() {
+		var isActiveProgramExpiredOrInactive = $('#isActiveProgramExpiredOrInactive').val();
+		var LLExpiredOrInactivePrograms = $('#LLExpiredOrInactivePrograms').val();
+		var isLasLinkCust = $('#isLasLinkCustomer').val();
+		if (isLasLinkCust.toUpperCase() == "TRUE" && isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE" && LLExpiredOrInactivePrograms.length>0)
+		{
+			var selectedTestGroup = $("#testGroupList").val();
+			var LLExpPrograms = LLExpiredOrInactivePrograms.split(",");
+			for (var i=0;i<LLExpPrograms.length;i++)
+			{
+				if (selectedTestGroup < 7500 && LLExpPrograms[i]==7000)
+				{
+					//** if selected testGroup is from an inactive or expired program, dont allow save
+					return false;
+				}
+				else if (selectedTestGroup >= 7500 && LLExpPrograms[i]==7500)
+				{
+					//** if selected testGroup is from an inactive or expired program, dont allow save
+					return false;
+				}
+			}
+		}
+		return true;
+	}

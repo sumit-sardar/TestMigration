@@ -9,6 +9,7 @@ import java.util.Map;
 import com.bea.control.annotations.TransactionAttribute;
 import com.bea.control.annotations.TransactionAttributeType;
 import com.ctb.bean.testAdmin.LASLicenseNode;
+import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.StudentManifest;
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
@@ -655,5 +656,14 @@ public interface ScheduleTest
 	 * @throws com.ctb.exception.CTBBusinessException
 	 */
 	boolean isActiveUserProgramExpired(Integer customerId,java.util.Date now)throws com.ctb.exception.CTBBusinessException;
+	
+	/**
+	 * Get all programs for a customer
+	 * @param customerId
+	 * @param now
+	 * @return Program[]
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+	Program[] getCustomerExpiredPrograms(Integer customerId,java.util.Date now)throws com.ctb.exception.CTBBusinessException;
 	
 } 

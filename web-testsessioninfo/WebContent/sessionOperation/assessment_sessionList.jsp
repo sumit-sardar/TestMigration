@@ -20,9 +20,11 @@
 	 Boolean pageConfigPresent = (Boolean) session.getAttribute("pageConfigPresent");
 	 
 	 Boolean isTASCCustomer = (Boolean)session.getAttribute("isTascCustomer");
+	 Boolean isLasLinkCustomer = (Boolean)session.getAttribute("isLasLinkCustomer");
 	 Boolean isAdminUser = (Boolean)session.getAttribute("adminUser");
 	 
 	 Boolean isActiveProgramExpiredOrInactive = (Boolean) session.getAttribute("isActiveProgramExpiredOrInactive");
+	 String LLExpiredOrInactivePrograms = (String) session.getAttribute("LLExpiredOrInactivePrograms");
 %>
 	
 	<input type="hidden" id="userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
@@ -42,9 +44,11 @@
 	<input type="hidden" id="pageConfig" name = "pageConfig" value='<%=pageConfigPresent%>'/>
 	
 	<input type="hidden" id="isTASCCustomer" name="isTASCCustomer" value='<%=isTASCCustomer%>' />
+	<input type="hidden" id="isLasLinkCustomer" name="isLasLinkCustomer" value='<%=isLasLinkCustomer%>' />
 	<input type="hidden" id="isAdminUser" name="isAdminUser" value='<%=isAdminUser%>' />
 	
 	<input type="hidden" id="isActiveProgramExpiredOrInactive" name="isActiveProgramExpiredOrInactive" value='<%=isActiveProgramExpiredOrInactive%>' />
+	<input type="hidden" id="LLExpiredOrInactivePrograms" name="LLExpiredOrInactivePrograms" value='<%=LLExpiredOrInactivePrograms%>' />
 	 
 	<table width="100%" cellspacing="0" cellpadding="0"> 
 		<tr>

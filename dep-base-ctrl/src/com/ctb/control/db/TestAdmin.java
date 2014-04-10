@@ -902,5 +902,21 @@ public interface TestAdmin extends JdbcControl
     @JdbcControl.SQL(statement = "select  pr.PROGRAM_ID as programId  from  program pr where  pr.CUSTOMER_ID = {customerId} and activation_status='AC' and trunc(pr.program_end_date) >= trunc({startDate}) ",
                      arrayMaxLength = 100000)
     Integer [] getActiveProgramIdForCustomer(Integer customerId, Date startDate) throws SQLException;
-    
+
+	/**
+     * @jc:sql statement::
+     * select
+     *     customer_id as customerId,product_id as productId, program_id as programId,program_name as programName,program_start_date as programStartDate,program_end_date as programEndDate, norms_group as normsGroup, norms_year as normsYear, created_date_time as createdDateTime, updated_date_time as updatedDateTime 
+     * from 
+     *      program pr
+     * where 
+     *      pr.CUSTOMER_ID = {customerId}
+     *  and activation_status='AC'
+     *  and trunc(pr.program_end_date) >= trunc({startDate})::
+     *  array-max-length="all"
+     */
+    @JdbcControl.SQL(statement = "select customer_id as customerId,product_id as productId, program_id as programId,program_name as programName,program_start_date as programStartDate,program_end_date as programEndDate, norms_group as normsGroup, norms_year as normsYear, created_date_time as createdDateTime, updated_date_time as updatedDateTime from program pr where  pr.CUSTOMER_ID = {customerId} and (activation_status='IN' or trunc(pr.program_end_date) < trunc({startDate})) ",
+                     arrayMaxLength = 100000)
+    Program [] getExpiredProgramsForCustomer(Integer customerId, Date startDate) throws SQLException;
+
 }

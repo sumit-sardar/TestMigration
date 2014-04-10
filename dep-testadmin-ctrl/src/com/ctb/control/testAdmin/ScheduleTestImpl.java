@@ -34,6 +34,7 @@ import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeStudent;
 import com.ctb.bean.testAdmin.ProctorAssignment;
+import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.ScheduledSession;
@@ -4412,6 +4413,17 @@ public class ScheduleTestImpl implements ScheduleTest
     		e.printStackTrace(); 
     	}
         return true;
+    }
+    
+    public Program [] getCustomerExpiredPrograms (Integer customerId,java.util.Date now) throws com.ctb.exception.CTBBusinessException{
+    	try
+    	{
+	    	Program [] programs = admins.getExpiredProgramsForCustomer(customerId, now);
+	        return programs;
+    	} catch (SQLException e) {
+    		e.printStackTrace(); 
+    	}
+        return null;
     }
     
 } 

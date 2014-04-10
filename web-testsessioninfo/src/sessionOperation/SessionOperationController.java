@@ -199,6 +199,7 @@ public class SessionOperationController extends PageFlowController {
 	public boolean isWVCustomer = false;
 	public boolean isTABECustomer = false;
 	public boolean isTASCCustomer = false;
+	public boolean isTASCReadinessCustomer = false;
 	public boolean isTERRANOVA_Customer = false;
 	private boolean forceTestBreak = false;
 	private boolean selectGE = false;
@@ -5188,6 +5189,8 @@ public class SessionOperationController extends PageFlowController {
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
 			this.isTASCCustomer = isTascCustomer;
+			
+			this.isTASCReadinessCustomer = isTASCReadinessCustomer(customerConfigurations);
 		}
 		
 		if (hasUploadConfig && hasDownloadConfig) {
@@ -5222,7 +5225,8 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser)|| (isTascCustomer && isTopLevelAdmin))));
 		
 		this.getSession().setAttribute("isTascCustomer", new Boolean(isTascCustomer));
-
+		this.getSession().setAttribute("isLasLinkCustomer", new Boolean(isLasLinkCustomer));
+		
      	//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		
@@ -5271,11 +5275,33 @@ public class SessionOperationController extends PageFlowController {
 			//** Apply to shelf products: TABE/TABE ADAPT, TN, LAS, TASC 
 			//** If program status is "IN" or it's expired (end_date<today), don't allow user to schedule new sessions.
 			boolean ActiveOrExp = false;
-			if (isTABECustomer || isTASCCustomer || isLasLinkCustomer || isTERRANOVA_Customer)
+			String expiredOrInactivePrograms = "";
+			if (isTABECustomer || isTASCCustomer || isTASCReadinessCustomer || isLasLinkCustomer || isTERRANOVA_Customer)
 			{
-				ActiveOrExp = this.scheduleTest.isActiveUserProgramExpired(this.customerId, new Date());
+				//ActiveOrExp = this.scheduleTest.isActiveUserProgramExpired(this.customerId, new Date());
+				Program [] expPrograms = this.scheduleTest.getCustomerExpiredPrograms(this.customerId, new Date());
+				int expProgramCount=0;
+				for (int i=0; expPrograms!=null && i<expPrograms.length;i++)
+				{
+					if (isLasLinkCustomer)
+					{
+						ActiveOrExp = true;
+						if (expiredOrInactivePrograms.length()>0) expiredOrInactivePrograms += ",";
+						expiredOrInactivePrograms += expPrograms[i].getProductId().toString();
+						expProgramCount++;
+					}
+					else
+					{
+						ActiveOrExp = true;
+					}
+				}
+				if (isLasLinkCustomer)
+				{
+					if (expProgramCount >= 2) expiredOrInactivePrograms = "";
+				}
 			}
 			getSession().setAttribute("isActiveProgramExpiredOrInactive",ActiveOrExp);
+			getSession().setAttribute("LLExpiredOrInactivePrograms",expiredOrInactivePrograms);
         }
         catch (CTBBusinessException be)
         {
@@ -5501,7 +5527,21 @@ public class SessionOperationController extends PageFlowController {
         }
         return TASCCustomer;
     }
-
+    private boolean isTASCReadinessCustomer(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean TASCReadinessCustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASCReadiness_Customer")
+					//[IAA]&& cc.getDefaultValue().equals("T")) {
+            		){
+            	TASCReadinessCustomer = true;
+            }
+        }
+        return TASCReadinessCustomer;
+    }
     private boolean isLaslinkCustomer(CustomerConfiguration [] customerConfigs)
     {               
         boolean laslinkCustomer = false;
