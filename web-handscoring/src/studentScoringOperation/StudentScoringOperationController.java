@@ -620,6 +620,7 @@ public class StudentScoringOperationController extends PageFlowController {
 		explicitlyInitializeAllControls();
 		String jsonMessageResponse = "";
 		if (user == null) {
+			getLoggedInUserPrincipal();
 			getUserDetails();
 		}
 		String itemId = getRequest().getParameter("itemId");
