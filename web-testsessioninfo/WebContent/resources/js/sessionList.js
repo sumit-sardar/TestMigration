@@ -3907,7 +3907,7 @@ function registerDelegate(tree){
     
     function saveTest(checkRestricted) {
 
-        if(!validateProgramBeforeSave())
+        if(state!="EDIT" && !validateProgramBeforeSave())
         {
         	openExpiredProgramPopup();
         	return false;
