@@ -5266,7 +5266,7 @@ public class SessionOperationController extends PageFlowController {
      	getStudentGrades(customerConfigs);     	
      	
      	//** Story: TASC - 2014 - View Status Page - Student# should be replaced with TASC ID.doc
-     	if (this.isTASCCustomer)
+     	if (this.isTASCCustomer || this.isTASCReadinessCustomer)
      		getConfigSessionStudentIdLabel(customerConfigs);
      	
 		try
@@ -5358,7 +5358,7 @@ public class SessionOperationController extends PageFlowController {
 		//boolean isStudentIdConfigurable = false;
 		Integer configId=0;
 		String []valueForStudentId = new String[8] ;
-		valueForStudentId[0] = "Student ID";
+		valueForStudentId[0] = "Student Test #";
 		for (int i=0; i < customerConfigurations.length; i++)
 		{
 			CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
@@ -5373,7 +5373,7 @@ public class SessionOperationController extends PageFlowController {
 					int sortOrder = customerConfigurationsValue[j].getSortOrder();
 					valueForStudentId[sortOrder-1] = customerConfigurationsValue[j].getCustomerConfigurationValue();
 				}	
-				valueForStudentId[0] = valueForStudentId[0]!= null ? valueForStudentId[0] : "Student ID" ;
+				valueForStudentId[0] = valueForStudentId[0]!= null ? valueForStudentId[0] : "Student Test #" ;
 
 			}
 
