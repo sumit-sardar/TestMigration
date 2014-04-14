@@ -238,7 +238,7 @@ function populateSessionListGrid(homePageLoad) {
 					setSelectedTestAdminId(rowId);
 					testTicketPopupValues(rowId,'list2');
 					var selectedRData = $("#list2").getRowData(rowId);
-					if(selectedRData.isSTabeProduct == "false" && selectedRData.isSTabeAdaptiveProduct == "false" && selectedRData.copyable == 'T'){
+					if(selectedRData.copyable == 'T'){
 						updateCopySessionButton(true);
 					}else{
 						updateCopySessionButton(false);
@@ -551,7 +551,7 @@ function populateCompletedSessionListGrid() {
 					testTicketPopupValues(rowId,'list3');					
 					$('#showSaveTestMessage').hide();
 			 		var selectedRData = $("#list3").getRowData(rowId);
-					if(selectedRData.isSTabeProduct == "false" && selectedRData.isSTabeAdaptiveProduct == "false" && selectedRData.copyable == 'T'){
+					if(selectedRData.copyable == 'T'){
 						updateCopySessionButton(true);
 					}else{
 						updateCopySessionButton(false);

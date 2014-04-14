@@ -198,6 +198,7 @@ public class SessionOperationController extends PageFlowController {
 	public boolean isOKCustomer = false;
 	public boolean isWVCustomer = false;
 	public boolean isTABECustomer = false;
+	public boolean isTABEAdaptiveCustomer = false;
 	public boolean isTASCCustomer = false;
 	public boolean isTASCReadinessCustomer = false;
 	public boolean isTERRANOVA_Customer = false;
@@ -1527,7 +1528,12 @@ public class SessionOperationController extends PageFlowController {
     	    	SessionStudent[] students =  scheduledSession.getStudents();
     	    	List<SessionStudent> studentsList = null;
     	    	if(action != null && action.equals("copySession")){
-    	    		studentsList = buildStudentListForCopySession(students, accomodationMap, action);
+        	    	if (this.isTABECustomer || this.isTABEAdaptiveCustomer || this.isTASCCustomer || this.isTASCReadinessCustomer) {
+        	    		studentsList = new ArrayList(); 
+        	    	}
+        	    	else {
+        	    		studentsList = buildStudentListForCopySession(students, accomodationMap, action);
+        	    	}
     	    	}else{
     	    		studentsList = buildStudentList(students, accomodationMap);
     	    	}
@@ -5090,6 +5096,11 @@ public class SessionOperationController extends PageFlowController {
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer")) {
 	            	tabeCustomer = true;
 	            	isTABECustomer = true;
+	            	continue;
+	            }
+				// For TABE ADAPTIVE Customer
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Adaptive_Customer")) {
+	            	isTABEAdaptiveCustomer = true;
 	            	continue;
 	            }
 				// For TERRANOVA Customer
