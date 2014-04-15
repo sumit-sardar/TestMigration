@@ -1073,7 +1073,7 @@ public class DownloadOperationController extends PageFlowController {
         boolean adminUser = isAdminUser();
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
-        boolean adminCoordinatorUser = isAdminCoordinatotUser();//For Student Registration
+        boolean adminCoordinatorUser = isAdminCoordinatorUser();//For Student Registration
     	boolean hasResetTestSession = false;
     	boolean hasResetTestSessionForAdmin = false;
     	boolean isOKCustomer = false;
@@ -1086,10 +1086,11 @@ public class DownloadOperationController extends PageFlowController {
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
     	boolean hasBlockUserManagement = false;
-    	
+    	boolean isWVCustomer = false;
     	this.isLaslinkCustomerUploadDownlod =  laslinkCustomer ;
         this.islaslinkCustomer = laslinkCustomer;
-       
+        boolean isWVCustomerTopLevelAdminAndAdminCO = false;
+        
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
@@ -1162,8 +1163,23 @@ public class DownloadOperationController extends PageFlowController {
 				isTascCustomer = true;
 				continue;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("WV_Customer")
+					//[IAA]&& cc.getDefaultValue().equals("T")) {
+            		){
+				isWVCustomer = true;
+				continue;
+            }
+			
 		}   
 		
+		if (isWVCustomer)
+		{
+			if(!isWVCustomerTopLevelAdminAndAdminCO())
+			{
+			hasUploadConfig=false;
+			hasUploadDownloadConfig=false;
+			}
+		}
 		if (hasUploadConfig && hasDownloadConfig) {
 			hasUploadDownloadConfig = true;
 		}
@@ -1172,10 +1188,17 @@ public class DownloadOperationController extends PageFlowController {
 			hasDownloadConfig = false;
 		}
 
-		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+		if(isWVCustomer)
+		{
+			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig));
+			this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig));
+		}
+		else
+		{
+			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+			this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
+		}
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
-		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
-		
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin))));
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer)|| (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
@@ -1205,7 +1228,7 @@ public class DownloadOperationController extends PageFlowController {
 		return isUserTopLevel;
 	}
 	
-	private boolean isAdminCoordinatotUser() //For Student Registration
+	private boolean isAdminCoordinatorUser() //For Student Registration
     {               
         String roleName = this.user.getRole().getRoleName();        
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
@@ -1413,7 +1436,18 @@ public class DownloadOperationController extends PageFlowController {
 		}
 		return new Boolean(hasOOSConfigurable);           
 	}
-
+	private boolean isWVCustomerTopLevelAdminAndAdminCO(){
+		boolean isWVCustomerTopLevelAdminAndAdminCO = false;
+		boolean isUserTopLevel =false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if (isUserTopLevel &&(isAdminUser() || isAdminCoordinatorUser()))
+			isWVCustomerTopLevelAdminAndAdminCO = true;
+		return isWVCustomerTopLevelAdminAndAdminCO;
+	}
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    

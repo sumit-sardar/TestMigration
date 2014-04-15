@@ -257,7 +257,7 @@ public class UserAccountFileOperationController extends PageFlowController{
 		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
 	}
 
-	private boolean isAdminCoordinatotUser() 
+	private boolean isAdminCoordinatorUser() 
 	{               
 		String roleName = this.user.getRole().getRoleName();        
 		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
@@ -285,7 +285,7 @@ public class UserAccountFileOperationController extends PageFlowController{
 		boolean tabeCustomer = false;
 		boolean TASCCustomer = false;
 		boolean adminUser = isAdminUser();
-		boolean adminCoordinatorUser = isAdminCoordinatotUser();
+		boolean adminCoordinatorUser = isAdminCoordinatorUser();
     	boolean hasUploadConfig = false;
     	boolean hasDownloadConfig = false;
 		boolean hasUploadDownloadConfig = false;
@@ -298,7 +298,8 @@ public class UserAccountFileOperationController extends PageFlowController{
 		boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1;
     	boolean hasBlockUserManagement = false;
-
+    	boolean isWVCustomer = false;
+    	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
 
@@ -396,6 +397,12 @@ public class UserAccountFileOperationController extends PageFlowController{
 					dataExportVisibilityLevel = Integer.parseInt(cc.getDefaultValue());
 					continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("WV_Customer")
+						//[IAA]&& cc.getDefaultValue().equals("T")) {
+	            		){
+					isWVCustomer = true;
+					continue;
+	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Block_User_Management_3to8") && 
 	            		cc.getDefaultValue().equals("T")) {
 	        		hasBlockUserManagement = Boolean.TRUE;
@@ -403,7 +410,14 @@ public class UserAccountFileOperationController extends PageFlowController{
 			}
 
 		}
-		
+		if (isWVCustomer)
+		{
+			if(!isWVCustomerTopLevelAdminAndAdminCO())
+			{
+			hasUploadConfig=false;
+			hasUploadDownloadConfig=false;
+			}
+		}
 		if (hasUploadConfig && hasDownloadConfig) {
 			hasUploadDownloadConfig = true;
 		}
@@ -418,16 +432,23 @@ public class UserAccountFileOperationController extends PageFlowController{
         {
         	TASCProctor = true;
         }
-        
+        if(isWVCustomer)
+		{
+			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig));
+			this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig));
+		}
+		else
+		{
+			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+			this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
+		}
 		//this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && (tabeCustomer || laslinkCustomer)));
 		this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && tabeCustomer));
 		this.getSession().setAttribute("showReportTab", new Boolean((userHasReports().booleanValue() && !TASCProctor) || laslinkCustomer));
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
-		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
-		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasProgramStatusConfigured",new Boolean(hasProgramStatusConfig && adminUser));
 		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable));
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
@@ -455,7 +476,18 @@ public class UserAccountFileOperationController extends PageFlowController{
 		}
 		return isUserLevelMatched;
 	}
-	
+	private boolean isWVCustomerTopLevelAdminAndAdminCO(){
+		boolean isWVCustomerTopLevelAdminAndAdminCO = false;
+		boolean isUserTopLevel =false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if (isUserTopLevel &&(isAdminUser() || isAdminCoordinatorUser()))
+			isWVCustomerTopLevelAdminAndAdminCO = true;
+		return isWVCustomerTopLevelAdminAndAdminCO;
+	}
 	private CustomerConfiguration [] getCustomerConfigurations(Integer customerId)
 	{               
 		CustomerConfiguration [] ccArray = null;

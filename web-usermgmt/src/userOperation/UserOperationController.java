@@ -1964,7 +1964,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasScoringConfigurable = false;
     	boolean hasLicenseConfiguration= false;
     	boolean TABECustomer = false;
-    	boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
+    	boolean adminCoordinatorUser = isAdminCoordinatorUser(); //For Student Registration
     	String roleName = this.user.getRole().getRoleName();
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
@@ -1976,6 +1976,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1;
     	boolean hasBlockUserManagement = false;
+    	boolean isWVCustomer = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -2079,10 +2080,23 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 					isTascCustomer = true;
 					continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("WV_Customer")
+						//[IAA]&& cc.getDefaultValue().equals("T")) {
+	            		){
+					isWVCustomer = true;
+					continue;
+	            }
 			}
 			
 		}
-		
+		if (isWVCustomer)
+		{
+			if(!isWVCustomerTopLevelAdminAndAdminCO())
+			{
+			hasUploadConfig=false;
+			hasUploadDownloadConfig=false;
+			}
+		}
 		if (hasUploadConfig && hasDownloadConfig) {
 			hasUploadDownloadConfig = true;
 		}
@@ -2090,13 +2104,21 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 			hasUploadConfig = false;
 			hasDownloadConfig = false;
 		}
+		if(isWVCustomer)
+		{
+			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig));
+			this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig));
+		}
+		else
+		{
+			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+			this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
+		}
 		
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
-		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
-		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasProgramStatusConfigured",new Boolean(hasProgramStatusConfig && adminUser));
 		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable));
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(hasLicenseConfiguration && adminUser));
@@ -2125,12 +2147,23 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		return isUserLevelMatched;
 	}
 
-	private boolean isAdminCoordinatotUser() //For Student Registration
+	private boolean isAdminCoordinatorUser() //For Student Registration
 	{               
 		String roleName = this.user.getRole().getRoleName();        
 		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
 	}
-	
+	private boolean isWVCustomerTopLevelAdminAndAdminCO(){
+		boolean isWVCustomerTopLevelAdminAndAdminCO = false;
+		boolean isUserTopLevel =false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if (isUserTopLevel &&(isAdminUser() || isAdminCoordinatorUser()))
+			isWVCustomerTopLevelAdminAndAdminCO = true;
+		return isWVCustomerTopLevelAdminAndAdminCO;
+	}
 	private boolean isTopLevelUser(){
 		boolean isUserTopLevel = false;
 		try {

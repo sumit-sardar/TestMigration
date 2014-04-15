@@ -5203,7 +5203,14 @@ public class SessionOperationController extends PageFlowController {
 			
 			this.isTASCReadinessCustomer = isTASCReadinessCustomer(customerConfigurations);
 		}
-		
+		if (isWVCustomer)
+		{
+			if(!isWVCustomerTopLevelAdminAndAdminCO())
+			{
+			hasUploadConfig=false;
+			hasUploadDownloadConfig=false;
+			}
+		}
 		if (hasUploadConfig && hasDownloadConfig) {
 			hasUploadDownloadConfig = true;
 		}
@@ -5225,9 +5232,17 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
-		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+		if(isWVCustomer)
+		{
+			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig));
+			this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig));
+		}
+		else
+		{
+			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+			this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
+		}
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
-		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasProgramStatusConfigured",new Boolean(hasProgramStatusConfig && adminUser));
 		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable));
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
@@ -5457,7 +5472,11 @@ public class SessionOperationController extends PageFlowController {
         String roleName = this.user.getRole().getRoleName();        
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
     }
-    
+    private boolean isAdminCoordinatorUser() //For Student Registration
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
+    }
     private boolean isAdminCoordinatotUser() 
     {               
         String roleName = this.user.getRole().getRoleName();        
@@ -6166,6 +6185,18 @@ public class SessionOperationController extends PageFlowController {
         }
         return new String (safe);
     }
+    private boolean isWVCustomerTopLevelAdminAndAdminCO(){
+		boolean isWVCustomerTopLevelAdminAndAdminCO = false;
+		boolean isUserTopLevel =false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if (isUserTopLevel &&(isAdminUser() || isAdminCoordinatorUser()))
+			isWVCustomerTopLevelAdminAndAdminCO = true;
+		return isWVCustomerTopLevelAdminAndAdminCO;
+	}
 	
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
