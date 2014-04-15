@@ -350,11 +350,9 @@ public class TMSServlet extends HttpServlet {
 			    	ManifestData thisSco = null;
 			    	for(j=0;j<manifestData.length;j++) {
 			    		if(!"TERMINATOR".equals(thisScid) && (manifestData[j].getId() == Integer.parseInt(thisScid))) {
-			    			thisSco = manifestData[j];
 			    			nextScoIndex = j+1;
-			    			while (nextScoIndex < manifestData.length && "CO".equals(manifestData[nextScoIndex].getCompletionStatus())) {
-			    				nextScoIndex++;
-			    			}
+			    			// TODO (complete): fix next subtest selection for TABE auto-locator
+			    			thisSco = manifestData[j];
 			    			break;
 			    		}
 			    	}	
