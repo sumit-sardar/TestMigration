@@ -6,6 +6,7 @@
 
 <%
     Boolean isTascCustomer = (Boolean)session.getAttribute("isTascCustomer");
+	Boolean isTASCReadinessCustomer = (Boolean)session.getAttribute("isTASCReadinessCustomer");
 	String sessionStudentIdLabelName = (String)session.getAttribute("sessionStudentIdLabelName");
 %>
 
@@ -116,10 +117,10 @@
 	<div>
 		<input type="hidden" name="lastNameLbl" id="lastNameLbl" value=<lb:label key="viewStatus.text.lastNameLbl" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="firstNameLbl" id="firstNameLbl" value=<lb:label key="viewStatus.text.firstNameLbl" prefix="'" suffix="'"/>/>
-		<c:if test="${isTascCustomer}">
+		<c:if test="${isTascCustomer || isTASCReadinessCustomer}">
 		<input type="hidden" name="studentIdLbl" id="studentIdLbl" value="<%=sessionStudentIdLabelName%>"/>/>
 		</c:if>        
-		<c:if test="${! isTascCustomer}">		
+		<c:if test="${! isTascCustomer && !isTASCReadinessCustomer}">		
 		<input type="hidden" name="studentIdLbl" id="studentIdLbl" value=<lb:label key="viewStatus.text.studentId" prefix="'" suffix="'"/>/>
 		</c:if>
 		<input type="hidden" name="loginIdLbl" id="loginIdLbl" value=<lb:label key="viewStatus.text.loginId" prefix="'" suffix="'"/>/>
