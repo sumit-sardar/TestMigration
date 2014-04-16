@@ -1528,7 +1528,7 @@ public class SessionOperationController extends PageFlowController {
     	    	SessionStudent[] students =  scheduledSession.getStudents();
     	    	List<SessionStudent> studentsList = null;
     	    	if(action != null && action.equals("copySession")){
-        	    	if (this.isTABECustomer || this.isTABEAdaptiveCustomer || this.isTASCCustomer || this.isTASCReadinessCustomer) {
+        	    	if (this.isTABECustomer || this.isTABEAdaptiveCustomer) {
         	    		studentsList = new ArrayList(); 
         	    	}
         	    	else {
@@ -8474,6 +8474,8 @@ public class SessionOperationController extends PageFlowController {
 						String lItemSetForms      = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_FORM, false, null);
 						SubtestVO locatorSubtest = new SubtestVO();
 						locatorSubtest.setId(lItemSetId);
+						List<String> accessCodeLocatorList = scheduleTest.getFixedNoAccessCode(1);
+						lAccesscodes = (String)accessCodeLocatorList.get(0);					
 						locatorSubtest.setTestAccessCode(lAccesscodes);
 						locatorSubtest.setSessionDefault(lItemSetisDefault);
 						if(lItemSetForms!=null && lItemSetForms.length() >0 ){
@@ -8646,15 +8648,21 @@ public class SessionOperationController extends PageFlowController {
 			//fetch student data from db using original test_admin_id
 			ScheduledSession schSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, testAdminIdBeforCopy);
 			SessionStudent[] sessionStudents = schSession.getStudents();
-			ArrayList<SessionStudent> studentListForCopy = new ArrayList<SessionStudent>(sessionStudents.length);
-			for(int i=0; i< sessionStudents.length; i++){
-				SessionStudent ss = (SessionStudent)sessionStudents[i];
-				if(ss != null){
-					if(ss.getStatus().getCopyable().equals("T")){
-						studentListForCopy.add(ss);
+			ArrayList<SessionStudent> studentListForCopy = null;
+	    	if (this.isTABECustomer || this.isTABEAdaptiveCustomer) {
+	    		studentListForCopy = new ArrayList<SessionStudent>(0);
+	    	}
+	    	else {
+				studentListForCopy = new ArrayList<SessionStudent>(sessionStudents.length);
+				for(int i=0; i< sessionStudents.length; i++){
+					SessionStudent ss = (SessionStudent)sessionStudents[i];
+					if(ss != null){
+						if(ss.getStatus().getCopyable().equals("T")){
+							studentListForCopy.add(ss);
+						}
 					}
 				}
-			}
+	    	}
 			scheduledSession.setStudentsLoggedIn(new Integer(0));
 			scheduledSession.setStudents(studentListForCopy.toArray(new SessionStudent[studentListForCopy.size()]));
 	    	isStudentManifestsExists = true;
