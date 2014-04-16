@@ -454,7 +454,7 @@ public class UserAccountFileOperationController extends PageFlowController{
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin))));
 
 
 		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
