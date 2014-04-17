@@ -992,7 +992,9 @@ public class SessionOperationController extends PageFlowController {
             {
             	ScheduledSession session = populateAndValidateSessionRecord(this.getRequest(), validationFailedInfo, isAddOperation, currentAction); //modified for copy test sesssion
             	
-            	populateFirstLastName(session, this.getRequest()); // Added for WV Customer - Student Password generation
+            	if(!validationFailedInfo.isValidationFailed()) {
+            		populateFirstLastName(session, this.getRequest()); // Added for WV Customer - Student Password generation
+            	}
             	
             	if (includeGEStr != null) {
             		session.getTestSession().setLexingtonVersion(includeGEStr);
