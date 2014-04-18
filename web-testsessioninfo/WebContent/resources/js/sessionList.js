@@ -3907,7 +3907,7 @@ function registerDelegate(tree){
     
     function saveTest(checkRestricted) {
 
-        if((isCopySession || state!="EDIT") && !validateProgramBeforeSave())
+        if(/*(isCopySession || state!="EDIT") &&*/ !validateProgramBeforeSave())
         {
         	openExpiredProgramPopup();
         	return false;
