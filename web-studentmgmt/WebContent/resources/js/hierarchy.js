@@ -1366,7 +1366,7 @@ function getValue(keyVal) {
 		
 		enableColorSettingsLink("false");
 		enableAudioFiles();
-		
+		enableExtendedFactor();
    }
 
 
@@ -2331,7 +2331,14 @@ function openNode(orgNodeId) {
 								$('#Student_Information select').attr('disabled', false);
 								$('#Student_Information :input').attr('disabled', false);
 							}
-							//$.unblockUI();  
+							//$.unblockUI();
+							
+							//changes for multiple extended time factor
+							var extendedTimeDisable = $('#ExtendedTime').attr('disabled');
+							if (extendedTimeDisable || extendedTimeDisable == 'true'){
+								$('#extension_factor').attr('disabled', 'true');
+							} 
+							  
 							$("#addEditStudentDetail").dialog({  
 														title:$("#editStuID").val(),  
 													 	resizable:false,
@@ -2679,9 +2686,10 @@ function openNode(orgNodeId) {
     		if(key == 'fontSize'){
     			colorFontSize = stuAccommodation[key];
     		}
-      		var keyInUI = getRealValue(key);	// Added as field name and object key has different value
-             $("#view_Student_Accommodation_Information :checkbox[name='" + "view" + keyInUI+ "']").attr('checked', stuAccommodation[key]);
-		     $("#view_Student_Accommodation_Information select[name='" + "view" + keyInUI+ "']").val(stuAccommodation[key]);
+      		var keyInUI = getRealValue(key);	// Added as field name and object key has different value      		
+      		replaceAccommodationValue(key);
+            $("#view_Student_Accommodation_Information :checkbox[name='" + "view" + keyInUI+ "']").attr('checked', stuAccommodation[key]);
+		    $("#view_Student_Accommodation_Information select[name='" + "view" + keyInUI+ "']").val(stuAccommodation[key]);
 		}
 		
 		if(isColorFontChecked){
@@ -2816,6 +2824,8 @@ function openNode(orgNodeId) {
    		var colorFontSize;
 		//var indexOfId = str.indexOf(SelectedStudentId);
 		var indexOfId = -1;
+		var isExtendedTimeEnabled;
+		var hasExtensionTimeFactor;
 		
 		var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
 		//alert("Selected:["+SelectedStudentId+"]setEditStudentDetail:"+pageDataIds);
@@ -2843,6 +2853,21 @@ function openNode(orgNodeId) {
     		var keyInUI = getRealValue(key);	// Added as field name and object key has different value
 		     $("#Student_Accommodation_Information :checkbox[name='" + keyInUI+ "']").attr('checked', stuAccommodation[key]);
 		     $("#Student_Accommodation_Information select[name='" + keyInUI+ "']").val(stuAccommodation[key]);
+		     
+		    if(key == 'extendedTime'){
+		    	isExtendedTimeEnabled = stuAccommodation[key];
+		    }
+		    if(key == 'extendedTimeFactor'){
+		    	hasExtensionTimeFactor = stuAccommodation[key];
+		    }
+		}
+		
+		if(isExtendedTimeEnabled != undefined && hasExtensionTimeFactor != undefined){
+			if(isExtendedTimeEnabled){
+				$("#Student_Accommodation_Information #extension_factor").attr('disabled',false);
+			}else{
+				$("#Student_Accommodation_Information #extension_factor").attr('disabled',true);
+			}
 		}
 		if(isAudioCalmEnabled!= undefined) {
 			if(isAudioCalmEnabled){
@@ -3452,7 +3477,8 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			return 'MaskingTool';
 		if(keyVal == 'microphoneHeadphone')
 			return 'MicrophoneHeadphone';
-			
+		if(keyVal == 'extendedTimeFactor')
+			return 'extension_factor';	
 		return keyVal;
 	}
 			 
@@ -3799,4 +3825,22 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			return false;
 		}
 	 }
-		
+	 
+	function enableExtendedFactor(){
+		var extendedTime = document.getElementById('ExtendedTime');
+		var extentionFactor = document.getElementById('extension_factor');
+		if(extendedTime.checked)
+			extentionFactor.removeAttribute("disabled");
+		else {
+			extentionFactor.setAttribute("disabled", "true");
+			extentionFactor.selectedIndex=0;
+		}
+	}
+	
+	function replaceAccommodationValue(key){
+		if(key != undefined && key == 'extendedTimeFactor'){
+			stuAccommodation[key] = 'view'+stuAccommodation[key];
+      	}else if(key != undefined && key == 'music_files'){
+      		stuAccommodation[key] = 'view'+stuAccommodation[key];
+      	}
+	}

@@ -8,6 +8,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.beehive.controls.api.bean.Control;
 
 import com.ctb.bean.studentManagement.CustomerConfiguration;
+import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.MusicFiles;
 import com.ctb.exception.CTBBusinessException;
 
@@ -27,6 +28,7 @@ public class StudentAccommodationsTag extends CTBTag
 	private Boolean viewOnly = Boolean.FALSE;
 	
 	private MusicFiles[] musicList = null; // Added for Auditory Calming.
+	private String [] extendedTimeValues = null; // Added for extension factor
 	
     public void setAccommodations(StudentAccommodationsDetail accommodations) {
         this.accommodations = accommodations;
@@ -411,11 +413,38 @@ public class StudentAccommodationsTag extends CTBTag
 	        description = "<b>Extended Time</b>:";
 	        checked = this.accommodations.getExtendedTime().booleanValue();
 	        disabled = isDisabled(field);
-	        displayControlRow(field, description, checked, disabled, null);                        
+	        displayControlRow(field, description, checked, disabled, (hasMultiExtendedTime()?"enableExtendedFactor()":null));                        
 	        displayTextRow("Allow student time and a half.", "20");
-	        displayEmptyRow("2");
+	        if(null == extendedTimeValues || extendedTimeValues.length<2)
+	        	displayEmptyRow("2");
         displayTableEnd();
         
+        if(null != extendedTimeValues && extendedTimeValues.length>1){
+        //Extended time values start
+	        displayColorTableStart("230");
+				displayRowStart("transparent");
+					displayCellStart("transparent");
+						displayColorTableStart("150");
+							displayRowStart("transparent");
+								displayEmptyColumn("80");
+								displayTextColumn("Extension Factor:", "200");
+								displayCellStart("transparent-small");
+								displayCellEnd();
+							displayRowEnd();        
+						displayTableEnd();
+					displayCellEnd();
+					displayCellStart("transparent","","left");
+						disabled = isDisabled(field) || !checked || (null != this.accommodations.getExtendedTimeFactor());
+						field = "extension_factor";
+						selection = (null != this.accommodations.getExtendedTimeFactor())?this.accommodations.getExtendedTimeFactor().toString():null;
+						if(selection==null)
+							selection=this.extendedTimeValues[0].toString();
+						displayExtensionFactors(field, disabled, selection, null);    
+					displayCellEnd();
+				displayRowEnd();        
+			displayTableEnd();
+        //Extended time values end
+        }
         // Masking Answers
 		displayTableStart("transparent");
 	        field = "MaskingTool";
@@ -526,6 +555,17 @@ public class StudentAccommodationsTag extends CTBTag
 	        		writeToPage(buildMusicOption(musicList[i].getAudioFileName(), selection, musicList[i].getFileId().toString()));
         writeToPage("</select>");
     }
+    
+    //Addedn for extension factor
+    private void displayExtensionFactors(String id, boolean disabled, String selection, String onChange) throws IOException 
+    {
+        String disableStr = disabled ? "disabled" : "";
+        writeToPage("<select id=\"" + id + "\" name=\"" + id + "\" onchange=\"" + onChange + "\" " + disableStr + " >");
+		for(int j=0;j<extendedTimeValues.length;j++) {
+			writeToPage(buildMusicOption(extendedTimeValues[j]+"x", null, extendedTimeValues[j]));
+		}
+        writeToPage("</select>");
+    }
 
 	private String buildCheckbox(String id, boolean checked, boolean disabled, String onClick) 
     {
@@ -612,6 +652,24 @@ public class StudentAccommodationsTag extends CTBTag
         	disabled=true;
         
         return disabled;
+    }
+    
+    private boolean hasMultiExtendedTime(){
+    	for(int i=0;i<this.customerConfigurations.length;i++) {
+    		if(this.customerConfigurations[i].getCustomerConfigurationName().equals("Extended_Time")) {
+    			CustomerConfigurationValue[] ccValues = this.customerConfigurations[i].getCustomerConfigurationValues();
+    			extendedTimeValues = new String[ccValues.length];
+    			for(int j=0;j<ccValues.length;j++) {
+    				extendedTimeValues[j] = ccValues[j].getCustomerConfigurationValue();
+    			}
+    			break;
+    		}
+    	}
+    	if(null != extendedTimeValues && extendedTimeValues.length>1){
+    		return true;
+    	}else{
+    		return false;
+    	}
     }
 
 }

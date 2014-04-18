@@ -2283,6 +2283,15 @@ public class StudentOperationController extends PageFlowController {
 				if (ccName.equalsIgnoreCase("Extended_Time"))
 				{
 					sad.setExtendedTime(Boolean.TRUE);
+					// changes for multiple extended time factor
+					CustomerConfigurationValue[] ccvalue = cc.getCustomerConfigurationValues();
+					if(ccvalue.length > 1) {
+						for(CustomerConfigurationValue cval : ccvalue) {
+							if(cval.getSortOrder() == 1) {
+								sad.setExtendedTimeFactor(new Double(cval.getCustomerConfigurationValue().toString()));
+							}
+						}
+					}
 				}
 				//Added for Masking Answers
 				if (ccName.equalsIgnoreCase("Masking_Tool"))
@@ -2493,6 +2502,11 @@ public class StudentOperationController extends PageFlowController {
 			{
 				this.accommodations.setMusic_files(musicFiles);
 			}
+		}
+		//Added For Extended Time Factor
+		String extensionFactor = this.getRequest().getParameter("extension_factor");
+		if (this.accommodations.getExtendedTime() && null != extensionFactor){
+			this.accommodations.setExtendedTimeFactor(new Double(extensionFactor));
 		}
 	}
 

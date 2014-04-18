@@ -1904,7 +1904,10 @@ public class ScheduleTestImpl implements ScheduleTest
 			CustomerConfigurationValue [] customerConfigurationValues = customerConfigurations.getCustomerConfigurationValue(customerId,"Extended_Time");				
 			if (customerConfigurationValues != null && customerConfigurationValues.length > 0) 
             {
-				extendedTimeValue = new Double (customerConfigurationValues[0].getCustomerConfigurationValue());
+				if (customerConfigurationValues.length > 1)
+					extendedTimeValue = 0.0;
+				else
+					extendedTimeValue = new Double (customerConfigurationValues[0].getCustomerConfigurationValue());
             }
 			// End changes for Student Pacing
 			
@@ -2424,7 +2427,7 @@ public class ScheduleTestImpl implements ScheduleTest
             for(int j=0;scheduledStudents != null && j<scheduledStudents.length;j++) {
                 SessionStudent student = scheduledStudents[j];
                 Integer restrictedAdmin = new Integer(-1);
-                
+                String extendedTimeFactor = "";
                 // Start changes for Student Pacing
                 Double rosterExtendedTime = null;
                 String extendedTimeAccom = "F";
@@ -2432,6 +2435,9 @@ public class ScheduleTestImpl implements ScheduleTest
                 	extendedTimeAccom = student.getExtendedTimeAccom();
                 }
                 // End changes for Student Pacing
+                if(null != student.getExtendedTimeFactor()){
+                	extendedTimeFactor = student.getExtendedTimeFactor().toString();
+                }
                 
                 if(testRestricted) {
                     restrictedAdmin = students.isTestRestrictedForStudent(userName, student.getStudentId(), newSession.getTestSession().getItemSetId());
@@ -2475,6 +2481,9 @@ public class ScheduleTestImpl implements ScheduleTest
                     if(extendedTimeValue > 0){
                     	if(extendedTimeAccom != null && extendedTimeAccom.equalsIgnoreCase("T"))
                     		rosterExtendedTime = extendedTimeValue;
+                    }else if (null != extendedTimeFactor && !"".equals(extendedTimeFactor)){
+                    	if(extendedTimeAccom != null && extendedTimeAccom.equalsIgnoreCase("T"))
+                    		rosterExtendedTime = new Double(extendedTimeFactor);
                     }
                     roster.setExtendedTime(rosterExtendedTime);
                     // End changes for Student Pacing
@@ -2630,10 +2639,14 @@ public class ScheduleTestImpl implements ScheduleTest
                 re.setTestAdminId(newSession.getTestSession().getTestAdminId());
                 
                 // Start changes for Student Pacing
+                String extendedTimeFactor = "";
                 Double rosterExtendedTime = null;
                 String extendedTimeAccom = "F";
                 if(newUnit.getExtendedTimeAccom() != null){
                 	extendedTimeAccom = newUnit.getExtendedTimeAccom();
+                }
+                if(null != newUnit.getExtendedTimeFactor()){
+                	extendedTimeFactor = newUnit.getExtendedTimeFactor().toString();
                 }
                 // End changes for Student Pacing
                 
@@ -2672,6 +2685,9 @@ public class ScheduleTestImpl implements ScheduleTest
                     if(extendedTimeValue > 0){
                     	if(extendedTimeAccom != null && extendedTimeAccom.equalsIgnoreCase("T"))
                     		rosterExtendedTime = extendedTimeValue;
+                    }else if (null != extendedTimeFactor && !"".equals(extendedTimeFactor)){
+                    	if(extendedTimeAccom != null && extendedTimeAccom.equalsIgnoreCase("T"))
+                    		rosterExtendedTime = new Double(extendedTimeFactor);
                     }
                     re.setExtendedTime(rosterExtendedTime);
                     // End changes for Student Pacing

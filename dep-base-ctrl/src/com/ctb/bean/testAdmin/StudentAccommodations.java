@@ -34,8 +34,23 @@ public class StudentAccommodations extends CTBBean
     private String extendedTime; // Added for student pacing
     private String maskingTool; // Added for masking answers
     private String microphoneHeadphone; // Added for Microphone and Headphone
+    private Double extendedTimeFactor;
     
-    // Start changes for student pacing
+    
+       
+	/**
+	 * @return the extendedTimeFactor
+	 */
+	public Double getExtendedTimeFactor() {
+		return extendedTimeFactor;
+	}
+	/**
+	 * @param extendedTimeFactor the extendedTimeFactor to set
+	 */
+	public void setExtendedTimeFactor(Double extendedTimeFactor) {
+		this.extendedTimeFactor = extendedTimeFactor;
+	}
+	// Start changes for student pacing
      /**
 	 * @return the extendedTime
 	 */

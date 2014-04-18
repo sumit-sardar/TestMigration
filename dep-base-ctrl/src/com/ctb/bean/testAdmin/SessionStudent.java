@@ -89,6 +89,7 @@ public class SessionStudent extends SchedulingStudent
         setStatus(student.getStatus());
         setHighLighter(student.getHighLighter()); /* 51931 Deferred Defect For HighLighter*/
         setExtendedTimeAccom(student.getExtendedTimeAccom()); // Added for Student Pacing
+        setExtendedTimeFactor(student.getExtendedTimeFactor()); //Added for extend time factor
     }
     
     /**

@@ -42,6 +42,7 @@ public class SchedulingStudent extends Student
     private String statusEditable;
     private String statusCopyable;
     private String auditoryCalming;
+    private Double extendedTimeFactor;
     
    	public Integer getPriorAdmin() {
         return this.priorAdmin;
@@ -427,4 +428,20 @@ public class SchedulingStudent extends Student
 	public void setAuditoryCalming(String auditoryCalming) {
 		this.auditoryCalming = auditoryCalming;
 	}
+
+	/**
+	 * @return the extendedTimeFactor
+	 */
+	public Double getExtendedTimeFactor() {
+		return extendedTimeFactor;
+	}
+
+	/**
+	 * @param extendedTimeFactor the extendedTimeFactor to set
+	 */
+	public void setExtendedTimeFactor(Double extendedTimeFactor) {
+		this.extendedTimeFactor = extendedTimeFactor;
+	}
+	
+	
 } 

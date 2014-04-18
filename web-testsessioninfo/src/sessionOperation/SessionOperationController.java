@@ -2326,6 +2326,8 @@ public class SessionOperationController extends PageFlowController {
 								ss.setItemSetForm(val);
 							} else if (key.equalsIgnoreCase("isNewStd") && val !=null && val.equalsIgnoreCase("true") ) {
 								ss.setNewStudent(true);
+							} else if (key.equalsIgnoreCase("extendedTimeFactor") && val != null){
+								ss.setExtendedTimeFactor(new Double(val.toString()));
 							}
 						}
 	
@@ -6109,6 +6111,10 @@ public class SessionOperationController extends PageFlowController {
             		 innerMap.put("extendedTimeAccom","F");
             	 }
                  innerMap.put("hasColorFontAccommodations",getHasColorFontAccommodations(ss));
+                 
+                 if(null != ss.getExtendedTimeFactor()){
+                	 innerMap.put("extendedTimeFactor", ss.getExtendedTimeFactor().toString());
+                 }
                  accomodationMap.put(ss.getStudentId(), innerMap);
                 studentList.add(ss);
                 //idToStudentMap.put(ss.getStudentId()+":"+ss.getOrgNodeId(), ss);
@@ -8635,6 +8641,8 @@ public class SessionOperationController extends PageFlowController {
 								ss.setItemSetForm(val);
 							} else if (key.equalsIgnoreCase("isNewStd") && val !=null && val.equalsIgnoreCase("true") ) {
 								ss.setNewStudent(true);
+							} else if (key.equalsIgnoreCase("extendedTimeFactor") && val != null){
+								ss.setExtendedTimeFactor(new Double(val.toString()));
 							}
 						}
 

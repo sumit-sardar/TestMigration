@@ -300,7 +300,7 @@ function populateSelectStudentGrid() {
 		  mtype:   'POST',
 		  datatype: "json",
 		  postData: postDataObject, 
-          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), studentIdTitle, 'Organization','orgName','Accommodation', $("#testDetGrade").val(), status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StatusEditable","StudentId", "ToolTip", "outOfSchool"],
+          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), studentIdTitle, 'Organization','orgName','Accommodation', $("#testDetGrade").val(), status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StatusEditable","StudentId", "ToolTip", "outOfSchool","extendedTimeFactor"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -322,7 +322,8 @@ function populateSelectStudentGrid() {
 		   		{name:'statusEditable',index:'editable1',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentId',index:'studentId',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'extPin2',index:'extPin2',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'outOfSchool',index:'outOfSchool',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'outOfSchool',index:'outOfSchool',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'extendedTimeFactor', index:'extendedTimeFactor', hidden:true, editable:false }
 		   	],
 		   		jsonReader: { repeatitems : false, root:"studentNode", id:"studentId",
 		   	records: function(obj) {
@@ -1238,7 +1239,7 @@ function getStudentListArray(studentArray) {
 	  for (var i=0; i<studentArray.length; i++) {
 	    if(studentArray[i]!= undefined && studentArray[i] != null) {
 	       var isNew = (savedStudentMap.get(studentArray[i].studentId)==null) ? true : false;
-	    	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["statusCopyable"],  studentArray[i].itemSetForm , isNew);
+	    	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["statusCopyable"],  studentArray[i].itemSetForm , isNew, studentArray[i].extendedTimeFactor);
 	        resultStdArray[l]= val.toString();
 	        ++l;
 	    }
@@ -1273,7 +1274,7 @@ function getStudentListArray(studentArray) {
     	return validStatus;
     }
 
-    function SessionStudent(studentId, orgNodeId, extendedTimeAccom, statusCopyable, itemSetForm, isNew) {
+    function SessionStudent(studentId, orgNodeId, extendedTimeAccom, statusCopyable, itemSetForm, isNew, extendedTimeFactor) {
 	   this.studentId = studentId;
 	   this.orgNodeId = orgNodeId;
 	   this.extendedTimeAccom = "";
@@ -1284,10 +1285,12 @@ function getStudentListArray(studentArray) {
 	   this.itemSetForm ="";
 	   if(itemSetForm != undefined) this.itemSetForm = itemSetForm;
 	   	if(isNew) this.isNewStd = true;
+	   this.extendedTimeFactor = "";
+	   if(extendedTimeFactor != undefined && extendedTimeFactor != null) this.extendedTimeFactor = extendedTimeFactor;
 	}
 	
 	SessionStudent.prototype.toString = function () {
-  		return ( ""+"studentId="+this.studentId +":orgNodeId=" +this.orgNodeId + ":extendedTimeAccom="+this.extendedTimeAccom + ":statusCopyable=" +this.statusCopyable +":itemSetForm=" +this.itemSetForm+":isNewStd="+this.isNewStd+":");
+  		return ( ""+"studentId="+this.studentId +":orgNodeId=" +this.orgNodeId + ":extendedTimeAccom="+this.extendedTimeAccom + ":statusCopyable=" +this.statusCopyable +":itemSetForm=" +this.itemSetForm+":isNewStd="+this.isNewStd+ ":extendedTimeFactor="+this.extendedTimeFactor+":");
 	};
 	
 	function cloneStudentMapToTemp() {

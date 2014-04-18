@@ -47,7 +47,8 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
     private Boolean magnifyingGlass = Boolean.FALSE; // Added for Magnifying Glass
     private Boolean extendedTime = Boolean.FALSE; // Added for Student Pacing
     private Boolean maskingTool = Boolean.FALSE; // Added for Masking Answers
-    private Boolean microphoneHeadphone = Boolean.FALSE; // Added for Microphone and Headphone 
+    private Boolean microphoneHeadphone = Boolean.FALSE; // Added for Microphone and Headphone
+    private Double extendedTimeFactor = null; // Added for Multiple extended time
     public StudentAccommodationsDetail() {
     }
 
@@ -120,6 +121,10 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         
         if (sa.getMicrophoneHeadphone() != null)
         	this.microphoneHeadphone = new Boolean(sa.getMicrophoneHeadphone().equals("T"));
+        
+        if (sa.getExtendedTimeFactor() != null){
+        	this.extendedTimeFactor = (null != sa.getExtendedTimeFactor())?sa.getExtendedTimeFactor():null;
+        }
     }
 
     public StudentAccommodations makeCopy(Integer studentId) 
@@ -241,6 +246,13 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
             copied.setExtendedTime("F");
         }
         
+        if (this.extendedTime.booleanValue() && null != this.extendedTimeFactor) {
+        	copied.setExtendedTimeFactor(this.extendedTimeFactor);
+        }
+        else {
+        	copied.setExtendedTimeFactor(null);
+        }
+        
         if (this.maskingTool.booleanValue()) {
             copied.setMaskingTool("T");
             hasData = true;
@@ -256,6 +268,13 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         }
         else {
         	copied.setMicrophoneHeadphone("F");
+        }
+        
+        if (this.extendedTime.booleanValue() && (null != this.extendedTimeFactor)) {
+        	copied.setExtendedTimeFactor(this.extendedTimeFactor);
+        }
+        else{
+        	copied.setExtendedTimeFactor(null);
         }
       
         
@@ -287,7 +306,8 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         copied.setExtendedTime(this.extendedTime);//Added for student pacing
         copied.setMaskingTool(this.maskingTool);// Added for masking answers
         copied.setMicrophoneHeadphone(this.microphoneHeadphone); // Added for microphone and headphone
-
+        copied.setExtendedTimeFactor(this.extendedTimeFactor);
+                
         return copied;
     }
     
@@ -606,7 +626,20 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
 		this.microphoneHeadphone = microphoneHeadphone;
 	}
 	//End - Added for microphone and headphone
-	
-    
+
+	/**
+	 * @return the extendedTimeFactor
+	 */
+	public Double getExtendedTimeFactor() {
+		return extendedTimeFactor;
+	}
+
+	/**
+	 * @param extendedTimeFactor the extendedTimeFactor to set
+	 */
+	public void setExtendedTimeFactor(Double extendedTimeFactor) {
+		this.extendedTimeFactor = extendedTimeFactor;
+	}
+
 }
 
