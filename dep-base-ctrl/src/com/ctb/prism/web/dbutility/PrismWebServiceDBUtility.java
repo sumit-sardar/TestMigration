@@ -88,8 +88,9 @@ public class PrismWebServiceDBUtility {
 	private static final String INSERT_WS_ERROR_LOG = "{CALL INSERT INTO ws_error_log  (ws_error_log_key,   student_id,   roster_id,   session_id,   status,   invoke_count,   ws_type,   message, ADDITIONAL_INFO) VALUES  (SEQ_WS_ERROR_LOG_KEY.NEXTVAL,   ?,   ?,   ?,   'Progress',   0,   ?,   ?,  ?) RETURNING ws_error_log_key INTO ?}";
 	private static final String DELETE_WS_ERROR_LOG = "DELETE WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY = ?";
 	private static final String UPDATE_WS_ERROR_LOG = "UPDATE ws_error_log   SET invoke_count = ?, message = ?, updated_date = SYSDATE, status = ?, ADDITIONAL_INFO = ? WHERE ws_error_log_key = ?";
-	private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM WS_ERROR_LOG                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) FOR UPDATE SKIP LOCKED ";
-	
+	private static final String SELECT_WS_ERROR_LOG = "select a.UPDATED_DATE UPDATEDATE,a.WS_ERROR_LOG_KEY LOGKEY,a.INVOKE_COUNT INVKCOUNT,a.STUDENT_ID STDID,a.ROSTER_ID RSTRID,a.SESSION_ID SESSIONID,a.WS_TYPE WSTYP from WS_ERROR_LOG a, TMP_WS_ERROR_LOG_ROWNUM t where a.rowid = t.row_id order by a.UPDATED_DATE";
+	private static final String SP_FETCH_WS_ERRORS = "{call sp_fetch_ws_errors(?)}";
+
 	private static final String CHECK_ROSTER_STATUS = "SELECT 1  FROM TEST_ROSTER T WHERE T.TEST_ROSTER_ID = ?   AND (T.TEST_COMPLETION_STATUS = 'SC' OR T.TEST_COMPLETION_STATUS = 'NT')";
 	private static final String GET_SESSION_TIMEZONE = "SELECT TIME_ZONE as session_time_zone FROM test_admin WHERE TEST_ADMIN_ID = ?";
 	
@@ -627,8 +628,8 @@ public class PrismWebServiceDBUtility {
 			while(rs.next()){
 				String contentCodeName = rs.getString("content_code_name");
 				long itemSetId = rs.getLong("item_set_id");
-				//String testStatus = rs.getString("completion_status");
-				//String valStatus = rs.getString("validation_status");
+				String testStatus = rs.getString("completion_status");
+				String valStatus = rs.getString("validation_status");
 				Integer contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get(contentCodeName);
 				ContentDetailsTO contentDetailsTO = contentDetailsTOMap.get(contentCode);
 				List<ObjectiveScoreDetailsTO> objectiveScoreDetailsList = new ArrayList<ObjectiveScoreDetailsTO>();
@@ -661,8 +662,17 @@ public class PrismWebServiceDBUtility {
 					String scoringStatus = (String) contentScoreDetailsObjs[1];
 					
 					if(PrismWebServiceConstant.InvalidContentStatusCode.equalsIgnoreCase(statusCode)){//For the invalid test special handling
-						ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId, true);
-						contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
+						//If invaldiated when CR scoring is in progress don't sent item responses
+						if(contentCode == PrismWebServiceConstant.wrContentCode){
+							if(!StringUtils.isEmptyString(testStatus) && testStatus.equalsIgnoreCase("CO") && checkCRScoreAvailablility(rosterId)){
+								ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId, true);
+								contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
+							}
+						}else{
+							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId, true);
+							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
+						}
+						
 						if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
 							sendELA = false;
 						}
@@ -672,33 +682,19 @@ public class PrismWebServiceDBUtility {
 						continue;
 					}
 					
-					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
-					if(contentCode == PrismWebServiceConstant.wrContentCode){
-						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
-						if(!isCRScorePresent){
-							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
-							sendELA = false;
-							sendOverAll = false;
-							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(rosterId, itemSetId, sessionId, PrismWebServiceConstant.OmittedContentStatusCode, contentCode, studentId);
-							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
-							continue;
-						}
-					}
-					
-					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
-					/*if(contentCode == PrismWebServiceConstant.wrContentCode && 
-							(!StringUtils.isEmptyString(testStatus) && !StringUtils.isEmptyString(valStatus) && valStatus.equalsIgnoreCase("VA")
-							&& !(testStatus.equalsIgnoreCase("SC")|| testStatus.equalsIgnoreCase("NT") || testStatus.equalsIgnoreCase("IP") || testStatus.equalsIgnoreCase("IN")))){
+					//Check the CR scoring availability for Writing Sub test and send SIP flag
+					if(contentCode == PrismWebServiceConstant.wrContentCode && !StringUtils.isEmptyString(testStatus) && !StringUtils.isEmptyString(valStatus)
+							&& valStatus.equalsIgnoreCase("VA") && testStatus.equalsIgnoreCase("CO")){
 						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
 						if(!isCRScorePresent){
 							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.ScoringInProgressCode));
 							sendELA = false;
 							sendOverAll = false;
-							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, PrismWebServiceConstant.ScoringInProgressCode, contentCode, studentId);
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(rosterId, itemSetId, sessionId, PrismWebServiceConstant.ScoringInProgressCode, contentCode, studentId);
 							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}
-					}*/
+					}
 					
 					if(scoringStatus != null && !"".equals(scoringStatus) && !PrismWebServiceConstant.VAScoringStatus.equalsIgnoreCase(scoringStatus)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) : "");
@@ -1449,11 +1445,13 @@ public class PrismWebServiceDBUtility {
 					CCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
 					objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);
 					
-					//if WR Obj2 scores available for OM, SUP, INV status then NP and MR will be reported to PRISM
-					Map<String,String> scoreMap = getSecScoreForWRObj2(rs.getLong("itemsetid"),sessionId,studentId);
-					if(scoreMap != null && scoreMap.size() > 0){
-						NPobjectiveScoreTO.setValue(scoreMap.get(PrismWebServiceConstant.NPObjectiveScoreDetails));
-						MRobjectiveScoreTO.setValue(scoreMap.get(PrismWebServiceConstant.MRObjectiveScoreDetails));
+					//if WR Obj2 scores available for SUP,INV status then NP and MR will be reported to PRISM
+					if(statusCode.equalsIgnoreCase(PrismWebServiceConstant.SuppressedContentStatusCode)){
+						Map<String,String> scoreMap = getSecScoreForWRObj2(rs.getLong("itemsetid"),sessionId,studentId);
+						if(scoreMap != null && scoreMap.size() > 0){
+							NPobjectiveScoreTO.setValue(scoreMap.get(PrismWebServiceConstant.NPObjectiveScoreDetails));
+							MRobjectiveScoreTO.setValue(scoreMap.get(PrismWebServiceConstant.MRObjectiveScoreDetails));
+						}
 					}
 				}
 				
@@ -1817,27 +1815,7 @@ public class PrismWebServiceDBUtility {
 		}
 		
 	}
-	
 
-	/**
-	 * Get the Chronological  Age
-	 * @param studentDOB
-	 * @return
-	 * @throws ParseException 
-	 */
-	private static String getChronologicalAge_(String studentDOB) throws ParseException {
-		if(studentDOB != null && !"".equals(studentDOB)){
-			Date stdDOBDt = PrismWebServiceConstant.dateFormat.parse(studentDOB);
-			long ageInMillis = new Date().getTime() - stdDOBDt.getTime();
-			Date defaultStartDate = PrismWebServiceConstant.dateFormat.parse(PrismWebServiceConstant.defaultStartDateStr);
-			long addedAgeWithDefaultStartDt = defaultStartDate.getTime() + ageInMillis;
-			Date ageWithDefaultStartDate = new Date(addedAgeWithDefaultStartDt);
-			return String.valueOf(ageWithDefaultStartDate.getYear() - defaultStartDate.getYear());
-		}else{
-			return "";
-		}
-	}
-	
 	/**
 	 * Get the Chronological  Age
 	 * @param studentDOB
@@ -2001,6 +1979,7 @@ public class PrismWebServiceDBUtility {
 	 */
 	public static void retryWSProgress() throws SQLException{
 		PreparedStatement pst  = null;
+		CallableStatement cst  = null;
 		Connection con = null;
 		ResultSet rs = null;
 		long logkey = 0L;
@@ -2012,9 +1991,10 @@ public class PrismWebServiceDBUtility {
 		try {
 			con = openOASDBcon(true);
 			con.setAutoCommit(false);
+			cst  = con.prepareCall(SP_FETCH_WS_ERRORS);
+			cst.setInt(1, PrismWebServiceConstant.retryReqRowCount);
+			cst.execute();
 			pst  = con.prepareCall(SELECT_WS_ERROR_LOG);
-			pst.setInt(1, PrismWebServiceConstant.retryReqRowCount);
-			pst.setFetchSize(PrismWebServiceConstant.retryReqRowCount);
 			rs = pst.executeQuery();
 			while(rs.next()){
 				logkey = rs.getLong("logkey");
@@ -2024,7 +2004,7 @@ public class PrismWebServiceDBUtility {
 				sessionid = rs.getLong("sessionid");
 				wstyp = rs.getString("wstyp");
 				invkcount++;
-				System.out.println("Prism Web Service retring for WS_ERROR_LOG key : " + logkey + " WS Type :"+ wstyp + " retry count : " + invkcount);
+				System.out.println("Prism Web Service retry for WS_ERROR_LOG key : " + logkey + " WS Type :"+ wstyp + " retry count : " + invkcount);
 				if(wstyp != null && !"".equals(wstyp) && "Scoring".equalsIgnoreCase(wstyp)){
 					PrismWebServiceHandler.scoring(rstrid,  stdid, sessionid, invkcount, logkey, con);
 				}else{
@@ -2037,6 +2017,7 @@ public class PrismWebServiceDBUtility {
 		} finally {
 			con.commit();
 			con.setAutoCommit(true);
+			close(con, cst, rs);
 			close(con, pst, rs);
 		}
 	}
