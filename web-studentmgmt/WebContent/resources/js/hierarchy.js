@@ -3829,11 +3829,13 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	function enableExtendedFactor(){
 		var extendedTime = document.getElementById('ExtendedTime');
 		var extentionFactor = document.getElementById('extension_factor');
-		if(extendedTime.checked)
+		if(extendedTime.checked && extentionFactor != null && extentionFactor != undefined)
 			extentionFactor.removeAttribute("disabled");
 		else {
-			extentionFactor.setAttribute("disabled", "true");
-			extentionFactor.selectedIndex=0;
+			if(&& extentionFactor != null && extentionFactor != undefined){
+				extentionFactor.setAttribute("disabled", "true");
+				extentionFactor.selectedIndex=0;
+			}
 		}
 	}
 	
