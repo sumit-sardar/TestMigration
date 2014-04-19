@@ -3832,7 +3832,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		if(extendedTime.checked && extentionFactor != null && extentionFactor != undefined)
 			extentionFactor.removeAttribute("disabled");
 		else {
-			if(&& extentionFactor != null && extentionFactor != undefined){
+			if(extentionFactor != null && extentionFactor != undefined){
 				extentionFactor.setAttribute("disabled", "true");
 				extentionFactor.selectedIndex=0;
 			}
