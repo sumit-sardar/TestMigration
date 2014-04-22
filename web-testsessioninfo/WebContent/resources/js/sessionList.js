@@ -3907,7 +3907,10 @@ function registerDelegate(tree){
     
     function saveTest(checkRestricted) {
 
-        if(/*(isCopySession || state!="EDIT") &&*/ !validateProgramBeforeSave())
+		var isActiveProgramExpiredOrInactive = $('#isActiveProgramExpiredOrInactive').val();
+		var LLExpiredOrInactivePrograms = $('#LLExpiredOrInactivePrograms').val();
+		var isLasLinkCust = $('#isLasLinkCustomer').val();
+        if((isLasLinkCust.toUpperCase() == "TRUE" && isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE" && LLExpiredOrInactivePrograms.length==0) || !validateProgramBeforeSave())
         {
         	openExpiredProgramPopup();
         	return false;
