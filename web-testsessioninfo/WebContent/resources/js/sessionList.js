@@ -3909,8 +3909,7 @@ function registerDelegate(tree){
 
 		var isActiveProgramExpiredOrInactive = $('#isActiveProgramExpiredOrInactive').val();
 		var LLExpiredOrInactivePrograms = $('#LLExpiredOrInactivePrograms').val();
-		var isLasLinkCust = $('#isLasLinkCustomer').val();
-        if((isLasLinkCust.toUpperCase() == "TRUE" && isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE" && LLExpiredOrInactivePrograms.length==0) || !validateProgramBeforeSave())
+        if((isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE" && LLExpiredOrInactivePrograms.length==0) || !validateProgramBeforeSave())
         {
         	openExpiredProgramPopup();
         	return false;
