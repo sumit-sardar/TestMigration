@@ -414,9 +414,12 @@ public class StudentAccommodationsTag extends CTBTag
 	        checked = this.accommodations.getExtendedTime().booleanValue();
 	        disabled = isDisabled(field);
 	        displayControlRow(field, description, checked, disabled, (hasMultiExtendedTime()?"enableExtendedFactor()":null));                        
-	        displayTextRow("Allow student time and a half.", "20");
-	        if(null == extendedTimeValues || extendedTimeValues.length<2)
+	        if(null == extendedTimeValues || extendedTimeValues.length<2){
+	        	displayTextRow("Allow student time and a half.", "20");
 	        	displayEmptyRow("2");
+	        }else{
+	        	displayTextRow("Allow student extra time.", "20");
+	        }
         displayTableEnd();
         
         if(null != extendedTimeValues && extendedTimeValues.length>1){
