@@ -8437,28 +8437,43 @@ public class SessionOperationController extends PageFlowController {
 			Integer itemSetId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_ITEM_SET_ID, false, null));
 			String hasBreakValue     		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_HAS_BREAK, false, null);
 			String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
-			boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
-			String[] itemSetIdTDs          = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_ID_TD, true ,  new String [0]);
-			String[] accesscodes           = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IND_ACCESS_CODE, true ,  new String [itemSetIdTDs.length]);
-			String[] itemSetForms          = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_FORM, true ,  new String [itemSetIdTDs.length]);
-			String[] itemSetisDefault      = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IS_SESSION_DEFAULT, true ,  new String [itemSetIdTDs.length]);
-			String autoLocator				=  RequestUtil.getValueFromRequest(request, RequestUtil.HAS_AUTOLOCATOR, true, "false");
+			boolean hasBreakBoolean        	= (hasBreak.equals("T")) ? true : false;
+			String[] itemSetIdTDs          	= RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_ID_TD, true ,  new String [0]);
+			String[] accesscodes           	= RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IND_ACCESS_CODE, true ,  new String [itemSetIdTDs.length]);
+			String[] itemSetForms          	= RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_FORM, true ,  new String [itemSetIdTDs.length]);
+			String[] itemSetisDefault      	= RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IS_SESSION_DEFAULT, true ,  new String [itemSetIdTDs.length]);
+			String autoLocator			   	=  RequestUtil.getValueFromRequest(request, RequestUtil.HAS_AUTOLOCATOR, true, "false");
+       	 	String[] islocatorChecked      	= RequestUtil.getValuesFromRequest(request, RequestUtil.LOCATOR_CHECKBOX, true ,  new String [itemSetIdTDs.length]);
 			
 			//added for copy test session : handling for not selecting select test acco
 			boolean isSelectTestUpdatedForCopy = true;
 			String isSelectTestUpdated = request.getParameter("isSelectTestUpdated");// RequestUtil.getValueFromRequest(request, RequestUtil.IS_STUDENT_LIST_UPDATED, true, "true");
 			if(isSelectTestUpdated.equalsIgnoreCase("false"))
-			isSelectTestUpdatedForCopy = false;
+				isSelectTestUpdatedForCopy = false;
 			
 			//List<SubtestVO>  subtestList   = idToTestMap.get(itemSetId).getSubtests();
 			List<SubtestVO>  subtestList   = new ArrayList<SubtestVO>();
 			for(int ii =0, jj =itemSetIdTDs.length; ii<jj; ii++ ){
 				SubtestVO subtest = new SubtestVO();
 				subtest.setId(Integer.valueOf(itemSetIdTDs[ii].trim()));
-				if(!isSelectTestUpdatedForCopy){
+				if (!isSelectTestUpdatedForCopy) {
 					subtest.setTestAccessCode(accessCodeListForCopy.get(ii));
-				}else{
+					
+					if (productType!=null && TestSessionUtils.isTabeProduct(productType).booleanValue()) {
+						TestElement[] tes = savedSessionMinData.getScheduledUnits();
+						for(int k=0; k<tes.length; k++){
+							if (subtest.getId().intValue() == tes[k].getItemSetId().intValue()) {
+								tes[k].getIslocatorChecked();
+				       		 	subtest.setIslocatorChecked(tes[k].getIslocatorChecked());
+							}
+						}
+					}
+					
+				} else {
 					subtest.setTestAccessCode(accesscodes[ii]);
+					if (productType!=null && TestSessionUtils.isTabeProduct(productType).booleanValue()) {
+	       		 		subtest.setIslocatorChecked(islocatorChecked[ii]);
+					}
 				}
 				subtest.setSessionDefault(itemSetisDefault[ii]);
 				if(itemSetForms[ii] != null && itemSetForms[ii].trim().length()>0){
@@ -8549,6 +8564,7 @@ public class SessionOperationController extends PageFlowController {
 				
 				
 				te.setSessionDefault(subVO.getSessionDefault());
+	            te.setIslocatorChecked(subVO.getIslocatorChecked());
 				
 				newTEs[i] = te;
 			}
