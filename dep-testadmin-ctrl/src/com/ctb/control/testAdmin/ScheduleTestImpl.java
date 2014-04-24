@@ -28,6 +28,7 @@ import com.ctb.bean.request.SortParams.SortParam;
 import com.ctb.bean.request.SortParams.SortType;
 import com.ctb.bean.request.testAdmin.FormAssignmentCount;
 import com.ctb.bean.testAdmin.ClassHierarchy;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.LASLicenseNode;
@@ -2422,6 +2423,32 @@ public class ScheduleTestImpl implements ScheduleTest
             if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
                 formCounts = formAssignments.getFormAssignmentCounts(testAdminId);
             }
+            
+            //Start for Password Length Change
+            boolean setPasswordLength = false;
+            Integer passwordMinLength = new Integer(0);
+            Integer passwordMaxLength = new Integer(0);
+            CustomerConfiguration[] customerConfiguration = customerConfigurations.getCustomerConfigurations(customerId);
+            CustomerConfigurationValue[] ccValue;
+            for (int i =0 ; i < customerConfiguration.length ; i++){
+            	if ("Set_Password_Length".equalsIgnoreCase(customerConfiguration[i].getCustomerConfigurationName())
+            			&& "T".equalsIgnoreCase(customerConfiguration[i].getDefaultValue())){            		
+            		ccValue = customerConfigurations.getCustomerConfigurationValue(customerId ,"Set_Password_Length");
+            		if (ccValue != null){            			
+            			for (int j=0;j<ccValue.length;j++){
+            				if(ccValue[j].getSortOrder() == 1)
+            					passwordMaxLength = Integer.parseInt(ccValue[j].getCustomerConfigurationValue().trim());
+            				else if(ccValue[j].getSortOrder() == 2)
+            					passwordMinLength = Integer.parseInt(ccValue[j].getCustomerConfigurationValue().trim());  
+            			}
+            			if(passwordMaxLength <= 10 && passwordMinLength >= 6 && passwordMinLength <=passwordMaxLength)
+            				setPasswordLength = true;
+            		}
+            		break;
+            	}
+            }
+           //End for Password Length Change
+            
             ArrayList subtestAssignments = new ArrayList();
             boolean testRestricted = "T".equals(admins.isTestRestricted(newSession.getTestSession().getItemSetId()))?true:false;
             for(int j=0;scheduledStudents != null && j<scheduledStudents.length;j++) {
@@ -2466,7 +2493,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     if(isWVCustomer)
                     	password = PasswordGenerator.generatePasswordForWV(student.getFirstName(), student.getLastName() , productId);
                     else
-                    	password = PasswordGenerator.generatePassword();
+                    	password = (setPasswordLength)? PasswordGenerator.generatePasswordRecommendedLength(passwordMaxLength, passwordMinLength) : PasswordGenerator.generatePassword();
                     
                     roster.setPassword(password);
                     roster.setScoringStatus("NA");
@@ -2494,10 +2521,10 @@ public class ScheduleTestImpl implements ScheduleTest
                     } catch (SQLException se) {
                     	if(!isWVCustomer){
 	                        boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
-	                        while(!validPassword) {
-	                            password = PasswordGenerator.generatePassword();
-	                            validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
-	                        }
+                       		while(!validPassword) {
+                            	password = (setPasswordLength)? PasswordGenerator.generatePasswordRecommendedLength(passwordMaxLength, passwordMinLength) : PasswordGenerator.generatePassword();
+                            	validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
+                        	}
                     	}
                         roster.setPassword(password);
                         //rosters.getConnection().setAutoCommit(false);
@@ -2627,6 +2654,37 @@ public class ScheduleTestImpl implements ScheduleTest
                    oldMap.put(oldUnits[i].getStudentId(), oldUnits[i]);
             }
             ArrayList assignments = new ArrayList();
+            
+          //Start for Password Length Change
+            boolean setPasswordLength = false;
+            Integer passwordMinLength = new Integer(0);
+            Integer passwordMaxLength = new Integer(0);
+            CustomerConfiguration[] customerConfiguration = customerConfigurations.getCustomerConfigurations(customerId);
+            CustomerConfigurationValue[] ccValue;
+            for (int i =0 ; i < customerConfiguration.length ; i++){
+            	if ("Set_Password_Length".equalsIgnoreCase(customerConfiguration[i].getCustomerConfigurationName())
+            			&& "T".equalsIgnoreCase(customerConfiguration[i].getDefaultValue())){            		
+            		ccValue = customerConfigurations.getCustomerConfigurationValue(customerId ,"Set_Password_Length");
+            		if (ccValue != null){            			
+            			for (int j=0;j<ccValue.length;j++){
+            				if(ccValue[j].getSortOrder() == 1)
+            					passwordMaxLength = Integer.parseInt(ccValue[j].getCustomerConfigurationValue().trim());
+            				else if(ccValue[j].getSortOrder() == 2)
+            					passwordMinLength = Integer.parseInt(ccValue[j].getCustomerConfigurationValue().trim());  
+            			}
+            			if(passwordMaxLength <= 10 && passwordMinLength >= 6 && passwordMinLength <=passwordMaxLength )
+            				setPasswordLength = true;
+            		}
+            		break;
+            	}
+            }
+            if (setPasswordLength)
+            	System.out.println("Password Length present::Maxlength="+passwordMaxLength+" Minlength="+passwordMinLength);
+            if (!setPasswordLength)
+            	System.out.println("Password Length not present::");
+           
+            //End for Password Length Change            
+            
             for(int j=0;newUnits!=null && j<newUnits.length;j++) {
                 String form = newSession.getTestSession().getPreferredForm();
                 SessionStudent newUnit = newUnits[j];
@@ -2663,7 +2721,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     if(isWVCustomer)
                     	password = PasswordGenerator.generatePasswordForWV(newUnit.getFirstName(), newUnit.getLastName(),productId);
                     else
-                    	password = PasswordGenerator.generatePassword();
+                    	password = (setPasswordLength)? PasswordGenerator.generatePasswordRecommendedLength(passwordMaxLength, passwordMinLength) : PasswordGenerator.generatePassword();
                     re.setPassword(password);
                     //testRosterId = rosters.getNextPK();
                     //re.setTestRosterId(testRosterId);
@@ -2697,10 +2755,10 @@ public class ScheduleTestImpl implements ScheduleTest
                     } catch (SQLException se) {
                     	if(!isWVCustomer){
 	                        boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
-	                        while(!validPassword) {
-	                            password = PasswordGenerator.generatePassword();
-	                            validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
-	                        }
+                        	while(!validPassword) {
+                            	password = (setPasswordLength)? PasswordGenerator.generatePasswordRecommendedLength(passwordMaxLength, passwordMinLength) : PasswordGenerator.generatePassword();
+                            	validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
+                        	}
                     	}
                         re.setPassword(password);
                         //rosters.getConnection().setAutoCommit(false);

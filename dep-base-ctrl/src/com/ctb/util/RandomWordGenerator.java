@@ -163,6 +163,90 @@ public class RandomWordGenerator extends Object
         return null; //for the Exception "case"...
     }
 
+    
+    /**
+     * Generated word FORMAT:<br>
+     *     -Random selected word,<br>
+     *     -Padded by digits to the desired output string length
+     * @param maxLength , minLength
+     * @return randomly chosen dictionary word
+     */
+    public String generateWordPaddedWithDigitsRecommendedLength( int maxLength , int minLength )
+    {
+
+        final int    MAX_VOLUMES = 4; //like "volumes" of USwordsList
+        final String NINES       = "999999999999999999999999"; //used for the "padding" algorithm
+        final String ZEROS       = "100000000000000000000000"; //used for the "padding" algorithm
+        Integer paddingLength = new Integer(0);
+        try{
+            Random   rnd           = new Random(System.currentTimeMillis());
+            String   generatedWord = null;
+            String[] wordArray     = null;
+
+            if (dictionary.equals( Dictionary.US_DICTIONARY )) {
+                int i = rnd.nextInt( MAX_VOLUMES );
+                switch (i) {
+                    case 0:
+                        wordArray = volume1.WORDS;
+                        break;
+                    case 1:
+                        wordArray = volume2.WORDS;
+                        break;
+                    case 2:
+                        wordArray = volume3.WORDS;
+                        break;
+                    case 3:
+                        wordArray = volume4.WORDS;
+                        break;
+                }
+            }else{
+                wordArray = FourCharWordList.LATIN_DICTIONARY;
+            }
+
+            boolean validWord = false;
+            while (!validWord) {
+                int index = Math.abs( rnd.nextInt() );
+                if(index!=0)
+                {
+                    index = index % (wordArray.length); //make sure index will not be out of bounds for words array
+                }
+                generatedWord = wordArray[index];
+                if (generatedWord.length() < maxLength ) {  //not equal, as to allow for at least one digit to be padded
+                   validWord     = verifyNoVulgar( generatedWord ) ; //right size, therefore check word "content" correctness
+                }
+                //else -->continue generating words, until shorter word then desiredLength_ is obtained
+            }
+            
+            //Here padding length is determined to make the password within desired range.
+            if (generatedWord.length() < minLength){
+            	paddingLength = rnd.nextInt( maxLength - minLength + 1) + (minLength - generatedWord.length());
+            	
+            }
+            else {
+            	paddingLength = rnd.nextInt( maxLength - generatedWord.length())+1;
+            }
+             
+            if (paddingLength>1) {
+                Integer sMagnitude  = Integer.parseInt(NINES.substring(0, paddingLength)); //get as many 9's as will be needed for padding
+                Integer zMagnitude = Integer.parseInt(ZEROS.substring(0, paddingLength));//get as many zero's as the starting range
+                Integer sizedDigits = zMagnitude + rnd.nextInt(sMagnitude-zMagnitude);
+                generatedWord = generatedWord + sizedDigits; //append digits so the result is of the desired length
+            }
+            else
+            {
+               int rndDigit  = Math.abs( rnd.nextInt( 9 )); //to get a least one digit
+               generatedWord = generatedWord + rndDigit; //append digits so the result is of the desired length
+            }
+            
+           return generatedWord;
+        }
+        catch( Exception e )
+        {
+        }
+        finally{
+        }
+        return null; //for the Exception "case"...
+    }
 
 
     /**

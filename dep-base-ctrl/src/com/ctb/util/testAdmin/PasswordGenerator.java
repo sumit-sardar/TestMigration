@@ -34,6 +34,30 @@ public class PasswordGenerator
         return password;
     }
     
+    /**
+     * Generates a password for a test roster according to the specified maximum and minimum length
+     * However it is assumed that minimum length cannot be less than 4 and maximum length cannot be  more than 10
+     * @return String representing generated password.
+     * @throws CTBBusinessException
+     */
+    public static String generatePasswordRecommendedLength(Integer maxLength,Integer minLength) throws CTBBusinessException {
+        String password = null;
+        boolean validPassword = false;
+        RandomWordGenerator rwFactory = new RandomWordGenerator(RandomWordGenerator.Dictionary.US_DICTIONARY);
+
+        while (!validPassword)
+        {   
+        	password = rwFactory.generateWordPaddedWithDigitsRecommendedLength(maxLength,minLength).toUpperCase();
+
+            if ((rwFactory.verifyNoVulgar(password)) || (rwFactory.verifyNotNegative(password)))
+            {
+                validPassword = true;
+            }
+        }
+
+        return password;
+    }
+    
     public static String generatePasswordForWV(String fName, String lName, Integer productId) throws CTBBusinessException{
     	String password = null;
     	
