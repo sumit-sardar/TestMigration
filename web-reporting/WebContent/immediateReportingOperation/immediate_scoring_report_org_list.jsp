@@ -51,6 +51,16 @@
 						<lb:label key="immediate.report.page.subtitle" />
 					</td>	
 				</tr>
+				<tr>
+					<td class="subtitle">
+						<lb:label key="immediate.report.toggle.instruction"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="subtitle" style="padding-left: 20px;">
+						<lb:label key="immediate.report.toggle.subinstruction"/>
+					</td>
+				</tr>
 			</table>		
 		</td>
 	</tr>
