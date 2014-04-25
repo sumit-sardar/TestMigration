@@ -1,5 +1,7 @@
 package com.ctb.util; 
 
+import com.ctb.util.PropertiesLoader;
+
 /**
  * <code>CTBConstants</code> defines constants used throughout the application.
  *
@@ -61,8 +63,8 @@ public final class CTBConstants {
     public static final Integer EMAIL_TYPE_PASSWORD = new Integer(2);
     public static final Integer EMAIL_TYPE_NOTIFICATION = new Integer(3);
     public static final Integer EMAIL_TYPE_LICENSE_NOTIFICATION = new Integer(5);
-    public static final String OAS_QA_URL = "https://oastest1.ctb.com/"; 
-    public static final String OAS_PRODUCTION_URL = "https://oas.ctb.com/"; 
+    public static final String OAS_QA_URL = PropertiesLoader.getDetail("oas.qa.url"); 
+    public static final String OAS_PRODUCTION_URL = PropertiesLoader.getDetail("oas.production.url");
     public static final String STATE_KEY = "STATES";
     public static final String US_STATE_ARRAY = "usStateArray" ;
     public static final String MANAGE_CUSTOMER = "manageCustomer";
@@ -117,7 +119,7 @@ public final class CTBConstants {
     
     
     //mail configuration
-    public static final String EMAIL_FROM = "iknow_account_management@ctb.com";
+    public static final String EMAIL_FROM = PropertiesLoader.getDetail("tas.account.email.from");
     public static final String EMAIL_CONTENT_PLACEHOLDER_USERID = "<#userid#>";
     public static final String EMAIL_CONTENT_PLACEHOLDER_PASSWORD = "<#password#>";
 

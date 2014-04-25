@@ -1,4 +1,4 @@
-<%@ page import="java.io.*, java.util.*"%>
+<%@ page import="java.io.*, java.util.* , com.ctb.util.PropertiesLoader"%>
 <%@ page import="com.ctb.util.web.sanitizer.JavaScriptSanitizer"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="label.tld" prefix="lb" %>
@@ -202,7 +202,7 @@
  
 <tr>
     <td>
-        <span class="hierarchyTableHeader"><lb:label key="login.privacy.developedBy1"/> &copy; <lb:label key="login.privacy.developedBy2"/> 
+        <span class="hierarchyTableHeader"><lb:label key="login.privacy.developedBy1"/> &copy; <%=PropertiesLoader.getDetail("login.privacy.developedBy2")%> 
         </span>
     </td>
 </tr>

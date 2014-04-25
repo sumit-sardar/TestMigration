@@ -11,6 +11,8 @@ package com.ctb.util.userManagement;
 
 import java.math.BigDecimal;
 
+import com.ctb.util.PropertiesLoader;
+
 /**
  * <code>CTBConstants</code> defines constants used throughout the application.
  *
@@ -1190,9 +1192,9 @@ public final class CTBConstants
 
   //the values below are used for mapping email recipient email addresses
   //to type of query
-  private static String accountManagement = "oas_account_management@ctb.com";
+  private static String accountManagement = PropertiesLoader.getDetail("oas.accountManagement");
 
-  private static String customerSupport = "oas_customer_services@ctb.com";
+  private static String customerSupport = PropertiesLoader.getDetail("oas.customerSupport");
 
   /** recipient for new orders/billing inquiries*/
   public static String EMAIL_ADDRESS_NEW_ORDER_OR_BILLING_INQUIRY = customerSupport;
@@ -1224,7 +1226,7 @@ public final class CTBConstants
   public static final String EMAIL_SUBJECT_PASSWORD = "Password";
   public static final String EMAIL_SUBJECT_PASSWORD_CHANGE = "Password Notification";
 
-  public static final String EMAIL_USER_FROM_FIELD = "oas_account_management@ctb.com";
+  public static final String EMAIL_USER_FROM_FIELD = PropertiesLoader.getDetail("oas.accountManagement");
   //public static final String EMAIL_TYPE_WELCOME = "welcomeEmail";
   //public static final String EMAIL_TYPE_PASSWORD_CHANGE = "userPasswordChangeEmail";
   //public static final String EMAIL_TYPE_PASSWORD = "passwordEmail";
@@ -1240,13 +1242,12 @@ public final class CTBConstants
   public static final String EMAIL_MAP_MSG_PASSWORD = "password";
   public static final String EMAIL_MAP_MSG_IKNOW_URL = "iknowURL";
 
-  public static final String OAS_IKNOW_URL =
-				  "https://testadministration.ctb.com/iknow";
+  public static final String OAS_IKNOW_URL = PropertiesLoader.getDetail("oas.iknow.url");
   
-  public static final String OAS_QA_URL =
-				  "https://oastest1.ctb.com/";                
+  public static final String OAS_QA_URL = PropertiesLoader.getDetail("oas.qa.url");
+	               
                   
-  public static final String OE_IKNOW_URL =	"https://oe.ctb.com";
+  public static final String OE_IKNOW_URL =PropertiesLoader.getDetail("oe.iknow.url");
 
   //public static String SWF_COLUMN_NAME              = "swfColumnName";
   public static String SWF_ITEM_SET_ID              = "swfItemSetId";
@@ -1569,9 +1570,9 @@ public final class CTBConstants
   // download files
   public static final String REMOTE_SCAN_UTILITY_EXE = "/downloadfiles/iknowScanSetup.exe";
   public static final String DOWNLOADS_FOLDER = "/downloadfiles/";
-  public static final String TEST_DELIVERY_CLIENT_PC_EXE = "http://testadministration.ctb.com/projector/1.5/i-know.exe";
-  public static final String TEST_DELIVERY_CLIENT_MAC_OLD = "http://testadministration.ctb.com/projector/1.4/i-know.sea";
-  public static final String TEST_DELIVERY_CLIENT_MAC_OSX = "http://testadministration.ctb.com/projector/1.4/i-know.dmg";
+  public static final String TEST_DELIVERY_CLIENT_PC_EXE = PropertiesLoader.getDetail("test.delivery.client.pc.exe");
+  public static final String TEST_DELIVERY_CLIENT_MAC_OLD = PropertiesLoader.getDetail("test.delivery.client.mac.old");
+  public static final String TEST_DELIVERY_CLIENT_MAC_OSX = PropertiesLoader.getDetail("test.delivery.client.mac.osx");
 
 
   // miscellaneous
@@ -1996,7 +1997,7 @@ public final class CTBConstants
   public static final String HAS_REPORTS = "hasReports";
   
   //User Management Email constants
-  public static final String EMAIL_FROM = "oas_account_management@ctb.com";
+  public static final String EMAIL_FROM = PropertiesLoader.getDetail("oas.accountManagement");
   public static final String EMAIL_FROM_ALIAS_LASLINKS = "LAS Links – OAS Account Management";
   public static final Integer EMAIL_TYPE_WELCOME = new Integer(1);
   public static final Integer EMAIL_TYPE_PASSWORD = new Integer(2);

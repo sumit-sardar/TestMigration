@@ -57,6 +57,7 @@ import com.ctb.exception.userManagement.UserPasswordRetrivalException;
 import com.ctb.exception.userManagement.UserPasswordUpdateException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.OASLogger;
+import com.ctb.util.PropertiesLoader;
 import com.ctb.util.SQLutils;
 import com.ctb.util.SimpleCache;
 import com.ctb.util.userManagement.CTBConstants;
@@ -2371,7 +2372,7 @@ public class UserManagementImpl implements UserManagement
             String subject = "";
             if(emailType.equals(CTBConstants.EMAIL_TYPE_WELCOME)){
                 String content1 = "Welcome to the Online Assessment System (OAS)," + 
-                        "provided by CTB/McGraw-Hill (www.ctb.com).  Your account has been set up and your username is:  ";
+                        "provided by CTB/McGraw-Hill ("+PropertiesLoader.getDetail("oas.prod.email.url")+").  Your account has been set up and your username is:  ";
                 
                 String content2 = "\n\nAccess OAS at the following URL: " + CTBConstants.OAS_QA_URL;
                 
