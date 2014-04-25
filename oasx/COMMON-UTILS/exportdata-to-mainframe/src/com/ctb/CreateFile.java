@@ -168,6 +168,7 @@ public class CreateFile {
 													"   FROM TEST_ROSTER ROS, TEST_ADMIN TA, PRODUCT PROD "+
 													"  WHERE TA.TEST_ADMIN_ID = ROS.TEST_ADMIN_ID "+
 													"    AND TA.PRODUCT_ID = PROD.PRODUCT_ID "+
+													"	 AND PROD.PRODUCT_TYPE <> 'ST' "+
 													"    AND PROD.PARENT_PRODUCT_ID = ? "+
 													"    AND ROS.CUSTOMER_ID = ? "+
 													"    AND ROS.ACTIVATION_STATUS = 'AC'"+
@@ -189,6 +190,7 @@ public class CreateFile {
 													"        PRODUCT                 PROD "+
 													"  WHERE TA.TEST_ADMIN_ID = ROS.TEST_ADMIN_ID "+
 													"    AND TA.PRODUCT_ID = PROD.PRODUCT_ID "+
+													"	 AND PROD.PRODUCT_TYPE <> 'ST' "+
 													"    AND PROD.PARENT_PRODUCT_ID = ? "+
 													"    AND ROS.CUSTOMER_ID = ? "+
 													"    AND ROS.ACTIVATION_STATUS = 'AC'"+
@@ -220,6 +222,7 @@ public class CreateFile {
 													"        PRODUCT                 PROD "+
 													"  WHERE TA.TEST_ADMIN_ID = ROS.TEST_ADMIN_ID "+
 													"    AND TA.PRODUCT_ID = PROD.PRODUCT_ID "+
+													"	 AND PROD.PRODUCT_TYPE <> 'ST' "+
 													"    AND PROD.PARENT_PRODUCT_ID = ? "+
 													"    AND ROS.CUSTOMER_ID = ? "+
 													"    AND ROS.ACTIVATION_STATUS = 'AC'"+
