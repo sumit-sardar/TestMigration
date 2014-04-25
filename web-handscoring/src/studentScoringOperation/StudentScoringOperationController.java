@@ -614,6 +614,39 @@ public class StudentScoringOperationController extends PageFlowController {
 		
 	}
 	
+	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="")
+	})
+	protected Forward showAnswer(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();	
+		String jsonResponse = "";
+		String itemId = getRequest().getParameter("itemId");
+		System.out.println("item id" + itemId);
+		RubricViewData[] scr =  getRubricDetails(itemId);		
+		QuestionAnswerData qad = new QuestionAnswerData();
+		qad.setRubricData(scr);
+		
+		try {
+			jsonResponse = JsonUtils.getJson(qad, "questionAnswer",qad.getClass());
+			System.out.println("jsonresponse" + jsonResponse);
+		    HttpServletResponse resp = this.getResponse();     
+		    resp.setContentType("application/json");
+            resp.flushBuffer();
+	        OutputStream stream = resp.getOutputStream();
+	        stream.write(jsonResponse.getBytes());
+	        stream.close();
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return null;
+		
+	}
+	
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") })
 	protected Forward saveDetails(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
 		System.out.println("Save details");

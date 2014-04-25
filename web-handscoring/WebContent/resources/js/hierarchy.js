@@ -2145,17 +2145,14 @@ function viewRubric (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId
 								//$("#audioPlayer").hide();
 								//$("#crText").hide();
 							},
-				url:		'showQuestionAnswer.do',
+				url:		'showAnswer.do',
 				type:		'POST',
 				data:		param,
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 var questionNumber = itemNumber;
-								 data1 = data.questionAnswer;
-								 
-								 populateTableNew();
-									// $.unblockUI(); 
-								 //$("#rubricDialogID").dialog("open");		
+								 data1 = data.questionAnswer;								 
+								 populateTableNew();	
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 								$.unblockUI();  
