@@ -136,7 +136,7 @@ public class LLTestResultController implements TestResultController {
 						        ("Mien (Yao)".equals(homeLanguage))?53:
 						        ("Mixteco".equals(homeLanguage))?54:
 						        ("Pashto".equals(homeLanguage))?60:
-						        ("Polish".equals(homeLanguage))?161:
+						        ("Polish".equals(homeLanguage))?61:
 						        ("Portuguese".equals(homeLanguage))?62:
 						        ("Punjabi".equals(homeLanguage))?63:
 						        ("Rumanian".equals(homeLanguage))?66:
