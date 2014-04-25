@@ -719,7 +719,7 @@ function editAccommodationClose(){
 	var globalSubDemo3='';
 	
 	function createDemoList(){
-		var liMenuStr = "<div><ul class='sf-menu' id='menu'>";
+		var liMenuStr = "<div><ul style='width:80%!important;' class='sf-menu' id='menu'>";
 		 for (var i=0; i<3; i++) {
 		 	liMenuStr = liMenuStr + "<li class='selected roundedBorder' id='sf-menu-sub"+i+"'><a href='#' class='menuText' id='selectedBox"+parseInt(i+1)+"'>Please select</a><ul>";
 		 	if(customerDemographicList.length > demomenuShowCount){
@@ -800,8 +800,8 @@ function editAccommodationClose(){
 		 	
 		 }
 		 liMenuStr = liMenuStr + "</ul></div>";
-		 liMenuStr = liMenuStr + "<div><input type='button' id='apply' onclick='javascript:applyList(); return false;'  class = 'ui-widget-header rounded' style='float:right;width:40px;margin:5px;height:20px;font-weight:bold;font-family:arial;cursor:pointer !important;' value='Apply'/>"+
-		 			"	<input type='button' id='clear' onclick='javascript:clearList(); return false;' class = 'ui-widget-header rounded' value='Clear' style='float:right;width:40px;margin:5px;height:20px;font-weight:bold;font-family:arial;margin-right:0px;cursor:pointer !important;'/></div>";
+		 liMenuStr = liMenuStr + "<div><input type='button' id='apply' onclick='javascript:applyList(); return false;'  class = 'ui-widget-header rounded' style='float:right;width:8%;margin:5px;height:20px;font-weight:bold;font-family:arial;cursor:pointer !important;' value='Apply'/>"+
+		 			"	<input type='button' id='clear' onclick='javascript:clearList(); return false;' class = 'ui-widget-header rounded' value='Clear' style='float:right;width:8%;margin:5px;height:20px;font-weight:bold;font-family:arial;margin-right:0px;cursor:pointer !important;'/></div>";
 		 return liMenuStr;
 	}
 	
