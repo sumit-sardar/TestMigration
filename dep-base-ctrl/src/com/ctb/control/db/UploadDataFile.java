@@ -849,6 +849,17 @@ public interface UploadDataFile extends JdbcControl
     @JdbcControl.SQL(statement = "select  decode( count(cc.customer_id),0,0,1)  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name = {customerConfigurationName} and cc.default_value='T'")
     boolean checkCustomerConfigurationEntries(Integer customerId, String customerConfigurationName) throws SQLException;
 
+    /**
+     * @jc:sql statement::
+        select    
+     *          decode( count(cc.customer_id),0,0,1) 
+     *                                                                                          
+     *      from customer_configuration cc
+     *     where cc.customer_id = {customerId}
+     *     and cc.customer_configuration_name = {customerConfigurationName}::
+     */
+    @JdbcControl.SQL(statement = "select  decode( count(cc.customer_id),0,0,1)  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name = {customerConfigurationName} ")
+    boolean checkTASCCustomerConfigurationEntries(Integer customerId, String customerConfigurationName) throws SQLException;
 
     /**
      * @jc:sql statement::

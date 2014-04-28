@@ -150,6 +150,7 @@ public class UploadStudent extends BatchProcessor.Process
      // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
       // For  MDR columns needs to be removed for nonLaslinks
     boolean isLasLinksCustomer = false;
+    boolean isTascCustomer = false;
 
 	//Changed 04/12/2008
 	private Node [] detailNodeM = null;
@@ -383,6 +384,30 @@ public class UploadStudent extends BatchProcessor.Process
 				// Updated for GACR005
 				getEachRowStudentDetail(i,row,rowHeader,requiredMap,maxLengthMap,
 						invalidCharMap,logicalErrorMap,minLengthMap);
+				
+				System.out.println("isTascCustomer : "+isTascCustomer);
+				
+				if(isTascCustomer){
+					HSSFCell cellHeaderName = rowHeader.getCell(0);
+					HSSFCell cellHeaderId = rowHeader.getCell(1);
+					HSSFCell cellName = row.getCell(0);
+					HSSFCell cellId = row.getCell(1);
+
+					strCellName = getCellValue(cellName);
+					strCellId = getCellValue(cellId);
+					strCellHeaderName = getCellValue(cellHeaderName);
+					strCellHeaderId = getCellValue(cellHeaderId);
+					
+					if(strCellName == null || strCellName.equals("") ){
+						ArrayList requiredList = new ArrayList();
+						requiredList.add(strCellHeaderName); 
+		                requiredMap.put(new Integer(i), requiredList);
+					}else if(strCellId==null || strCellId.equals("")){
+						ArrayList requiredList = new ArrayList();
+		                requiredList.add(strCellHeaderId); 
+		                requiredMap.put(new Integer(i), requiredList);
+					}
+				}
 
 				//check if any required fieldmissing, invalid char, 
 				//maxlength exceed, logical error has been occured        
@@ -448,7 +473,18 @@ public class UploadStudent extends BatchProcessor.Process
 	                            categoryId = getCategoryId (headerName, nodeCategory);
 							}
                          	 // End For MQC 66840 : Upload/Download user/student with MDR
-
+							
+							if(isTascCustomer){
+								Node []nodeCategory =  this.studentFileRowHeader[0].getOrganizationNodes();
+								categoryId = getCategoryId (strCellHeaderName, nodeCategory);
+								
+								HSSFCell loginUserOrgCell = row.getCell((short)j-2);
+		                        String loginUserOrgName = getCellValue(loginUserOrgCell);
+		                        Node loginUserNode = getLoginUserOrgDetail(this.detailNodeM, loginUserOrgName);
+		                        Integer parentOId = loginUserNode.getOrgNodeId();
+		                        parentOrgId[0] = parentOId;
+							}
+							
 							// OrgName required check
 							if ( strCellName.equals("") && hasOrganization(j,row) 
 									&& !strCellId.equals("")) {
@@ -479,7 +515,10 @@ public class UploadStudent extends BatchProcessor.Process
 							} else if(isLasLinksCustomer && !isValidMDR (i, isMatchUploadOrgIds, strCellId, parentOrgId, categoryId, requiredMap, invalidCharMap , logicalErrorMap, newMDRList, strCellMdr,strCellName, strCellHeaderMdr )) {
                                     break;
 
-							} else { 
+							}else if(isTascCustomer && !isValidTASCHierachy(i, row, strCellId, strCellName, parentOrgId, categoryId, strCellHeaderName,strCellHeaderId, requiredMap, logicalErrorMap)){
+									break;
+							}
+							else { 
 
 								//OrgName invalid char check
 								if ( validString(strCellName) ) {
@@ -580,6 +619,30 @@ public class UploadStudent extends BatchProcessor.Process
 
 
 	} 
+	private boolean isValidTASCHierachy(int cellPos, HSSFRow row,String orgId,String orgName,Integer[] parentOrgIds,Integer categoryId, String strCellHeaderName, String strCellHeaderId, HashMap requiredMap, HashMap logicalErrorMap){
+			Integer parentOrgId=parentOrgIds[0] != null ? parentOrgIds[0]:0;
+			
+			if (orgName==null || orgName.trim().length()==0) {
+				
+				ArrayList requiredList = new ArrayList();
+				requiredList.add(strCellHeaderName); 
+                requiredMap.put(new Integer(cellPos), requiredList); 
+                return false;
+			}else if(orgId==null || orgId.trim().length()==0){
+				ArrayList requiredList = new ArrayList();
+                requiredList.add(strCellHeaderId); 
+                requiredMap.put(new Integer(cellPos), requiredList); 
+                return false;
+			}else if(!isTASCOrganizationExist(orgName,orgId, parentOrgId, categoryId)){
+				ArrayList logicalList = new ArrayList();
+				logicalList.add(strCellHeaderName);
+				logicalList.add(strCellHeaderId);
+                logicalErrorMap.put(new Integer(cellPos), logicalList); 
+                return false;
+			}
+
+    	return true;
+    }
 
 	// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
 	 private boolean isValidMDR(int cellPos, boolean isMatchUploadOrgIds, String orgCode,
@@ -1254,9 +1317,8 @@ public class UploadStudent extends BatchProcessor.Process
 			HSSFCell cell = row.getCell((short)i);
 			strCell = getCellValue(cell);
 
-			if ( !strCell.equals("")){
+			if ( !(strCell == null ||  strCell.equals(""))){
 				//Changes for GACRCT2010CR007.Based on the customer's configuration for Date of Birth Validation is done. 
-				if(!(strCell == null ||  strCell.equals(""))){
 					if ( cellHeader.getStringCellValue().
 							equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH)
 							&& isFutureDate(strCell) ) {
@@ -1265,9 +1327,6 @@ public class UploadStudent extends BatchProcessor.Process
 
 
 					}
-				}
-
-
 
 				//For validating combination of question background and font color 
 				else if ( cellHeader.getStringCellValue().
@@ -1651,6 +1710,9 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 				 // For  MDR columns needs to be removed for nonLaslinks
 			isLasLinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
                     customer.getCustomerId(),"LASLINK_Customer");
+			
+			isTascCustomer = this.uploadDataFile.checkTASCCustomerConfigurationEntries(
+                    customer.getCustomerId(),"TASC_Customer");
 			 // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
 	        if(isLasLinksCustomer){
 	        	orgPosFact = 3;
@@ -5299,6 +5361,36 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
         return hasOrganization;
 
+	}
+	
+	/*
+	 * to check TASC hierarchy exists or not
+	 */ 
+	private boolean isTASCOrganizationExist ( String searchString,String searchOrgId, Integer parentId,
+			Integer categoryId) {
+
+		boolean hasOrganization = false;
+		try {
+			Node [] detailNode = this.detailNodeM;
+
+			for ( int i = 0; i < detailNode.length; i++ ) {
+				Node tempNode = detailNode[i];
+				if (tempNode.getOrgNodeCode() != null) {
+					if ( !searchString.trim().equals("") && !searchOrgId.trim().equals("") && tempNode.getOrgNodeName().equalsIgnoreCase(searchString)
+								&& tempNode.getOrgNodeCode().equalsIgnoreCase(searchOrgId) 
+								&& tempNode.getParentOrgNodeId().intValue() 
+								== parentId.intValue()
+								&& categoryId.intValue() == tempNode.getOrgNodeCategoryId().intValue()) {
+
+							hasOrganization = true;
+							break;
+						}
+					}
+			} 
+		} catch (Exception e) {
+			e.printStackTrace();
+       }
+       return hasOrganization;
 	}
 
 
