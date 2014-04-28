@@ -61,17 +61,17 @@
 	
 	
 	function openModifyStdManifestPopup(element) {
+	    isForStudentSubtestModification = true; //used for subtest modification true for student	
+	    resetMsmOldValues();
+		if (isButtonDisabled(element) || (isSelectedTestTabePr == "false" && isSelectedTabeAdaptivePr == "false")) {
+			return true;
+		}
 		var isActiveProgramExpiredOrInactive = $('#isActiveProgramExpiredOrInactive').val();
 		var LLExpiredOrInactivePrograms = $('#LLExpiredOrInactivePrograms').val();
 		if (isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE" && LLExpiredOrInactivePrograms.length==0)
 		{
 			openExpiredProgramPopup();
 			return false;
-		}
-	    isForStudentSubtestModification = true; //used for subtest modification true for student	
-	    resetMsmOldValues();
-		if (isButtonDisabled(element) || (isSelectedTestTabePr == "false" && isSelectedTabeAdaptivePr == "false")) {
-			return true;
 		}
 		
 		$('#displayMessage').hide();	
