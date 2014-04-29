@@ -8277,6 +8277,9 @@ public class SessionOperationController extends PageFlowController {
 					 if(itemSetIdTDs.length > 0){
 						 accessCodeListForCopy = scheduleTest.getFixedNoAccessCode(itemSetIdTDs.length+2);// getting new set of access codes
 					 }
+					 else {
+						 accessCodeListForCopy = scheduleTest.getFixedNoAccessCode(2);						 
+					 }
 				 }
 				 
 				 if(!isSelectTestUpdatedForCopy){ // modified for copy test session
