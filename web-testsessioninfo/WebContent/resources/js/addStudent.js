@@ -216,6 +216,7 @@ function gridReloadSelectStu1(){
   postDataObject.blockOffGradeTesting = blockOffGradeTesting;
   postDataObject.selectedLevel = selectedLevel;
   postDataObject.productType=$("#productType").val();
+  postDataObject.productSelected = $("#testGroupList").val();
   jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});    
   var urlVal = 'getStudentForList.do';
   if(state == "EDIT"){
@@ -292,6 +293,7 @@ function populateSelectStudentGrid() {
  		postDataObject.blockOffGradeTesting = blockOffGradeTesting;
  		postDataObject.selectedLevel = selectedLevel;
  		postDataObject.productType=$("#productType").val();
+ 		postDataObject.productSelected = $("#testGroupList").val();
  		if(state == "EDIT"){
 	       	postDataObject.testAdminId = selectedTestAdminId;
 	    }

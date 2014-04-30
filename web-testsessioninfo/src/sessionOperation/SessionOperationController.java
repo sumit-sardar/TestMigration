@@ -65,6 +65,7 @@ import com.ctb.bean.testAdmin.StudentNode;
 import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
+import com.ctb.bean.testAdmin.StudentTestletInfo;
 import com.ctb.bean.testAdmin.TABERecommendedLevel;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestElementData;
@@ -72,6 +73,7 @@ import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
+import com.ctb.bean.testAdmin.TestletLevelForm;
 import com.ctb.bean.testAdmin.TimeZones;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
@@ -120,6 +122,7 @@ import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
 import com.google.gson.Gson;
 import com.ctb.control.db.OrgNode;
+import com.ctb.control.db.StudentItemSetStatus;
 
 
 
@@ -158,6 +161,8 @@ public class SessionOperationController extends PageFlowController {
 	@Control()
 	private com.ctb.control.db.OrgNode orgnode;
     
+	TestletLevelForm[] forms = null;
+	
     //Added for view/monitor test status
    
     protected void onCreate() {
@@ -3340,6 +3345,39 @@ public class SessionOperationController extends PageFlowController {
 	        //studentSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
 	        // get students - getSessionStudents
 	        SessionStudentData ssd = getSessionStudents(selectedOrgNodeId, testAdminId, selectedTestId, studentFilter, studentPage, studentSort);
+	        
+	        //** Story: TABE Adaptive FT - 06 - Modify TABE Scheduling – Logic
+	        //** If we are scheduling a testlet
+	        //** 4201 = TABE Adult Common Core Experience 
+	        if (getRequest().getParameter("productSelected").equalsIgnoreCase("4201") && ssd.getSessionStudents().length >0)
+	        {
+		        String studentIds = "";
+		        for (int i=0;i<ssd.getSessionStudents().length;i++)
+		        {
+		        	if (ssd.getSessionStudents()[i].getOutOfSchool()!="Yes")
+		        	{
+		        		if (studentIds.length()>0)
+			        	{
+		        			studentIds += ",";
+			        	}
+		        		studentIds += ssd.getSessionStudents()[i].getStudentId();
+		        	}
+		        }
+		        //studentIds = "2560299, 11875051";
+		        //selectedTestId = 296061;
+		        StudentTestletInfo[] sti = this.scheduleTest.getStudentCompletedTabe9Or10(studentIds, selectedTestId);
+		        for (int i=0;i<ssd.getSessionStudents().length;i++)
+		        {
+		        	if (ssd.getSessionStudents()[i].getOutOfSchool()!="Yes")
+		        	{
+		        		if (!hasStudentCompletedTabe9Or10(ssd.getSessionStudents()[i].getStudentId(), sti))
+			        	{
+			        		ssd.getSessionStudents()[i].setOutOfSchool("Yes");
+			        	}
+		        	}
+		        }
+	        }
+	        
 	        List<SessionStudent> studentNodes = buildStudentList(ssd.getSessionStudents(),accomodationMap);
 			Base base = new Base();
 			base.setPage("1");
@@ -5770,6 +5808,104 @@ public class SessionOperationController extends PageFlowController {
         return sd;
     }
 
+    /*
+     * Check if student has completed a TABE 9/10 subtest or has been scheudled all testlet forms for current level
+     */
+    private Boolean hasStudentCompletedTabe9Or10(Integer studentId, StudentTestletInfo[] sti)
+    {
+        try {                
+            if (sti != null)
+            {
+            	if (forms==null)
+            	{
+            		forms = this.scheduleTest.getTestletLevelForms(sti[0].getSubject());
+            	}
+            	String testletForms = "";
+            	String TABE9_10_Level = "";
+            	boolean studentFound = false;
+            	boolean studentTabe910Processed = false;
+            	for (int i=0;i<sti.length;i++)
+            	{
+            		if (sti[i].getStudentId().equals(studentId))
+            		{
+            			studentFound = true;
+	            		int productId = sti[i].getProductId();
+	            		//** If student did not have any scheduled TABE9/10, return false
+	            		if (!studentTabe910Processed && (productId != 4010 && productId != 4012))
+	            		{
+	            			return false;
+	            		}
+	            		//** TABE 9 Online Complete Battery or TABE 10 Online Complete Battery
+	            		if (!studentTabe910Processed && (productId == 4010 || productId == 4012))
+	            		{
+	            			studentTabe910Processed = true;
+	            			TABE9_10_Level = sti[i].getItemSetLevel();
+	            			//** If student has not completed TABE9/10, return false
+	            			if (sti[i].getCompletionStatus().compareToIgnoreCase("CO") != 0)
+	            			{
+	            				return false;
+	            			}
+	            		}
+	            		else
+	            		{
+	            			if (!(productId == 4010 || productId == 4012))
+	            			{
+		            			String testletForm = sti[i].getItemSetForm();
+		            			if (testletForms.length()>0) testletForms += ",";
+		            			testletForms += testletForm;
+	            			}
+	            		}
+            		}
+            		else
+            		{
+            			studentTabe910Processed = false;
+            			if (studentFound) break;
+            		}
+            	}
+            	
+            	if (!studentFound) return false;
+            	
+            	String allLevelForms = "";
+            	for (int j=0;j<forms.length;j++)
+            	{
+            		if (forms[j].getTABELevel().compareToIgnoreCase(TABE9_10_Level)==0)
+            		{
+            			if (allLevelForms.length()>0) allLevelForms += ",";
+            			allLevelForms += forms[j].getTestletForm();	
+            		}
+            	}
+            	String[] allLevelFormsArr = allLevelForms.split(",");
+            	boolean allFormsScheduled = true;
+            	for (int f=0;f<allLevelFormsArr.length;f++)
+            	{
+            		String[] testletFormsArr = testletForms.split(",");
+            		boolean formScheduled = false;
+            		for (int k=0;k<testletFormsArr.length;k++)
+            		{
+            			if (allLevelFormsArr[f].compareToIgnoreCase(testletFormsArr[k]) == 0 && testletFormsArr[k].length()>0)
+            			{
+            				formScheduled = true;
+            				break;
+            			}
+            		}            		
+            		if (!formScheduled) 
+        			{
+        				allFormsScheduled = false;
+        				break;
+        			}
+            	}
+            	if (allFormsScheduled) return false;
+            }
+            else
+            {
+            	return false;
+            }
+        } catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }
+    	return true;
+    }
+    
     private Base buildTestSessionList(CustomerLicense[] customerLicenses, TestSessionData tsd, Base base) 
     {
         List<TestSessionVO> sessionListCUFU = new ArrayList<TestSessionVO>(); 

@@ -54,16 +54,19 @@ import com.ctb.bean.testAdmin.StudentNode;
 import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.StudentSubtestAssignment;
+import com.ctb.bean.testAdmin.StudentTestletInfo;
 import com.ctb.bean.testAdmin.TABERecommendedLevel;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestElementData;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.TestletLevelForm;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.control.db.StudentItemSetStatus;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.request.InvalidFilterFieldException;
 import com.ctb.exception.testAdmin.CustomerConfigurationDataNotFoundException;
@@ -4500,4 +4503,25 @@ public class ScheduleTestImpl implements ScheduleTest
         return null;
     }
     
+    public StudentTestletInfo[] getStudentCompletedTabe9Or10 (String studentIds, Integer testItemSetId) throws com.ctb.exception.CTBBusinessException{
+    	try
+    	{
+    		StudentTestletInfo[] obj = siss.getStudentCompletedTabe9Or10(studentIds, testItemSetId);
+	        return obj;
+    	} catch (SQLException e) {
+    		e.printStackTrace(); 
+    	}
+        return null;
+    }
+    
+    public TestletLevelForm[] getTestletLevelForms (String subject) throws com.ctb.exception.CTBBusinessException{
+    	try
+    	{
+    		TestletLevelForm[] obj = siss.getTestletLevelForms(subject);
+	        return obj;
+    	} catch (SQLException e) {
+    		e.printStackTrace(); 
+    	}
+        return null;
+    }
 } 

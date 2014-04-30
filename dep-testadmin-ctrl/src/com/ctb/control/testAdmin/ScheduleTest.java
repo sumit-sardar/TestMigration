@@ -666,4 +666,7 @@ public interface ScheduleTest
 	 */
 	Program[] getCustomerExpiredPrograms(Integer customerId,java.util.Date now)throws com.ctb.exception.CTBBusinessException;
 	
+	com.ctb.bean.testAdmin.StudentTestletInfo[] getStudentCompletedTabe9Or10(java.lang.String studentIds, java.lang.Integer testItemSetId) throws com.ctb.exception.CTBBusinessException;
+	com.ctb.bean.testAdmin.TestletLevelForm[] getTestletLevelForms(java.lang.String subject) throws com.ctb.exception.CTBBusinessException;
+	
 } 
