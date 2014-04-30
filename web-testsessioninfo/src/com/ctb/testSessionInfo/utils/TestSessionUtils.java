@@ -30,8 +30,9 @@ public class TestSessionUtils
     public static final String TABE_ADAPTIVE_PRODUCT_TYPE = "tabeAdaptiveProductType";
     public static final String LASLINKS_PRODUCT_TYPE = "lasLinksProductType";
     public static final String TASC_PRODUCT_TYPE = "tascProductType";
+    public static final String TASC_READINESS_PRODUCT_TYPE = "tascReadinessProductType";
 	
-
+    
     /**
      * getTestSessionInformation
      */
@@ -1092,6 +1093,8 @@ public class TestSessionUtils
         	return LASLINKS_PRODUCT_TYPE;
         else if (productType.equals("TS"))
         	return TASC_PRODUCT_TYPE;
+        else if (productType.equals("TR"))
+        	return TASC_READINESS_PRODUCT_TYPE;
         else
             return GENERIC_PRODUCT_TYPE;
     }
@@ -1104,6 +1107,7 @@ public class TestSessionUtils
         return new Boolean(	(! productType.equals(GENERIC_PRODUCT_TYPE)) && 
         					(! productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE)) &&
 							(! productType.equals(TASC_PRODUCT_TYPE)) &&
+							(! productType.equals(TASC_READINESS_PRODUCT_TYPE)) &&
 							(! productType.equals(LASLINKS_PRODUCT_TYPE)));
     }
     

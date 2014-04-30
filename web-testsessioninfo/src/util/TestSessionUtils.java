@@ -27,6 +27,8 @@ public class TestSessionUtils
     public static final String TABE_LOCATOR_PRODUCT_TYPE = "tabeLocatorProductType";
     public static final String TABE_ADAPTIVE_PRODUCT_TYPE = "tabeAdaptiveProductType";
     public static final String LASLINKS_PRODUCT_TYPE = "lasLinksProductType";
+    public static final String TASC_PRODUCT_TYPE = "tascProductType";
+    public static final String TASC_READINESS_PRODUCT_TYPE = "tascReadinessProductType";
 	
 
     /**
@@ -1069,6 +1071,10 @@ public class TestSessionUtils
             return TABE_LOCATOR_PRODUCT_TYPE;
         else if (productType.equals("TA"))
         	return TABE_ADAPTIVE_PRODUCT_TYPE;
+        else if (productType.equals("TS"))
+        	return TASC_PRODUCT_TYPE;
+        else if (productType.equals("TR"))
+        	return TASC_READINESS_PRODUCT_TYPE;        
         /*else if (productType.equals("LL")) // commented to remove laslink support
         	return LASLINKS_PRODUCT_TYPE;*/
         else
@@ -1081,8 +1087,10 @@ public class TestSessionUtils
     public static Boolean isTabeProduct(String productType)
     {
         return new Boolean(	(! productType.equals(GENERIC_PRODUCT_TYPE)) && 
-        					(! productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE)) &&
-							(! productType.equals(LASLINKS_PRODUCT_TYPE)));
+				(! productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE)) &&
+				(! productType.equals(TASC_PRODUCT_TYPE)) &&
+				(! productType.equals(TASC_READINESS_PRODUCT_TYPE)) &&
+				(! productType.equals(LASLINKS_PRODUCT_TYPE)));
     }
     
     /**
