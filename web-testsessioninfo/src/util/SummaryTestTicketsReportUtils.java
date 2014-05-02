@@ -116,12 +116,12 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private static final float[] SESSION_WIDTHS = new float[] {47f, 63f};
     private static final float[] THREE_COLUMN_TAC_WIDTHS = new float[] {6f, 2f, 3f};
     private static final float[] FOUR_COLUMN_TAC_WIDTHS = new float[] {1.5f, 6f, 2f, 3f};
-    private static final float[] STUDENT_WIDTHS = new float[] {50f, 32f, 72f, 21f, 13f, 21f, 31f};
-    private static final float[] STUDENT_WIDTHS_FOR_TABE = new float[] {50f, 32f, 72f, 21f, 21f, 44f};
-    private static final float[] STUDENT_WIDTHS_FOR_LASLINKS = new float[] {50f, 32f, 64f, 21f, 21f, 21f, 31f};
-    private static final float[] STUDENT_WIDTHS_WITH_CLASSNAME = new float[] {40f, 29f, 25f, 60f, 21f, 13f, 21f, 31f};
-    private static final float[] STUDENT_WIDTHS_FOR_TABE_WITH_CLASSNAME = new float[] {45f, 30f, 30f, 62f, 21f, 21f, 31f};
-    private static final float[] STUDENT_WIDTHS_FOR_LASLINKS_WITH_CLASSNAME = new float[] {40f, 29f, 25f, 52f, 21f, 21f, 21f, 31f};
+    private static final float[] STUDENT_WIDTHS = new float[] {48f, 31f, 70f, 26f, 13f, 21f, 31f};/*new float[] {50f, 32f, 72f, 21f, 13f, 21f, 31f};*/
+    private static final float[] STUDENT_WIDTHS_FOR_TABE = new float[] {48f, 31f, 70f, 26f, 21f, 44f};/*new float[] {50f, 32f, 72f, 21f, 21f, 44f};*/
+    private static final float[] STUDENT_WIDTHS_FOR_LASLINKS = new float[] {48f, 31f, 62f, 26f, 21f, 21f, 31f};/*new float[] {50f, 32f, 64f, 21f, 21f, 21f, 31f};*/
+    private static final float[] STUDENT_WIDTHS_WITH_CLASSNAME = new float[] {39f, 28f, 24f, 58f, 26f, 13f, 21f, 31f};/*new float[] {40f, 29f, 25f, 60f, 21f, 13f, 21f, 31f};*/
+    private static final float[] STUDENT_WIDTHS_FOR_TABE_WITH_CLASSNAME = new float[] {44f, 29f, 24f, 60f, 26f, 21f, 31f};/*new float[] {45f, 30f, 30f, 62f, 21f, 21f, 31f};*/
+    private static final float[] STUDENT_WIDTHS_FOR_LASLINKS_WITH_CLASSNAME = new float[] {39f, 28f, 24f, 50f, 26f, 21f, 21f, 31f};/*new float[] {40f, 29f, 25f, 52f, 21f, 21f, 21f, 31f};*/
 
     private static final float SESSION_VALUE_WIDTH = 170f;
     // maximum number of student lines on a page
