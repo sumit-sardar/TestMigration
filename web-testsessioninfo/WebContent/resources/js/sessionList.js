@@ -1465,6 +1465,7 @@ function registerDelegate(tree){
 	var studentCheckCounter = 0;
 	function populateSelectedStudent() {
  		UIBlock();
+ 		$('#testGroupList').removeAttr("disabled");
  		var studentIdTitle = $("#studentIdLabelName").val();
  		delStuIdObjArray = [];
  		stuGridloaded = true;
@@ -1892,6 +1893,9 @@ function registerDelegate(tree){
 				if(optionList[i].productId == '5501' && !isWVAdmin) {
 					continue; // Only state level WV admin should be able to see/schedule/edit 5501 product
 				}
+				if(optionList[i].productId == '4201'){
+					$("#TABEAdultEndDate").val(optionList[i].testSessionList[0].endDate);
+				}							
 				if(selectedProductId==optionList[i].productId) { 	     
 					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
 					//fillDropDown("grade", optionList[i].gradeDropDownList);
@@ -2055,10 +2059,34 @@ function registerDelegate(tree){
 			 	isWVBreachTestSelected = false;
 			 }
 		 }
+		 
+		 var productSelected = $("#testGroupList").val();
+		 if(productSelected == 4201){
+		 	disableEndDateTabeAdultForAdd();
+		 		if(isEdit || isCopySession){
+		 			$('#endDate').val($('#TABEAdultEndDate').val());
+		 			isEditChangeTestAdult  = true;		 					 				
+		 		}
+		    }else{
+		    enableEndDateTabeAdultForAdd();
+		   	 if(isEdit || isCopySession){
+		 			$('#endDate').val($('#editEndDate').val());
+		 			isEditChangeTestAdult = false;	
+		 		}
+		 }
+		    
 		  changeGradeAndLevel();
 		 //}
 		 hideSubtestWarningMessage();
 		 document.getElementById("modifyTestDiv").style.display = "none";
+	}
+	
+	function disableEndDateTabeAdultForAdd() {
+		$('#endDate').attr("disabled",true);		
+	}
+	
+	function enableEndDateTabeAdultForAdd() {
+		$('#endDate').removeAttr("disabled");
 	}
 	
 	function closeSubtestConfirmPopup() {
@@ -3928,10 +3956,17 @@ function registerDelegate(tree){
 		}
 	    
 	    var param;
+	    var disabledEndDateFlag=$('#endDate').is(':disabled');
    	 if(state != "EDIT"){
 		populateLocatorCheckboxValue();
 		var param1 =$("#testDiv *").serialize(); 
+		if(disabledEndDateFlag){
+			$('#endDate').removeAttr("disabled");		
+		}
 	    var param2 = $("#Test_Detail *").serialize();
+	    if(disabledEndDateFlag){
+			$('#endDate').attr("disabled",true);		
+		}
 	    var time = document.getElementById("time").innerHTML;
 	    var timeArray = time.split("-");
 	    param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
@@ -3947,8 +3982,13 @@ function registerDelegate(tree){
 	 		$("#testSessionName").removeAttr("disabled");
 		    var param1 =$("#testDiv *").serialize(); 
 		    param1 = param1 +serializeDisabledFieldFromDiv("testDiv");
-		    
+		    if(disabledEndDateFlag){
+				$('#endDate').removeAttr("disabled");		
+			}
 		    var param2 = $("#Test_Detail *").serialize();
+		     if(disabledEndDateFlag){
+				$('#endDate').attr("disabled",true);		
+			}
 		    param1 = param1 +serializeDisabledFieldFromDiv("Test_Detail");
 		     
 		    var time = document.getElementById("time").innerHTML;

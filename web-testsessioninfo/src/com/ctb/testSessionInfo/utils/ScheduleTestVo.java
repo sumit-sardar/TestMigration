@@ -482,7 +482,7 @@ public class ScheduleTestVo implements Serializable{
 	}
 
 	@SuppressWarnings("deprecation")
-	public void populateDefaultDateAndTime(String timeZone) {
+	public void populateDefaultDateAndTime(String timeZone,String testletSessionEndDate) {
 		Date now = new Date(System.currentTimeMillis());
         Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), timeZone, now);
         Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), timeZone, now);
@@ -496,7 +496,11 @@ public class ScheduleTestVo implements Serializable{
 	        	
 	        	} else {
 	        		testVO.setStartDate(DateUtils.formatDateToDateString(today));
-	        		testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+	        		if(productBean.getProductId() == 4201){
+	        			testVO.setEndDate(testletSessionEndDate);
+	        		}else{
+	        			testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+	        		}
 	        	}
 	        	
 	        	if(testVO.getOverrideLoginEndDate()!= null && !(DateUtils.isAfterToday(testVO.getOverrideLoginEndDate(), timeZone )) ) {
@@ -846,7 +850,9 @@ class ProductBean implements Serializable{
 		return showLevelOrGrade;
 	}
 
-
+	public Integer getProductId(){
+		return productId;
+	}
 	
 	/**
 	 * @return the testSessionList

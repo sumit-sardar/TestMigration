@@ -25,12 +25,24 @@
 	var isOKEQProduct = false; // Added for Oklahoma customer
 	var isWVBreachProduct = false; // Added for WV customer
 	var isWVProctor = false; // Added for WV customer
+	var isEditTestAdult = false; //Added for tabe adult product testlet
+	var isEditChangeTestAdult = false; //Added for change test group for tabe
 		
 	var forceTestBreak = false;
 	var selectGE = null;
 	var savedAssignedRole = "Owner";
 	var defaultDays;
-		
+	var isEdit = false; 
+	
+  function disableTabeAdultMsg(){
+  		$('#testGroupList').attr("disabled",true);
+		$('#level').attr("disabled",true);		 
+		var allRows = $('#testList').jqGrid('getDataIDs');
+  		for(var i = 0; i < allRows.length; i++) {
+  			$('#'+allRows[i]).addClass("ui-state-disabled");
+  		}  		
+  	}	
+  		
   function editTestSession(action){  
   	var activeJQGrid;
   	var rowID;
@@ -63,6 +75,8 @@
      if(action != undefined){
      	param.action = action;
      }
+     isEdit = true;
+   
  	
  	$.ajax({
 		async:		true,
@@ -247,9 +261,22 @@
 							 }
 							});	
 						setPopupPosition();
-						updateLocatorSubtestsList();
-							$('#ssAccordion').accordion('activate', 1 );
-							
+						updateLocatorSubtestsList();	
+						isEditTestAdult = false;
+						isEditChangeTestAdult = false;
+						var selectTestGroup = data.savedTestDetails.testSession.productId;
+						if(selectTestGroup == 4201){							
+							disableEndDateTabeAdult();
+							$('#endDate').val($('#TABEAdultEndDate').val());
+							isEditTestAdult = true;	
+							isEditChangeTestAdult = true;						
+					    }else{
+					    	enableEndDateTabeAdult();
+					    	$('#endDate').val($('#editEndDate').val());	
+					    	isEditTestAdult = false;
+					    	isEditChangeTestAdult = false;
+						}	
+						$('#ssAccordion').accordion('activate', 1 );							
 						if(isCopySession && data.testingWindowDefaultDays != null && data.testingWindowDefaultDays != undefined){
 							defaultDays = data.testingWindowDefaultDays;
 							var msg = $('#defualtTestWindowMsg').val();
@@ -312,6 +339,22 @@
 		var sliderRight = calculateTimeInMin( data.savedTestDetails.testSession.dailyLoginEndTimeString);
 		$("#slider-range").slider("option", "values", [sliderLeft, sliderRight]);
 		$("#selectedTestId").val(data.savedTestDetails.testSession.itemSetId);
+		
+		var editEndDateValue = $("#endDate").val();
+		$("#editEndDate").val(editEndDateValue);
+		
+		if(isCopySession && data.savedTestDetails.testSession.productId){
+			var tempDate =  $('#startDate').datepicker('getDate');
+			if (tempDate) {
+            	tempDate.setDate(tempDate.getDate() + 1);
+            	
+            	var yy = tempDate.getFullYear().toString().substr(2,2);                                    
+   				var mm = (tempDate.getMonth()+1).toString(); 
+    			var dd  = tempDate.getDate().toString(); 
+    			tempDate =(mm[1]?mm:"0"+mm[0]) + '/' + (dd[1]?dd:"0"+dd[0])+'/'+yy; 
+      		}
+      		$("#editEndDate").val(tempDate);
+		}
   	}
 
     
@@ -884,7 +927,26 @@
   		$("#del_list6").removeClass('ui-state-disabled');
    	   	$("#addStudent").show();	
   		$("#del_listProctor").removeClass('ui-state-disabled');	
-  		$("#addProctor").show(); 
+  		$("#addProctor").show();   		
+  		if(isEditChangeTestAdult){
+  			disableEndDateTabeAdult();
+  		}else{
+  			enableEndDateTabeAdult();
+  			isEditChangeTestAdult = false;
+  		}
+  		if(isEditTestAdult && !isCopySession){
+	  		disableTabeAdultMsg();			  			   
+	    }else{	    	
+	    	isEditTestAdult = false;
+		}
+	}
+	
+	function disableEndDateTabeAdult() {
+		$('#endDate').attr("disabled",true);		
+	}
+	
+	function enableEndDateTabeAdult() {
+		$('#endDate').removeAttr("disabled");
 	}
 	
 	function createSubtestGridInEdit(savedTestDetails , hasLocator , locatorId ){

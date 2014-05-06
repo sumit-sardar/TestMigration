@@ -23,6 +23,7 @@
 <table class="transparent">
 
     <tr class="transparent">
+    <span id="diasbleStudentMsg" style="display:none; color:red;"><lb:label key="session.accordion.message"/></p>
         <td class="transparent"  valign="middle">
       	<div  id= "innerSearchheader" class="ui-corner-tl ui-corner-tr ui-widget-header innerTreeCtrlHeader"><lb:label key="sessionList.stuTab.gridTitle"/></div>
     	<div  id="innertreebgdivStu" class="innerTreeCtrl">

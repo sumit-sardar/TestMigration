@@ -52,6 +52,26 @@ var isSelectingStudent = false;
 var showLicenseInfo = false;
 var oldestNonZeroPO;
 
+function disableStudentMsgForTabeAdultCoreExp(){
+	var selectTestGroup = $("#testGroupList").val();
+	var isTabeAdultMsg = false;
+	if(selectTestGroup == 4201){
+	   isTabeAdultMsg = true;
+	} else {
+	   isTabeAdultMsg = false;
+	}
+	
+	if(isTabeAdultMsg){
+		$("#diasbleStudentMsg").css("display","block");
+	}else{
+		$("#diasbleStudentMsg").css("display","none");
+	}
+	}
+	
+
+function hideDisableStudentMsgForTabeAdultCoreExp(){
+	$("#diasbleStudentMsg").css("display","none");
+	}	
 /// FOR FILTER
 
 function showSelectStudent(){
@@ -82,6 +102,7 @@ function hideSelectStudent(){
 		studentWithaccommodation = 0;
 	cloneStudentMapToTemp();
 	hideSelectStudentPopup();
+	hideDisableStudentMsgForTabeAdultCoreExp();
 	allSelectOrg = allSelectOrgTmp.slice(0);
 	$("#stuOrgNodeHierarchy").undelegate();
 	isSelectingStudent = false;	
@@ -297,6 +318,7 @@ function populateSelectStudentGrid() {
  		if(state == "EDIT"){
 	       	postDataObject.testAdminId = selectedTestAdminId;
 	    }
+	    disableStudentMsgForTabeAdultCoreExp();
        $("#selectStudent").jqGrid({         
           url: 'getStudentForList.do', 
 		  mtype:   'POST',
@@ -1849,6 +1871,7 @@ function studentInTest(stdId, orgNodeId) {
 	function validateEndDateForLaslinkLM(){
 	  var orgIds = getAssociatedOrgIds();
 	  var postDataObject = {};
+	  hideDisableStudentMsgForTabeAdultCoreExp();
 	  postDataObject.selectedOrgIds = orgIds;
 		  $.ajax({
 			async:		false,

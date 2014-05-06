@@ -337,8 +337,11 @@ clear: both;
 				$('#endDate').datepicker({
 					inline: true,
 					clickInput:true,
-					dateFormat: 'mm/dd/y'
-
+					dateFormat: 'mm/dd/y',
+					onSelect: function() {
+						var dateText = $.datepicker.formatDate("mm/dd/y", $(this).datepicker("getDate"));
+    					$('#editEndDate').val(dateText);
+ 					 }
 				});
 				//$("#endDate").val(nextDate);
 				//$("#endDate").datepicker( "setDate" , nextDate); 

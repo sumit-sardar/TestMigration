@@ -2,6 +2,10 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="label.tld" prefix="lb" %>
 <lb:bundle baseName="testsessionApplicationResource" />
+<%
+	String tabeAdultEndDate = (String)session.getAttribute("tabeAdultEndDate");
+%>
+
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
  
@@ -35,6 +39,8 @@
 					<tr class="transparent">
 						<td width="171" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="testDet.label.endDate" /></td>
 					  <td colspan="2" valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" size="12" maxlength="10" readonly="readonly"/></td>
+					   <input type="hidden" id="editEndDate" name="editEndDate" value=""/>
+					  <input type="hidden" id="TABEAdultEndDate" name="TABEAdultEndDate" value="<%=tabeAdultEndDate%>"/>
 					</tr>
 					<tr class="transparent">
 						<td width="171" height="25" valign="middle" nowrap="" class="transparent alignRight"><span class="asterisk">*</span><lb:label key="testDet.label.timeWindow" /></td>

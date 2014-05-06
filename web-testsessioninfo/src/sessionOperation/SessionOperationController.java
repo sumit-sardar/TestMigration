@@ -210,6 +210,7 @@ public class SessionOperationController extends PageFlowController {
 	private boolean forceTestBreak = false;
 	private boolean selectGE = false;
 	private boolean isTABELocatorOnlyTest = false;
+	public String testletSessionEndDate = "01/01/17";
 	
 	//Added for view/monitor test status
     
@@ -851,16 +852,16 @@ public class SessionOperationController extends PageFlowController {
                     	 Integer days = getDefaultTestingWindowValue();
                     	 if(null != days){
 	                    	 if(days.intValue() == 1){
-	                    		 vo.populateDefaultDateAndTime(userTimeZone);
+	                    		 vo.populateDefaultDateAndTime(userTimeZone,testletSessionEndDate);
 	                    	 }else{
 		                    	 vo.populateDefaultDateAndTime(userTimeZone, days);
 		                    	 vo.setTestingWindowDefaultDays(days);
 	                    	 }
 	                     }else{
-	                    	 vo.populateDefaultDateAndTime(userTimeZone);
+	                    	 vo.populateDefaultDateAndTime(userTimeZone,testletSessionEndDate);
 	                     }
                      }else{
-                    	 vo.populateDefaultDateAndTime(userTimeZone);
+                    	 vo.populateDefaultDateAndTime(userTimeZone,testletSessionEndDate);
                      }
                 }
           /* } */
@@ -1216,7 +1217,7 @@ public class SessionOperationController extends PageFlowController {
                 	 //productName = tps[0].getProductName();
                      selectedProductId = tps[0].getProductId().toString();
                      this.vo.populateAccessCode(scheduleTest);
-                     this.vo.populateDefaultDateAndTime(this.user.getTimeZone());
+                     this.vo.populateDefaultDateAndTime(this.user.getTimeZone(),testletSessionEndDate);
                      }
            
                 if(tps.length<=0) {
@@ -1362,7 +1363,11 @@ public class SessionOperationController extends PageFlowController {
                     	vo.setEndDate(DateUtils.formatDateToDateString(loginEndDate));
                     }else {
                     	vo.setStartDate(DateUtils.formatDateToDateString(today));
-                    	vo.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+                    	if(scheduledSession.getTestSession().getProductId() == 4201){
+                    		vo.setEndDate(testletSessionEndDate);
+                    	}else{
+                    		vo.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+                    	}
     	        	}
                     
                     if(ovLoginEnd!= null && !(DateUtils.isAfterToday(ovLoginEnd, timeZoneCopySession ))) {
@@ -5259,6 +5264,10 @@ public class SessionOperationController extends PageFlowController {
 						null != cc.getDefaultValue() && !"0".equalsIgnoreCase(cc.getDefaultValue())){
 					this.hasDefaultTestingWindowConfig = Boolean.TRUE;
 				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Testlet_Session_End_Date") && 
+						null != cc.getDefaultValue() && !"0".equalsIgnoreCase(cc.getDefaultValue())){
+					testletSessionEndDate=cc.getDefaultValue();
+				}
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
 			this.isTASCCustomer = isTascCustomer;
@@ -5294,6 +5303,7 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
+		this.getSession().setAttribute("tabeAdultEndDate",testletSessionEndDate);
 		if(isWVCustomer)
 		{
 			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig));
