@@ -5,6 +5,7 @@ import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import com.ctb.bean.testAdmin.ActiveSession;
 import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.Program;
+import com.ctb.bean.testAdmin.SubtestAccessCodeDetail;
 import com.ctb.bean.testAdmin.TestSession; 
 import java.sql.SQLException;
 import java.util.Date; 
@@ -918,5 +919,24 @@ public interface TestAdmin extends JdbcControl
     @JdbcControl.SQL(statement = "select customer_id as customerId,product_id as productId, program_id as programId,program_name as programName,program_start_date as programStartDate,program_end_date as programEndDate, norms_group as normsGroup, norms_year as normsYear, created_date_time as createdDateTime, updated_date_time as updatedDateTime from program pr where  pr.CUSTOMER_ID = {customerId} and (activation_status='IN' or trunc(pr.program_end_date) < trunc({startDate})) ",
                      arrayMaxLength = 100000)
     Program [] getExpiredProgramsForCustomer(Integer customerId, Date startDate) throws SQLException;
+    
+    
+    
+    /**
+     * @jc:sql statement::
+     * select
+     *     TAIS.ACCESS_CODE AS accessCode, ISET.ITEM_SET_NAME AS subtestName 
+     * from 
+     *      TEST_ADMIN_ITEM_SET TAIS, ITEM_SET ISET
+     * where 
+     *      TAIS.TEST_ADMIN_ID = {sessionId}
+     *  AND TAIS.ITEM_SET_ID = ISET.ITEM_SET_ID
+     *  ORDER BY TAIS.ITEM_SET_ORDER::
+     *  array-max-length="all"
+     */
+    @JdbcControl.SQL(statement = " SELECT TAIS.ACCESS_CODE AS accessCode, ISET.ITEM_SET_NAME AS subtestName  FROM TEST_ADMIN_ITEM_SET TAIS, ITEM_SET ISET WHERE TAIS.TEST_ADMIN_ID = {sessionId} AND TAIS.ITEM_SET_ID = ISET.ITEM_SET_ID ORDER BY TAIS.ITEM_SET_ORDER ",
+                     arrayMaxLength = 100)
+    SubtestAccessCodeDetail [] getSessionAccessCodeDetails(Integer sessionId) throws SQLException;
+  
 
 }

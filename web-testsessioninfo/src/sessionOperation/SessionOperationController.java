@@ -3634,6 +3634,7 @@ public class SessionOperationController extends PageFlowController {
 			baseTree.setShowAccessCode(customerHasAccessCode(testAdminId));
 			baseTree.setHasPrintClassName(customerHasPrintClassName());
 			baseTree.setWVCustomer(isWVCustomer());
+			baseTree.setShowMultipleAccessCode(customerHasMultipleAccessCode());
 			jsonTree = gson.toJson(baseTree);
 			String pattern = ",\"children\":[]";
 			jsonTree = jsonTree.replace(pattern, "");
@@ -4901,6 +4902,25 @@ public class SessionOperationController extends PageFlowController {
     	   return true;
        else
     	   return false;
+    }
+	
+	
+	private boolean customerHasMultipleAccessCode(){               
+		Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasMultipleAccessCodeConfigurable = false;        
+    	if ((this.customerConfigurations.length == 0) || ( null == this.customerConfigurations))
+    		this.customerConfigurations = getCustomerConfigurations(customerId);
+    	
+    	for (int i=0; i < this.customerConfigurations.length; i++){
+        	CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Print_Multiple_Accesscode") && 
+            		cc.getDefaultValue().equals("T")) {
+            	hasMultipleAccessCodeConfigurable = true;
+                break;
+            } 
+	    }
+    	
+      return hasMultipleAccessCodeConfigurable;       
     }
     
 	private void buildRosterList(RosterElement[] rosterElementData, Map<Integer, Map> accomodationMap) 

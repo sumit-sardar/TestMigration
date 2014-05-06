@@ -49,6 +49,7 @@ import com.ctb.bean.testAdmin.SessionNode;
 import com.ctb.bean.testAdmin.SessionNodeData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
+import com.ctb.bean.testAdmin.SubtestAccessCodeDetail;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestElementData;
 import com.ctb.bean.testAdmin.TestProduct;
@@ -2633,6 +2634,18 @@ public class TestSessionStatusImpl implements TestSessionStatus
     		 cbe.setStackTrace(se.getStackTrace());
     		 throw cbe;
     	 }
+     }
+     
+     public SubtestAccessCodeDetail[] getSubtestAccessCodeFromSession(Integer sessionId) throws CTBBusinessException{
+    	 SubtestAccessCodeDetail[] sACD = null;    	 
+    	 try{
+    		 sACD = this.testAdmin.getSessionAccessCodeDetails(sessionId);
+    	 }catch(SQLException se){
+    		 CTBBusinessException cbe = new CTBBusinessException("TestSessionStatusImpl: getSubtestAccessCodeFromSession :: "+se.getMessage());
+    		 cbe.setStackTrace(se.getStackTrace());
+    		 throw cbe;
+    	 }
+    	return sACD; 
      }
      
 } 

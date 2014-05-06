@@ -28,6 +28,7 @@ import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
+import com.ctb.bean.testAdmin.SubtestAccessCodeDetail;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestElementData;
 import com.ctb.bean.testAdmin.TestProduct;
@@ -183,6 +184,7 @@ public class TestTicketController extends PageFlowController
             String ticketType = (String)getRequest().getParameter("ticketType");  //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
             String accessAllow = (String)getRequest().getParameter("displayAccess"); // changed for TABE BAUM - 028
             String printClassName = (String)getRequest().getParameter("printClassName");
+            String multipleAccessAllow = (String)getRequest().getParameter("displayMultipleAccessCode");
             //System.out.println("printClassName >> "+printClassName);
             
             Integer sessionId = new Integer(testAdminId); 
@@ -209,6 +211,10 @@ public class TestTicketController extends PageFlowController
 //                                                null, null, null);
 //            this.testTicketTestList = buildTestList(ted, testAdmin.getProductId());
             Collection rosterList = buildRosterList(red, session.getStudents());    
+            
+            SubtestAccessCodeDetail [] subtestAccessList = null;
+            if ("TRUE".equalsIgnoreCase(multipleAccessAllow) && "T".equalsIgnoreCase(testAdmin.getEnforceBreaks()))
+            		subtestAccessList = getSubtestAccessDetail(sessionId);
             
             if (studentId != null)
             {
@@ -242,7 +248,10 @@ public class TestTicketController extends PageFlowController
                                 this.isStudentIdConfigurable,
                                 this.studentIdLabelName,
                                 accessAllow,
-                                printClassName}); // Changed for TABE BAUM - 028
+                                printClassName,
+                                new Boolean(multipleAccessAllow),                                
+                                subtestAccessList
+                                }); // Changed for TABE BAUM - 028
         }
         catch (IOException ie)
         {
@@ -556,6 +565,18 @@ public class TestTicketController extends PageFlowController
         return tsd;
     }
     
+     
+    private  SubtestAccessCodeDetail[] getSubtestAccessDetail(Integer sessionId){
+    	SubtestAccessCodeDetail sACD [] = null ; 	
+    	try{
+    		sACD = this.testSessionStatus.getSubtestAccessCodeFromSession(sessionId);
+    	}
+    	catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }
+    	return sACD;
+    }
+     
       private TestAdminVO buildTestAdminVO(TestSessionData tsd, ScheduledSession session)
     {
         TestSession[] testSessions = tsd.getTestSessions();

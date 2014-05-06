@@ -523,4 +523,5 @@ public interface TestSessionStatus
 	
 	void updateCompletionStatusForRoster(Integer rosterId) throws com.ctb.exception.CTBBusinessException;
 	
+	com.ctb.bean.testAdmin.SubtestAccessCodeDetail[] getSubtestAccessCodeFromSession(Integer sessionId) throws com.ctb.exception.CTBBusinessException;
 } 

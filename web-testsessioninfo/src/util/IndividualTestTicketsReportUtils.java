@@ -1,5 +1,6 @@
 package util; 
 
+import com.ctb.bean.testAdmin.SubtestAccessCodeDetail;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
@@ -137,6 +138,10 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private String accessAllow = null; // Changed for TABE BAUM - 028
     private String printClassName = null;
     
+    private boolean multipleAccessAllow = false;
+    private boolean isTestBreak = false;
+    private SubtestAccessCodeDetail[] subtestAccessList = null;
+    
     //START - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
     protected boolean createStaticAboveTables() throws DocumentException, IOException {
         addTitle(UNADDITIONAL_Y);
@@ -181,6 +186,9 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
       //START - Changed for CR ISTEP2011CR007 (Multiple Test Ticket)
       	this.isMultiIndividualTkt = (Boolean)args[2];
         
+      	this.multipleAccessAllow = (Boolean)args[12];
+      	this.subtestAccessList = (SubtestAccessCodeDetail[])args[13];
+      	
         if(!isMultiIndividualTkt) {
         	this.getKeyboardShortcutsTables();
         	addKeyboardShortcuts();
@@ -430,10 +438,14 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         result[3] = getPassword(student);
         result[4] = TEST_ACCESS_CODE_LABEL;
         // Changed for TABE BAUM - 028
-        if(this.accessAllow.equals("true"))
-        	result[5] = getAccessCode();
+        if(this.accessAllow.equals("true") && !this.multipleAccessAllow)
+        	result[5] = getAccessCode();        
+        else if(this.multipleAccessAllow && this.accessAllow.equals("true") && "F".equalsIgnoreCase(this.testAdmin.getEnforceBreaks()))
+        	result[5] = getAccessCode();        
+        else if(this.multipleAccessAllow && this.accessAllow.equals("true") && "T".equalsIgnoreCase(this.testAdmin.getEnforceBreaks()))
+        	result[5] = getMultipleAccessCode();
         else
-        	result[5] = " ";
+        	result[5] = " ";        
         return result;
     }
     private void addKeyboardShortcuts() throws DocumentException{
@@ -541,6 +553,15 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
    private String getAccessCode(){
        return getNonBlankString(testAdmin.getAccessCode());
   }  
+   
+   private String getMultipleAccessCode(){
+	   String accessCodeSubtestList = "";
+	   for (SubtestAccessCodeDetail sACD:this.subtestAccessList){
+		   accessCodeSubtestList += "_"+sACD.getAccessCode()+" ("+sACD.getSubtestName()+")\n";		   		   
+	   }	   	   
+       return getNonBlankString(accessCodeSubtestList);
+  }
+   
    private String getTestName(){
         return getNonBlankString(testAdmin.getTestName());
    }   

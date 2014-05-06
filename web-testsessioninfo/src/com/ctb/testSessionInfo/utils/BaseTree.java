@@ -11,7 +11,17 @@ public class BaseTree {
 	private boolean showAccessCode;
 	private boolean hasPrintClassName;
 	private boolean isWVCustomer;
+	private boolean showMultipleAccessCode;
 	
+	
+
+	public boolean isShowMultipleAccessCode() {
+		return showMultipleAccessCode;
+	}
+
+	public void setShowMultipleAccessCode(boolean showMultipleAccessCode) {
+		this.showMultipleAccessCode = showMultipleAccessCode;
+	}
 
 	public boolean isWVCustomer() {
 		return isWVCustomer;
