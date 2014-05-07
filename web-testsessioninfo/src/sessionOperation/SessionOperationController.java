@@ -3,6 +3,7 @@ package sessionOperation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +33,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import util.BroadcastUtils;
 import util.MessageResourceBundle;
 import util.RequestUtil;
+import weblogic.utils.StringUtils;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
@@ -5265,8 +5267,16 @@ public class SessionOperationController extends PageFlowController {
 					this.hasDefaultTestingWindowConfig = Boolean.TRUE;
 				}
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Testlet_Session_End_Date") && 
-						null != cc.getDefaultValue() && !"0".equalsIgnoreCase(cc.getDefaultValue())){
-					testletSessionEndDate=cc.getDefaultValue();
+						!StringUtils.isEmptyString(cc.getDefaultValue())){
+					 SimpleDateFormat sdf = new SimpleDateFormat();
+				        sdf.applyPattern("MM/dd/yy");
+				        try{
+				            sdf.parse(cc.getDefaultValue());
+				            testletSessionEndDate=cc.getDefaultValue();
+				        }
+				        catch (Exception e){
+				        	//do nothing
+				        }
 				}
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
