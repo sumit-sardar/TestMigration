@@ -8500,10 +8500,10 @@ public class SessionOperationController extends PageFlowController {
 		           }
 
 				 String overrideFormAssignment 	=  selectedTest.getOverrideFormAssignmentMethod();
-				 Date overrideLoginSDate  		=  selectedTest.getOverrideLoginStartDate();
+				 Date overrideLoginSDate  		=  dailyLoginStartDate; // selectedTest.getOverrideLoginStartDate();
 				 String formAssigned			=  (selectedTest.getForms() ==null || selectedTest.getForms().length==0)? null: selectedTest.getForms()[0]; 
 				 String testName       		    = 	selectedTest.getItemSetName(); 
-				 Date overrideLoginEDate  		=  selectedTest.getOverrideLoginEndDate();
+				 Date overrideLoginEDate  		=  dailyLoginEndDate; // selectedTest.getOverrideLoginEndDate();
 				 
 				 
 				 // setting default value
