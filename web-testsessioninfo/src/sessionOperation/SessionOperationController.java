@@ -3377,7 +3377,8 @@ public class SessionOperationController extends PageFlowController {
 		        {
 		        	if (ssd.getSessionStudents()[i].getOutOfSchool()!="Yes")
 		        	{
-		        		if (!hasStudentCompletedTabe9Or10(ssd.getSessionStudents()[i].getStudentId(), sti))
+		        		//** fixed defec#78764
+		        		if (sti.length>0 && !hasStudentCompletedTabe9Or10(ssd.getSessionStudents()[i].getStudentId(), sti))
 			        	{
 			        		ssd.getSessionStudents()[i].setOutOfSchool("Yes");
 			        	}
@@ -5864,6 +5865,7 @@ public class SessionOperationController extends PageFlowController {
             	String TABE9_10_Level = "";
             	boolean studentFound = false;
             	boolean studentTabe910Processed = false;
+            	boolean testletScheduled = false;
             	for (int i=0;i<sti.length;i++)
             	{
             		if (sti[i].getStudentId().equals(studentId))
@@ -5890,9 +5892,16 @@ public class SessionOperationController extends PageFlowController {
 	            		{
 	            			if (!(productId == 4010 || productId == 4012))
 	            			{
+	            				//** fixed defec#78752
+	            				String completionStatus = sti[i].getCompletionStatus();
 		            			String testletForm = sti[i].getItemSetForm();
 		            			if (testletForms.length()>0) testletForms += ",";
 		            			testletForms += testletForm;
+		            			//** if one of the testlets is still scheduled, don't allow student to be scheduled until testlet completed
+		            			if (completionStatus.compareToIgnoreCase("SC") == 0)
+		            			{
+		            				testletScheduled = true;
+		            			}
 	            			}
 	            		}
             		}
@@ -5903,7 +5912,7 @@ public class SessionOperationController extends PageFlowController {
             		}
             	}
             	
-            	if (!studentFound) return false;
+            	if (!studentFound || testletScheduled) return false;
             	
             	String allLevelForms = "";
             	for (int j=0;j<forms.length;j++)
