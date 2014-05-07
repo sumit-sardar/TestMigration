@@ -1,5 +1,6 @@
 package utils; 
 
+import com.ctb.util.PropertiesLoader;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
@@ -62,7 +63,7 @@ public class TableUtils
     private String server = null;
     private int port = 0;
     
-	private static final String COPYWRITE = "Developed and published by CTB/McGraw-Hill LLC, a subsidiary of the McGraw-Hill Companies, Inc., 20 Ryan Ranch Road, Monterey, California, 93940-5703. Copyright © 2006 by CTB/McGraw-Hill LLC. All rights reserved. Only authorized customers may copy, download and/or print the document, located online at ctb.com. Any other use or reproduction of this document, in whole or in part, requires written permission of the publisher.";
+	private static final String COPYWRITE = PropertiesLoader.getDetail("oas.copywrite.legacy");
     private static final String ARIAL = "ARIAL";
     private static final String TIMES_NEW_ROMAN = FontFactory.TIMES_ROMAN;
     private static final float SMALL_FONT = 2f;
