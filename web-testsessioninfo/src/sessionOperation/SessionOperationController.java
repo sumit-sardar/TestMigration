@@ -1372,13 +1372,15 @@ public class SessionOperationController extends PageFlowController {
                     	}
     	        	}
                     
-                    if(ovLoginEnd!= null && !(DateUtils.isAfterToday(ovLoginEnd, timeZoneCopySession ))) {
-                    	vo.setStartDate(DateUtils.formatDateToDateString(today)); // setting today as start day
-                    	vo.setEndDate(DateUtils.formatDateToDateString(today));    // setting today as end day
-                    	vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
-                    }else if (ovLoginEnd!= null){
-                    	vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
-                    	
+                    if(! this.hasDefaultTestingWindowConfig){
+	                    if(ovLoginEnd!= null && !(DateUtils.isAfterToday(ovLoginEnd, timeZoneCopySession ))) {
+	                    	vo.setStartDate(DateUtils.formatDateToDateString(today)); // setting today as start day
+	                    	vo.setEndDate(DateUtils.formatDateToDateString(today));    // setting today as end day
+	                    	vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
+	                    }else if (ovLoginEnd!= null){
+	                    	vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
+	                    	
+	                    }
                     }
                     
                 }else{
@@ -1542,7 +1544,7 @@ public class SessionOperationController extends PageFlowController {
     	    	SessionStudent[] students =  scheduledSession.getStudents();
     	    	List<SessionStudent> studentsList = null;
     	    	if(action != null && action.equals("copySession")){
-        	    	if (this.isTABECustomer || this.isTABEAdaptiveCustomer) {
+           	    	if (this.isTABECustomer || this.isTABEAdaptiveCustomer || this.isTASCCustomer || this.isTASCReadinessCustomer) {
         	    		studentsList = new ArrayList(); 
         	    	}
         	    	else {
@@ -5123,9 +5125,7 @@ public class SessionOperationController extends PageFlowController {
     	boolean hasScoringConfigurable = false;
     	boolean hasResetTestSession = false;
     	boolean hasResetTestSessionForAdmin = false;
-    	//boolean isOKCustomer = false;
     	boolean isGACustomer = false;
-    	boolean isTascCustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
@@ -5280,9 +5280,7 @@ public class SessionOperationController extends PageFlowController {
 				        }
 				}
 			}
-			isTascCustomer = isTASCCustomer(customerConfigurations);
-			this.isTASCCustomer = isTascCustomer;
-			
+			this.isTASCCustomer = isTASCCustomer(customerConfigurations);		
 			this.isTASCReadinessCustomer = isTASCReadinessCustomer(customerConfigurations);
 		}
 		if (isWVCustomer)
@@ -5331,9 +5329,9 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)|| (isTascCustomer && isTopLevelAdmin))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)|| (this.isTASCCustomer && isTopLevelAdmin))));
 		
-		this.getSession().setAttribute("isTascCustomer", new Boolean(isTascCustomer));
+		this.getSession().setAttribute("isTascCustomer", new Boolean(this.isTASCCustomer));
 		this.getSession().setAttribute("isTASCReadinessCustomer", new Boolean(this.isTASCReadinessCustomer));
 		this.getSession().setAttribute("isLasLinkCustomer", new Boolean(isLasLinkCustomer));
 		
@@ -8863,7 +8861,7 @@ public class SessionOperationController extends PageFlowController {
 			ScheduledSession schSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, testAdminIdBeforCopy);
 			SessionStudent[] sessionStudents = schSession.getStudents();
 			ArrayList<SessionStudent> studentListForCopy = null;
-	    	if (this.isTABECustomer || this.isTABEAdaptiveCustomer) {
+   	    	if (this.isTABECustomer || this.isTABEAdaptiveCustomer || this.isTASCCustomer || this.isTASCReadinessCustomer) {
 	    		studentListForCopy = new ArrayList<SessionStudent>(0);
 	    	}
 	    	else {
