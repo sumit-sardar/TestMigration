@@ -648,7 +648,7 @@ public interface StudentItemSetStatus extends JdbcControl
 	@JdbcControl.SQL(statement= "select ros.student_id as studentId, siss.item_set_id as itemSetId,subject,completion_status as completionStatus,test_completion_status as testCompletionStatus,siss.completion_date_time as completionDateTime,item_set_level as itemSetLevel,item_set_form as itemSetForm, ta.product_id as productId \n"  
 	+"from  student_item_set_status siss,  test_roster ros  , test_admin ta, item_set ii\n"
 	+"where  siss.test_roster_id = ros.test_roster_id  \n"
-	+"and ta.test_admin_id=ros.test_admin_id and ta.test_catalog_id in (86643,86645)\n"
+	+"and ta.test_admin_id=ros.test_admin_id and ta.test_catalog_id in (86643,86644,86645,86646)\n"
 	+"and siss.item_set_id=ii.item_set_id \n"
 	+"and ii.subject=(select subject from item_set_ancestor isa join item_set ii on ii.item_set_id = isa.item_set_id where sample='F' and ii.item_set_type='TD' and item_set_form=1 and ancestor_item_set_id={testItemSetId} )\n"
 	+"and ii.sample='F'\n"
