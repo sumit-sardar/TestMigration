@@ -3384,6 +3384,10 @@ public class SessionOperationController extends PageFlowController {
 			        	{
 			        		ssd.getSessionStudents()[i].setOutOfSchool("Yes");
 			        	}
+		        		else if (sti.length == 0)
+		        		{
+		        			ssd.getSessionStudents()[i].setOutOfSchool("Yes");
+		        		}
 		        	}
 		        }
 	        }
@@ -5871,12 +5875,12 @@ public class SessionOperationController extends PageFlowController {
             			studentFound = true;
 	            		int productId = sti[i].getProductId();
 	            		//** If student did not have any scheduled TABE9/10, return false
-	            		if (!studentTabe910Processed && (productId != 4010 && productId != 4012))
+	            		if (!studentTabe910Processed && (productId != 4009 && productId != 4010 && productId != 4011 && productId != 4012))
 	            		{
 	            			return false;
 	            		}
-	            		//** TABE 9 Online Complete Battery or TABE 10 Online Complete Battery
-	            		if (!studentTabe910Processed && (productId == 4010 || productId == 4012))
+	            		//** TABE 9 Online Complete Battery or TABE 10 Online Complete Battery or TABE 9 Online Survey or TABE 10 Online Survey
+	            		if (!studentTabe910Processed && (productId == 4009 || productId == 4010 || productId == 4011 || productId == 4012))
 	            		{
 	            			studentTabe910Processed = true;
 	            			TABE9_10_Level = sti[i].getItemSetLevel();
@@ -5888,7 +5892,7 @@ public class SessionOperationController extends PageFlowController {
 	            		}
 	            		else
 	            		{
-	            			if (!(productId == 4010 || productId == 4012))
+	            			if (!(productId == 4009 || productId == 4010 || productId == 4011 || productId == 4012))
 	            			{
 	            				//** fixed defec#78752
 	            				String completionStatus = sti[i].getCompletionStatus();
