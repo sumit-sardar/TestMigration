@@ -848,7 +848,7 @@ function populateReportTableForAcademicScore(data){
  
  function populateReportTableRow(rowdata) {
     var tr = '<tr ' ;
-    if(rowdata.contentAreaName != undefined && (rowdata.contentAreaName =='Comprehension'  || rowdata.contentAreaName =='Comprensión' || rowdata.contentAreaName =='Oral' || rowdata.contentAreaName=='Overall' || rowdata.contentAreaName=='Productive') ||rowdata.contentAreaName=='Literacy'){
+    if(rowdata.contentAreaName != undefined && (rowdata.contentAreaName =='Comprehension'  || rowdata.contentAreaName =='Comprensión' || rowdata.contentAreaName =='Comprensi\u00f3n' || rowdata.contentAreaName =='Oral' || rowdata.contentAreaName=='Overall' || rowdata.contentAreaName=='Productive') ||rowdata.contentAreaName=='Literacy'){
     	tr += ' bgcolor="#C3D599" >';
     } else { tr += ' >'; }
     tr +='<td align="left" class="transparent" style="border-style: solid !important; border-width: thin !important; ">'+ rowdata.contentAreaName + '</td>';
