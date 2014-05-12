@@ -3913,7 +3913,10 @@ function registerDelegate(tree){
 		if(selectedId1 != null && $.trim(selectedId1) != '') {
 			setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
-		}	
+		}
+		hideDisableStudentMsgForTabeAdultCoreExp();
+		if(isSelectingStudent)
+			isSelectingStudent = false;
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
 				openCloseScheduleSessionPopup();
@@ -3932,6 +3935,10 @@ function registerDelegate(tree){
 	    	}
     	}
     }
+    
+    function hideDisableStudentMsgForTabeAdultCoreExp(){
+		$("#diasbleStudentMsg").css("display","none");
+	} 
     
     function saveTest(checkRestricted) {
 
@@ -4683,6 +4690,7 @@ function registerDelegate(tree){
 		   		 hasShowRosterAccomAndHierarchyConfig = obj.hasShowRosterAccomAndHierarchyConfig;
 		   		 accommodationMapForRoster = obj.accomodationMap;
 		   		 orgNodeHierarchyMapForRoster = obj.orgNodeIdMap;
+		   		 var viewStatusForTABEAdult = obj.viewStatusForTABEAdult;
 		   		 if(toggleIsOkCustomer == 'true') {
 		   		 	isOkCustomer = true;
 		   		 } else {
@@ -4743,7 +4751,11 @@ function registerDelegate(tree){
 						$("#assignFormMsg").hide();
 					}
 				 } else {
-					$("#rosterList").jqGrid("hideCol","assignedForm"); 
+				 	if(viewStatusForTABEAdult){
+				 		$("#rosterList").jqGrid("showCol","assignedForm");
+				 	}else{
+				 		$("#rosterList").jqGrid("hideCol","assignedForm");
+				 	}
 					$("#assignFormButton").hide(); 
 				 }
 				 

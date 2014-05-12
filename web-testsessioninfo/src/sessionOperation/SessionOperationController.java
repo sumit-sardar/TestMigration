@@ -7549,12 +7549,15 @@ public class SessionOperationController extends PageFlowController {
 				List rosterList = null;
 				List invalidateReasonList= null;
 		        String testAdminId = getRequest().getParameter("testAdminId");
+		        boolean viewStatusForTABEAdult=false;
 		        initializeTestSession();
 		        if(testAdminId != null){
 			        TestProduct tp = getProductForTestAdmin(Integer.valueOf(testAdminId));
 			        if(tp!=null){
 			        	this.isTabeLocatorProduct = isTabeSession(tp.getProductType());
-			        	
+			        	if(tp.getProductId() != null && tp.getProductId().equals(4201)){
+				        	viewStatusForTABEAdult = true;
+				        }
 			        }
 		        }
 		        if (testAdminId != null)
@@ -7580,6 +7583,7 @@ public class SessionOperationController extends PageFlowController {
 				base.setHasTopLevelInvalidationOnlyConfig(hasTopLevelInvalidationOnlyConfig());
 				base.setTopLevelUser(isTopLevelUser());
 				base.setHasAssignFormRosterConfig(hasAssignFormRosterConfig());
+				base.setViewStatusForTABEAdult(viewStatusForTABEAdult);
 				if (hasAssignFormRosterConfig()) {
 					base.setAssignFormList(getRosterFormList(testAdminId));
 				}

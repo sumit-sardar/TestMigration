@@ -149,6 +149,11 @@
 								$("#endTest").show();
 								}	
 							}
+							if (!isCopySession && parseInt(data.savedTestDetails.testSession.productId) == 4201){
+								isSortable = false;
+							}else{
+								isSortable = true;
+							}
 							if (stdsLogIn || isTestExpired || isProctor){
 								isSortable = false;								
 								disableInEdit();							

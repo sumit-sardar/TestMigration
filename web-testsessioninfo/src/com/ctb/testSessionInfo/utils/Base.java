@@ -58,7 +58,15 @@ public class Base {
 	private boolean hasTopLevelInvalidationOnlyConfig; //Added for B-25933 Invalidation and Breach Form Assignment
 	private List assignFormList; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
 	private boolean hasShowRosterAccomAndHierarchyConfig;
+	private boolean  viewStatusForTABEAdult;
 	
+	
+	public boolean isViewStatusForTABEAdult() {
+		return viewStatusForTABEAdult;
+	}
+	public void setViewStatusForTABEAdult(boolean viewStatusForTABEAdult) {
+		this.viewStatusForTABEAdult = viewStatusForTABEAdult;
+	}
 	public boolean isDonotScoreAllowed() {
 		return donotScoreAllowed;
 	}
