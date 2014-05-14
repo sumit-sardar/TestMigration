@@ -543,17 +543,19 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId, productId);
 			StudentImmediateCSVReportUtils utilsCSV = new StudentImmediateCSVReportUtils();
 			String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
-			getResponse().setContentType("text/csv");
+			//getResponse().setContentType("text/csv");
+			//getResponse().setContentType("csv");
+			getResponse().setCharacterEncoding("UTF-8");
+			OutputStream os = getResponse().getOutputStream();
+			//os.write(239);     
+			//os.write(187);     
+			//os.write(191);    
+			PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));
+			getResponse().setContentType("application/csv");
 	        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".csv");
 	        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
 	        getResponse().setHeader("Pragma", "public");
-	        getResponse().setCharacterEncoding("UTF-8");
-			OutputStream os = getResponse().getOutputStream();
-			os.write(239);     
-			os.write(187);     
-			os.write(191);    
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8")); 
-			utilsCSV.setupCSV(writer, stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
+	        utilsCSV.setupCSV(writer, stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
 	        utilsCSV.generateReport();
 			writer.flush();
 			writer.close();
@@ -584,16 +586,19 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			List<StudentScoreReport> stuReportList = studentManagement.getStudentReportByGroup(testRosterList,productId);
 			GroupImmediateCSVReportUtils utilsCSV = new GroupImmediateCSVReportUtils();
 			String fileName = "Group_Immediate_Report_"+orgName+"_"+treeOrgNodeId;
-			getResponse().setContentType("text/csv");
+			//getResponse().setContentType("text/csv");
+			//getResponse().setContentType("csv");
+			getResponse().setCharacterEncoding("UTF-8");
+			OutputStream os = getResponse().getOutputStream();
+			//os.write(239);     
+			//os.write(187);     
+			//os.write(191);    
+			PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));
+			getResponse().setContentType("application/csv");
 	        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".csv");
 	        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
 	        getResponse().setHeader("Pragma", "public");
-	        getResponse().setCharacterEncoding("UTF-8");
-			OutputStream os = getResponse().getOutputStream();
-			os.write(239);     
-			os.write(187);     
-			os.write(191);    
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8")); 
+	         
 			utilsCSV.writeHeaderRow(writer,productId);
 			if(allStudentList != null){
 				for(StudentScoreReport spi : stuReportList)
