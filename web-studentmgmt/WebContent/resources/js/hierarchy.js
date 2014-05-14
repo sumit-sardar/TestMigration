@@ -1721,6 +1721,13 @@ function fillselectedOrgNode( elementId, orgList) {
 		resetDisabledFields();
 	}
 	
+	if(isDisableEditForWV) {
+		$('#Student_Accommodation_Information :checkbox').attr('disabled', false);
+		$('#Student_Accommodation_Information :radio').attr('disabled', false); 
+		$('#Student_Accommodation_Information select').attr('disabled', false);
+		$('#Student_Accommodation_Information :input').attr('disabled', false);
+	}
+	
 	if(isAddStudent){
 		isEditStudentImported = false;
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
