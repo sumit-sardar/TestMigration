@@ -143,6 +143,9 @@ var orgNodeHierarchyMapForRoster = {};
 var hasShowRosterAccomAndHierarchyConfig = false;
 var classHierarchyMap_editSession={};
 
+var isScheduleSession = false; // Added for hide TABE Adult group in edit
+var studentMsgForTabeAdult = false; // Added for Defect #78880 
+
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
@@ -1166,6 +1169,15 @@ function registerDelegate(tree){
 			classHierarchyMap_editSession={};   
 			hasShowRosterAccomAndHierarchyConfig=false;
 		}
+		var productSelected  = $("#testGroupList").val();
+		if(dailogId == 'closeScheduleSessionPopup'){
+			isSelectingStudent = true;
+			if(productSelected == 4201 && studentMsgForTabeAdult == true){
+				enableStudentMsgForTabeAdultCoreExp();
+			}
+		}else{
+			isSelectingStudent = false;
+		}
 		$("#"+dailogId).dialog("close");
 	}
 	
@@ -1778,6 +1790,8 @@ function registerDelegate(tree){
  		orgDataInform = {};
  	}
  	
+ 	isScheduleSession = true;
+ 	
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -1956,7 +1970,10 @@ function registerDelegate(tree){
 					selectProductIndex = i;
 					
 				} else {
-					optionHtml += "<option  value='"+ optionList[i].productId+"'>"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
+					if(optionList[i].productId == 4201 && !isScheduleSession && !isCopySession){
+					}else{
+						optionHtml += "<option  value='"+ optionList[i].productId+"'>"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
+					}
 				}
 				
 			}
@@ -2079,6 +2096,11 @@ function registerDelegate(tree){
 		 //}
 		 hideSubtestWarningMessage();
 		 document.getElementById("modifyTestDiv").style.display = "none";
+	}
+	
+	function enableStudentMsgForTabeAdultCoreExp(){
+		studentMsgForTabeAdult = true;
+		$("#diasbleStudentMsg").css("display","block");
 	}
 	
 	function disableEndDateTabeAdultForAdd() {
@@ -3884,6 +3906,7 @@ function registerDelegate(tree){
 	}
 	function closeScheduleSessionPopup() {
 	    closePopUp('closeScheduleSessionPopup');
+	    disableStudentMsgForTabeAdultCoreExp();
 		closePopUp('scheduleSession');
 		$('#defaultWindowMsgInfo').hide();
 		defaultDays = undefined;
@@ -3914,7 +3937,7 @@ function registerDelegate(tree){
 			setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
 		}
-		hideDisableStudentMsgForTabeAdultCoreExp();
+		hideStudentMsgForTabeAdultCoreExp();
 		if(isSelectingStudent)
 			isSelectingStudent = false;
 		if (state == "EDIT"){
@@ -3936,7 +3959,7 @@ function registerDelegate(tree){
     	}
     }
     
-    function hideDisableStudentMsgForTabeAdultCoreExp(){
+    function hideStudentMsgForTabeAdultCoreExp(){
 		$("#diasbleStudentMsg").css("display","none");
 	} 
     

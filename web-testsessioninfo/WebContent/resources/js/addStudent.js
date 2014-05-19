@@ -52,7 +52,7 @@ var isSelectingStudent = false;
 var showLicenseInfo = false;
 var oldestNonZeroPO;
 
-function disableStudentMsgForTabeAdultCoreExp(){
+function disableEnableStudentMsgForTabeAdultCoreExp(){
 	var selectTestGroup = $("#testGroupList").val();
 	var isTabeAdultMsg = false;
 	if(selectTestGroup == 4201){
@@ -62,14 +62,17 @@ function disableStudentMsgForTabeAdultCoreExp(){
 	}
 	
 	if(isTabeAdultMsg){
+		studentMsgForTabeAdult = true;
 		$("#diasbleStudentMsg").css("display","block");
 	}else{
+		studentMsgForTabeAdult = false;
 		$("#diasbleStudentMsg").css("display","none");
 	}
 	}
 	
 
-function hideDisableStudentMsgForTabeAdultCoreExp(){
+function disableStudentMsgForTabeAdultCoreExp(){
+	studentMsgForTabeAdult = false;
 	$("#diasbleStudentMsg").css("display","none");
 	}	
 /// FOR FILTER
@@ -102,7 +105,7 @@ function hideSelectStudent(){
 		studentWithaccommodation = 0;
 	cloneStudentMapToTemp();
 	hideSelectStudentPopup();
-	hideDisableStudentMsgForTabeAdultCoreExp();
+	disableStudentMsgForTabeAdultCoreExp();
 	allSelectOrg = allSelectOrgTmp.slice(0);
 	$("#stuOrgNodeHierarchy").undelegate();
 	isSelectingStudent = false;	
@@ -318,7 +321,7 @@ function populateSelectStudentGrid() {
  		if(state == "EDIT"){
 	       	postDataObject.testAdminId = selectedTestAdminId;
 	    }
-	    disableStudentMsgForTabeAdultCoreExp();
+	    disableEnableStudentMsgForTabeAdultCoreExp();
        $("#selectStudent").jqGrid({         
           url: 'getStudentForList.do', 
 		  mtype:   'POST',
@@ -1871,7 +1874,7 @@ function studentInTest(stdId, orgNodeId) {
 	function validateEndDateForLaslinkLM(){
 	  var orgIds = getAssociatedOrgIds();
 	  var postDataObject = {};
-	  hideDisableStudentMsgForTabeAdultCoreExp();
+	  disableStudentMsgForTabeAdultCoreExp();
 	  postDataObject.selectedOrgIds = orgIds;
 		  $.ajax({
 			async:		false,

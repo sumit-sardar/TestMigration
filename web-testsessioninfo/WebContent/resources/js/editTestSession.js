@@ -76,7 +76,7 @@
      	param.action = action;
      }
      isEdit = true;
-   
+   	 isScheduleSession = false;
  	
  	$.ajax({
 		async:		true,
@@ -371,7 +371,11 @@
     	  if(stdsLogIn || isTestExpired || isProctor){
     	  	disableSelectTest(); 
     	  }else{
-    	  removeDisableInEdit();    	  
+    	  	removeDisableInEdit();
+    	  	var subTestLength = $('#subtestTable tr').length;
+    	   	if(subTestLength <= 2){
+ 				$("#testBreak").attr('disabled', true);
+			}
     	  }
     	 /* To set force test break on Test change: start */
 		 if (forceTestBreak) {
@@ -475,8 +479,12 @@
 									disableSelectTest();
 								}else{
 									removeDisableInEdit();
-									if(subtest.length <= 1) {
+									/*if(subtest.length <= 1) {
 										$("#testBreak").attr('disabled', true);
+									}*/
+									var subTestLength = $('#subtestTable tr').length;
+    	  						 	if(subTestLength <= 2){
+ 										$("#testBreak").attr('disabled', true);
 									}
 									if(locatorOnlyTest){
 										$("#hasAutolocator").attr('disabled', true);
