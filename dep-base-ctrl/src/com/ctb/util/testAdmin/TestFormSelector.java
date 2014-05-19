@@ -1,5 +1,8 @@
 package com.ctb.util.testAdmin; 
 
+import java.util.Iterator;
+import java.util.List;
+
 import com.ctb.bean.request.testAdmin.FormAssignmentCount;
 
 public class TestFormSelector 
@@ -17,4 +20,35 @@ public class TestFormSelector
         forms[index].setCount(new Integer(forms[index].getCount().intValue() + 1));
         return forms[index].getForm();
     }
+    
+    public static String getTestletFormWithLowestCountAndIncrement(List<FormAssignmentCount> forms, List<String> levelFrms){
+    	Iterator<FormAssignmentCount> itr = forms.iterator();
+    	FormAssignmentCount retFrm = null;
+    	int count = 0;
+    	while(itr.hasNext()){
+    		int value = Integer.MAX_VALUE;
+    		FormAssignmentCount frm = itr.next();
+    		if(!levelFrms.contains(frm.getForm())){
+    			if(frm.getCount().intValue()<value){
+    				retFrm = frm;
+    				value = frm.getCount().intValue();
+    				count = frm.getCount().intValue();
+    			}
+    		}
+    	}
+    	if(retFrm == null){
+    		while(itr.hasNext()){
+        		FormAssignmentCount frm = itr.next();
+        		if(!levelFrms.contains(frm.getForm())){
+        				retFrm = frm;
+        				count = frm.getCount().intValue();
+        		}
+        	}
+    	}
+    	int index = forms.indexOf(retFrm);
+    	retFrm.setCount(count+1);
+    	forms.add(index, retFrm);
+    	return retFrm.getForm();
+    }
+
 } 

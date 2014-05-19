@@ -2407,6 +2407,64 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
+    private  Map <Integer, List<String>>  getAssignedTestletForms( SessionStudent [] scheduledStudents,Integer testAdminId ) throws SQLException{
+        Map <Integer, List<String>> map = new HashMap<Integer, List<String>>();
+            String studentIds = "";
+	        for (int s=0;s<scheduledStudents.length;s++)
+	        {
+	        	SessionStudent stu = scheduledStudents[s];
+	        	map.put(stu.getStudentId(), new ArrayList<String>());
+	        	if (studentIds.length()>0)
+		        {
+	        		studentIds += ",";
+		        }
+	        	
+	        	studentIds += stu.getStudentId();
+	        }
+	        StudentTestletInfo[] sti = siss.getAssignedTestletForms(studentIds,  testAdminId);
+	        for (int k=0;k<sti.length;k++){
+	        	Integer stuId = sti[k].getStudentId();
+	        	map.get(stuId).add(sti[k].getItemSetForm());
+	        }
+	        
+	        return map;
+    }
+    
+    private Map <String, List<String>> getTestletFormsByLevels(Integer itemSetId) throws SQLException{
+    	Map <String, List<String>> map = new HashMap<String, List<String>>();
+    	TestletLevelForm[] levelForms = siss.getTestletLevelFormsByItemSetId(itemSetId);
+    	for(int l=0;l<levelForms.length;l++){
+    		TestletLevelForm form = levelForms[l];
+    		if(map.get(form.getTABELevel())!=null){
+    			map.get(form.getTABELevel()).add(form.getTestletForm());
+    		}else{
+    			List<String> list = new ArrayList<String>();
+    			list.add(form.getTestletForm());
+    			map.put(form.getTABELevel(), list);
+    		}
+    		
+    	}
+    	return map;
+    }
+    
+    private Map<String, List<FormAssignmentCount>> segregateFormsCountsByCurrentLevel(FormAssignmentCount [] formCounts, Map <String, List<String>> levelFormsMap){
+    	Map<String, List<FormAssignmentCount>> formsMap = new HashMap<String, List<FormAssignmentCount>>();
+    	Iterator<String> keyItr = levelFormsMap.keySet().iterator();
+    	while(keyItr.hasNext()){
+    		String level = keyItr.next();
+    		List<String> levelForms = levelFormsMap.get(level);
+    		List<FormAssignmentCount> forms = new ArrayList<FormAssignmentCount>();
+        	for(int i=0;i<formCounts.length;i++) {
+        		if(levelForms.contains(formCounts[i].getForm())){
+        			forms.add(formCounts[i]);
+        		}
+            }
+        	formsMap.put(level, forms);
+    	}
+    	
+   	return formsMap;
+    }
+    
     private void createTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Double extendedTimeValue) throws CTBBusinessException {
         try{
             Integer productId = newSession.getTestSession().getProductId();
@@ -2452,6 +2510,15 @@ public class ScheduleTestImpl implements ScheduleTest
             }
            //End for Password Length Change
             
+            Map <String, List<FormAssignmentCount>> formsCountByLevel= null;
+            Map <Integer, List<String>> assignedForms = null;
+            Map <String, List<String>> formsByLevel = null;
+            if(scheduledStudents.length>0 && productId.intValue() == 4201){            	
+            	assignedForms = getAssignedTestletForms(scheduledStudents, newSession.getTestSession().getTestAdminId());
+            	formsByLevel = getTestletFormsByLevels(newSession.getTestSession().getItemSetId());
+            	formsCountByLevel = segregateFormsCountsByCurrentLevel(formCounts, formsByLevel);
+            }
+            
             ArrayList subtestAssignments = new ArrayList();
             boolean testRestricted = "T".equals(admins.isTestRestricted(newSession.getTestSession().getItemSetId()))?true:false;
             for(int j=0;scheduledStudents != null && j<scheduledStudents.length;j++) {
@@ -2479,8 +2546,14 @@ public class ScheduleTestImpl implements ScheduleTest
                     else {
                         if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.MANUAL)) {
                             form = student.getItemSetForm();
-                        } else if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
-                            form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                        } else if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {                        	
+                        	if(productId.intValue() == 4201){
+                        		Integer studentId = scheduledStudents[j].getStudentId();
+                        		String lvl = siss.getTabe9Or10CompletedFormLevel(studentId , newSession.getTestSession().getItemSetId());
+                        		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
+                        	}else{
+                        		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                        	}
                         }
                     }
                     RosterElement roster = new RosterElement();
