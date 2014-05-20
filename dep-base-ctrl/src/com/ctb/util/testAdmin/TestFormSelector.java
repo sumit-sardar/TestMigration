@@ -21,14 +21,14 @@ public class TestFormSelector
         return forms[index].getForm();
     }
     
-    public static String getTestletFormWithLowestCountAndIncrement(List<FormAssignmentCount> forms, List<String> levelFrms){
+    public static String getTestletFormWithLowestCountAndIncrement(List<FormAssignmentCount> forms, List<String> alreadyAssignedForms){
     	Iterator<FormAssignmentCount> itr = forms.iterator();
     	FormAssignmentCount retFrm = null;
     	int count = 0;
     	while(itr.hasNext()){
     		int value = Integer.MAX_VALUE;
     		FormAssignmentCount frm = itr.next();
-    		if(!levelFrms.contains(frm.getForm())){
+    		if(!alreadyAssignedForms.contains(frm.getForm())){
     			if(frm.getCount().intValue()<value){
     				retFrm = frm;
     				value = frm.getCount().intValue();
@@ -39,9 +39,10 @@ public class TestFormSelector
     	if(retFrm == null){
     		while(itr.hasNext()){
         		FormAssignmentCount frm = itr.next();
-        		if(!levelFrms.contains(frm.getForm())){
+        		if(!alreadyAssignedForms.contains(frm.getForm())){
         				retFrm = frm;
         				count = frm.getCount().intValue();
+        				break;
         		}
         	}
     	}
