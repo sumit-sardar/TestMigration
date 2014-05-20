@@ -1738,6 +1738,7 @@ function registerDelegate(tree){
 				delete accomodationMap[delStuIdObjArray[i]];
 				studentTempMap.remove(delStuIdObjArray[i]);
 				savedStudentMap.remove(delStuIdObjArray[i]);
+				deletedStuudentsFromSessionArray[deletedStuudentsFromSessionArray.length]=delStuIdObjArray[i];
 			}
 		}
 		closePopUp('removeStuConfirmationPopup');

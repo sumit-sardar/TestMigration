@@ -11,6 +11,7 @@ var isOnBack = false;
 var stuForSelectedOrg;
 var preSelectedOrg;
 var delStuIdObjArray = [];
+var deletedStuudentsFromSessionArray = [];
 var orgForDupStu = [];
 var studentWithaccommodation = 0;
 var allStudentIds = [];
@@ -524,6 +525,22 @@ function populateSelectStudentGrid() {
 									$("#"+stuObj.studentId+" td input").attr("checked", true);
 									$("#"+stuObj.studentId).trigger('click');
 									$("#"+stuObj.studentId+" td input").attr("checked", true); 
+									
+									//** When editing a testlet session, make sure selected students are not disabled.
+									//** Defect#78967
+									if(state=="EDIT" && postDataObject.productSelected==4201){
+										$("#"+stuObj.studentId+" td input","#selectStudent").attr("disabled", false);
+										$("#"+stuObj.studentId, "#selectStudent").removeClass('ui-state-disabled'); 
+										
+										//**
+										for(var d = 0; d < deletedStuudentsFromSessionArray.length; d++) {
+											if (stuObj.studentId == deletedStuudentsFromSessionArray[d])
+											{
+											$("#"+stuObj.studentId+" td input","#selectStudent").attr("disabled", false);
+											$("#"+stuObj.studentId, "#selectStudent").removeClass('ui-state-disabled');
+											} 
+										}
+									}
 								} else {
 									$("#"+stuObj.studentId+" td input").attr("checked", false);
 									//$("#"+stuObj.studentId).trigger('click');
@@ -546,6 +563,13 @@ function populateSelectStudentGrid() {
 								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);
 								$("#"+allRowsInGridHere[i]).trigger('click');
 								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);
+								
+								//** When editing a testlet session, make sure selected students are not disabled.
+								//** Defect#78967
+								if(state=="EDIT" && postDataObject.productSelected==4201){
+									$("#"+allRowsInGridHere[i]+" td input","#selectStudent").attr("disabled", false);
+									$("#"+allRowsInGridHere[i], "#selectStudent").removeClass('ui-state-disabled'); 
+								}								
 							}
 						}
 					}
