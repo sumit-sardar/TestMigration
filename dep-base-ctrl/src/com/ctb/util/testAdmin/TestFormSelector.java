@@ -25,8 +25,8 @@ public class TestFormSelector
     	Iterator<FormAssignmentCount> itr = forms.iterator();
     	FormAssignmentCount retFrm = null;
     	int count = 0;
+    	int value = Integer.MAX_VALUE;
     	while(itr.hasNext()){
-    		int value = Integer.MAX_VALUE;
     		FormAssignmentCount frm = itr.next();
     		if(!alreadyAssignedForms.contains(frm.getForm())){
     			if(frm.getCount().intValue()<value){
