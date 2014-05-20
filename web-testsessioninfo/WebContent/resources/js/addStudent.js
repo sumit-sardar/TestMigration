@@ -11,7 +11,7 @@ var isOnBack = false;
 var stuForSelectedOrg;
 var preSelectedOrg;
 var delStuIdObjArray = [];
-var deletedStuudentsFromSessionArray = [];
+var deletedStudentsFromSessionArray = [];
 var orgForDupStu = [];
 var studentWithaccommodation = 0;
 var allStudentIds = [];
@@ -522,9 +522,6 @@ function populateSelectStudentGrid() {
 							if(stuObj != null && stuObj != undefined) {
 								var orgArray = 	String(stuObj.orgNodeId);
 								if(orgArray == stuForSelectedOrg) {
-									$("#"+stuObj.studentId+" td input").attr("checked", true);
-									$("#"+stuObj.studentId).trigger('click');
-									$("#"+stuObj.studentId+" td input").attr("checked", true); 
 									
 									//** When editing a testlet session, make sure selected students are not disabled.
 									//** Defect#78967
@@ -532,15 +529,20 @@ function populateSelectStudentGrid() {
 										$("#"+stuObj.studentId+" td input","#selectStudent").attr("disabled", false);
 										$("#"+stuObj.studentId, "#selectStudent").removeClass('ui-state-disabled'); 
 										
-										//**
-										for(var d = 0; d < deletedStuudentsFromSessionArray.length; d++) {
-											if (stuObj.studentId == deletedStuudentsFromSessionArray[d])
+										//** Make deleted students enabled
+										for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+											if (stuObj.studentId == deletedStudentsFromSessionArray[d])
 											{
 											$("#"+stuObj.studentId+" td input","#selectStudent").attr("disabled", false);
 											$("#"+stuObj.studentId, "#selectStudent").removeClass('ui-state-disabled');
 											} 
 										}
 									}
+									
+									$("#"+stuObj.studentId+" td input").attr("checked", true);
+									$("#"+stuObj.studentId).trigger('click');
+									$("#"+stuObj.studentId+" td input").attr("checked", true); 
+									
 								} else {
 									$("#"+stuObj.studentId+" td input").attr("checked", false);
 									//$("#"+stuObj.studentId).trigger('click');
@@ -549,7 +551,20 @@ function populateSelectStudentGrid() {
 							} 					
 						}
 					}
-			 
+					//** When editing a testlet session, make sure selected students are not disabled.
+					//** Defect#78967
+			 		else if(state=="EDIT" && postDataObject.productSelected==4201){
+			 		
+						//** Make deleted students enabled
+						for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+							$("#"+deletedStudentsFromSessionArray[d]+" td input","#selectStudent").attr("disabled", false);
+							$("#"+deletedStudentsFromSessionArray[d], "#selectStudent").removeClass('ui-state-disabled');
+							
+							$("#"+deletedStudentsFromSessionArray[d]+" td input").attr("checked", true);
+							$("#"+deletedStudentsFromSessionArray[d]).trigger('click');
+							$("#"+deletedStudentsFromSessionArray[d]+" td input").attr("checked", true); 
+						}
+			 		}
 			 
 			 } else { // if next time read from already loaded data
 			    
@@ -560,21 +575,44 @@ function populateSelectStudentGrid() {
 						if(stdData != null && stdData != undefined) {
 							var orgArray = 	String(stdData.orgNodeId);
 							if(orgArray.indexOf(String(stuForSelectedOrg)) >= 0 && String(allRowsInGridHere[i]) == String(stdData.studentId)) {
-								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);
-								$("#"+allRowsInGridHere[i]).trigger('click');
-								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);
 								
 								//** When editing a testlet session, make sure selected students are not disabled.
 								//** Defect#78967
 								if(state=="EDIT" && postDataObject.productSelected==4201){
 									$("#"+allRowsInGridHere[i]+" td input","#selectStudent").attr("disabled", false);
 									$("#"+allRowsInGridHere[i], "#selectStudent").removeClass('ui-state-disabled'); 
-								}								
+									
+									//** Make deleted students enabled
+									for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+										if (allRowsInGridHere[i] == deletedStudentsFromSessionArray[d])
+										{
+										$("#"+allRowsInGridHere[i]+" td input","#selectStudent").attr("disabled", false);
+										$("#"+allRowsInGridHere[i], "#selectStudent").removeClass('ui-state-disabled');
+										} 
+									}
+								}
+								
+								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);
+								$("#"+allRowsInGridHere[i]).trigger('click');
+								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);								
 							}
 						}
 					}
 			 
-			 
+			 		//** When editing a testlet session, make sure selected students are not disabled.
+					//** Defect#78967
+			 		if(state=="EDIT" && postDataObject.productSelected==4201 && studentTempMap.count == 0){
+			 		
+						//** Make deleted students enabled
+						for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+							$("#"+deletedStudentsFromSessionArray[d]+" td input","#selectStudent").attr("disabled", false);
+							$("#"+deletedStudentsFromSessionArray[d], "#selectStudent").removeClass('ui-state-disabled');
+							
+							$("#"+deletedStudentsFromSessionArray[d]+" td input").attr("checked", true);
+							$("#"+deletedStudentsFromSessionArray[d]).trigger('click');
+							$("#"+deletedStudentsFromSessionArray[d]+" td input").attr("checked", true); 
+						}
+			 		}
 			 
 			    /// update if any scenario exists
 

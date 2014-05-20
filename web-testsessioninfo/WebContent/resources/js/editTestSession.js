@@ -1089,6 +1089,7 @@
 		isSecondAccordSelected = true;
 		isCopySession = false;//added for copy test session
 		isSelectTestDetClicked = false;//added for copy test session
+		deletedStudentsFromSessionArray = [];
 	}
 	function isTestExistInCurrentPage(itemSetId){
 		var isetIdArray = $('#testList').jqGrid('getDataIDs');
