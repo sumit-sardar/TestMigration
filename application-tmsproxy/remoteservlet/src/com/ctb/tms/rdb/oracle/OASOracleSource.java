@@ -109,7 +109,7 @@ public class OASOracleSource implements OASRDBSource
 			"                    and ta.test_Admin_id = tr.test_Admin_id " +
 			"                    and sysdate > (TA.LOGIN_START_DATE - 1) " + 
 			"                    and sysdate < (TA.LOGIN_END_DATE + 1) " + 
-			"                    and tr.activation_status = 'AC' " +  
+			"                    and tr.activation_status in ('AC', 'IN') " +  
 			"                    and ta.activation_status = 'AC' " + 
 			"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT', 'CO') " +
 			"                    and stu.student_id = tr.student_id " +
@@ -122,7 +122,8 @@ public class OASOracleSource implements OASRDBSource
 	"                    tr.password as password, " +
 	"                    tais.access_code as accessCode, " +
 	"                    'F' as tmsUpdate, " +
-	"                     tr.test_roster_id as testRosterId " +
+	"                    tr.test_roster_id as testRosterId, " +
+	"					 tr.activation_status as activationStatus " +
 	"                from " +
 	"                    prepop_table prepop, " +
 	"                    test_roster tr, " +
@@ -136,7 +137,7 @@ public class OASOracleSource implements OASRDBSource
 	"                    and ta.test_Admin_id = tr.test_Admin_id " +
 	"                    and sysdate > (TA.LOGIN_START_DATE - 1) " + 
 	"                    and sysdate < (TA.LOGIN_END_DATE + 1) " + 
-	"                    and tr.activation_status = 'AC' " +  
+	"                    and tr.activation_status in ('AC', 'IN') " +  
 	"                    and ta.activation_status = 'AC' " + 
 	"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT', 'CO') " +
 	"                    and stu.student_id = tr.student_id " +
@@ -146,7 +147,8 @@ public class OASOracleSource implements OASRDBSource
 	"					null as password, " +
 	"					null as accessCode, " +
 	"					'F' as tmsUpdate, " +
-	"					prepop.test_roster_id as testRosterId " +
+	"					prepop.test_roster_id as testRosterId, " +
+	"					'IN' as activationStatus " +	
 	"				from " +
 	"					prepop_table prepop " +
 	"				where " +
@@ -203,6 +205,7 @@ public class OASOracleSource implements OASRDBSource
 				creds.setAccesscode(rs1.getString("accesscode"));
 				creds.setTmsUpdate(rs1.getString("tmsUpdate"));
 				creds.setTestRosterId(rs1.getString("testRosterId"));
+				creds.setActivationStatus(rs1.getString("activationStatus"));
 				dataList.add(creds);
 			}
 			rs1.close();

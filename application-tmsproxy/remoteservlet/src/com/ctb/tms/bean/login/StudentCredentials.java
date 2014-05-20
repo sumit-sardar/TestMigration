@@ -6,6 +6,7 @@ public class StudentCredentials {
 	private String accesscode;
 	private String testRosterId;
 	private String tmsUpdate;
+	private String activationStatus;
 	
 	public String getTestRosterId() {
 		return testRosterId;
@@ -43,6 +44,18 @@ public class StudentCredentials {
 		if(accesscode != null) {
 			this.accesscode = accesscode.toUpperCase();
 		}
+	}
+	/**
+	 * @return the activationStatus
+	 */
+	public String getActivationStatus() {
+		return activationStatus;
+	}
+	/**
+	 * @param activationStatus the activationStatus to set
+	 */
+	public void setActivationStatus(String activationStatus) {
+		this.activationStatus = activationStatus;
 	}
 	
 }

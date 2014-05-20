@@ -345,7 +345,8 @@ public class TestDeliveryContextListener implements
 								+ cred.getAccesscode();
 						if (cred.getUsername() == null
 								|| cred.getPassword() == null
-								|| cred.getAccesscode() == null) {
+								|| cred.getAccesscode() == null
+								|| "IN".equals(cred.getActivationStatus())) {
 							if (cred.getTestRosterId() != null) {
 								logger.info("Invalid or deleted roster in pre-pop table, marking manifest unusable for roster: "
 										+ cred.getTestRosterId());
@@ -354,7 +355,7 @@ public class TestDeliveryContextListener implements
 												.getTestRosterId());
 								Manifest[] manifests = wrapper
 										.getManifests();
-								for (int j = 0; j < manifests.length; j++) {
+								for (int j = 0; manifests != null && j < manifests.length; j++) {
 									manifests[j]
 											.setUsable(false);
 								}
@@ -362,6 +363,7 @@ public class TestDeliveryContextListener implements
 								oasSink.putAllManifests(
 										cred.getTestRosterId(),
 										wrapper, false);
+								resultCounts.storedCount++;
 							}
 						} else {
 							if (cred.getUsername().startsWith(
@@ -398,6 +400,7 @@ public class TestDeliveryContextListener implements
 						key = null;
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 					resultCounts.errorCount++;
 					resultCounts.lastError = e;
 				} finally {
