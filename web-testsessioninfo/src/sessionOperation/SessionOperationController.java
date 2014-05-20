@@ -213,6 +213,7 @@ public class SessionOperationController extends PageFlowController {
 	private boolean selectGE = false;
 	private boolean isTABELocatorOnlyTest = false;
 	public String testletSessionEndDate = "01/01/17";
+	public boolean isCopySession = false;
 	
 	//Added for view/monitor test status
     
@@ -1313,12 +1314,14 @@ public class SessionOperationController extends PageFlowController {
     	    	this.selectedProductType = scheduledSession.getTestSession().getProductType();
     	    	
     	    	//added for copy test session
+	    		this.isCopySession = false;
     	    	if(action != null && action.equals("copySession")){
     	    		scheduledSession.setStudentsLoggedIn(new Integer(0));
     	    		originalTestAdminName = scheduledSession.getTestSession().getTestAdminName();
     	    		testAdminNameCopySession = "Copy of " + originalTestAdminName;
     	    		scheduledSession.getTestSession().setTestAdminName(testAdminNameCopySession);
     	    		vo.setCopySession(true);
+    	    		this.isCopySession = true;
     	    	}
     	    	//	
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
@@ -3355,6 +3358,16 @@ public class SessionOperationController extends PageFlowController {
 	        // get students - getSessionStudents
 	        SessionStudentData ssd = getSessionStudents(selectedOrgNodeId, testAdminId, selectedTestId, studentFilter, studentPage, studentSort);
 	        
+	        // remove status field if this is copy session
+        	if (this.isCopySession) {
+		        for (int i=0;i<ssd.getSessionStudents().length;i++)
+		        {
+	        		EditCopyStatus ecs = ssd.getSessionStudents()[i].getStatus();
+	        		ecs.setCode("");
+	        		ecs.setCopyable("T");
+		        }
+        	}
+        	
 	        //** Story: TABE Adaptive FT - 06 - Modify TABE Scheduling – Logic
 	        //** If we are scheduling a testlet
 	        //** 4201 = TABE Adult Common Core Experience 
