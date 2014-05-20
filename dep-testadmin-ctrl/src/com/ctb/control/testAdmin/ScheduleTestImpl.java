@@ -2759,7 +2759,16 @@ public class ScheduleTestImpl implements ScheduleTest
             if (!setPasswordLength)
             	System.out.println("Password Length not present::");
            
-            //End for Password Length Change            
+            //End for Password Length Change
+            
+            Map <String, List<FormAssignmentCount>> formsCountByLevel= null;
+            Map <Integer, List<String>> assignedForms = null;
+            Map <String, List<String>> formsByLevel = null;
+            if(newUnits.length>0 && productId.intValue() == 4201){            	
+            	assignedForms = getAssignedTestletForms(newUnits, newSession.getTestSession().getTestAdminId());
+            	formsByLevel = getTestletFormsByLevels(newSession.getTestSession().getItemSetId());
+            	formsCountByLevel = segregateFormsCountsByCurrentLevel(formCounts, formsByLevel);
+            }
             
             for(int j=0;newUnits!=null && j<newUnits.length;j++) {
                 String form = newSession.getTestSession().getPreferredForm();
@@ -2810,7 +2819,13 @@ public class ScheduleTestImpl implements ScheduleTest
                     if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.MANUAL)) {
                         form = newUnit.getItemSetForm();
                     } else if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
-                        form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                    	if(productId.intValue() == 4201){
+                    		Integer studentId = newUnit.getStudentId();
+                    		String lvl = siss.getTabe9Or10CompletedFormLevel(studentId , newSession.getTestSession().getItemSetId());
+                    		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
+                    	}else{
+                    		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                    	}
                     }
                     re.setFormAssignment(form);
                     re.setCustomerFlagStatus(defaultCustomerFlagStatus);
@@ -2872,8 +2887,15 @@ public class ScheduleTestImpl implements ScheduleTest
                             if(!validForm) {
                                 if (overrideUsingStudentManifest)
                                     form = null;
-                                else 
-                                    form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                                else{
+                                	if(productId.intValue() == 4201){
+                                		Integer studentId = newUnit.getStudentId();
+                                		String lvl = siss.getTabe9Or10CompletedFormLevel(studentId , newSession.getTestSession().getItemSetId());
+                                		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
+                                	}else{
+                                		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                                	}
+                                }
                             }
                         } else if (oldUnit.getFormAssignment() != null && !"".equals(oldUnit.getFormAssignment())) {
                             for(int k=0;k<validForms.length;k++) {
@@ -2884,11 +2906,23 @@ public class ScheduleTestImpl implements ScheduleTest
                             }
                             if(!validForm) {
                                 if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
-                                     form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                                	if(productId.intValue() == 4201){
+                                		Integer studentId = newUnit.getStudentId();
+                                		String lvl = siss.getTabe9Or10CompletedFormLevel(studentId , newSession.getTestSession().getItemSetId());
+                                		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
+                                	}else{
+                                		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                                	}
                                 }
                             }
                         } else if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
-                            form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                        	if(productId.intValue() == 4201){
+                        		Integer studentId = newUnit.getStudentId();
+                        		String lvl = siss.getTabe9Or10CompletedFormLevel(studentId , newSession.getTestSession().getItemSetId());
+                        		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
+                        	}else{
+                        		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
+                        	}
                         }
                         re.setFormAssignment(form);
                         
