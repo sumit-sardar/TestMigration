@@ -559,10 +559,6 @@ function populateSelectStudentGrid() {
 						for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
 							$("#"+deletedStudentsFromSessionArray[d]+" td input","#selectStudent").attr("disabled", false);
 							$("#"+deletedStudentsFromSessionArray[d], "#selectStudent").removeClass('ui-state-disabled');
-							
-							$("#"+deletedStudentsFromSessionArray[d]+" td input").attr("checked", true);
-							$("#"+deletedStudentsFromSessionArray[d]).trigger('click');
-							$("#"+deletedStudentsFromSessionArray[d]+" td input").attr("checked", true); 
 						}
 			 		}
 			 
@@ -607,10 +603,6 @@ function populateSelectStudentGrid() {
 						for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
 							$("#"+deletedStudentsFromSessionArray[d]+" td input","#selectStudent").attr("disabled", false);
 							$("#"+deletedStudentsFromSessionArray[d], "#selectStudent").removeClass('ui-state-disabled');
-							
-							$("#"+deletedStudentsFromSessionArray[d]+" td input").attr("checked", true);
-							$("#"+deletedStudentsFromSessionArray[d]).trigger('click');
-							$("#"+deletedStudentsFromSessionArray[d]+" td input").attr("checked", true); 
 						}
 			 		}
 			 
