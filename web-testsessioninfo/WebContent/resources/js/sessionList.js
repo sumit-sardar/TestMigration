@@ -1738,6 +1738,14 @@ function registerDelegate(tree){
 				delete accomodationMap[delStuIdObjArray[i]];
 				studentTempMap.remove(delStuIdObjArray[i]);
 				savedStudentMap.remove(delStuIdObjArray[i]);
+				var stdFound = false;
+				for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+					if (deletedStudentsFromSessionArray[d]==delStuIdObjArray[i]) {
+						stdFound = true;
+						break;
+					}
+				}
+				if (!stdFound)
 				deletedStudentsFromSessionArray[deletedStudentsFromSessionArray.length]=delStuIdObjArray[i];
 			}
 		}
