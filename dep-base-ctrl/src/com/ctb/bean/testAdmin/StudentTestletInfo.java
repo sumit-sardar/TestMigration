@@ -20,6 +20,7 @@ public class StudentTestletInfo extends CTBBean
     private String itemSetForm;
 	private Integer productId;	
 	private Date completionDateTime;
+	private Integer ordr;
 	
     /**
 	 * @return the subject
@@ -117,6 +118,18 @@ public class StudentTestletInfo extends CTBBean
 	 */
 	public void setProductId(Integer productId) {
 		this.productId = productId;
+	}
+	/**
+	 * @return the ordr
+	 */
+	public Integer getOrdr() {
+		return ordr;
+	}
+	/**
+	 * @param ordr the ordr to set
+	 */
+	public void setOrdr(Integer ordr) {
+		this.ordr = ordr;
 	}
 	/**
 	 * @return Returns the completionDateTime.

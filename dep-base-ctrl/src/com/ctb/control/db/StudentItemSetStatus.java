@@ -646,6 +646,7 @@ public interface StudentItemSetStatus extends JdbcControl
 	//@JdbcControl.SQL(statement= "select * from(select siss.TEST_ROSTER_ID as testRosterId,  siss.ITEM_SET_ID as itemSetId,  siss.COMPLETION_STATUS as completionStatus,  siss.START_DATE_TIME as startDateTime,  siss.COMPLETION_DATE_TIME as completionDateTime,  siss.VALIDATION_STATUS as validationStatus,  siss.VALIDATION_UPDATED_BY as validationUpdatedBy,  siss.VALIDATION_UPDATED_DATE_TIME as validationUpdatedDateTime,  siss.VALIDATION_UPDATED_NOTE as validationUpdatedNote,  siss.TIME_EXPIRED as timeExpired,  siss.ITEM_SET_ORDER as itemSetOrder,  siss.RAW_SCORE as rawScore,  siss.MAX_SCORE as maxScore,  siss.UNSCORED as unscored,  siss.RECOMMENDED_LEVEL as recommendedLevel,  siss.CUSTOMER_FLAG_STATUS as customerFlagStatus ,siss.EXEMPTIONS as testExemptions,siss.ABSENT as absent, siss.INVALIDATION_REASON_ID as  invalidationReason from  student_item_set_status siss,  test_roster ros  , test_admin ta, item_set ii where  siss.test_roster_id = ros.test_roster_id and ta.test_admin_id=ros.test_admin_id and ta.test_catalog_id in (86643,86645) and siss.item_set_id=ii.item_set_id and ii.subject='Reading' and ii.sample='F' and ros.student_id = {studentId} and ros.activation_status='AC' and ta.activation_status='AC' and ii.activation_status='AC' order by ros.completion_date_time desc)where rownum=1", arrayMaxLength = 100000)
 	//@JdbcControl.SQL(statement= "select ros.student_id as studentId, siss.item_set_id as itemSetId,subject,completion_status as completionStatus,test_completion_status as testCompletionStatus,item_set_level as itemSetLevel,item_set_form as itemSetForm, ta.product_id as productId from  student_item_set_status siss,  test_roster ros  , test_admin ta, item_set ii where  siss.test_roster_id = ros.test_roster_id and ta.test_admin_id=ros.test_admin_id and siss.item_set_id=ii.item_set_id and ii.sample='F' and ii.subject=(select subject from item_set_ancestor isa join item_set ii on ii.item_set_id = isa.item_set_id where sample='F' and ii.item_set_type='TD' and item_set_form=1 and ancestor_item_set_id=296061 ) and (ta.test_catalog_id in (86643,86645) or ta.item_set_id=296061) and ros.student_id in ( 2560299, 11875051) and ros.activation_status='AC' and ta.activation_status='AC' and ii.activation_status='AC' order by ros.student_id, ta.product_id, ros.completion_date_time desc, item_set_form ", arrayMaxLength = 100000)
 	@JdbcControl.SQL(statement= "select ros.student_id as studentId, siss.item_set_id as itemSetId,subject,completion_status as completionStatus,test_completion_status as testCompletionStatus,siss.completion_date_time as completionDateTime,item_set_level as itemSetLevel,item_set_form as itemSetForm, ta.product_id as productId \n"  
+	+",case ta.product_id when 4009 then 1 when 4010 then 1 when 4011 then 1 when 4012 then 1 else 2 end as ordr \n"
 	+"from  student_item_set_status siss,  test_roster ros  , test_admin ta, item_set ii\n"
 	+"where  siss.test_roster_id = ros.test_roster_id  \n"
 	+"and ta.test_admin_id=ros.test_admin_id and ta.test_catalog_id in (86643,86644,86645,86646)\n"
@@ -663,6 +664,7 @@ public interface StudentItemSetStatus extends JdbcControl
 	+"union \n"
 
 	+"select ros.student_id as studentId, siss.item_set_id as itemSetId,subject,completion_status as completionStatus,test_completion_status as testCompletionStatus,siss.completion_date_time as completionDateTime,item_set_level as itemSetLevel,item_set_form as itemSetForm, ta.product_id as productId \n"  
+	+",case ta.product_id when 4009 then 1 when 4010 then 1 when 4011 then 1 when 4012 then 1 else 2 end as ordr \n"
 	+"from  student_item_set_status siss,  test_roster ros  , test_admin ta, item_set ii\n"
 	+"where  siss.test_roster_id = ros.test_roster_id  \n"
 	+"and ta.test_admin_id=ros.test_admin_id \n"
@@ -673,7 +675,7 @@ public interface StudentItemSetStatus extends JdbcControl
 	+"and ros.activation_status='AC'\n"
 	+"and ta.activation_status='AC'\n"
 	+"and ii.activation_status='AC'\n"
-	+"order by studentId, productId, completionDateTime desc, itemSetForm", arrayMaxLength = 100000)	
+	+"order by studentId, ordr, completionDateTime desc, itemSetForm", arrayMaxLength = 100000)	
 	StudentTestletInfo[] getStudentCompletedTabe9Or10(String studentIds, Integer testItemSetId) throws SQLException;
 	
 	@JdbcControl.SQL(statement= "SELECT item_set_level FROM (SELECT ROWNUM AS rn, \n" 
