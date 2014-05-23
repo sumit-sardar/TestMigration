@@ -270,7 +270,8 @@
 						isEditTestAdult = false;
 						isEditChangeTestAdult = false;
 						var selectTestGroup = data.savedTestDetails.testSession.productId;
-						if(selectTestGroup == 4201){							
+						if(selectTestGroup == 4201){
+							$("#endTest").hide();							
 							disableEndDateTabeAdult();
 							$('#endDate').val($('#TABEAdultEndDate').val());
 							isEditTestAdult = true;	
