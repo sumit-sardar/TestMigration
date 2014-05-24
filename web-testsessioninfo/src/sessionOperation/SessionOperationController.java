@@ -3359,6 +3359,7 @@ public class SessionOperationController extends PageFlowController {
 	        SessionStudentData ssd = getSessionStudents(selectedOrgNodeId, testAdminId, selectedTestId, studentFilter, studentPage, studentSort);
 	        
 	        // remove status field if this is copy session
+	        /* Comment out as defect 78806 is not handled yet
         	if (this.isCopySession) {
 		        for (int i=0;i<ssd.getSessionStudents().length;i++)
 		        {
@@ -3367,7 +3368,8 @@ public class SessionOperationController extends PageFlowController {
 	        		ecs.setCopyable("T");
 		        }
         	}
-        	
+        	*/
+	        
 	        //** Story: TABE Adaptive FT - 06 - Modify TABE Scheduling – Logic
 	        //** If we are scheduling a testlet
 	        //** 4201 = TABE Adult Common Core Experience 
