@@ -219,3 +219,15 @@
 		</center>
 	</div>	
 </div>
+<div id="onChangeTestletGroupPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="scheduleTest.onChangeTestletGroupConfirmation.message" />
+		</div>
+	</div>
+	<div style="padding:10px;">			
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeOnChangeTestletGroupPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+		</center>
+	</div>	
+</div>

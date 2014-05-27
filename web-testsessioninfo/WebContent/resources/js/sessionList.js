@@ -145,12 +145,16 @@ var classHierarchyMap_editSession={};
 
 var isScheduleSession = false; // Added for hide TABE Adult group in edit
 var studentMsgForTabeAdult = false; // Added for Defect #78880 
+var isAlertPopup = false;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
 	      		if(isPopUp){				
 	      			onCloseScheduleSessionPopUp();
+	      		}
+	      		if(isAlertPopup){
+	      			closeOnChangeTestletGroupPopup();
 	      		}
 	            return false;
 	      }
@@ -1170,13 +1174,8 @@ function registerDelegate(tree){
 			hasShowRosterAccomAndHierarchyConfig=false;
 		}
 		var productSelected  = $("#testGroupList").val();
-		if(dailogId == 'closeScheduleSessionPopup'){
-			isSelectingStudent = true;
-			if(productSelected == 4201 && studentMsgForTabeAdult == true){
-				enableStudentMsgForTabeAdultCoreExp();
-			}
-		}else{
-			isSelectingStudent = false;
+		if(dailogId == 'closeScheduleSessionPopup' && productSelected == 4201 && studentMsgForTabeAdult == true){
+			enableStudentMsgForTabeAdultCoreExp();
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -2088,6 +2087,10 @@ function registerDelegate(tree){
 		 
 		 var productSelected = $("#testGroupList").val();
 		 if(productSelected == 4201){
+		 	if($('#list6').getGridParam('records') > 0){
+		 		isAlertPopup = true;
+		 		openOnChangeTestletGroupPopup();
+		 	}
 		 	disableEndDateTabeAdultForAdd();
 		 		if(isEdit || isCopySession){
 		 			$('#endDate').val($('#TABEAdultEndDate').val());
@@ -2105,6 +2108,33 @@ function registerDelegate(tree){
 		 //}
 		 hideSubtestWarningMessage();
 		 document.getElementById("modifyTestDiv").style.display = "none";
+	}
+	
+	function openOnChangeTestletGroupPopup(){
+		$("#onChangeTestletGroupPopup").dialog({  
+			title:$("#confirmAlrt").val(),  
+	 		resizable:false,
+	 		autoOpen: true,
+	 		width: '400px',
+	 		modal: true,
+	 		open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#onChangeTestletGroupPopup").css('height',120);
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#onChangeTestletGroupPopup").parent().css("top",toppos);
+		 $("#onChangeTestletGroupPopup").parent().css("left",leftpos);	
+	}
+	
+	function closeOnChangeTestletGroupPopup(){
+		closePopUp('onChangeTestletGroupPopup');
+		$('#list6').jqGrid('clearGridData');
+		$('#studentAddDeleteInfo').hide();
+		$('#totalStudent').text("0");
+		$('#stuWithAcc').text("0");
+		$("#cb_list6").attr("checked", false);
+		resetStudentSelection();
+		isAlertPopup = false;
 	}
 	
 	function enableStudentMsgForTabeAdultCoreExp(){
@@ -2566,6 +2596,13 @@ function registerDelegate(tree){
 						&& (previousOffGrade || blockOffGradeTesting) && !firstTimeOpen) {
 							hideSelectStudent();
 					}
+					
+					var productSelected = $("#testGroupList").val();
+					if(productSelected == 4201 && $('#list6').getGridParam('records') > 0 && !firstTimeOpen){
+						isAlertPopup = true;
+		 				openOnChangeTestletGroupPopup();
+		 			}
+		 			
 					if(firstTimeOpen)
 						firstTimeOpen = false;
 					
@@ -3947,8 +3984,6 @@ function registerDelegate(tree){
 			setAnchorButtonState('printTicketButton', false);
 		}
 		hideStudentMsgForTabeAdultCoreExp();
-		if(isSelectingStudent)
-			isSelectingStudent = false;
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
 				openCloseScheduleSessionPopup();
