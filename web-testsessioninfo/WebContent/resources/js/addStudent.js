@@ -553,7 +553,7 @@ function populateSelectStudentGrid() {
 					}
 					//** When editing a testlet session, make sure selected students are not disabled.
 					//** Defect#78967
-			 		else if(state=="EDIT" && postDataObject.productSelected==4201){
+			 		if(state=="EDIT" && postDataObject.productSelected==4201){
 			 		
 						//** Make deleted students enabled
 						for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
