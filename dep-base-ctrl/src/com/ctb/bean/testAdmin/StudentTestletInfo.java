@@ -16,6 +16,7 @@ public class StudentTestletInfo extends CTBBean
     private String subject;
     private String completionStatus;
     private String testCompletionStatus;
+    private String rosterActivationStatus;
     private String itemSetLevel;
     private String itemSetForm;
 	private Integer productId;	
@@ -142,5 +143,17 @@ public class StudentTestletInfo extends CTBBean
 	 */
 	public void setCompletionDateTime(Date completionDateTime) {
 		this.completionDateTime = completionDateTime;
+	}
+	/**
+	 * @return Returns the rosterActivationStatus
+	 */
+	public String getRosterActivationStatus() {
+		return rosterActivationStatus;
+	}
+	/**
+	 * @param rosterActivationStatus the rosterActivationStatus to set
+	 */
+	public void setRosterActivationStatus(String rosterActivationStatus) {
+		this.rosterActivationStatus = rosterActivationStatus;
 	}
 } 

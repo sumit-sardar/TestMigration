@@ -5912,8 +5912,14 @@ public class SessionOperationController extends PageFlowController {
 	            				//** fixed defec#78752
 	            				String completionStatus = sti[i].getCompletionStatus();
 		            			String testletForm = sti[i].getItemSetForm();
-		            			if (testletForms.length()>0) testletForms += ",";
-		            			testletForms += testletForm;
+		            			String rosterActivationStatus = sti[i].getRosterActivationStatus();
+		            			//** When student moved from one level to another, then goes back to original level
+		            			//** Story: TABE testlet - Inactivated testlet roster's forms handling in add student and spiraling logic
+		            			if (!(rosterActivationStatus.compareToIgnoreCase("IN") == 0 && !(sti[i].getTestCompletionStatus().compareToIgnoreCase("SC")==0 || sti[i].getTestCompletionStatus().compareToIgnoreCase("NT")==0)))
+		            			{
+			            			if (testletForms.length()>0) testletForms += ",";
+			            			testletForms += testletForm;
+		            			}
 		            			//** if one of the testlets is still scheduled, don't allow student to be scheduled until testlet completed
 		            			if (completionStatus.compareToIgnoreCase("SC") == 0)
 		            			{
