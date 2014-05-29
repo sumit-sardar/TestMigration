@@ -47,6 +47,7 @@ public class TestFormSelector
         	}
     	}
     	int index = forms.indexOf(retFrm);
+    	forms.remove(index);
     	retFrm.setCount(count+1);
     	forms.add(index, retFrm);
     	return retFrm.getForm();

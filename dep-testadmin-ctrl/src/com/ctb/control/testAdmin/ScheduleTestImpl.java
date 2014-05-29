@@ -2471,14 +2471,13 @@ public class ScheduleTestImpl implements ScheduleTest
     	Date d = null;
     	String lvl = null;
     	 for (int k=0;k<sti.length;k++){
-    		Date d1 = sti[k].getCompletionDateTime();
     		if(d==null){
-    			d=d1;
+    			d=sti[k].getCompletionDateTime();
     			lvl = sti[k].getItemSetLevel();
     		}else{
-    			if(d.before(d1)){
+    			if(d.before(sti[k].getCompletionDateTime())){
     				lvl = sti[k].getItemSetLevel();
-    				d=d1;
+    				d=sti[k].getCompletionDateTime();
     			}
     		}
 	     }
