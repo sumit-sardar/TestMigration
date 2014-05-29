@@ -1174,8 +1174,11 @@ function registerDelegate(tree){
 			hasShowRosterAccomAndHierarchyConfig=false;
 		}
 		var productSelected  = $("#testGroupList").val();
-		if(dailogId == 'closeScheduleSessionPopup' && productSelected == 4201 && studentMsgForTabeAdult == true){
-			enableStudentMsgForTabeAdultCoreExp();
+		if(dailogId == 'closeScheduleSessionPopup'){
+			isSelectingStudent = true;
+			if(productSelected == 4201 && studentMsgForTabeAdult == true){
+				enableStudentMsgForTabeAdultCoreExp();
+			}
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -3951,11 +3954,13 @@ function registerDelegate(tree){
 		 
 	}
 	function closeScheduleSessionPopup() {
-	    closePopUp('closeScheduleSessionPopup');
+		$("#closeScheduleSessionPopup").dialog("close");
+	   // closePopUp('closeScheduleSessionPopup');
 	    disableStudentMsgForTabeAdultCoreExp();
 		closePopUp('scheduleSession');
 		$('#defaultWindowMsgInfo').hide();
 		defaultDays = undefined;
+		isSelectingStudent = false;
 	}
 	 
 	function openCloseScheduleSessionPopup(){
@@ -3984,6 +3989,7 @@ function registerDelegate(tree){
 			setAnchorButtonState('printTicketButton', false);
 		}
 		hideStudentMsgForTabeAdultCoreExp();
+		isSelectingStudent = false;
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
 				openCloseScheduleSessionPopup();
