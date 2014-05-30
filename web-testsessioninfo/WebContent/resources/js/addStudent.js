@@ -1396,7 +1396,18 @@ function getStudentListArray(studentArray) {
 			return;
 		} else if(tmpOrgIdList.length == 1) {
 		   if(stuForSelectedOrg == tmpOrgIdList[0])
+		   {
 			 studentTempMap.remove(selectedRowId);
+			 var stdFound = false;
+			 for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+				if (deletedStudentsFromSessionArray[d]==selectedRowId) {
+				stdFound = true;
+				break;
+				}
+			}
+			if (!stdFound)
+			deletedStudentsFromSessionArray[deletedStudentsFromSessionArray.length]=selectedRowId; 
+		    }
 		} else {
 			for(var kk = 0; kk<tmpOrgIdList.length ; kk++  ){
 				if( tmpOrgIdList[kk] != stuForSelectedOrg) {
@@ -1412,6 +1423,17 @@ function getStudentListArray(studentArray) {
 			studentIdVal.orgNodeId   = finalTmpOrgIdList;
 			studentIdVal.orgNodeName = finalTmpOrgNameList;
 			studentTempMap.put(selectedRowId,studentIdVal);
+			
+			var stdFound = false;
+			 for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+				if (deletedStudentsFromSessionArray[d]==selectedRowId) {
+				stdFound = true;
+				break;
+				}
+			}
+			if (!stdFound)
+			deletedStudentsFromSessionArray[deletedStudentsFromSessionArray.length]=selectedRowId; 
+	
 		}
 	
 	
@@ -1571,12 +1593,19 @@ function getStudentListArray(studentArray) {
 	  
 	  	if(studentRow.outOfSchool == undefined || studentRow.outOfSchool == 'No') { // Added for out of school students
 	  		studentTempMap.put(studentId, studentRow);
+	  		for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+				if (deletedStudentsFromSessionArray[d]==studentId) {
+				deletedStudentsFromSessionArray.splice(d, 1);
+				break;
+				}
+			}
 	  		return true;
 	  	//** Defect#79073
-	  	} else if(state=="EDIT" && deletedStudentsFromSessionArray.length>0) {
+	  	} else if(state=="EDIT"){// && deletedStudentsFromSessionArray.length>0) {
 			for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
 				if (deletedStudentsFromSessionArray[d]==studentId) {
 				studentTempMap.put(studentId, studentRow);
+				deletedStudentsFromSessionArray.splice(d, 1);
 				return true;
 				}
 			}
@@ -1587,12 +1616,19 @@ function getStudentListArray(studentArray) {
 	  } else if (studentRow.status != undefined && studentRow.statusEditable != undefined && studentRow.statusEditable =="T"){
 	  	if(studentRow.outOfSchool == undefined || studentRow.outOfSchool == 'No') { // Added for out of school students
 	  		studentTempMap.put(studentId, studentRow);
+	  		for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+				if (deletedStudentsFromSessionArray[d]==studentId) {
+				deletedStudentsFromSessionArray.splice(d, 1);
+				break;
+				}
+			}
 	  		return true;
 	  	//** Defect#79073
-	  	} else if(state=="EDIT" && deletedStudentsFromSessionArray.length>0) {
+	  	} else if(state=="EDIT"){// && deletedStudentsFromSessionArray.length>0) {
 			for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
 				if (deletedStudentsFromSessionArray[d]==studentId) {
 				studentTempMap.put(studentId, studentRow);
+				deletedStudentsFromSessionArray.splice(d, 1);
 				return true;
 				}
 			}
