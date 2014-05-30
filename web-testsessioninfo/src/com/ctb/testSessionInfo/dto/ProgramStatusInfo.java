@@ -1,8 +1,9 @@
 package com.ctb.testSessionInfo.dto;
 
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.TestElement;
 
 public class ProgramStatusInfo implements java.io.Serializable {
@@ -29,7 +30,23 @@ public class ProgramStatusInfo implements java.io.Serializable {
 	private String page;
 	private String total;
 	private String records;
-	 
+	private Program[] programList = null; 
+	private TestElement[] programTestList =null;
+	
+	
+	/**
+	 * @return the programList
+	 */
+	public Program[] getProgramList() {
+		return programList;
+	}
+	/**
+	 * @param programList the programList to set
+	 */
+	public void setProgramList(Program[] programList) {
+		this.programList = programList;
+	}
+	
 	public String getPage() {
 		return page;
 	}
@@ -156,5 +173,18 @@ public class ProgramStatusInfo implements java.io.Serializable {
 	public void setTestList(TestElement[] testList) {
 		this.testList = testList;
 	}
-
+	/**
+	 * @return the programTestList
+	 */
+	public TestElement[] getProgramTestList() {
+		return programTestList;
+	}
+	/**
+	 * @param programTestList the programTestList to set
+	 */
+	public void setProgramTestList(TestElement[] programTestList) {
+		this.programTestList = programTestList;
+	}
+	
+	
 }

@@ -102,8 +102,11 @@
 															<td class="transparent"><label style="width: 200px;" id="customerNameId"></label></td>
 														</tr>
 														<tr class="transparent">
-															<td nowrap="" width="110" class="transparent"><lb:label key="programStatus.label.programLbl" prefix="" suffix="&nbsp;:" /></td>
-															<td class="transparent"><label style="width: 200px;" id="programNameId"></label></td>
+															<td width="110" class="transparent"><lb:label key="programStatus.label.programLbl" prefix="" suffix="&nbsp;:" /></td>
+															<td class="transparent">
+																<label style="width: 200px;" id="programNameId"></label>
+																<select id="programNameOptions"  name="programNameOptions" style="display:none; font-size: 12px;" onchange="javascript: getTestDetailsForSelectedProgram();"></select>
+															</td>
 														</tr>
 														<tr class="transparent">
 															<td nowrap="" width="110" class="transparent"><lb:label key="programStatus.label.orgLbl" prefix="" suffix="&nbsp;:" /></td>

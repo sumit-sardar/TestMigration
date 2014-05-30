@@ -415,7 +415,7 @@ public class ProgramOperationController extends PageFlowController {
     	return null;
 	}
     private ProgramStatusInfo buildProgramList(Integer programId,ProgramStatusInfo programStatusInfo) throws CTBBusinessException{
-    	this.programList = new LinkedHashMap();
+    	this.programList = new LinkedHashMap<Integer,String>();
     	String programName = null;
         ProgramData pd = this.programStatus.getActiveProgramsForUser(this.userName, null, null, null);
         Program[] programs = pd.getPrograms();
@@ -432,9 +432,14 @@ public class ProgramOperationController extends PageFlowController {
             programStatusInfo.setMultiplePrograms(new Boolean(this.programList.size() > 1));
             programName = (String)this.programList.get(selectedProgramId);
             programStatusInfo.setProgramName(programName);
-            
+            programStatusInfo.setProgramList(programs);            
         }
         programStatusInfo.setNoPrograms(new Boolean(this.programList.size() == 0));
+        
+        if(this.programList.size() > 1){
+        	TestElement[] testDetails = this.programStatus.getProgarmTestDetails(this.userName);      	
+        	programStatusInfo.setProgramTestList(testDetails);        
+        }
         
         return programStatusInfo;
     }
@@ -599,8 +604,8 @@ public class ProgramOperationController extends PageFlowController {
 				try {
 					Gson gson = new Gson();
 					String json = gson.toJson(programStatusInfo);
-					System.out.println("*********************************************************************");
-					System.out.println(json);
+					/*System.out.println("*********************************************************************");
+					System.out.println(json);*/
 					resp.setContentType("application/json");
 					resp.flushBuffer();
 					stream = resp.getOutputStream();

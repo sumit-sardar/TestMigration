@@ -13,6 +13,10 @@ var selectedSubtestStatusPS;
 var sessionsForTitle;
 var testNameOptions=[];
 var testIds=[];
+var programNameOptionsPS=[];
+var programIdPS=[];
+var programTestDetails;
+
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -111,6 +115,8 @@ function createSingleNodePSTree(jsondata) {
 	    	sessionsForTitle="";
 	    	testNameOptions=[];
 	    	testIds=[];
+	    	programNameOptionsPS=[];
+	    	programIdPS=[];
 	    	  
 	    	populateProgramStatusDetails();
 	    });
@@ -122,7 +128,7 @@ function populateProgramStatusDetails(){
 	//var programIdPS;
 	//var testIdPS;
 
-	selectedProgramIdPS=$('#programIdPS').val();
+	selectedProgramIdPS=$('#programNameOptions').val();
 	//selectedTestIdPS=$('#selectedTestIdPS').val();
 	var selectedTestCatalogId = $("#testNameOptions").val();
 
@@ -147,7 +153,7 @@ function populateProgramStatusDetails(){
 								selectedProgramIdPS = data.selectedProgramId;
 								selectedTestIdPS = data.selectedTestId;
 								selectedProgramNamePS = data.programName;
-								selectedTestNamePS = data.testName;
+								selectedTestNamePS = data.testName;								
 								var customerNamePS = $("#customerNamePS").val();
 
 								$("#customerNameId").text(customerNamePS);
@@ -168,6 +174,19 @@ function populateProgramStatusDetails(){
 									fillTestNameOptions('testNameOptions',testNameOptions);
 									$("#testNameOptions").val(selectedTestCatalogId);
 									$("#testNameOptions").show();
+								}
+								
+								
+								if(data.multiplePrograms){
+									for(var i = 0; i < data.programList.length; i++) {
+										programNameOptionsPS[i] = data.programList[i].programName;
+										programIdPS[i] = data.programList[i].programId;
+									}
+									fillProgramNameOptions('programNameOptions',programNameOptionsPS);
+									$("#programNameOptions").val(selectedProgramIdPS);
+									$("#programNameOptions").show();
+									$("#programNameId").hide();
+									programTestDetails = data.programTestList; 
 								}
 								
 								$("#programInfo").show();
@@ -275,6 +294,16 @@ function fillTestNameOptions(elementId, optionList) {
 	var optionHtml = "" ;
 	for(var i = 0; i < optionList.length; i++ ) {		     
 		optionHtml += "<option  value='"+ testIds[i]+"'>"+ optionList[i]+"</option>";	
+	}
+	$(selectElement).html(optionHtml);
+}
+
+//function fillDropDown(elementId, optionList) {
+function fillProgramNameOptions(elementId, optionList) {
+	var selectElement = document.getElementById(elementId);
+	var optionHtml = "" ;
+	for(var i = 0; i < optionList.length; i++ ) {		     
+		optionHtml += "<option  value='"+ programIdPS[i]+"'>"+ optionList[i]+"</option>";	
 	}
 	$(selectElement).html(optionHtml);
 }
@@ -433,6 +462,32 @@ function exportToExcel(){
 
 	location.href='exportToExcel.do?selectedProgramId='+selectedProgramIdPS+'&selectedOrgNodeId='+selectedOrgNodeIdPS+'&selectedTestId='+selectedTestIdPS+'&subtestId='+selectedSubtestIdPS+'&status='+selectedSubtestStatusPS+'&selectedProgramName='+selectedProgramNamePS+'&selectedOrgNodeName='+selectedOrgNodeNamePS+'&selectedTestName='+selectedTestNamePS;
 }
+
+function getTestDetailsForSelectedProgram(){
+	$("#testStatusTitleID").hide();
+	$("#clickableSubtestMsg").hide();
+	$("#testStatusInfo").hide();
+	$("#subtestStatusInfo").hide();
+	$('#subtestStatusInfoList').GridUnload();
+	var selectElement = document.getElementById("programNameOptions");
+	var chosenOption = selectElement.options[selectElement.selectedIndex];
+	selectedProgramIdPS = chosenOption.value;
+	testNameOptions =[];
+	testIds = [];
+	var index = 0;
+	for (var i=0;i<programTestDetails.length;i++){
+	  if (programTestDetails[i].programId == selectedProgramIdPS){
+		testNameOptions[index]= programTestDetails[i].itemSetName;
+		testIds[index] = programTestDetails[i].itemSetId;
+		index++;
+	  }	  
+	}
+	fillTestNameOptions('testNameOptions',testNameOptions);
+	$("#testNameOptions").val(testIds[0]);
+	$("#testNameOptions").show();
+	getSubtestDetailsForSelectedTest();
+}
+
 
 function getSubtestDetailsForSelectedTest(){
 	var selectElement = document.getElementById("testNameOptions");
