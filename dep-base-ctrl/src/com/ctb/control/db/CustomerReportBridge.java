@@ -7,6 +7,7 @@ import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.Program;
+import com.ctb.bean.testAdmin.TestElement;
 
 /** 
  * Defines a new database control. 
@@ -164,7 +165,7 @@ public interface CustomerReportBridge extends JdbcControl
      *     and users.user_name = {userName}::
      *     array-max-length="all"
      */     
-    @JdbcControl.SQL(statement = "select distinct  pr.PROGRAM_ID as programId,  pr.PRODUCT_ID as productId,  pr.CUSTOMER_ID as customerId,  pr.PROGRAM_NAME as programName,  pr.PROGRAM_START_DATE as programStartDate,  pr.PROGRAM_END_DATE as programEndDate,  pr.NORMS_GROUP as normsGroup,  pr.NORMS_YEAR as normsYear,  pr.CREATED_DATE_TIME as createdDateTime,  pr.UPDATED_DATE_TIME as updatedDateTime from  program pr, users, user_role ur,org_node where  pr.customer_id = org_node.customer_id  and org_node.org_node_id = ur.org_node_id  and ur.user_id = users.user_id  and ur.activation_status = 'AC'  and pr.activation_status = 'AC'  and users.user_name = {userName}",
+    @JdbcControl.SQL(statement = "select distinct  pr.PROGRAM_ID as programId,  pr.PRODUCT_ID as productId,  pr.CUSTOMER_ID as customerId,  pr.PROGRAM_NAME as programName,  pr.PROGRAM_START_DATE as programStartDate,  pr.PROGRAM_END_DATE as programEndDate,  pr.NORMS_GROUP as normsGroup,  pr.NORMS_YEAR as normsYear,  pr.CREATED_DATE_TIME as createdDateTime,  pr.UPDATED_DATE_TIME as updatedDateTime from  program pr, users, user_role ur,org_node where  pr.customer_id = org_node.customer_id  and org_node.org_node_id = ur.org_node_id  and ur.user_id = users.user_id  and ur.activation_status = 'AC'  and pr.activation_status = 'AC'  and users.user_name = {userName} order by pr.PROGRAM_ID ",
                      arrayMaxLength = 100000)
     Program [] getActiveProgramsForUser(String userName) throws SQLException;   
     
@@ -178,5 +179,46 @@ public interface CustomerReportBridge extends JdbcControl
      *    crb.customer_id = {customerId}::    
      */     
     @JdbcControl.SQL(statement = "select  count(crb.customer_id) from  customer_report_bridge crb where  crb.customer_id = {customerId}")
-    Integer  getCustomerReports(Integer customerId) throws SQLException;    
+    Integer  getCustomerReports(Integer customerId) throws SQLException; 
+    
+    
+    /**
+     * @jc:sql statement::
+     * select distinct 	
+     * 		iset.ITEM_SET_ID   as itemSetId,
+     *  	iset.ITEM_SET_NAME as itemSetName,
+     *   	prog.program_id    as programId
+     * from 
+     * 		product prod,
+     *     	item_set_product isp,
+     *      item_set iset,
+     *      org_node_test_catalog ontc, 
+     *      user_role urole, users, 
+     *      program prog 
+     * where 
+     * 		users.user_name = {userName} 
+     * 	and users.user_id = urole.user_id 
+     * 	and urole.org_node_id = ontc.org_node_id 
+     * 	and ontc.item_set_id = iset.item_set_id 
+     * 	and iset.item_set_id = isp.item_set_id 
+     * 	and isp.product_id = prod.product_id 
+     * 	and prog.product_id = prod.parent_product_id 
+     * 	and prog.customer_id = ontc.customer_id 
+     * 	and iset.item_set_type = 'TC' 
+     * 	and prod.activation_status = 'AC' 
+     * 	and iset.activation_status = 'AC' 
+     * 	and prog.activation_status = 'AC' 
+     * 	and urole.activation_status = 'AC' 
+     * 	and ontc.activation_status = 'AC' 
+     * order by 
+     * 	prog.program_id
+     * 
+     */
+       
+    @JdbcControl.SQL(statement = " select distinct iset.ITEM_SET_ID   as itemSetId, iset.ITEM_SET_NAME as itemSetName, prog.program_id    as programId from product prod, item_set_product isp, item_set iset, org_node_test_catalog ontc, user_role urole, users, program prog where users.user_name = {userName} and users.user_id = urole.user_id and urole.org_node_id = ontc.org_node_id and ontc.item_set_id = iset.item_set_id and iset.item_set_id = isp.item_set_id and isp.product_id = prod.product_id and prog.product_id = prod.parent_product_id and prog.customer_id = ontc.customer_id and iset.item_set_type = 'TC' and prod.activation_status = 'AC' and iset.activation_status = 'AC' and prog.activation_status = 'AC' and urole.activation_status = 'AC' and ontc.activation_status = 'AC' order by prog.program_id " ,
+    				 arrayMaxLength = 1024)
+    TestElement[]  getProgramTestDetails(String userName) throws SQLException; 
+    
+    
+    
 }

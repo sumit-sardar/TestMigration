@@ -392,4 +392,21 @@ public class ProgramStatusImpl implements ProgramStatus
             throw new CTBBusinessException("Program Status Config");
         }
     }
+    
+    
+    /**
+     * Retrieves the TC level tests associated with an user with program information     
+     * @param userName - identifies the user
+     * @return TestElement []
+	 * @throws com.ctb.exception.CTBBusinessException
+     */
+    public com.ctb.bean.testAdmin.TestElement[] getProgarmTestDetails(java.lang.String userName) throws com.ctb.exception.CTBBusinessException{
+    	try{
+    		TestElement[] tsd = reportBridge.getProgramTestDetails(userName);
+    		return tsd;
+    	}catch(Exception e){
+    		e.printStackTrace();
+    		throw new CTBBusinessException("Program Test Details Fetching Exception from class ::"+ProgramStatusImpl.class.getName());
+    	}
+    }
 } 

@@ -101,4 +101,13 @@ public interface ProgramStatus
      */
     
     java.lang.Boolean hasProgramStatusConfig(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
+    
+    
+    /**
+     * Retrieves the TC level tests associated with an user with program information
+     * @param userName - identifies the user
+     * @return TestElement []
+	 * @throws com.ctb.exception.CTBBusinessException
+     */
+    com.ctb.bean.testAdmin.TestElement[] getProgarmTestDetails(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
 } 

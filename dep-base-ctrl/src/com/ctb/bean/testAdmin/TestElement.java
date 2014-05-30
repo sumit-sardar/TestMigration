@@ -48,6 +48,7 @@ public class TestElement extends CTBBean
     private String sessionDefault = "T";
     private Date overrideLoginEndDate;
     private String islocatorChecked = "";
+    private Integer programId;
     
     
     // Random Distractor 
@@ -518,6 +519,20 @@ public class TestElement extends CTBBean
 	 */
 	public void setIslocatorChecked(String islocatorChecked) {
 		this.islocatorChecked = islocatorChecked;
+	}
+
+	/**
+	 * @return the programId
+	 */
+	public Integer getProgramId() {
+		return programId;
+	}
+
+	/**
+	 * @param programId the programId to set
+	 */
+	public void setProgramId(Integer programId) {
+		this.programId = programId;
 	}
 
 	
