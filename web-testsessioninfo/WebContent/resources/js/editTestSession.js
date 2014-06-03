@@ -96,6 +96,8 @@
 							//added for copy test session
 							if(data.isCopySession){
 								isCopySession = true;
+								resetStudentSelection();
+								$('#list6').jqGrid('clearGridData');
 							}else{
 								isCopySession = false;
 							}
