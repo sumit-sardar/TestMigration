@@ -1172,10 +1172,16 @@ function registerDelegate(tree){
 			isTASCProduct = false;		
 			classHierarchyMap_editSession={};   
 			hasShowRosterAccomAndHierarchyConfig=false;
+			studentMsgForTabeAdult = false;
+			clickOkMessage = false;
 		}
 		var productSelected  = $("#testGroupList").val();
 		if(dailogId == 'closeScheduleSessionPopup'){
-			isSelectingStudent = true;
+			if(clickOkMessage){
+				isSelectingStudent = true;
+			}else {
+				isSelectingStudent = false;
+			}
 			if(productSelected == 4201 && studentMsgForTabeAdult == true){
 				enableStudentMsgForTabeAdultCoreExp();
 			}
@@ -3954,6 +3960,7 @@ function registerDelegate(tree){
 		 
 	}
 	function closeScheduleSessionPopup() {
+		clickOkMessage = false;
 		$("#closeScheduleSessionPopup").dialog("close");
 	   // closePopUp('closeScheduleSessionPopup');
 	    disableStudentMsgForTabeAdultCoreExp();
@@ -4033,6 +4040,8 @@ function registerDelegate(tree){
 			setMessage("Action required commit", "", "errorMessage", "Click OK to commit adding students to continue.");       
 			$('#displayMessage').show();
 			return false;
+		}else{
+			clickOkMessage = false;
 		}
 	    
 	    var param;

@@ -53,6 +53,8 @@ var isSelectingStudent = false;
 var showLicenseInfo = false;
 var oldestNonZeroPO;
 
+var clickOkMessage = false; //Added for Click OK to commit adding students to continue.
+
 function disableEnableStudentMsgForTabeAdultCoreExp(){
 	var selectTestGroup = $("#testGroupList").val();
 	var isTabeAdultMsg = false;
@@ -79,6 +81,7 @@ function disableStudentMsgForTabeAdultCoreExp(){
 /// FOR FILTER
 
 function showSelectStudent(){
+	clickOkMessage = true;
 	$("#studentAddDeleteInfo").hide();
 	selectedSubtestId = selectedTestId;
 	$("#Student_Tab").css('display', 'none');
@@ -102,6 +105,7 @@ function showSelectStudent(){
 // when back button invoked
 function hideSelectStudent(){
 	isOnBack = true;
+	clickOkMessage = false;
 	if(AddStudentLocaldata == undefined || AddStudentLocaldata.length == 0)
 		studentWithaccommodation = 0;
 	cloneStudentMapToTemp();
@@ -1983,6 +1987,7 @@ function studentInTest(stdId, orgNodeId) {
 	  var orgIds = getAssociatedOrgIds();
 	  var postDataObject = {};
 	  disableStudentMsgForTabeAdultCoreExp();
+	  clickOkMessage = false;
 	  postDataObject.selectedOrgIds = orgIds;
 		  $.ajax({
 			async:		false,
