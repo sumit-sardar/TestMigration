@@ -70,10 +70,12 @@ public class TestClientPageFlowController extends PageFlowController
      * This method represents the point of entry into the pageflow
      * @jpf:action
      * @jpf:forward name="success" path="preview.jsp"
+     * @jpf:forward name="laslinkSuccess" path="previewLaslink.jsp"
      */
+    
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success",
-                     path = "preview.jsp")
+        @Jpf.Forward(name = "success", path = "preview.jsp"),
+        @Jpf.Forward(name = "laslinkSuccess", path = "previewLaslink.jsp")
     })
     protected Forward begin()
     {
@@ -82,7 +84,12 @@ public class TestClientPageFlowController extends PageFlowController
         String productType = (String) session.getAttribute( "productType" );
         //System.out.print(productType+"--Product Type--"+productType);
         session.setAttribute( "productType",productType );
-        return new Forward("success");
+        String pageAction="success";
+        if(productType.equalsIgnoreCase("Laslinks") || productType.equalsIgnoreCase("Laslinks Layout")){
+          pageAction="laslinkSuccess";
+        }
+        return new Forward(pageAction);
+        
     }
   
     /**

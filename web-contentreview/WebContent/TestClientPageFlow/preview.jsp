@@ -23,16 +23,28 @@
 	href="http://www.laszlosystems.com/favicon.ico">
 <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 <title>Online Assessment System</title>
+<script src="lps/jquery-1.10.2.js"></script>
+<script src="lps/jquery-ui-1.10.4.js"></script>
 <script type="text/javascript" src="../includes/embed-compressed.js"></script>
 <script type="text/javascript" src="../includes/manipulative_manager.js"></script>
 <script type="text/javascript" src="../lps/includes/laslinks_utils.js"></script>
-<script type="text/javascript" src="../lps/includes/jquery-ui-1.9.2.custom.min.js"></script>
+<!--<script type="text/javascript" src="../lps/includes/jquery-ui-1.9.2.custom.min.js"></script>
 <script type="text/javascript" src="../lps/jquery.min.js"></script>
-<script type="text/javascript" src="lps/jquery.min.js"></script>
-<script type="text/javascript" src="../ContentReviewPageFlow/assets/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="lps/jquery.min.js"></script> 
+<script type="text/javascript" src="../ContentReviewPageFlow/assets/jquery-1.8.3.js"></script> -->
 
 <script type="text/javascript" src="lps/jquery.magnifier.js"></script>
 <script type="text/javascript" src="../ContentReviewPageFlow/assets/imageZoomer.js"></script>
+
+<link rel="stylesheet" href="TICalc/TI-30/css/jquery-ui-TI30.css" rel="Stylesheet" type="text/css" />
+<link href="TICalc/TI-30/css/ti30mv-styles-min.css" media="screen" rel="Stylesheet" type="text/css" />
+<link rel="stylesheet" href="TICalc/TI-30/css/style.css" rel="Stylesheet" type="text/css" />
+<script type="text/javascript" src="TICalc/TI-30/js/ti30mv-min.js"></script>
+	
+<link rel="stylesheet" href="TICalc/TI-84/css/jquery-ui-TI84.css" rel="Stylesheet" type="text/css" />
+<link href="TICalc/TI-84/css/ti84p-styles-min.css" media="screen" rel="Stylesheet" type="text/css" />
+<link rel="stylesheet" href="TICalc/TI-84/css/styleTI84.css" rel="Stylesheet" type="text/css" />
+<script type="text/javascript" src="TICalc/TI-84/js/ti84p-min.js"></script>
 <style type="text/css">
 html,body { /* http://www.quirksmode.org/css/100percheight.html */
 	height: 100%;
@@ -148,6 +160,7 @@ img {
 			.lzswfinputtext{
 				font-family: CTB!important;
 			}
+.no-close .ui-dialog-titlebar-close {display: none;}/*hiding close button of dialog*/			
 </style>
 <!--[if IE]>
         <style type="text/css">
@@ -171,6 +184,13 @@ var xscalefactorjs;
 var yscalefactorjs;
 var LASAssetPath = "/ContentReviewWeb/ContentReviewPageFlow/items/"; 
 var TEAssetPath = "/ContentReviewWeb/ContentReviewPageFlow/items/";
+var ti30;
+var ti84;
+var myErrorHandler;
+var myErrorTI84Handler;
+var calcTI30open = false;
+var calcTI84open = false;
+var TI30Position = {},TI84Position = {};
 
 function getTEAssetPath(){
 	lz.embed.setCanvasAttribute("TEAssetPath", TEAssetPath);
@@ -235,6 +255,18 @@ function closeBrowser()
 function updateLDB(){
 	_LDB_BypassSetFocusOnPageLoad = 1;
 }
+
+function setFrameSource(filepath){
+    jQuery("iframe").attr("src",filepath);
+    lz.embed.setCanvasAttribute("TEItemLoaded",true);
+}
+
+function destroyDiv(divElem) {
+     var div = document.getElementById(divElem);
+     if(div != null)
+     	div.parentNode.removeChild(div);
+}
+
 function showElement(element){
     element.style.display="block";
 }
@@ -563,15 +595,95 @@ function getCRcolor(){
 }
 
 <!-- End CR item scrolledittext scrollbar functions-->
-function disableTabKey() {
+ function disableTabKey() {
+ 	var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
+ 	
 	if(event.which == 9 && gController.scratchpadOpen) { 
 		//console.log("TAB!!!!!!!!!!!!");
 		event.preventDefault();
 		event.stopPropagation();
 	}
 	
+	if (event.ctrlKey) {
+			//console.log("hotKeysHandle event.ctrlKey == true || keystroke==== "+keystroke);
+			switch(keystroke){
+				case 'l':
+				    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+						gHotKeys.toggleMark();
+						event.preventDefault(); // disable Ctrl+L
+					}	
+					break;
+				case 's':
+					event.preventDefault();
+					 if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+					 	hideMagnify();
+				    	gHotKeys.stop();
+						event.preventDefault(); // disable Ctrl+S
+					}	
+					break;
+				case 'u':
+				    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+						gHotKeys.pause();
+						event.preventDefault(); // disable Ctrl+U
+					}	
+					break;
+				case 'o':
+					if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+						gHotKeys.toggleTimer();
+						event.preventDefault(); // disable Ctrl+O
+					}
+					break;
+				case 'j':
+					if(gController.iskeyEnabled) {
+						gHotKeys.goBack();
+						event.preventDefault(); // disable Ctrl+J
+					}
+					break;			
+				case 'k' :
+					if(gController.iskeyEnabled) {
+						gHotKeys.goOn();
+						event.preventDefault(); // disable Ctrl+K
+					}
+					break;
+				case 'f' :
+					if(gController.iskeyEnabled) {
+						hideMagnify();
+						gHotKeys.finish();
+						event.preventDefault(); // disable Ctrl+F
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	
+	/*added to restrict undo redo using hot keys in DHTML client starts*/
+	
+	if (event.ctrlKey || event.metaKey || event.which == 91 || event.which == 17 || event.which == 93) {
+		switch(keystroke){
+			case 'z' :
+				event.preventDefault(); // disable Ctrl+Z
+				event.stopPropagation();
+				break;
+			case 'y' :
+				event.preventDefault(); // disable Ctrl+Y
+				event.stopPropagation();
+				break;
+			default:
+				break;
+		}
+	}
+	if(event.which == 93)
+	{
+	  event.preventDefault();
+	  event.stopPropagation();
+	  return false;
+	}
+	/*added to restrict undo redo using hot keys in DHTML client ends*/
 }
-function hotKeysHandle() {
+
+
+/*function hotKeysHandle() {
 var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
 		if (event.ctrlKey) {
 			switch(keystroke){
@@ -624,7 +736,7 @@ var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
 					break;
 			}
 		}
-}
+}*/
 // higlighter for nonTE items
 <!-- following functions are using for scratchpad scrollbar-->
 
@@ -768,10 +880,155 @@ function preventTextDragging(){
 			});
 }
 
+jQuery(document).ready(function() {
+ 	jQuery("textarea").each(function() {
+ 		jQuery(this).css({'overflow-x': 'hidden', 'overflow-y': 'hidden'});
+ 	});
+ 	
+ 	/*TI calculators implementation start*/
+ 	myErrorHandler = function(level, message) {
+			if (level === TI_ERROR_LEVEL.SEVERE) {
+				alert(message);
+			}
+			console.log(message);
+		};
+		
+	 myErrorTI84Handler = function(level, message) {
+			if (level === TI_ERROR_LEVEL.SEVERE) {
+				alert(message);
+			}
+			console.log(message);
+		};	
+	
+	var calculatorElm = jQuery("#calculatorDiv, #calculatorTI84Div");
+	
+ 	//appending the TI calculator divs with the jQuery dialog class and making it draggable with jQuery draggable
+  	jQuery( "#calculatorDiv" ).dialog({dialogClass: "no-close",
+	  									 closeOnEscape: false,
+	  									 autoOpen: false,
+	  									 draggable: false,
+	  									 resizable: false,
+	  									 width: 315,
+	  									 height: 650,
+	  									 position: ['center', 'middle'] }).parent().draggable({ containment: "parent" });
+  
+  
+  	jQuery( "#calculatorTI84Div" ).dialog({dialogClass: "no-close",
+  										  closeOnEscape: false,
+  										  autoOpen: false,
+  										   draggable: false,
+  										  resizable: false,
+  										  width: 306,
+  										  height: 690,
+  										  position: ['center', 'middle'] }).parent().draggable({ containment: "parent" });	
+  										  
+  	
+ 	
+ 	calculatorElm.on("mousedown mouseup",function(){
+ 		//console.log("mousedown/mouseup 30/84 on ti");
+ 		jQuery('[name="dManupulative"]').trigger("mouseup");
+ 	});
+ 	
+ 	
+ 	calculatorElm.parent().on({ 
+ 		mouseover: function( event, ui ) {
+ 						calculatorElm.parent().css("cursor", "url('assets/dragger_over.png'), pointer" );
+ 						jQuery("iframe").contents().find(".ui-draggable").trigger("mouseup");
+ 					},
+ 		drag: function( event, ui ) {
+ 				  calculatorElm.parent().css("cursor", "url('assets/dragger_press.png'), pointer");
+ 			  },
+ 		dragstop: function( event, ui ) {
+ 						calculatorElm.parent().css("cursor", "url('assets/dragger_over.png'), pointer" );
+ 				   },
+ 		
+ 		mouseleave: function( event, ui ){
+ 						calculatorElm.trigger("mouseup");
+ 					}   					 
+ 		});
+ 		
+ 	jQuery('[aria-describedby="calculatorDiv"]').find('.ui-dialog-titlebar').on("mousedown mouseup",function(){
+ 		//console.log("mousedown/mouseup 30/84 on ti");
+ 		jQuery('[name="dManupulative"]').trigger("mouseup");
+ 	});
+ 	
+ 	jQuery('[aria-describedby="calculatorTI84Div"]').find('.ui-dialog-titlebar').on("mousedown mouseup",function(){
+ 		//console.log("mousedown/mouseup 30/84 on ti");
+ 		jQuery('[name="dManupulative"]').trigger("mouseup");
+ 	});
+ 	/*TI calculators implementation end*/ 										  
+	
+ });
+ /*create/toggle visibility of TI calculators starts*/
+function createTI30Calc(){
+ 		if(calcTI30open == false){
+ 			ti30 = new TI30("configurationFile.json");
+    		ti30.errorHandler = myErrorHandler;
+	 		jQuery( "#calculatorDiv" ).dialog('open');
+	 		TI30Position.top = jQuery( "#calculatorDiv" ).dialog().parent().offset().top;
+	 		TI30Position.left = jQuery( "#calculatorDiv" ).dialog().parent().offset().left;
+			calcTI30open = true;  
+  		}else{
+  			if(!jQuery('#calculatorDiv').is(":visible")){
+  				showTI30Calc();
+  				jQuery( "#calculatorDiv" ).dialog().parent().offset({ top: TI30Position.top, left: TI30Position.left});
+  			}else{
+  				hideTI30Calc();
+  			}
+  		}
+}
+
+function createTI84Calc(){
+ 		if(calcTI84open == false){
+ 			ti84 = new TI84("configurationTI84File.json");
+    		ti84.errorHandler = myErrorTI84Handler;
+ 			jQuery( "#calculatorTI84Div" ).dialog('open');
+ 			TI84Position.top = jQuery( "#calculatorTI84Div" ).dialog().parent().offset().top;
+ 			TI84Position.left = jQuery( "#calculatorTI84Div" ).dialog().parent().offset().left;
+ 			calcTI84open = true;
+ 		}else{
+ 			if(!jQuery('#calculatorTI84Div').is(":visible")){
+  				showTI84Calc();
+  				jQuery( "#calculatorTI84Div" ).dialog().parent().offset({ top: TI84Position.top, left: TI84Position.left});
+  			}else{
+  				hideTI84Calc();
+  			}
+ 		}	
+}
+
+/* create/toggle visibility of TI calculators ends*/
+	
+/*show/hide/destroy TI calculators start*/	
+function closeTI30Calc(){
+		jQuery( "#calculatorDiv" ).dialog('close');
+}
+ 
+function closeTI84Calc(){
+		jQuery( "#calculatorTI84Div" ).dialog('close');
+ } 
+ 
+ function hideTI30Calc(){
+		jQuery( "#calculatorDiv" ).dialog().parent().hide();
+}
+
+ function hideTI84Calc(){
+		jQuery( "#calculatorTI84Div" ).dialog().parent().hide();
+}
+
+ function showTI30Calc(){
+		jQuery( "#calculatorDiv" ).dialog().parent().show();
+}
+
+ function showTI84Calc(){
+		jQuery( "#calculatorTI84Div" ).dialog().parent().show();
+}
+
+/*show/hide/destroy TI calculators ends*/	
+
 
 function buttonClicked(magnifierPosition){
   	if(magnifierPosition == "T") {
-  		$.setPreviousPosition();
+  		jQuery.setPreviousPosition();
   	}
 	document.getElementById('mybutton').click();
 	
@@ -780,7 +1037,7 @@ function buttonClicked(magnifierPosition){
     var olddiv = document.getElementById('mborder');
     if (olddiv && olddiv.parentNode && olddiv.parentNode.removeChild)
 		olddiv.parentNode.removeChild(olddiv);
-	$.closeMagnifier();
+	jQuery.closeMagnifier();
 }
 
 function disableShortcuts() {
@@ -833,7 +1090,7 @@ function getOS() {
 //Changes for Te Item
 
 function enableEraser(isEnabled){
-	var iframe = $("iframe")[0];
+	var iframe = jQuery("iframe")[0];
 	if(iframe){
 		if(iframe.contentWindow.accomPkg!= null && iframe.contentWindow.accomPkg!=undefined){
 			iframe.contentWindow.accomPkg.enableEraser(isEnabled);
@@ -848,8 +1105,8 @@ function enableEraser(isEnabled){
 }
 
 //var iframeLoaded = false;
- function iframeState(){
-     	var iframe = $("iframe")[0];
+ function iframeState(id){
+     	var iframe = jQuery("iframe")[0];
      	console.log("iframe state");
      	if(iframe){
 			  
@@ -871,7 +1128,7 @@ function enableEraser(isEnabled){
     		else {
     			iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
     		}*/
-	    	
+	    	iframe.contentWindow.isReadable(canvas.readable);
 	    	//iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
 	    	/*var xscalefact = (780 * xscalefactorjs)/800;
 	    	var yscalefact = (450 * yscalefactorjs)/462;*/
@@ -879,22 +1136,35 @@ function enableEraser(isEnabled){
 	    	var xscalefact = 780/800;
 	    	var yscalefact = 450/462;
 	    	iframe.contentWindow.translate(xscalefact, yscalefact);
+	    	//added to set TE item id in scoring JSON.
+	    	if(iframe.contentWindow.getItemId){
+	    		iframe.contentWindow.getItemId(id);
+	    	}
 	    	lz.embed.setCanvasAttribute('frameLoaded',true);
 	    	
 	}
 }
 
 function isAnswered(){
- var elem = $("iframe")[0];
+ var ans = false;
+ var elem = jQuery("iframe")[0];
 	if(elem){
-	if(elem.contentWindow.accomPkg)
- 	return elem.contentWindow.accomPkg.isItemAnswered();
-  }        	
+		if(elem.contentWindow.accomPkg){
+			ans = elem.contentWindow.accomPkg.isItemAnswered();
+	 		return ans;
+	 	}
+	}        	
  
  }
  
+  function getResponse(response){
+    if(gController.htmlFields[0]!=undefined){
+ 		gController.htmlFields[0]['ref'].getStateHandler(response);
+ 	}
+ } 
+ 
  function enableHighlighter(isEnabled){
-	var iframe = $("iframe")[0];
+	var iframe = jQuery("iframe")[0];
 	if(iframe){
 		if(iframe.contentWindow.accomPkg!= null && iframe.contentWindow.accomPkg!=undefined){
 			iframe.contentWindow.accomPkg.enableHighlighter(isEnabled);
@@ -909,7 +1179,7 @@ function isAnswered(){
 }
 
  function getState(){ 
-  var elem = $("iframe")[0];
+  var elem = jQuery("iframe")[0];
   if(elem){
  
  		if(elem.contentWindow.accomPkg){
@@ -920,7 +1190,7 @@ function isAnswered(){
  }
  
   function setState(htmlContent,jsonContent,checkedVals){
- 	var elem = $("iframe")[0];
+ 	var elem = jQuery("iframe")[0];
  	//console.log("inside setState");
     if(elem){	
         if(elem.contentWindow){
@@ -942,8 +1212,45 @@ function isAnswered(){
         setState(htmlContent,jsonContent,checkedVals);
         }, 500);
     }
-   gController.isAnsweredDelegate();         
+   gController.unlockUI(); 
+   //gController.isAnsweredDelegate();         
  }
+ 
+ // added as a workaround to change answered math pallete image path from absolute path to relative path, 
+ // as in TDC the server port might change due to unavailability of the default port.
+  function replaceAbsPathWithRelPath(htmlContent){
+  	try{
+	  	var ip = "http://127.0.0.1:";
+		if(htmlContent != null && htmlContent != "" && htmlContent != "undefined" && htmlContent.indexOf(ip) > -1){
+			var html = htmlContent.split(ip);
+			var port = "";
+			var final_url = "";
+			var replace_url = "";
+			var re = "";
+			/*if(html[1].indexOf('cursor_images/')){
+				id = html[1].split("includes/");
+				final_url = ip+id[0];
+				re = new RegExp(final_url, 'g');
+				htmlContent = htmlContent.replace(re, '../../');
+			}
+			else if(html[1].indexOf('styles')){
+				id = html[1].split("styles/");
+				final_url = ip+id[0];
+				re = new RegExp(final_url, 'g');
+				htmlContent = htmlContent.replace(re, '');
+			}*/
+			
+			port = html[1].split("/");
+			final_url = ip+port[0];
+			replace_url = ip+document.location.port;
+			re = new RegExp(final_url, 'g');
+			htmlContent = htmlContent.replace(re, replace_url);
+		}
+	}catch(err){
+		console.log(err);
+	}
+	return htmlContent;
+  }
 
 
 //-->
@@ -964,6 +1271,19 @@ body {
 
 <BODY onload="load()" onkeydown="disableShortcuts()" oncontextmenu="javascript:return false;">
 <button id="mybutton" style="visibility:hidden; width:0px; height:0px; display:none;">clickMe </button>
+<!-- generating TI calculators div start-->
+<div id="calculatorDiv" tabindex="0" class = "calculatorDiv" title="TI30 Calculator" style="display: none;width: inherit;">
+	 <div class="displayDiv" id="displayDiv">
+         <canvas id="display" class="display" width="192" height="75"> </canvas>
+     </div>
+ </div> 
+ 
+ <div id="calculatorTI84Div" class="calculatorTI84Div" tabindex="0" title="TI84 Calculator" style="display: none;width: inherit;">
+ 		<div class="displayTI84Div" id="displayTI84Div">
+			<canvas id="displayTI84" class="displayTI84" width="288" height="192"> </canvas>
+		</div>
+	</div>
+<!-- generating TI calculators div end-->
 <div id="needFlash9" style="display: none">
 <table height="100%" width="100%">
 	<tr>
