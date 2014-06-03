@@ -5915,15 +5915,23 @@ public class SessionOperationController extends PageFlowController {
 		            			String rosterActivationStatus = sti[i].getRosterActivationStatus();
 		            			//** When student moved from one level to another, then goes back to original level
 		            			//** Story: TABE testlet - Inactivated testlet roster's forms handling in add student and spiraling logic
-		            			if (!(rosterActivationStatus.compareToIgnoreCase("IN") == 0 && !(sti[i].getTestCompletionStatus().compareToIgnoreCase("SC")==0 || sti[i].getTestCompletionStatus().compareToIgnoreCase("NT")==0)))
+		            			//if (!(rosterActivationStatus.compareToIgnoreCase("IN") == 0 && !(sti[i].getTestCompletionStatus().compareToIgnoreCase("SC")==0 || sti[i].getTestCompletionStatus().compareToIgnoreCase("NT")==0)))
+		            			if (!(rosterActivationStatus.compareToIgnoreCase("IN") == 0 && (sti[i].getTestCompletionStatus().compareToIgnoreCase("SC")==0 || sti[i].getTestCompletionStatus().compareToIgnoreCase("NT")==0)))
 		            			{
 			            			if (testletForms.length()>0) testletForms += ",";
 			            			testletForms += testletForm;
-		            			}
-		            			//** if one of the testlets is still scheduled, don't allow student to be scheduled until testlet completed
-		            			if (completionStatus.compareToIgnoreCase("SC") == 0)
-		            			{
-		            				testletScheduled = true;
+		            						            			
+			            			//** if one of the testlets is still scheduled, don't allow student to be scheduled until testlet completed
+			            			//if (completionStatus.compareToIgnoreCase("SC") == 0)
+			            			if (completionStatus.compareToIgnoreCase("CO") != 0 || completionStatus.compareToIgnoreCase("NT") == 0 )
+			            			{
+			            				//** if one of the testlets is still scheduled, and belongs to adifferent level, enable student. This roster will be inactivated in next scheduled testlet
+			            				if (doesFormBelongToLatestLevel(testletForm, TABE9_10_Level))
+			            				{
+			            					testletScheduled = true;
+			            				}
+			            			}
+
 		            			}
 	            			}
 	            		}
@@ -5976,6 +5984,31 @@ public class SessionOperationController extends PageFlowController {
             be.printStackTrace();
         }
     	return true;
+    }
+    
+    private Boolean doesFormBelongToLatestLevel(String testletForm, String TABE9_10_Level)
+    {
+    	String allLevelForms = "";
+    	for (int j=0;j<forms.length;j++)
+    	{
+    		if (forms[j].getTABELevel().compareToIgnoreCase(TABE9_10_Level)==0)
+    		{
+    			if (allLevelForms.length()>0) allLevelForms += ",";
+    			allLevelForms += forms[j].getTestletForm();	
+    		}
+    	}
+    	String[] allLevelFormsArr = allLevelForms.split(",");
+    	boolean isLevelForm = false;
+    	for (int f=0;f<allLevelFormsArr.length;f++)
+    	{
+			if (allLevelFormsArr[f].compareToIgnoreCase(testletForm) == 0 && testletForm.length()>0)
+			{
+				isLevelForm = true;
+				break;
+			}
+    	}
+    	
+    	return isLevelForm;
     }
     
     private Base buildTestSessionList(CustomerLicense[] customerLicenses, TestSessionData tsd, Base base) 
