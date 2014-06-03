@@ -695,8 +695,10 @@ public interface StudentItemSetStatus extends JdbcControl
 		+"AND ta.test_catalog_id IN (select test_catalog_id from test_catalog where product_id in (4010,4009,4012,4011)) \n"
 		+"ORDER BY siss.COMPLETION_DATE_TIME DESC ", arrayMaxLength = 100000)	
 	StudentTestletInfo[] getTabe9Or10CompletedFormLevel(Integer studentId , Integer itemSetId) throws SQLException;
-	
-	@JdbcControl.SQL(statement= "SELECT ros.student_id AS studentId,siss.item_set_id AS itemSetId,subject,siss.completion_status AS completionStatus,test_completion_status AS testCompletionStatus,item_set_level AS itemSetLevel,siss.completion_date_time AS completionDateTime,item_set_form AS itemSetForm,ta.product_id AS productId \n"
+
+	@JdbcControl.SQL(statement= "SELECT ros.student_id AS studentId,siss.item_set_id AS itemSetId,subject,siss.completion_status AS completionStatus, \n" 
+		   +"test_completion_status AS testCompletionStatus,item_set_level AS itemSetLevel,siss.completion_date_time AS completionDateTime, \n" 
+		   +"item_set_form AS itemSetForm,ta.product_id AS productId, ros.activation_status AS rosterActivationStatus \n"
 	       +"FROM student_item_set_status siss,test_roster ros,test_admin ta,item_set ii \n"
 	       +"WHERE siss.test_roster_id = ros.test_roster_id \n"
 	       +"and ta.test_admin_id=ros.test_admin_id \n"
@@ -707,7 +709,7 @@ public interface StudentItemSetStatus extends JdbcControl
 		   +"and ros.student_id IN ({sql: studentIds}) \n" 
 		   +"and ta.activation_status='AC' \n"
 	       +"and ii.activation_status='AC'", arrayMaxLength = 100000)	
-		StudentTestletInfo[] getAssignedTestletForms(String studentIds,  Integer testAdminId) throws SQLException;
+	StudentTestletInfo[] getAssignedTestletForms(String studentIds,  Integer testAdminId) throws SQLException;
 	
 	@JdbcControl.SQL(statement= "SELECT SUBJECT, TABE_LEVEL as TABELevel, TESTLET_FORM as TestletForm from TESTLET_FORMS_BY_SUBJECT_LEVEL \n" 
 		+"WHERE subject = (SELECT distinct(subject) \n" 

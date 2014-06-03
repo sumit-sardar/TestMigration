@@ -2424,7 +2424,14 @@ public class ScheduleTestImpl implements ScheduleTest
 	        StudentTestletInfo[] sti = siss.getAssignedTestletForms(studentIds,  testAdminId);
 	        for (int k=0;k<sti.length;k++){
 	        	Integer stuId = sti[k].getStudentId();
-	        	map.get(stuId).add(sti[k].getItemSetForm());
+	        	if (sti[k].getRosterActivationStatus().equalsIgnoreCase("IN")) {
+					String rosCompStatus = sti[k].getTestCompletionStatus();
+					if (!rosCompStatus.equalsIgnoreCase("SC") && !rosCompStatus.equalsIgnoreCase("NT")) {
+						map.get(stuId).add(sti[k].getItemSetForm());
+					}
+				} else {
+					map.get(stuId).add(sti[k].getItemSetForm());
+				}
 	        }
 	        
 	        return map;
