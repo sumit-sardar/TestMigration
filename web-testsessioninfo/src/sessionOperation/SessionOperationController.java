@@ -5921,7 +5921,7 @@ public class SessionOperationController extends PageFlowController {
 		            						            			
 			            			//** if one of the testlets is still scheduled, don't allow student to be scheduled until testlet completed
 			            			//if (completionStatus.compareToIgnoreCase("SC") == 0)
-			            			if (completionStatus.compareToIgnoreCase("CO") != 0 || completionStatus.compareToIgnoreCase("NT") != 0 )
+			            			if (completionStatus.compareToIgnoreCase("CO") != 0 && completionStatus.compareToIgnoreCase("NT") != 0 )
 			            			{
 			            				//** if one of the testlets is still scheduled, and belongs to adifferent level, enable student. This roster will be inactivated in next scheduled testlet
 			            				if (doesFormBelongToLatestLevel(testletForm, TABE9_10_Level))
