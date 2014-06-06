@@ -1,5 +1,7 @@
 package com.ctb.lexington.domain.score.event;
 
+import java.sql.Clob;
+
 // TODO: should this be renamed to make it clear that it is an external event? (wait until key
 // entry)
 public class ResponseReceivedEvent extends ResponseEvent {
@@ -25,6 +27,8 @@ public class ResponseReceivedEvent extends ResponseEvent {
     private String conditionCode; //Added for TASC
     private String answerArea; //Added for TASC
     private String itemType; //Added for TASC
+    private Clob teItemResponse;
+    private Integer tePoints;
 
     public ResponseReceivedEvent(final Long testRosterId, final String itemId,
             final Integer itemSetId) {
@@ -255,5 +259,32 @@ public class ResponseReceivedEvent extends ResponseEvent {
 	public void setItemType(String itemType) {
 		this.itemType = itemType;
 	}
-	
+
+	/**
+	 * @return the teItemResponse
+	 */
+	public Clob getTeItemResponse() {
+		return teItemResponse;
+	}
+
+	/**
+	 * @param teItemResponse the teItemResponse to set
+	 */
+	public void setTeItemResponse(Clob teItemResponse) {
+		this.teItemResponse = teItemResponse;
+	}
+
+	/**
+	 * @return the tePoints
+	 */
+	public Integer getTePoints() {
+		return tePoints;
+	}
+
+	/**
+	 * @param tePoints the tePoints to set
+	 */
+	public void setTePoints(Integer tePoints) {
+		this.tePoints = tePoints;
+	}
 }

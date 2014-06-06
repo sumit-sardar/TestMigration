@@ -20,10 +20,16 @@ import com.ctb.lexington.db.mapper.IrsItemDimMapper;
 import com.ctb.lexington.db.mapper.IrsPrimObjDimMapper;
 import com.ctb.lexington.db.mapper.IrsSecObjDimMapper;
 import com.ctb.lexington.db.mapper.IrsSubjectDimMapper;
+import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.DataException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import com.ibatis.sqlmap.client.SqlMapClient;
 
 public class CurriculumController {
     private CurriculumData data;
@@ -78,104 +84,238 @@ public class CurriculumController {
         IrsContentAreaDimData [] contentAreas = null;
         if(this.adminData.getProductId() == 8000){
         	contentAreas = getAdaptiveIrsContentAreaBeans(data);
+        }else if("TC".equals(this.adminData.getAssessmentType())){
+        	contentAreas = getIrsContentAreaBeansForCCSS(data);
         }else{
         	contentAreas = getIrsContentAreaBeans(data);
         }
         
-        for(int i=0;i<contentAreas.length;i++) {
-            IrsContentAreaDimData newContentArea = contentAreas[i];
-            // insert subject if necessary
-            IrsSubjectDimData subject = subMapper.findBySubjectName(data.getContentAreas()[i].getSubject());
-            if(subject == null) {
-                subject = new IrsSubjectDimData();
-                subject.setSubjectName(data.getContentAreas()[i].getSubject());
-                subject = subMapper.insert(subject);
+        if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){
+        	SqlMapClient insertSubjectClient = null;
+        	SqlMapClient insertContentClient = null;
+            SqlMapClient updateContentClient = null;
+            
+            Map<Long, IrsContentAreaDimData> existingContentMap = new HashMap<Long, IrsContentAreaDimData>();
+            Map<String, IrsSubjectDimData> existingSubjectMap = new HashMap<String, IrsSubjectDimData>();
+            existingContentMap = caMapper.findByContentAreaIdInBulk(new ArrayList<IrsContentAreaDimData>(Arrays.asList(contentAreas)), "contentAreaid");
+            existingSubjectMap = subMapper.findForSubjectInBulk(new ArrayList<ContentArea>(Arrays.asList(data.getContentAreas())), "subjectName");
+            
+            for(int i=0;i<contentAreas.length;i++) {
+            	IrsContentAreaDimData newContentArea = contentAreas[i];
+            	
+            	IrsSubjectDimData subject = null;
+            	if(!existingSubjectMap.containsKey(data.getContentAreas()[i].getSubject())) {
+            		subject = new IrsSubjectDimData();
+            		subject.setSubjectName(data.getContentAreas()[i].getSubject());
+            		insertSubjectClient = subMapper.insertBatch(subject, insertSubjectClient);
+            		existingSubjectMap.put(data.getContentAreas()[i].getSubject(), subject);
+	            }
             }
-            newContentArea.setSubjectid(subject.getSubjectid());
-            // check for existing content ares record
-            IrsContentAreaDimData contentArea = caMapper.findByContentAreaId(newContentArea.getContentAreaid());
-            if(contentArea == null) {
-                // insert new content area record
-                caMapper.insert(newContentArea);
-            } else {
-                if(!newContentArea.equals(contentArea)) {
-                    // update existing content area record
-                    caMapper.update(newContentArea);
+            subMapper.executeBatch(insertSubjectClient);
+            existingSubjectMap = subMapper.findForSubjectInBulk(new ArrayList<ContentArea>(Arrays.asList(data.getContentAreas())), "subjectName");
+            
+            for(int i=0;i<contentAreas.length;i++) {
+            	IrsContentAreaDimData newContentArea = contentAreas[i];
+            	newContentArea.setSubjectid(existingSubjectMap.get(data.getContentAreas()[i].getSubject()).getSubjectid());
+            	if(!existingContentMap.containsKey(newContentArea.getContentAreaid())) {
+            		insertContentClient = caMapper.insertBatch(newContentArea, insertContentClient);
+            		existingContentMap.put(newContentArea.getContentAreaid(), newContentArea);
+	            }else {
+	            	IrsContentAreaDimData contentArea = (IrsContentAreaDimData)existingContentMap.get(newContentArea.getContentAreaid());
+	                if(!newContentArea.equals(contentArea)) {
+	                	updateContentClient = caMapper.updateBatch(newContentArea, updateContentClient);
+	                }
+	            }
+        	}
+            
+            caMapper.executeBatch(insertContentClient);
+        	caMapper.executeBatch(updateContentClient);
+        	
+    	}else {
+    		for(int i=0;i<contentAreas.length;i++) {
+            	IrsContentAreaDimData newContentArea = contentAreas[i];
+            	// insert subject if necessary
+                IrsSubjectDimData subject = subMapper.findBySubjectName(data.getContentAreas()[i].getSubject());
+                if(subject == null) {
+                    subject = new IrsSubjectDimData();
+                    subject.setSubjectName(data.getContentAreas()[i].getSubject());
+                    subject = subMapper.insert(subject);
+                }
+                newContentArea.setSubjectid(subject.getSubjectid());
+                // check for existing content ares record
+                IrsContentAreaDimData contentArea = caMapper.findByContentAreaId(newContentArea.getContentAreaid());
+                if(contentArea == null) {
+                    // insert new content area record
+                    caMapper.insert(newContentArea);
+                } else {
+                    if(!newContentArea.equals(contentArea)) {
+                        // update existing content area record
+                        caMapper.update(newContentArea);
+                    }
                 }
             }
-        }
+    	}
         
         // handle primary objectives
         IrsPrimObjDimData [] primaryObjectives = getIrsPrimObjBeans(data);
-        for(int i=0;i<primaryObjectives.length;i++) {
-            IrsPrimObjDimData newPrimObj = primaryObjectives[i];
-            // check for existing primary objective record
-            IrsPrimObjDimData primObj = poMapper.findByPrimObjId(newPrimObj.getPrimObjid());
-            if(primObj == null) {
-                // insert new primary objective record
-                poMapper.insert(newPrimObj);
-            } else {
-                if(!newPrimObj.equals(primObj)) {
-                    // update existing primary objective record
-                    poMapper.update(newPrimObj);
-                }
-            }
+        
+        if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){ // Changes for iBatis Batch Process implementation
+        	SqlMapClient insertPrimClient = null;
+            SqlMapClient updatePrimClient = null;
+            Map<Long, IrsPrimObjDimData> existPrimObjMap = new HashMap<Long, IrsPrimObjDimData>();
+        	existPrimObjMap = poMapper.findByOASItemIdAndSecObjId(new ArrayList<IrsPrimObjDimData>(Arrays.asList(primaryObjectives)), "primObjid");
+        	for(int i=0;i<primaryObjectives.length;i++) {
+                IrsPrimObjDimData newPrimObj = primaryObjectives[i];
+            	if(!existPrimObjMap.containsKey(newPrimObj.getPrimObjid())) {
+            		insertPrimClient = poMapper.insertBatch(newPrimObj, insertPrimClient);
+            		existPrimObjMap.put(newPrimObj.getPrimObjid(), newPrimObj);
+	            } else {
+	            	IrsPrimObjDimData primObj = (IrsPrimObjDimData)existPrimObjMap.get(newPrimObj.getPrimObjid());
+	                if(!newPrimObj.equals(primObj)) {
+	                	updatePrimClient = poMapper.updateBatch(newPrimObj, updatePrimClient);
+	                }
+	            }
+        	}
+        	poMapper.executeObjectiveBatch(insertPrimClient);
+        	poMapper.executeObjectiveBatch(updatePrimClient);
+        	
+        }else {        
+	        for(int i=0;i<primaryObjectives.length;i++) {
+	            IrsPrimObjDimData newPrimObj = primaryObjectives[i];
+	            // check for existing primary objective record
+	            IrsPrimObjDimData primObj = poMapper.findByPrimObjId(newPrimObj.getPrimObjid());
+	            if(primObj == null) {
+	                // insert new primary objective record
+	                poMapper.insert(newPrimObj);
+	            } else {
+	                if(!newPrimObj.equals(primObj)) {
+	                    // update existing primary objective record
+	                    poMapper.update(newPrimObj);
+	                }
+	            }
+	        }
         }
         
         // handle secondary objectives
         IrsSecObjDimData [] secondaryObjectives = getIrsSecObjBeans(data);
-        for(int i=0;i<secondaryObjectives.length;i++) {
-            IrsSecObjDimData newSecObj = secondaryObjectives[i];
-            
-            if(adminData != null && adminData.getProductId()== 7500){
-	            // check for existing secondary objective record
-	            IrsSecObjDimData secObj = soMapper.findBySecObjId(newSecObj.getSecObjid());
-	            if(secObj == null) {
-	                // insert new secondary objective record
-	                soMapper.insert(newSecObj);
+        
+        if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){ // Changes for iBatis Batch Process implementation
+        	SqlMapClient insertObjClient = null;
+            SqlMapClient updateObjClient = null;
+            Map<Long, IrsSecObjDimData> existSecObjMap = new HashMap<Long, IrsSecObjDimData>();
+        	existSecObjMap = soMapper.findByOASItemIdAndSecObjId(new ArrayList<IrsSecObjDimData>(Arrays.asList(secondaryObjectives)), "secObjid");
+        	for(int i=0;i<secondaryObjectives.length;i++) {
+                IrsSecObjDimData newSecObj = secondaryObjectives[i];
+                if(!existSecObjMap.containsKey(newSecObj.getSecObjid())) {
+                	insertObjClient = soMapper.insertBatch(newSecObj, insertObjClient);
+	            	existSecObjMap.put(newSecObj.getSecObjid(), newSecObj);
 	            } else {
-	                if(!newSecObj.equalsSec(secObj)) {
-	                    // update existing secondary objective record matching with assessment 
-	                    soMapper.updateSec(newSecObj);
+	            	IrsSecObjDimData secObj = (IrsSecObjDimData)existSecObjMap.get(newSecObj.getSecObjid());
+	                if(!newSecObj.equals(secObj)) {
+	                    updateObjClient = soMapper.updateBatch(newSecObj, updateObjClient);
 	                }
 	            }
-            }else{
-	            // check for existing secondary objective record
-	            IrsSecObjDimData secObj = soMapper.findBySecObjId(newSecObj.getSecObjid());
-	            if(secObj == null) {
-	                // insert new secondary objective record
-	                soMapper.insert(newSecObj);
-	            } else {
-	                if(!newSecObj.equals(secObj)) {
-	                    // update existing secondary objective record
-	                    soMapper.update(newSecObj);
-	                }
+        	}
+        	soMapper.executeObjectiveBatch(insertObjClient);
+        	soMapper.executeObjectiveBatch(updateObjClient);
+        }else{
+	        for(int i=0;i<secondaryObjectives.length;i++) {
+	            IrsSecObjDimData newSecObj = secondaryObjectives[i];
+	            if(adminData != null && adminData.getProductId()== 7500){
+		            // check for existing secondary objective record
+		            IrsSecObjDimData secObj = soMapper.findBySecObjId(newSecObj.getSecObjid());
+		            if(secObj == null) {
+		                // insert new secondary objective record
+		                soMapper.insert(newSecObj);
+		            } else {
+		                if(!newSecObj.equalsSec(secObj)) {
+		                    // update existing secondary objective record matching with assessment 
+		                    soMapper.updateSec(newSecObj);
+		                }
+		            }
+	            }else{
+		            // check for existing secondary objective record
+		            IrsSecObjDimData secObj = soMapper.findBySecObjId(newSecObj.getSecObjid());
+		            if(secObj == null) {
+		                // insert new secondary objective record
+		                soMapper.insert(newSecObj);
+		            } else {
+		                if(!newSecObj.equals(secObj)) {
+		                    // update existing secondary objective record
+		                    soMapper.update(newSecObj);
+		                }
+		            }
 	            }
             }
         }
         
         // handle items
         IrsItemDimData [] items = getIrsItemBeans(data);
-        for(int i=0;i<items.length;i++) {
-            IrsItemDimData newItem = items[i];
-            // check for existing item record
-            IrsItemDimData item = iMapper.findByOASItemIdAndSecObjId(newItem.getOasItemid(), newItem.getSecObjid());
-            if(item == null) {
-                // insert new item record
-                 // For Laslink Scoring
-            	if(newItem.getItemType().equals("CR"))
-            		newItem.setCorrectResponse("N/A");
-                item = iMapper.insert(newItem);
-            } else {
-                if(!newItem.equals(item)) {
-                	if(newItem.getItemType().equals("CR"))
-                		newItem.setCorrectResponse("N/A");
-                    // update existing item record
-                    newItem.setItemid(item.getItemid());
-                    iMapper.update(newItem);
-                }
-            }
-            newItem.setItemid(item.getItemid());
+        
+        // Changes for iBatis Batch Process implementation
+        if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){
+        	SqlMapClient insertItemClient = null;
+            SqlMapClient updateItemClient = null;
+            Map<String, IrsItemDimData> existItemMap = new HashMap<String, IrsItemDimData>();
+            ArrayList<IrsItemDimData> itemArrList= new ArrayList<IrsItemDimData>();
+        	existItemMap = iMapper.findByOASItemIdAndSecObjId(new ArrayList<IrsItemDimData>(Arrays.asList(items)), "key");
+        	for(int i=0;i<items.length;i++) {
+                IrsItemDimData newItem = items[i];
+                	String key = newItem.getOasItemid()+newItem.getSecObjid()+newItem.getAssessmentid();
+                	if(existItemMap.containsKey(key)) {
+    	            	IrsItemDimData dbItem = (IrsItemDimData)existItemMap.get(key);
+    	                if(!newItem.equals(dbItem)) {
+    	                	if("CR".equals(newItem.getItemType()) || "IN".equals(newItem.getItemType()))
+    	                		newItem.setCorrectResponse("N/A");
+    	                	
+    	                    updateItemClient = iMapper.updateBatch(newItem, updateItemClient);
+    	                }
+    	                newItem.setItemid(dbItem.getItemid());
+    	            } else{
+    	                if("CR".equals(newItem.getItemType()) || "IN".equals(newItem.getItemType()))
+    	            		newItem.setCorrectResponse("N/A");
+    	            	insertItemClient = iMapper.insertBatch(newItem, insertItemClient);
+    	            	itemArrList.add(newItem);
+    	            	existItemMap.put(key, newItem);
+    	            }
+        	}
+        	
+        	iMapper.executeItemBatch(insertItemClient); // item inserted
+        	iMapper.executeItemBatch(updateItemClient); // item updated
+        	
+        	if(null != itemArrList && itemArrList.size() > 0){
+        		Map newItemMap = iMapper.findByOASItemIdAndSecObjId(itemArrList, "key");
+        		for(int i=0;i<items.length;i++) {
+        			IrsItemDimData item = items[i];
+        			String key = (item.getOasItemid()+item.getSecObjid()+item.getAssessmentid());
+        			if(newItemMap.containsKey(key)){
+        				IrsItemDimData newItem = (IrsItemDimData)newItemMap.get(key);
+        				item.setItemid(newItem.getItemid());
+        			}
+        		}
+        	}
+        }else{
+	        for(int i=0;i<items.length;i++) {
+		        IrsItemDimData newItem = items[i];
+	        	// check for existing item record
+	        	IrsItemDimData item = iMapper.findByOASItemIdAndSecObjId(newItem.getOasItemid(), newItem.getSecObjid());
+	            if(item == null) {
+	                 // insert new item record
+	                 // For Laslink Scoring
+	            	if(newItem.getItemType().equals("CR"))
+	            		newItem.setCorrectResponse("N/A");
+	            	item = iMapper.insert(newItem);
+	            } else {
+	                if(!newItem.equals(item)) {
+	                	if(newItem.getItemType().equals("CR"))
+	                		newItem.setCorrectResponse("N/A");
+	                    // update existing item record
+	                    newItem.setItemid(item.getItemid());
+	                    iMapper.update(newItem);
+	                }
+	            }
+	            newItem.setItemid(item.getItemid());
+	        }
         }
         copySubjectIdsToCurrData(composites, contentAreas, data);
         copyItemIdsToCurrData(items, data);
@@ -236,6 +376,23 @@ public class CurriculumController {
         
         return cad;
     }
+    
+    private IrsContentAreaDimData [] getIrsContentAreaBeansForCCSS(CurriculumData data) {
+        IrsContentAreaDimData [] cad = new IrsContentAreaDimData[data.getContentAreas().length];
+        for(int i=0;i<data.getContentAreas().length;i++) {
+            cad[i] = new IrsContentAreaDimData();
+            ContentArea ca = data.getContentAreas()[i];
+            cad[i].setContentAreaid(ca.getContentAreaId());
+            cad[i].setContentAreaType(ca.getContentAreaType());
+            cad[i].setName(ca.getContentAreaName());
+            cad[i].setNumItems(ca.getContentAreaNumItems());
+            cad[i].setPointsPossible(ca.getContentAreaPointsPossible());
+            cad[i].setAssessmentid(context.getAssessmentId());
+            cad[i].setContentAreaIndex(new Long(4));
+        }
+        
+        return cad;
+    }
    
     private IrsPrimObjDimData [] getIrsPrimObjBeans(CurriculumData data) {
         IrsPrimObjDimData [] pod = new IrsPrimObjDimData[data.getPrimaryObjectives().length];
@@ -262,6 +419,9 @@ public class CurriculumController {
             SecondaryObjective so = data.getSecondaryObjectives()[i];
             sod[i].setPrimObjid((so.getPrimaryObjectiveId()==null)?null:new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getPrimaryObjectiveId()))));
             sod[i].setName(so.getSecondaryObjectiveName());
+//            if(so.getSecondaryObjectiveName().length() > 128) {
+//            	sod[i].setName(so.getSecondaryObjectiveName().substring(0, 127));
+//            }
             sod[i].setNumItems(so.getSecondaryObjectiveNumItems());
             sod[i].setPointsPossible(so.getSecondaryObjectivePointsPossible());
             sod[i].setSecObjid(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getSecondaryObjectiveId()))));

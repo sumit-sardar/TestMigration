@@ -36,6 +36,7 @@ import com.ctb.lexington.domain.score.controller.TestResultController;
 import com.ctb.lexington.domain.score.controller.llcontroller.LLTestResultController;
 import com.ctb.lexington.domain.score.controller.tacontroller.TATestResultController;
 import com.ctb.lexington.domain.score.controller.tbcontroller.TBTestResultController;
+import com.ctb.lexington.domain.score.controller.tccontroller.TCTestResultController;
 import com.ctb.lexington.domain.score.controller.tscontroller.TSTestResultController;
 import com.ctb.lexington.domain.score.controller.tvcontroller.TVTestResultController;
 import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
@@ -256,6 +257,12 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                     controller.run(getRosterValidationStatus(event.getTestRosterId()));
                 }
                 //STOP-  For TASC Scoring
+                //START-  For TABE CCSS Framework Scoring
+                else if(this instanceof TCScorer) {
+                	controller = new TCTestResultController(getIRSConnection(), resultHolder, getReportingLevels(event.getTestRosterId()));
+                    controller.run(getRosterValidationStatus(event.getTestRosterId()));
+                }
+                //END-  For TABE CCSS Framework Scoring
                 System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: finished persistence");
                 forceCloseAllConnections(false);
             } catch (Exception e) {
@@ -370,26 +377,6 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         	details.calculatePercentObtained();
         details.setSubtestId(event.getSubtestId());
         
-        // Added for TASC Product
-        /*if(productType.equals("TS")) {
-        	Long pointsAttempted = new Long(event.getPointsAttempted());
-        	Long pointsPossible = new Long(event.getPointsPossible());
-        	
-        	if(pointsAttempted == pointsPossible) {
-        		//details.setObjectiveScoringStatus("ALL");
-        		details.setObjectiveScoringStatus("");
-        	}
-        	else if(pointsAttempted < pointsPossible && pointsAttempted > 0) {
-        		//details.setObjectiveScoringStatus("SOME");
-        		details.setObjectiveScoringStatus("*");
-        	}
-        	else if(pointsAttempted == 0) {
-        		//details.setObjectiveScoringStatus("NO");
-        		details.setObjectiveScoringStatus("");
-        	}
-        	System.out.println("Objective Subtest Id : " + event.getSubtestId() + " : Objective Scoring Status : " + details.getObjectiveScoringStatus());
-        }*/
-        // Added for TASC Product
     }
 
     public void onEvent(ContentAreaRawScoreEvent event) {
@@ -440,6 +427,9 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 		            detail.setConditionCodeId(DatabaseHelper.asLong(event.getConditionCodeId()));
 		        } else {
 		        	detail.setConditionCodeId(null);
+		        }
+		        if(null != event.getTeItemResponse()){
+		        	detail.setTePoints(event.getTePoints());
 		        }
 	   	  	}
     	 } catch(CTBSystemException e){

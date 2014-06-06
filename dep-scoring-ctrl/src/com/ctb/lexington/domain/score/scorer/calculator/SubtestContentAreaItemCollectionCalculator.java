@@ -28,8 +28,10 @@ public class SubtestContentAreaItemCollectionCalculator extends Calculator {
     }
 
     public void onEvent(final SubtestItemCollectionEvent event) {
-        List<ItemContentArea> itemsByContentAreaQueryResults = getItemsByContentArea(event.getItemSetId(),
-                event.getProductId());
+        List<ItemContentArea> itemsByContentAreaQueryResults = ("TC".equals(event.getProductType())
+        		? getItemByContentAreaForTABECCSS(event.getItemSetId(), event.getProductId())
+        		: getItemsByContentArea(event.getItemSetId(),
+                event.getProductId()));
         if(event.getProductId() == 7501 || event.getProductId() == 7502){
         	final Map<String,Long> contentMap = getAllVirtualContentArea(event.getItemSetId(),event.getProductId());
         	itemsByContentAreaQueryResults = populateContentListWithVirtual(itemsByContentAreaQueryResults, contentMap);
@@ -49,6 +51,25 @@ public class SubtestContentAreaItemCollectionCalculator extends Calculator {
 
         channel.send(new SubtestContentAreaItemCollectionEvent(event.getTestRosterId(),
                 DatabaseHelper.asLong(event.getItemSetId()), itemsByContentArea, event.getItemSetName()));
+        }
+    }
+    
+    // Added for TABE CCSS Product
+    protected List<ItemContentArea> getItemByContentAreaForTABECCSS(Integer itemSetId, Integer productId) {
+    	Connection conn = null;
+        try {
+            conn = scorer.getOASConnection();
+            ItemMapper mapper = new ItemMapper(conn);
+            return mapper.findItemGroupByContentAreaForItemSetAndProductTABECCSS(DatabaseHelper
+                    .asLong(itemSetId), DatabaseHelper.asLong(productId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                scorer.close(true, conn);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

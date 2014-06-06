@@ -66,7 +66,7 @@ public class TestResultDataCollector {
 
         CurriculumData cachedCurriculumData = null;
         String productType = data.getAdminData().getAssessmentType();
-        if(!"TS".equals(productType)) {
+        if(!"TS".equals(productType) && !"TC".equals(productType)) {
 	        String key = String.valueOf(data.getAdminData().getAssessmentId());
 	        cachedCurriculumData = (CurriculumData) SimpleCache.checkCache("curriculumData", key, "scoringUser");
 	        if(cachedCurriculumData == null) {
@@ -74,7 +74,7 @@ public class TestResultDataCollector {
 				SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
 	        }
         }
-        else if("TS".equals(productType)) {
+        else if("TS".equals(productType) || "TC".equals(productType)) {
         	String key = String.valueOf(data.getAdminData().getAssessmentId()) + data.getStudentData().getAssignedTestFormName();
 	        cachedCurriculumData = (CurriculumData) SimpleCache.checkCache("curriculumData", key, "scoringUser");
 	        if(cachedCurriculumData == null) {

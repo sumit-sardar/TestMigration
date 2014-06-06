@@ -29,6 +29,7 @@ public class StudentItemScoreDetails implements Persistent, Comparable {
     private Long conditionCodeId;
     private String comments;
     private String atsArchive;
+    private Integer tePoints;
     
     public String getAtsArchive() {
         return this.atsArchive;
@@ -336,6 +337,20 @@ public class StudentItemScoreDetails implements Persistent, Comparable {
     public void setTestItemSetName(String testItemSetName) {
         this.testItemSetName = testItemSetName;
     }
+    
+    /**
+	 * @return the tePoints
+	 */
+	public Integer getTePoints() {
+		return tePoints;
+	}
+
+	/**
+	 * @param tePoints the tePoints to set
+	 */
+	public void setTePoints(Integer tePoints) {
+		this.tePoints = tePoints;
+	}
 
     // Object
 

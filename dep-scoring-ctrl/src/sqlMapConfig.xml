@@ -3,6 +3,17 @@
     "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
 
 <sqlMapConfig>
+	<transactionManager type="JDBC" commitRequired="false">
+		<!--<dataSource type="SIMPLE">
+			<property name="JDBC.Driver" value="oracle.jdbc.driver.OracleDriver"/>
+			<property name="JDBC.ConnectionURL" value="jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:irsr5t1"/>
+			<property name="JDBC.Username" value="irs"/>
+			<property name="JDBC.Password" value="irsr5t"/>
+		</dataSource>-->
+		<dataSource type="JNDI">
+			<property name="DataSource" value="irsDataSource"/>
+		</dataSource>
+	</transactionManager>
     <sqlMap resource="maps/ConditionCodeRecordMap.xml" />
     <sqlMap resource="maps/DatapointRecordMap.xml" />
     <sqlMap resource="maps/ItemRecordMap.xml" />
@@ -80,4 +91,8 @@
     <sqlMap resource="maps/tsfactmaps/IrsTASCPrimObjFact.xml"/>
     <sqlMap resource="maps/tsfactmaps/IrsTASCSecObjFact.xml"/>
     <sqlMap resource="maps/tsfactmaps/IrsTASCPredSubjectFact.xml"/>
+    <sqlMap resource="maps/tcfactmaps/IrsTCContentAreaFact.xml"/>
+    <sqlMap resource="maps/tcfactmaps/IrsTCItemFact.xml"/>
+    <sqlMap resource="maps/tcfactmaps/IrsTCPrimObjFact.xml"/>
+    <sqlMap resource="maps/tcfactmaps/IrsTCSecObjFact.xml"/>
 </sqlMapConfig>

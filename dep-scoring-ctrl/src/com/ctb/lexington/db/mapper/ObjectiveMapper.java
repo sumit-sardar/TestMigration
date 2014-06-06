@@ -11,6 +11,7 @@ public class ObjectiveMapper extends AbstractDBMapper {
     public static final String FIND_BY_LEVEL = "findObjectivesBySubtestIdAndLevel";
     public static final String FIND_LEVELS = "findReportingLevels";
     public static final String FIND_LEVELS_FOR_ROSTER = "findReportingLevelsForRoster";
+    public static final String FIND_NAME_FOR_TABECCSS = "findObjectivesBySubtestIdAndProductIdTABECCSS";
 
 	/**
 	 * @param conn
@@ -76,4 +77,11 @@ public class ObjectiveMapper extends AbstractDBMapper {
         return record;
 
     }
+    
+    public Collection findObjectivesBySubtestIdAndProductIdForTABECCSS(Long subtestId, Long productId){
+		HashMap map = new HashMap();
+		map.put("subtestId", subtestId);
+		map.put("productId", productId);
+        return findMany(FIND_NAME_FOR_TABECCSS, map);
+	}
 }

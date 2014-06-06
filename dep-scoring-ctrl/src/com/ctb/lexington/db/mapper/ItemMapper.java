@@ -20,7 +20,8 @@ public class ItemMapper extends AbstractDBMapper {
     private static final String FIND_ITEM_PEIDS_WSTV_BY_ITEM_SET_ID = "findItemIdPeIdsForWSTV";
     private static final String FIND_VIRTUAL_CONTENT_FOR_LASLINK = "findVirtualContentForLaslink";
     private static final String FIND_ITEM_BY_ITEM_SET_ID_NAME_TS = "findItemByItemSetIdTASC";
-
+    private static final String FIND_ITEM_GROUP_BY_CONTENT_AREA_AND_PRODUCT_TABECCSS = "findItemGroupByContentAreaForTABECCSS";
+    
     /**
      * @param conn
      */
@@ -76,6 +77,15 @@ public class ItemMapper extends AbstractDBMapper {
         return result;
     }
 
+    // Added for TABE CCSS Product
+    public List<ItemContentArea> findItemGroupByContentAreaForItemSetAndProductTABECCSS(Long itemSetId, Long productId) {
+        ItemContentArea template = new ItemContentArea();
+        template.setItemSetId(itemSetId);
+        template.setProductId(productId);
+
+        return findMany(FIND_ITEM_GROUP_BY_CONTENT_AREA_AND_PRODUCT_TABECCSS,template);
+    }
+    
     public List<ItemContentArea> findItemGroupByContentAreaForItemSetAndProduct(Long itemSetId, Long productId) {
         ItemContentArea template = new ItemContentArea();
         template.setItemSetId(itemSetId);

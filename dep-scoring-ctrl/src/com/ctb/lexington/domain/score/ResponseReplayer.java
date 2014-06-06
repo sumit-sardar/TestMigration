@@ -601,7 +601,14 @@ public class ResponseReplayer {
     	if("TS".equals(productType)) {
 	        events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASCOrg(
 	        		asLong(itemSet.getItemSetId()), testRosterId)));
-    	} else {
+    	}else if("TC".equals(productType)) {
+    		try { // This block is written for simple JDBC
+				events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTabeCC(
+						asLong(itemSet.getItemSetId()), testRosterId)));
+			} catch (CTBSystemException e) {
+				e.printStackTrace();
+			}
+    	}else {
 	    	events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtest(
 	                asLong(itemSet.getItemSetId()), testRosterId)));
     	}
@@ -748,6 +755,7 @@ public class ResponseReplayer {
         event.setComments(response.getComments());
         event.setCrResponse(response.getCrResponse());
         event.setConditionCode(response.getConditionCode());
+        event.setTeItemResponse(response.getTeItemResponse());
 
         return event;
     }

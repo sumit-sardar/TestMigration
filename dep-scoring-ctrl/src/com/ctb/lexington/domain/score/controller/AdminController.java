@@ -51,13 +51,12 @@ public class AdminController {
 	  
     public void run() throws SQLException {
     	
-    	if("TS".equals(data.getAssessmentType())) {
+    	if("TS".equals(data.getAssessmentType()) || "TC".equals(data.getAssessmentType())) {
 	    	this.irsFormDimMapper = new IrsFormDimMapper(conn);
 	    	IrsFormDimData newForm = getIrsFormBean(data);
 	    	IrsFormDimData form = irsFormDimMapper.findByFormNameAndProductTypeId(newForm); // Find formid by Form Name and Product Type Id (6)
 	    	if(form == null) {
-	    		System.out.println("Form Name for TASC Does not exist in FORM_DIM Table");
-	    		throw new RuntimeException("Critical Error in scoring! Form Name for TASC Does not exist in FORM_DIM Table.");
+	    		throw new RuntimeException("Critical error in scoring! Form Name for this product does not exist in FORM_DIM table.");
 	    	}
 	    	data.setFormId(form.getFormid());
     	}
@@ -162,7 +161,8 @@ public class AdminController {
         	formName = currData.getContentAreas()[0].getSubtestForm();
         }
         form.setName(formName);
-        form.setProductTypeId(new Long(6));
+        form.setProductTypeId(("TC").equals(data.getAssessmentType())
+        		? new Long(1): new Long(6));
         return form;
     }
     
@@ -189,7 +189,8 @@ public class AdminController {
             "TV".equals(data.getAssessmentType())?2:
             "LL".equals(data.getAssessmentType())?4: // For Laslink Scoring
             "TA".equals(data.getAssessmentType())?5: // For Tabe Adaptive Scoring
-    		"TS".equals(data.getAssessmentType())?6:3)); // For TASC Scoring
+    		"TS".equals(data.getAssessmentType())?6: // For TASC Scoring
+    		"TC".equals(data.getAssessmentType())?1:3)); // For TABE CCSS Scoring
         programData.setNormsGroup(
             "6".equals(data.getNormsGroup())?"Fall":
             "18".equals(data.getNormsGroup())?"Winter":
@@ -233,7 +234,8 @@ public class AdminController {
             "TV".equals(data.getAssessmentType())?2:
             "LL".equals(data.getAssessmentType())?4:
             "TA".equals(data.getAssessmentType())?5: // For Laslink Scoring
-            "TS".equals(data.getAssessmentType())?6:3)); // For TASC Scoring
+            "TS".equals(data.getAssessmentType())?6: // For TASC Scoring
+            "TC".equals(data.getAssessmentType())?1:3)); // For TABE CCSS Scoring
     	return productData;
     }
     
@@ -243,7 +245,6 @@ public class AdminController {
     	assessmentData.setName(data.getAssessmentName());
     	assessmentData.setProductid(data.getProductId());
     	assessmentData.setType(data.getAssessmentType());
-        assessmentData.setProductid(data.getProductId());
         assessmentData.setProductTypeid(new Long(
             "TB".equals(data.getAssessmentType())?1:
             "TL".equals(data.getAssessmentType())?1:
@@ -251,7 +252,8 @@ public class AdminController {
             "TV".equals(data.getAssessmentType())?2:
             "LL".equals(data.getAssessmentType())?4:
             "TA".equals(data.getAssessmentType())?5: // For Laslink Scoring
-        	"TS".equals(data.getAssessmentType())?6:3)); // For TASC Scoring
+        	"TS".equals(data.getAssessmentType())?6: // For TASC Scoring
+        	"TC".equals(data.getAssessmentType())?1:3)); // For TABE CCSS Scoring
         
         // this is WRONG!!! what if they didn't complete any content area?
         String form = "N/A";
@@ -271,10 +273,9 @@ public class AdminController {
                                           "CAT".equals(form)?13:14)); 
                                           
         if("TS".equals(data.getAssessmentType())) {
-        	/*assessmentData.setFormid(new Long("A1".equals(form)?18:
-        									  "B1".equals(form)?19:
-        									  "C1".equals(form)?20:21));*/
         	assessmentData.setFormid(data.getFormId());
+        }else if ("TC".equals(data.getAssessmentType())){ // For TABE CCSS Scoring
+        	assessmentData.setFormid(new Long(3));
         }
         if("TV".equals(data.getAssessmentType())) {
             assessmentData.setLevelid(                                  

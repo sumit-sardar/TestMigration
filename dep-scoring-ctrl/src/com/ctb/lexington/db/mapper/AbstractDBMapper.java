@@ -122,6 +122,79 @@ public abstract class AbstractDBMapper {
             session.delete(deleteName, record);
     }
 
+    protected SqlMapClient insertBatch(final String insertName, final Persistent record, SqlMapClient sqlMap) throws SQLException {
+    	if(null == sqlMap){
+			try {
+				Reader reader = Resources.getResourceAsReader(SQL_MAP_FILE);
+				sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+				sqlMap.startTransaction();
+	            sqlMap.startBatch();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
+        sqlMap.insert(insertName,record);
+        return sqlMap;
+    }
+    
+    protected SqlMapClient updateBatch(final String updateName, final Persistent record, SqlMapClient sqlMap) throws SQLException {
+    	if(null == sqlMap){
+			try {
+				Reader reader = Resources.getResourceAsReader(SQL_MAP_FILE);
+				sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+				sqlMap.startTransaction();
+	            sqlMap.startBatch();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
+        sqlMap.update(updateName,record);
+        return sqlMap;
+    }
+    
+    protected SqlMapClient deleteBatch(final String deleteName, final Persistent record, SqlMapClient sqlMap) throws SQLException {
+    	if(null == sqlMap){
+			try {
+				Reader reader = Resources.getResourceAsReader(SQL_MAP_FILE);
+				/*SqlMapClient*/ sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+				//sqlMap = mapClient.openSession(this.conn);
+				sqlMap.startTransaction();
+	            sqlMap.startBatch();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
+		sqlMap.delete(deleteName,record);
+        return sqlMap;
+    }
+    
+    protected void executeBatchProcess(SqlMapClient sqlClient){
+    	if (null != sqlClient) { 
+	    	try {
+				sqlClient.executeBatch();
+				sqlClient.commitTransaction();
+				sqlClient.endTransaction();
+				sqlClient.flushDataCache();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+    	}
+    }
+    
+    protected Map findManyInMap(final String findName, final Map map, final String keyProp) {
+        return queryForMap(findName, map, keyProp);
+    }
+    
+    private Map queryForMap(final String findName, final Object object, final String keyProp) {
+        try {
+            SqlMapSession session = getSqlMapClient();
+            Map result = session.queryForMap(findName, object, keyProp);
+            return result;
+        } catch (SQLException exc) {
+            return (Map) throwForFailedQuery(findName, object, exc);
+        }
+    }
+    
     protected boolean exists(final String existsName, final Persistent persistent) {
         return null != queryForObject(existsName, persistent);
     }

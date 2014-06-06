@@ -128,6 +128,7 @@ public class CurriculumData {
         private String subtestForm;
         private String subtestLevel;
         private Long subjectId;
+        private String gradeBand;
         
         
 		public ContentArea() {
@@ -144,6 +145,7 @@ public class CurriculumData {
 	        this.subtestForm = contentArea.getSubtestForm();
 	        this.subtestLevel = contentArea.getSubtestLevel();
 	        this.subjectId = contentArea.getSubjectId();
+	        this.gradeBand = contentArea.getGradeBand();
 		}
 		/**
 		 * @return Returns the subjectId.
@@ -265,6 +267,19 @@ public class CurriculumData {
 		public void setSubject(String subject) {
 			this.subject = subject;
 		}
+		/**
+		 * @return Returns the gradeBand.
+		 */
+		public String getGradeBand() {
+			return gradeBand;
+		}
+		/**
+		 * @param subject The subject to set.
+		 */
+		public void setGradeBand(String gradeBand) {
+			this.gradeBand = gradeBand;
+		}
+		
     }
     
     public static class PrimaryObjective {

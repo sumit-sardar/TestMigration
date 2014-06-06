@@ -17,6 +17,7 @@ public class IrsItemDimData implements Persistent {
     private Long pointsPossible;
     private Long nationalAverage;
     private Long assessmentid;
+    private String key;
         
     public Long getAssessmentid() {
         return assessmentid;
@@ -116,4 +117,13 @@ public class IrsItemDimData implements Persistent {
     public void setNationalAverage(Long nationalAverage) {
         this.nationalAverage = nationalAverage;
     }
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+    
 }

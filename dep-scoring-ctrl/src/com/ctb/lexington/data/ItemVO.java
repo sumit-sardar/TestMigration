@@ -39,6 +39,9 @@ public class ItemVO extends Object implements Persistent, java.io.Serializable, 
     public static final String ITEM_TYPE_MR = "MR";
     public static final String ITEM_TYPE_CR = "CR";
     public static final String ITEM_TYPE_ER = "ER";
+    public static final String ITEM_TYPE_IN = "IN";
+    
+    public static final String IN_ITEM_TAG_NAME = "answer";
 
     public static final String ITEM_MEDIA_TABLE_NAME       = "ITEM_MEDIA";
     public static final String ITEM_MEDIA_COLUMN_PKEY_NAME = "ITEM_ID";
