@@ -472,6 +472,7 @@ function getTestDetailsForSelectedProgram(){
 	var selectElement = document.getElementById("programNameOptions");
 	var chosenOption = selectElement.options[selectElement.selectedIndex];
 	selectedProgramIdPS = chosenOption.value;
+	selectedProgramNamePS = chosenOption.text;
 	testNameOptions =[];
 	testIds = [];
 	var index = 0;
