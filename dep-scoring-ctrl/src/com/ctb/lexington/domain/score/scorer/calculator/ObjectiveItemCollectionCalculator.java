@@ -83,6 +83,16 @@ public class ObjectiveItemCollectionCalculator extends Calculator {
         	            SimpleCache.cacheResult("ObjectivesBySubtestIdAndProductId", cacheKey, objectives, "scoringUser");
                     }
                 }
+            } else if("TC".equals(event.getProductType())){
+        		currentSubjectName = event.getContentArea();
+        		this.itemSetIdValue = event.getItemSetId().toString();
+            	String cacheKey = event.getProductId().toString() + "::" + event.getItemSetId().toString();
+                objectives = (Collection) SimpleCache.checkCache("ObjectivesBySubtestIdAndProductId", cacheKey, "scoringUser");
+                if(objectives == null) {
+    	            objectives = new ObjectiveMapper(oasConnection).findObjectivesBySubtestIdAndProductIdForTABECCSS(
+    	                    DatabaseHelper.asLong(event.getItemSetId()), DatabaseHelper.asLong(event.getProductId()));
+    	            SimpleCache.cacheResult("ObjectivesBySubtestIdAndProductId", cacheKey, objectives, "scoringUser");
+                }
             } else {
             	String cacheKey = event.getProductId().toString() + "::" + event.getItemSetId().toString();
                 objectives = (Collection) SimpleCache.checkCache("ObjectivesBySubtestIdAndProductId", cacheKey, "scoringUser");

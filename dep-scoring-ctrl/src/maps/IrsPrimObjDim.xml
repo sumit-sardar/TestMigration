@@ -66,4 +66,25 @@ WHERE
 	WHERE	
 			 PRIM_OBJID = #primObjid:NUMERIC#
 </delete>
+
+<select id="findByPrimObjIdInBulk" parameterClass="java.util.Map" resultClass="com.ctb.lexington.db.irsdata.IrsPrimObjDimData">
+SELECT 
+        PRIM_OBJID as primObjid,
+        NAME as name,        
+        PRIM_OBJ_INDEX as primObjIndex,
+        PRIM_OBJ_TYPE as primObjType,
+        NUM_ITEMS as numItems,
+        POINTS_POSSIBLE as pointsPossible,
+        CONTENT_AREAID as contentAreaid,
+        assessmentid as assessmentid
+FROM
+        PRIM_OBJ_DIM  
+WHERE
+        PRIM_OBJID IN 
+        <dynamic>
+				<iterate property="primObjectives" open="(" close=")" conjunction=",">
+				#primObjectives[].primObjid:NUMERIC#
+				</iterate>
+		</dynamic>
+</select>
 </sqlMap>

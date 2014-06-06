@@ -58,4 +58,18 @@ WHERE
             SUBJECTID = #subjectid:NUMERIC#
 </update>
 
+<select id="findBySubjectNameInBulk" parameterClass="java.util.Map" resultClass="com.ctb.lexington.db.irsdata.IrsSubjectDimData">
+SELECT 
+        SUBJECTID as subjectid,
+        SUBJECT_NAME as subjectName        
+FROM
+        SUBJECT_DIM  
+WHERE 
+        SUBJECT_NAME IN
+        <dynamic>
+				<iterate property="contentAreas" open="(" close=")" conjunction=",">
+				#contentAreas[].subject:VARCHAR#
+				</iterate>
+		</dynamic>
+</select>
 </sqlMap>

@@ -66,4 +66,27 @@ WHERE
 	WHERE	
 			OAS_ITEMID = #oasItemid:VARCHAR#
 </delete>
+
+<select id="findOasItemIDInBulk" parameterClass="java.util.Map" resultClass="com.ctb.lexington.db.irsdata.IrsItemDimData">
+SELECT 
+		OAS_ITEMID || SEC_OBJID || ASSESSMENTID as key,
+        ITEMID as itemid,
+        OAS_ITEMID as oasItemid,
+        ITEM_TEXT as itemText,
+        ITEM_INDEX as itemIndex,
+        ITEM_TYPE as itemType,
+        CORRECT_RESPONSE as correctResponse,
+        POINTS_POSSIBLE as pointsPossible,
+        SEC_OBJID as secObjid,
+        ASSESSMENTID as assessmentid
+FROM
+        ITEM_DIM  
+WHERE 	
+        (OAS_ITEMID,  SEC_OBJID) IN
+        <dynamic>
+				<iterate property="items" open="(" close=")" conjunction=",">
+				( #items[].oasItemid:VARCHAR#, #items[].secObjid:NUMERIC# )
+				</iterate>
+		</dynamic>
+</select>
 </sqlMap>

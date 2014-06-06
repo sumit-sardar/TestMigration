@@ -278,6 +278,11 @@ public final class SQLUtil {
         return rs.wasNull() ? null : result;
     }
     
+    public static final Date getDate(ResultSet rs, String columnName) throws SQLException {
+    	Date result = rs.getDate(columnName);
+    	return rs.wasNull() ? null : result;
+    }
+    
     /*
      * Only use this if you can not accomplish what you need with PreparedStatement variable
      * binding.  This will escape a string value used in a dynamically built where clause by

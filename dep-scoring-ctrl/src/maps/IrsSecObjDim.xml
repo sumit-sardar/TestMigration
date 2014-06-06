@@ -88,4 +88,27 @@ WHERE
 	    SEC_OBJID = #secObjid:NUMERIC#
 	AND assessmentid = #assessmentid:NUMERIC#
 </update>
+
+<select id="findBySecObjIdInBulk" parameterClass="java.util.Map" resultClass="com.ctb.lexington.db.irsdata.IrsSecObjDimData">
+SELECT 
+        SEC_OBJID as secObjid,
+        NAME as name,        
+        SEC_OBJ_INDEX as secObjIndex,
+        SEC_OBJ_TYPE as secObjType,
+        NUM_ITEMS as numItems,
+        POINTS_POSSIBLE as pointsPossible,
+        NATIONAL_AVERAGE as nationalAverage,
+        PRIM_OBJID as primObjid,
+        assessmentid as assessmentid
+FROM
+        SEC_OBJ_DIM
+  
+WHERE 
+        SEC_OBJID IN 
+        <dynamic>
+				<iterate property="objectives" open="(" close=")" conjunction=",">
+				#objectives[].secObjid:NUMERIC#
+				</iterate>
+		</dynamic>
+</select>
 </sqlMap>

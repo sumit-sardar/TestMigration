@@ -787,7 +787,7 @@ public class CurriculumCollector {
                 contentArea.setSubtestId(new Long(rs.getLong("subtestId")));
                 contentArea.setSubtestForm(rs.getString("subtestForm"));
                 contentArea.setSubtestLevel(rs.getString("subtestLevel"));
-                contentArea.setGradeBand(getGradeBandForTABECCSS(rs.getString("gradeBand")));
+                contentArea.setGradeBand(rs.getString("gradeBand"));
                 
                 String key = contentArea.getContentAreaId()+"||"+contentArea.getContentAreaName() + "||" + contentArea.getSubtestLevel();
 

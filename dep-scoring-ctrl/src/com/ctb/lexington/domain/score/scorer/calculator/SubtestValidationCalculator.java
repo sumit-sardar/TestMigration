@@ -21,6 +21,7 @@ import com.ctb.lexington.domain.score.event.SubtestObjectiveCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestValidEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
+import com.ctb.lexington.domain.teststructure.ProductType;
 import com.ctb.lexington.exception.CTBSystemException;
 
 /**
@@ -56,6 +57,7 @@ public class SubtestValidationCalculator extends Calculator {
     private SubtestObjectiveCollectionEvent subtestObjectives = null;
     private Long testRosterId;
     private Integer ItemSetId;
+    private static String productType;
     
     
     /**
@@ -128,7 +130,7 @@ public class SubtestValidationCalculator extends Calculator {
     private boolean isValid() {
         final StudentItemScoreData studentData = scorer.getResultHolder().getStudentItemScoreData();
         //Added for Laslink Product
-        String productType = scorer.getResultHolder().getAdminData().getAssessmentType();
+        productType = scorer.getResultHolder().getAdminData().getAssessmentType();
         if(productType.equals("LL") || productType.equals("ll")) {
         	String valid = "IN";
         	
@@ -223,8 +225,12 @@ public class SubtestValidationCalculator extends Calculator {
 		            final StudentItemScoreDetails detail = studentData.get(itemId + primary.getName());
 		            if (!hasResponse(detail))
 		                continue;
-		            if(ItemVO.ITEM_TYPE_SR.equals(item.getItemType())){
-			            if (isCorrectAnswer(detail)) {
+		            if(ItemVO.ITEM_TYPE_SR.equals(item.getItemType()) ||("TC".equalsIgnoreCase(productType) 
+		            		&& ItemVO.ITEM_TYPE_IN.equals(item.getItemType()))){
+		            	if(ItemVO.ITEM_TYPE_IN.equals(item.getItemType())) {
+		            		if(isTECorrectAnswer(detail))
+		            			++correctAnswers;
+		            	} else if (isCorrectAnswer(detail)) {
 			                ++correctAnswers;
 			            }
 		                if (answeredEnoughCorrectly(correctAnswers))
@@ -265,12 +271,17 @@ public class SubtestValidationCalculator extends Calculator {
     private boolean isCorrectAnswer(final StudentItemScoreDetails detail) {
         return detail.getCorrectAnswer().equals(detail.getResponse());
     }
+    
+    private boolean isTECorrectAnswer(final StudentItemScoreDetails detail) {
+    	return (detail.getTePoints().intValue() > 0);
+    }
 
     /**
      * Only works for SR items.
      */
     private static boolean isItemToCheck(final ItemVO item) {
-        return ItemVO.ITEM_TYPE_SR.equals(item.getItemType());
+        return (ItemVO.ITEM_TYPE_SR.equals(item.getItemType()) || ("TC".equals(productType)
+        		&& ItemVO.ITEM_TYPE_IN.equals(item.getItemType())));
     }
 
     private static boolean hasResponse(final StudentItemScoreDetails detail) {
