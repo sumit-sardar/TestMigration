@@ -683,7 +683,7 @@ public interface StudentItemSetStatus extends JdbcControl
 		+"siss.completion_date_time as completionDateTime,item_set_level as itemSetLevel,item_set_form as itemSetForm, ta.product_id as productId \n" 
 		+"FROM STUDENT_ITEM_SET_STATUS siss, TEST_ROSTER ros, item_set ii, test_admin ta \n"
 		+"WHERE siss.TEST_ROSTER_ID = ros.TEST_ROSTER_ID \n"
-		+"AND ros.STUDENT_ID = {studentId} \n"
+		+"AND ros.STUDENT_ID in ({sql: studentIds}) \n"
 		+"AND ii.ITEM_SET_ID = siss.ITEM_SET_ID \n"
 		+"AND ii.subject=(SELECT distinct(subject) \n" 
 		+"FROM item_set_ancestor isa  JOIN item_set ii ON ii.item_set_id = isa.item_set_id \n" 
@@ -694,7 +694,7 @@ public interface StudentItemSetStatus extends JdbcControl
 		+"AND ta.test_admin_id=ros.test_admin_id \n"
 		+"AND ta.test_catalog_id IN (select test_catalog_id from test_catalog where product_id in (4010,4009,4012,4011)) \n"
 		+"ORDER BY siss.COMPLETION_DATE_TIME DESC ", arrayMaxLength = 100000)	
-	StudentTestletInfo[] getTabe9Or10CompletedFormLevel(Integer studentId , Integer itemSetId) throws SQLException;
+	StudentTestletInfo[] getTabe9Or10CompletedFormLevel(String studentIds , Integer itemSetId) throws SQLException;
 
 	@JdbcControl.SQL(statement= "SELECT ros.student_id AS studentId,siss.item_set_id AS itemSetId,subject,siss.completion_status AS completionStatus, \n" 
 		   +"test_completion_status AS testCompletionStatus,item_set_level AS itemSetLevel,siss.completion_date_time AS completionDateTime, \n" 
@@ -719,6 +719,23 @@ public interface StudentItemSetStatus extends JdbcControl
 	
 	@JdbcControl.SQL(statement= "select SUBJECT, TABE_LEVEL as TABELevel, TESTLET_FORM as TestletForm from TESTLET_FORMS_BY_SUBJECT_LEVEL where subject = {subject} ", arrayMaxLength = 100000)	
 	TestletLevelForm[] getTestletLevelForms(String subject) throws SQLException;
+	
+	@JdbcControl.SQL(statement ="SELECT testRosterId FROM (SELECT ROWNUM AS rnum,siss.TEST_ROSTER_ID AS \n"
+		 +"testRosterId FROM STUDENT_ITEM_SET_STATUS siss, item_set ii, TEST_ROSTER \n"
+		 +"ros, test_admin ta WHERE ros.STUDENT_ID = {studentId} AND \n"
+		 +"siss.TEST_ROSTER_ID = ros.TEST_ROSTER_ID AND siss.COMPLETION_STATUS not \n"
+		 +"in ('CO') AND ii.ITEM_SET_ID = siss.ITEM_SET_ID AND \n"
+		 +"ta.test_admin_id=ros.test_admin_id AND ta.test_catalog_id IN (SELECT \n"
+		 +"test_catalog_id FROM TEST_CATALOG WHERE PRODUCT_ID =4201) AND ii.SUBJECT = \n"
+		 +"{previousSubject} AND ii.sample='F' AND ii.item_set_level != 'L' AND \n"
+		 +"ITEM_SET_FORM IN (SELECT TESTLET_FORM FROM TESTLET_FORMS_BY_SUBJECT_LEVEL \n"
+		 +"WHERE subject = {previousSubject} AND TABE_LEVEL = {previousLevel} AND TESTLET_FORM NOT IN \n"
+		 +"(SELECT TESTLET_FORM FROM TESTLET_FORMS_BY_SUBJECT_LEVEL WHERE subject = \n"
+		 +"{previousSubject} AND TABE_LEVEL != {previousLevel})) ) WHERE rnum =1",arrayMaxLength = 100000)
+	 Integer getRosterId(Integer studentId,String previousLevel,String previousSubject) throws SQLException;
+		
+	@JdbcControl.SQL(statement ="UPDATE TEST_ROSTER SET ACTIVATION_STATUS = 'IN' WHERE TEST_ROSTER_ID = {rosterId}")
+	 void updateActivationStatus(Integer rosterId) throws SQLException;
 	
     static final long serialVersionUID = 1L;
 

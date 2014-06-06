@@ -2473,22 +2473,77 @@ public class ScheduleTestImpl implements ScheduleTest
     }
     
     //gets the recent battery test level that student has completed.
-    private String getLastCompletedOpLevel(Integer studentId , Integer itemSetId) throws SQLException{
-    	StudentTestletInfo[] sti = siss.getTabe9Or10CompletedFormLevel(studentId , itemSetId);
+    private String getLastCompletedOpLevel(List<StudentTestletInfo> sti) throws SQLException{
     	Date d = null;
     	String lvl = null;
-    	 for (int k=0;k<sti.length;k++){
+    	Iterator<StudentTestletInfo> itr = sti.iterator();
+    	 while(itr.hasNext()){
+    		 StudentTestletInfo obj = itr.next();
     		if(d==null){
-    			d=sti[k].getCompletionDateTime();
-    			lvl = sti[k].getItemSetLevel();
+    			d=obj.getCompletionDateTime();
+    			lvl = obj.getItemSetLevel();
     		}else{
-    			if(d.before(sti[k].getCompletionDateTime())){
-    				lvl = sti[k].getItemSetLevel();
-    				d=sti[k].getCompletionDateTime();
+    			if(d.before(obj.getCompletionDateTime())){
+    				lvl = obj.getItemSetLevel();
+    				d=obj.getCompletionDateTime();
     			}
     		}
 	     }
     	return lvl;
+    }
+    
+   //gets the previous level and subject
+    private String getPreviousLevelandSubject(List<StudentTestletInfo> sti){
+    	String previousLevel = null;
+    	Map<Date,String> completionDateTime = new java.util.TreeMap<Date,String>();
+    	List<Date> completionDate = new ArrayList<Date>();
+    	Iterator<StudentTestletInfo> itr = sti.iterator();
+    	while(itr.hasNext()){
+    		StudentTestletInfo obj = itr.next();
+    		completionDateTime.put(obj.getCompletionDateTime(), obj.getItemSetLevel()+","+obj.getSubject());
+    		completionDate.add(obj.getCompletionDateTime());
+    	}
+    	if(completionDate!= null && completionDate.size()>=2 && completionDateTime.size()>=2 && completionDateTime!= null){
+    		java.util.Collections.sort(completionDate);
+        	previousLevel = completionDateTime.get(completionDate.get(completionDate.size()-2));
+    	}
+       	return previousLevel;
+    }
+    
+    private  Map <Integer, List<StudentTestletInfo>>  getStudentCompletedLevels( SessionStudent [] scheduledStudents,Integer itemSetId ) throws SQLException{
+        Map <Integer, List<StudentTestletInfo>> map = new HashMap<Integer, List<StudentTestletInfo>>();
+            String studentIds = "";
+	        for (int s=0;s<scheduledStudents.length;s++)
+	        {
+	        	SessionStudent stu = scheduledStudents[s];
+	        	map.put(stu.getStudentId(), new ArrayList<StudentTestletInfo>());
+	        	if (studentIds.length()>0)
+		        {
+	        		studentIds += ",";
+		        }
+	        	
+	        	studentIds += stu.getStudentId();
+	        }
+	        StudentTestletInfo[] sti = siss.getTabe9Or10CompletedFormLevel(studentIds,  itemSetId);
+	        for (int k=0;k<sti.length;k++){
+	        	Integer stuId = sti[k].getStudentId();
+	        	map.get(stuId).add(sti[k]);
+	        }
+	        
+	        return map;
+    }
+    
+    private void disablePreviousLvlTestletRoster(Integer studentId, List<StudentTestletInfo> studentTestletInfo) throws SQLException{
+    	if(studentTestletInfo.size()>1){
+			String previousLevel = getPreviousLevelandSubject(studentTestletInfo); 
+			if(previousLevel!=null){
+				String[] previousLevelValues = previousLevel.split(",");
+        		Integer rosterId = siss.getRosterId(studentId,previousLevelValues[0],previousLevelValues[1]);
+        		if(rosterId!=null){
+        			siss.updateActivationStatus(rosterId);
+        		}
+			}
+		}
     }
     
     private void createTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Double extendedTimeValue) throws CTBBusinessException {
@@ -2539,10 +2594,12 @@ public class ScheduleTestImpl implements ScheduleTest
             Map <String, List<FormAssignmentCount>> formsCountByLevel= null;
             Map <Integer, List<String>> assignedForms = null;
             Map <String, List<String>> formsByLevel = null;
+            Map <Integer, List<StudentTestletInfo>> completedLevels = null;
             if(scheduledStudents.length>0 && productId.intValue() == 4201){            	
             	assignedForms = getAssignedTestletForms(scheduledStudents, newSession.getTestSession().getTestAdminId());
             	formsByLevel = getTestletFormsByLevels(newSession.getTestSession().getItemSetId());
             	formsCountByLevel = segregateFormsCountsByCurrentLevel(formCounts, formsByLevel);
+            	completedLevels = getStudentCompletedLevels(scheduledStudents, newSession.getTestSession().getItemSetId());
             }
             
             ArrayList subtestAssignments = new ArrayList();
@@ -2575,7 +2632,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         } else if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {                        	
                         	if(productId.intValue() == 4201){
                         		Integer studentId = scheduledStudents[j].getStudentId();
-                        		String lvl = getLastCompletedOpLevel(studentId, newSession.getTestSession().getItemSetId());
+                        		String lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                         		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
                         	}else{
                         		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
@@ -2620,6 +2677,9 @@ public class ScheduleTestImpl implements ScheduleTest
                     try {
                     	//rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(roster);
+                        if(productId.intValue() == 4201){
+                        	disablePreviousLvlTestletRoster(roster.getStudentId(),completedLevels.get(roster.getStudentId()));
+                        }
                     } catch (SQLException se) {
                     	if(!isWVCustomer){
 	                        boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
@@ -2631,6 +2691,9 @@ public class ScheduleTestImpl implements ScheduleTest
                         roster.setPassword(password);
                         //rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(roster);
+                        if(productId.intValue() == 4201){
+                        	disablePreviousLvlTestletRoster(roster.getStudentId(),completedLevels.get(roster.getStudentId()));
+                        }
                     }
                     StudentSubtestAssignment newAssignment = new StudentSubtestAssignment();
                     newAssignment.setForm(form);
@@ -2790,10 +2853,12 @@ public class ScheduleTestImpl implements ScheduleTest
             Map <String, List<FormAssignmentCount>> formsCountByLevel= null;
             Map <Integer, List<String>> assignedForms = null;
             Map <String, List<String>> formsByLevel = null;
+            Map <Integer, List<StudentTestletInfo>> completedLevels = null;
             if(newUnits.length>0 && productId.intValue() == 4201){            	
             	assignedForms = getAssignedTestletForms(newUnits, newSession.getTestSession().getTestAdminId());
             	formsByLevel = getTestletFormsByLevels(newSession.getTestSession().getItemSetId());
             	formsCountByLevel = segregateFormsCountsByCurrentLevel(formCounts, formsByLevel);
+            	completedLevels = getStudentCompletedLevels(newUnits, newSession.getTestSession().getItemSetId());
             }
             
             for(int j=0;newUnits!=null && j<newUnits.length;j++) {
@@ -2847,7 +2912,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     } else if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
                     	if(productId.intValue() == 4201){
                     		Integer studentId = newUnit.getStudentId();
-                    		String lvl = getLastCompletedOpLevel(studentId , newSession.getTestSession().getItemSetId());
+                    		String lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                     		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
                     	}else{
                     		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
@@ -2869,6 +2934,9 @@ public class ScheduleTestImpl implements ScheduleTest
                     try {
                     	//rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(re);
+                        if(productId.intValue() == 4201){
+                        	disablePreviousLvlTestletRoster(re.getStudentId(),completedLevels.get(re.getStudentId()));
+                        }
                     } catch (SQLException se) {
                     	if(!isWVCustomer){
 	                        boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
@@ -2880,6 +2948,9 @@ public class ScheduleTestImpl implements ScheduleTest
                         re.setPassword(password);
                         //rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(re);
+                        if(productId.intValue() == 4201){
+                        	disablePreviousLvlTestletRoster(re.getStudentId(),completedLevels.get(re.getStudentId()));
+                        }
                     }
                     re = rosters.getRosterElementForStudentAndAdmin(re.getStudentId(), testAdminId);
                 } else {
@@ -2916,7 +2987,7 @@ public class ScheduleTestImpl implements ScheduleTest
                                 else{
                                 	if(productId.intValue() == 4201){
                                 		Integer studentId = newUnit.getStudentId();
-                                		String lvl = getLastCompletedOpLevel(studentId , newSession.getTestSession().getItemSetId());
+                                		String lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                                 		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
                                 	}else{
                                 		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
@@ -2934,7 +3005,7 @@ public class ScheduleTestImpl implements ScheduleTest
                                 if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
                                 	if(productId.intValue() == 4201){
                                 		Integer studentId = newUnit.getStudentId();
-                                		String lvl = getLastCompletedOpLevel(studentId , newSession.getTestSession().getItemSetId());
+                                		String lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                                 		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
                                 	}else{
                                 		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
@@ -2944,7 +3015,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         } else if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
                         	if(productId.intValue() == 4201){
                         		Integer studentId = newUnit.getStudentId();
-                        		String lvl = getLastCompletedOpLevel(studentId , newSession.getTestSession().getItemSetId());
+                        		String lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                         		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
                         	}else{
                         		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
@@ -2973,6 +3044,9 @@ public class ScheduleTestImpl implements ScheduleTest
                         (re.getCustomerFlagStatus() != null && !re.getCustomerFlagStatus().equals(oldUnit.getCustomerFlagStatus()))  ) {
                     	//rosters.getConnection().setAutoCommit(false);
                         rosters.updateTestRoster(re);
+                        if(productId.intValue() == 4201){
+                        	disablePreviousLvlTestletRoster(re.getStudentId(),completedLevels.get(re.getStudentId()));
+                        }
                     }
                     oldMap.remove(newUnit.getStudentId());
                 }
