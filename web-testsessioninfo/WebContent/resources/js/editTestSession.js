@@ -104,7 +104,9 @@
 							
 							forceTestBreak = data.forceTestBreak;
 							selectGE = data.selectGE;
-							
+							if(selectGE !=null && document.getElementById("selectGE")!=undefined && document.getElementById("selectGE")!=null) {
+								document.getElementById("selectGE").checked = selectGE;
+							}
 							//Added for Oklahoma customer
 							isOKAdmin = data.isOkAdmin;
 							if(data.savedTestDetails != undefined && data.savedTestDetails.testSession != undefined && 
