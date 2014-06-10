@@ -5914,7 +5914,8 @@ public class SessionOperationController extends PageFlowController {
 		            			//** When student moved from one level to another, then goes back to original level
 		            			//** Story: TABE testlet - Inactivated testlet roster's forms handling in add student and spiraling logic
 		            			//if (!(rosterActivationStatus.compareToIgnoreCase("IN") == 0 && !(sti[i].getTestCompletionStatus().compareToIgnoreCase("SC")==0 || sti[i].getTestCompletionStatus().compareToIgnoreCase("NT")==0)))
-		            			if (!(rosterActivationStatus.compareToIgnoreCase("IN") == 0 && (sti[i].getTestCompletionStatus().compareToIgnoreCase("SC")==0 || sti[i].getTestCompletionStatus().compareToIgnoreCase("NT")==0)))
+		            			//** If roster is inactive and no item in subtest has been viewed, allow student to be re-scheduled a testlet (system may reschedule the same inactive form)
+		            			if (!(rosterActivationStatus.compareToIgnoreCase("IN") == 0 && (completionStatus.compareToIgnoreCase("SC") == 0 || sti[i].getTestCompletionStatus().compareToIgnoreCase("SC")==0 || sti[i].getTestCompletionStatus().compareToIgnoreCase("NT")==0)))
 		            			{
 			            			if (testletForms.length()>0) testletForms += ",";
 			            			testletForms += testletForm;
