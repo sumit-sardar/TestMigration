@@ -652,7 +652,8 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
             if(!(CTBConstants.VALID_SCORE.equals(details.getValidScore()) && CTBConstants.INVALID_SCORE.equals(validScore))) {
                 details.setValidScore(validScore);
                 if(CTBConstants.INVALID_SCORE.equals(validScore)) {
-                    List contentAreas = currData.getContentAreasByName(name);
+                    List contentAreas = ("TC".equals(getResultHolder().getAdminData().getAssessmentType()))
+                    					? currData.getContentAreasByNameForTABECCSS(name):currData.getContentAreasByName(name);
                     Iterator caIter = contentAreas.iterator();
                     while(caIter.hasNext()) {
                         ContentArea ca = (ContentArea) caIter.next();
@@ -660,7 +661,8 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                         itemData.markItemsNonValidForSubtest(ca.getSubtestId());
                     }
                 } else if(CTBConstants.VALID_SCORE.equals(validScore)) {
-                    List contentAreas = currData.getContentAreasByName(name);
+                    List contentAreas = ("TC".equals(getResultHolder().getAdminData().getAssessmentType()))
+										? currData.getContentAreasByNameForTABECCSS(name):currData.getContentAreasByName(name);
                     Iterator caIter = contentAreas.iterator();
                     while(caIter.hasNext()) {
                         ContentArea ca = (ContentArea) caIter.next();

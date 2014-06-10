@@ -124,13 +124,6 @@ public class StudentObjectiveScoresController {
                 
                 primaries.add(primObjFact);
             }
-            else {
-            	IrsTCPrimObjFactData primObjFact = new IrsTCPrimObjFactData();
-            	primObjFact.setSessionid(contextData.getSessionId());
-                primObjFact.setStudentid(contextData.getStudentId());
-                primObjFact.setCurrentResultid(new Long (2));
-                primaries.add(primObjFact);
-            }
         }
         return (IrsTCPrimObjFactData[]) primaries.toArray(new IrsTCPrimObjFactData[0]);
     }
@@ -187,14 +180,6 @@ public class StudentObjectiveScoresController {
                 secObjFact.setSubtestName(sec.getSubtestName());
             
                 secondaries.add(secObjFact);
-            }
-            else {
-            	IrsTCSecObjFactData secObjFact = new IrsTCSecObjFactData();
-            	secObjFact.setSessionid(contextData.getSessionId());
-            	secObjFact.setStudentid(contextData.getStudentId());
-            	secObjFact.setCurrentResultid(new Long (2));
-            	secObjFact.setSecObjid(new Long(Long.parseLong(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()))));
-            	secondaries.add(secObjFact);
             }
         }
         return (IrsTCSecObjFactData[]) secondaries.toArray(new IrsTCSecObjFactData[0]);

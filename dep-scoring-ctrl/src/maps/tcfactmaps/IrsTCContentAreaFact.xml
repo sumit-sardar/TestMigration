@@ -97,7 +97,8 @@ WHERE
 		        PERCENT_OBTAINED,
 		        POINTS_OBTAINED,
                 POINTS_POSSIBLE,
-		        TEST_COMPLETION_TIMESTAMP
+		        TEST_COMPLETION_TIMESTAMP,
+		        GRADE_BAND
                 )
         VALUES
                 (
@@ -172,7 +173,8 @@ WHERE
 		        #percentObtained:NUMERIC#,
 		        #pointsObtained:NUMERIC#,
                 #pointsPossible:NUMERIC#,
-		        #testCompletionTimestamp:TIMESTAMP#
+		        #testCompletionTimestamp:TIMESTAMP#,
+		        #gradeBand:VARCHAR#
                 )        
 </insert>
 
@@ -251,7 +253,8 @@ select decode(
 		        POINTS_ATTEMPTED = #pointsAttempted:NUMERIC#,		
 		        PERCENT_OBTAINED = #percentObtained:NUMERIC#,		
 		        POINTS_OBTAINED	 = #pointsObtained:NUMERIC#,		
-		        TEST_COMPLETION_TIMESTAMP = #testCompletionTimestamp:TIMESTAMP#		
+		        TEST_COMPLETION_TIMESTAMP = #testCompletionTimestamp:TIMESTAMP#,
+		        GRADE_BAND = #gradeBand:VARCHAR#
         WHERE 
 			STUDENTID = #studentid:NUMERIC#
 		AND

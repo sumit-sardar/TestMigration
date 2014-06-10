@@ -1893,7 +1893,7 @@ public class CurriculumCollector {
                 SecondaryObjective secondaryObjective = new SecondaryObjective();
                 secondaryObjective.setSecondaryObjectiveId(new Long(rs.getLong("secondaryObjectiveId")));
                 secondaryObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
-                secondaryObjective.setSecondaryObjectiveName((rs.getString("secondaryObjectiveName")).split(" ")[0]);
+                secondaryObjective.setSecondaryObjectiveName(getSecodaryObjectiveSplitedName(rs.getString("secondaryObjectiveName"), rs.getString("subtestName")));
                 secondaryObjective.setSecondaryObjectiveType(rs.getString("secondaryObjectiveType"));
                 secondaryObjective.setSecondaryObjectiveNumItems(new Long(rs.getLong("secondaryNumItems")));
                 secondaryObjective.setSecondaryObjectivePointsPossible(new Long(rs.getLong("secondaryPointsPossible")));
@@ -1912,6 +1912,28 @@ public class CurriculumCollector {
             ConnectionFactory.getInstance().release(ps);
         }
         return (SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]);
+    }
+    
+    private String getSecodaryObjectiveSplitedName(String objectiveName, String subtestName){
+    	if("LANGUAGE".equalsIgnoreCase(subtestName)){
+    		String var = objectiveName.split(" ")[0];
+    		if(var.contains(".")){
+    			String str[] = var.split("\\.");
+    			return (str[0] + "." + str[2]);
+    		}
+    		return var;
+    	}else if("MATHEMATICS".equalsIgnoreCase(subtestName)){
+    		String var = objectiveName.split(" ")[0];
+    		return var;
+    	}else if("READING".equalsIgnoreCase(subtestName)){
+    		if(objectiveName.length() > 128)
+    			return objectiveName.substring(0,127);
+    		else return objectiveName;
+    	}else{
+    		if(objectiveName.length() > 128)
+    			return objectiveName.substring(0,127);
+    		else return objectiveName;
+    	}
     }
     
     public SecondaryObjective [] getSecondaryObjectivesForTASC(Long oasRosterId) throws SQLException {

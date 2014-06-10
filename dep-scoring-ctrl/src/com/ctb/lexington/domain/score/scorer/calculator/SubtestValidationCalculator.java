@@ -82,7 +82,10 @@ public class SubtestValidationCalculator extends Calculator {
     }
     public void onEvent(final SubtestEndedEvent event) {
     	// We want only content areas that are part of this subtest
-        List contentAreaNames = extractContentAreaNames(new Long(event.getItemSetId().intValue()));
+    	productType = scorer.getResultHolder().getAdminData().getAssessmentType();
+        List contentAreaNames = ("TC".equals(productType))
+        	? extractContentAreaNamesForTABECCSS(new Long(event.getItemSetId().intValue()))
+        	: extractContentAreaNames(new Long(event.getItemSetId().intValue()));
         final SubtestEvent publishedEvent;
         this.testRosterId = event.getTestRosterId();
         this.ItemSetId = event.getItemSetId();
@@ -123,6 +126,22 @@ public class SubtestValidationCalculator extends Calculator {
             // the curriculum name is the name of the framework, we want the node name.
             if(subtestId.equals(contentArea.getSubtestId()))
             	result.add(contentArea.getContentAreaName());
+        }
+        return result;
+    }
+    
+    private List extractContentAreaNamesForTABECCSS(Long subtestId) {
+        ContentArea [] contentAreas = scorer.getResultHolder().getCurriculumData().getAllContentAreas();
+        if (contentAreas == null || contentAreas.length < 1) {
+            return new ArrayList();
+        }
+        
+        List result = new ArrayList(contentAreas.length);
+        for (int i = 0; i< contentAreas.length; i++) {
+            ContentArea contentArea = contentAreas[i];
+            // the curriculum name is the name of the framework, we want the node name.
+            if(subtestId.equals(contentArea.getSubtestId()))
+            	result.add(contentArea.getContentAreaName()+contentArea.getContentAreaId());
         }
         return result;
     }

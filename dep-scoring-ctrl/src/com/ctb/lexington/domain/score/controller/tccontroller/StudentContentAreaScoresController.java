@@ -70,7 +70,8 @@ public class StudentContentAreaScoresController {
         ContentArea [] contentAreas = currData.getContentAreas();
         ArrayList facts = new ArrayList();
             for(int i=0;i<contentAreas.length;i++) {
-               StsTestResultFactDetails fact = factData.get(contentAreas[i].getContentAreaName());
+               String newKey =  contentAreas[i].getContentAreaName() + contentAreas[i].getContentAreaId();
+               StsTestResultFactDetails fact = factData.get(newKey);
                if(fact != null && 
                     ("T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))) {
                    StudentSubtestScoresDetails subtest = subtestData.get(contentAreas[i].getSubtestId());
@@ -116,14 +117,6 @@ public class StudentContentAreaScoresController {
                    newFact.setAttr14id(context.getDemographicData().getAttr14Id());
                    newFact.setAttr15id(context.getDemographicData().getAttr15Id());
                    newFact.setAttr16id(context.getDemographicData().getAttr16Id());
-                   facts.add(newFact);
-               }
-               else {
-            	   IrsTCContentAreaFactData newFact = new IrsTCContentAreaFactData();
-            	   newFact.setSessionid(context.getSessionId());
-                   newFact.setStudentid(context.getStudentId());
-                   newFact.setContentAreaid(contentAreas[i].getContentAreaId());
-                   newFact.setCurrentResultid(new Long (2));
                    facts.add(newFact);
                }
             }

@@ -885,6 +885,16 @@ public class CurriculumData {
         return matches;
     }
     
+    public List getContentAreasByNameForTABECCSS(String name) {
+        ArrayList matches = new ArrayList();
+        for(int i=0;i<contentAreas.length;i++) {
+            if(name.equals(contentAreas[i].getContentAreaName()+contentAreas[i].getContentAreaId())) {
+                matches.add(contentAreas[i]);
+            }
+        }
+        return matches;
+    }
+    
     public String getContentAreaNameById(Long id) {
         String name =null;
         for(int i=0;i<contentAreas.length;i++) {

@@ -74,7 +74,7 @@ public class TestResultDataCollector {
 				SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
 	        }
         }
-        else if("TS".equals(productType) || "TC".equals(productType)) {
+        else if("TS".equals(productType)) {
         	String key = String.valueOf(data.getAdminData().getAssessmentId()) + data.getStudentData().getAssignedTestFormName();
 	        cachedCurriculumData = (CurriculumData) SimpleCache.checkCache("curriculumData", key, "scoringUser");
 	        if(cachedCurriculumData == null) {
@@ -82,6 +82,16 @@ public class TestResultDataCollector {
 	        	SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
 	        }
 	        System.out.println("***** SCORING: TestResultDataCollector: collect: CurriculumData for TASC Cached or Retrieved with key :: " + key);
+        }
+        else if("TC".equals(productType)){
+        	data.setRosterLevel(getRosterLevel());
+        	String key = String.valueOf(data.getAdminData().getAssessmentId()) + data.getStudentData().getAssignedTestFormName() + data.getRosterLevel();
+	        cachedCurriculumData = (CurriculumData) SimpleCache.checkCache("curriculumData", key, "scoringUser");
+	        if(cachedCurriculumData == null) {
+	        	cachedCurriculumData = getCurriculumData(data.getAdminData().getAssessmentType());
+	        	SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
+	        }
+	        System.out.println("***** SCORING: TestResultDataCollector: collect: CurriculumData for TABE CCSS Cached or Retrieved with key :: " + key);
         }
         ContentArea[] allContentArea = cachedCurriculumData.getContentAreas();
         data.setCurriculumData(filterCurricula(cachedCurriculumData, data.getAdminData().getAssessmentType()));
@@ -242,5 +252,14 @@ public class TestResultDataCollector {
     private UrlData getAcuityUrl(Long testAdminId) throws SQLException, DataException {
     	UrlDataCollector collector = new UrlDataCollector(oasConnection);
     	return collector.collectAquityUrlData(testAdminId);
+    }
+    
+    private String getRosterLevel() throws SQLException, CTBSystemException{
+    	StudentCollector collector = new StudentCollector(oasConnection);
+        String data = collector.collectRosterLevel(oasRosterId);
+        if(data == null){
+        	throw new CTBSystemException(null, "TestResultDataCollector.getRosterLevel(): no level map info present for TABE CCSS roster: " + oasRosterId);
+        }
+        return data;
     }
 }

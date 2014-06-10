@@ -32,19 +32,19 @@ public class ScoreMoveData {
     private WsTvStudentItemResponseData caResponseWsTv;
     private Map<String,String> caLossHoss;
     private UrlData urlData;
-    private String scoringStatus;
+    private String rosterLevel; //Added for TABE CCSS
 
 	/**
-	 * @return the scoringStatus
+	 * @return the rosterLevel
 	 */
-	public String getScoringStatus() {
-		return scoringStatus;
+	public String getRosterLevel() {
+		return rosterLevel;
 	}
 	/**
-	 * @param scoringStatus the scoringStatus to set
+	 * @param rosterLevel the rosterLevel to set
 	 */
-	public void setScoringStatus(String scoringStatus) {
-		this.scoringStatus = scoringStatus;
+	public void setRosterLevel(String rosterLevel) {
+		this.rosterLevel = rosterLevel;
 	}
 	/**
 	 * @return Returns the updateContextData.

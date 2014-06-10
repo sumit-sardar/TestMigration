@@ -112,4 +112,27 @@ public class StudentCollector {
             ConnectionFactory.getInstance().release(ps);
         }
     }
+    
+    public String collectRosterLevel(Long oasRosterId) throws SQLException{
+    	PreparedStatement ps = null;
+        ResultSet rs = null;
+        String rosterLevel = null;
+        try {
+            String sql = " select trl.item_set_level as levelMap " +
+            		" from tabe_ccss_roster_level trl " +
+            		" where trl.test_roster_id = ? ";
+
+            ps = conn.prepareStatement(sql);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            if (rs.next()){
+            	rosterLevel = SQLUtil.getString(rs, "levelMap");
+            }
+        } finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+
+        return rosterLevel;
+    }
 }

@@ -23,6 +23,7 @@ public class StudentTestDetails implements Persistent {
     private String subject;
     private String sample;
     private String completionStatus;
+    private String rosterLevel; // Added for TABE CCSS
 
 
 	/**
@@ -262,4 +263,19 @@ public class StudentTestDetails implements Persistent {
 	public void setCompletionStatus(String completionStatus) {
 		this.completionStatus = completionStatus;
 	}
+
+	/**
+	 * @return the rosterLevel
+	 */
+	public String getRosterLevel() {
+		return rosterLevel;
+	}
+
+	/**
+	 * @param rosterLevel the rosterLevel to set
+	 */
+	public void setRosterLevel(String rosterLevel) {
+		this.rosterLevel = rosterLevel;
+	}
+	
 }

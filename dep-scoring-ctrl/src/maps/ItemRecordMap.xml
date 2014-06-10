@@ -212,7 +212,7 @@
     
     <select id="findItemGroupByContentAreaForTABECCSS" parameterClass="com.ctb.lexington.data.ItemContentArea" resultClass="com.ctb.lexington.data.ItemContentArea">
     SELECT DISTINCT
-        REPORTING_ISET.ITEM_SET_NAME as contentAreaName,
+        REPORTING_ISET.ITEM_SET_NAME||PROD.PRODUCT_ID||REPORTING_ISET.ITEM_SET_ID as contentAreaName,
         SUBTEST_ISI.ITEM_ID as itemId,
         SUBTEST_ISET.ITEM_SET_ID as itemSetId,
         REPORTING_ISET.ITEM_SET_ID as contentAreaId,
