@@ -59,7 +59,11 @@
 			isValidated = validateLASLINKSSubtest(tmpSelectedSubtests);
 			
 	    }
-	    
+	    if(isTASCReadinessProduct){
+			isValidated = validateTASCReadinessSubtest(tmpSelectedSubtests);
+			
+	    }
+	    	    
 	    if (isValidated) {
 	        subtestGridLoaded = false;
 	        selectedSubtests = tmpSelectedSubtests;
@@ -195,6 +199,28 @@
             setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#oralDependencyMsg").val());
         }
         **/
+     return isValid;
+	}
+	
+	function validateTASCReadinessSubtest(subtests) {
+		var isValid = true;
+		var numberOfRows = getVisibleRows("des_row_");
+		if (subtests == undefined || subtests == null || subtests.length == 0) {
+	        isValid = false;
+	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());  
+        }else{
+        	var hasTASCBackgroundQuestions = false;
+        	for(var i=0;i<subtests.length ; i++){
+        		if(subtests[i].subtestName == TASC_BACKGROUND_QUESTIONS){
+        			hasTASCBackgroundQuestions = true;
+        			break;
+        		}	
+        	}
+        	if(hasTASCBackgroundQuestions == true && numberOfRows<2){
+				isValid = false;
+				setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noTASCSubtestMsg").val());
+			}
+		}
      return isValid;
 	}
 	
@@ -595,6 +621,9 @@
 	   if(isLasLinksProduct){
 	   		$("#modifySubtestMsg").html($("#laslinksModifySubtestMsg").val());
 	   }
+	   if(isTASCReadinessProduct){
+	   		$("#modifySubtestMsg").html($("#tascReadinessModifySubtestMsg").val());
+	   }
 	   
 	    displaySourceTable(allSubtests, selectedSubtests,'availableSubtestsTable');
 	    var isProductHasLocator = ( locatorSubtest != null && locatorSubtest != undefined && locatorSubtest.id != undefined) ? true : false ;
@@ -782,7 +811,7 @@
 	        }
 	        chosenRow = null;
 	    } else {
-            if (isTASCProduct && $(row).text().toUpperCase() == TASC_BACKGROUND_QUESTIONS.toUpperCase())
+            if ((isTASCProduct || isTASCReadinessProduct) && $(row).text().toUpperCase() == TASC_BACKGROUND_QUESTIONS.toUpperCase())
 		    {
 		    	chosenRow = null;
 		    	return true;
@@ -902,7 +931,8 @@
 	    }
 	    
 	    if (chosenRow != null) {
-	        if (isFirstVisibleRow(chosenRow)||(isTASCProduct && isSecondVisibleRow(chosenRow))) {
+	        if (isFirstVisibleRow(chosenRow)||(isTASCProduct && isSecondVisibleRow(chosenRow)) || 
+	        								(isTASCReadinessProduct && isSecondVisibleRow(chosenRow) && $("#selectedSubtestsTable td")[0].childNodes[1].data == TASC_BACKGROUND_QUESTIONS)){ 
 	            moveUp.setAttribute("disabled", "true");
 	            if ($(moveUp).hasClass("ui-widget-header")) {
 	                $(moveUp).removeClass("ui-widget-header");
@@ -1122,7 +1152,7 @@
 	        var desId = "des_row_" + i;
 	        var desRow = document.getElementById(desId);
 	        if (isRowVisible(desRow)) {
-	        	if(isTASCProduct)
+	        	if(isTASCProduct || isTASCReadinessProduct)
 	        	{
 		        	if($(desRow).text().toUpperCase() != TASC_BACKGROUND_QUESTIONS.toUpperCase())
 		        	{

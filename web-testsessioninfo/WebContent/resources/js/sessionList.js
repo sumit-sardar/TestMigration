@@ -117,6 +117,7 @@ var selectGE = null;
 
 var isTASCProduct = false; // add for TASC modification
 var isLasLinksProduct = false; // add for laslink modification
+var isTASCReadinessProduct = false; // added for TASC Readiness
 var isLaslinkCustomer = false;
 var isPagesizeLabelpopulated = false;
 var isForRefreshRoster = false;
@@ -1169,6 +1170,7 @@ function registerDelegate(tree){
 			isTabeProduct = false;
 		    isTabeAdaptiveProduct = false; 
 		    isLasLinksProduct = false;
+		    isTASCReadinessProduct = false;
 			isTASCProduct = false;		
 			classHierarchyMap_editSession={};   
 			hasShowRosterAccomAndHierarchyConfig=false;
@@ -1933,6 +1935,10 @@ function registerDelegate(tree){
 					if(optionList[i].isLasLinksProduct){
 					 	isLasLinksProduct = true;
 					}
+					if(optionList[i].isTASCReadinessProduct){
+					 	isTASCReadinessProduct = true;
+					}
+					
 					if(optionList[i].isTASCProduct){
 					 	isTASCProduct = true;
 					}
@@ -2228,7 +2234,12 @@ function registerDelegate(tree){
 					   isLasLinksProduct = true;
 				} else {
 					   isLasLinksProduct = false;
-				}	   
+				}	   				
+				if(optionList[i].isTASCReadinessProduct){ 
+					   isTASCReadinessProduct = true;
+				} else {
+					   isTASCReadinessProduct = false;
+				}
 				if(optionList[i].isTASCProduct){ 
 					   isTASCProduct = true;
 				} else {
@@ -2454,6 +2465,7 @@ function registerDelegate(tree){
 		var istabeadaptive = false;
 		var islasLinks = false;
 		var isTASC = false;
+		var isTASCReadiness = false;
 
 		if(isTASCProduct == undefined || isTASCProduct =='undefined') {
  			isTASC = false;
@@ -2467,6 +2479,11 @@ function registerDelegate(tree){
  			islasLinks = isLasLinksProduct;
  		}
 
+		if(isTASCReadinessProduct == undefined || isTASCReadinessProduct =='undefined') {
+ 			isTASCReadiness = false;
+ 		} else {
+ 			isTASCReadiness = isTASCReadinessProduct;
+ 		}
  		if(isTabeProduct == undefined || isTabeProduct =='undefined') {
  			istabe = false;
  		} else {
@@ -2804,7 +2821,7 @@ function registerDelegate(tree){
 			
 		}
 		
-		if(allSubtests.length > 1 &&  (isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct || isTASCProduct)){
+		if(allSubtests.length > 1 &&  (isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct || isTASCProduct || isTASCReadinessProduct)){
 		   document.getElementById("modifyTestDiv").style.display = "";
 		} else {
 		 	document.getElementById("modifyTestDiv").style.display = "none";

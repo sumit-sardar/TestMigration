@@ -1161,6 +1161,14 @@ public class TestSessionUtils
         return new Boolean(productType.equals(TASC_PRODUCT_TYPE));
     }
     
+    /**
+     * isTASCProduct
+     */
+    public static Boolean isTASCReadinessProduct(String productType)
+    {
+        return new Boolean(productType.equals(TASC_READINESS_PRODUCT_TYPE));
+    }
+    
 	public static TestElement[] setupSessionSubtests(TestElement[] sessionSubtests,	TestElement[] selectedSubtests) {
 
         List<TestElement> resultList = new ArrayList<TestElement>();
