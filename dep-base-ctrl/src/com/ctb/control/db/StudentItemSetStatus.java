@@ -690,7 +690,7 @@ public interface StudentItemSetStatus extends JdbcControl
 		+"WHERE sample='T' AND ii.item_set_type='TD' AND ancestor_item_set_id= {itemSetId}) \n"  
 		+"AND ii.sample='F' \n"
 		+"AND ii.item_set_level != 'L' \n"
-		+"AND siss.COMPLETION_STATUS = 'CO' \n"
+		+"AND siss.COMPLETION_STATUS in ('CO','IN') \n"
 		+"AND ta.test_admin_id=ros.test_admin_id \n"
 		+"AND ta.test_catalog_id IN (select test_catalog_id from test_catalog where product_id in (4010,4009,4012,4011)) \n"
 		+"ORDER BY siss.COMPLETION_DATE_TIME DESC ", arrayMaxLength = 100000)	

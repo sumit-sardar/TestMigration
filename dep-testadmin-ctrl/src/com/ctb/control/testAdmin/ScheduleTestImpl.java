@@ -2478,17 +2478,19 @@ public class ScheduleTestImpl implements ScheduleTest
     	String lvl = null;
     	Iterator<StudentTestletInfo> itr = sti.iterator();
     	 while(itr.hasNext()){
-    		 StudentTestletInfo obj = itr.next();
-    		if(d==null){
-    			d=obj.getCompletionDateTime();
-    			lvl = obj.getItemSetLevel();
-    		}else{
-    			if(d.before(obj.getCompletionDateTime())){
-    				lvl = obj.getItemSetLevel();
-    				d=obj.getCompletionDateTime();
-    			}
-    		}
-	     }
+    		StudentTestletInfo obj = itr.next();
+			if(obj.getCompletionStatus().equalsIgnoreCase("CO")){
+				if(d == null){
+					d = obj.getCompletionDateTime();
+					lvl = obj.getItemSetLevel();
+				}else{
+					if(d.before(obj.getCompletionDateTime())){
+						lvl = obj.getItemSetLevel();
+						d = obj.getCompletionDateTime();
+					}
+				}
+			}
+		}
     	return lvl;
     }
     
@@ -2500,8 +2502,10 @@ public class ScheduleTestImpl implements ScheduleTest
     	Iterator<StudentTestletInfo> itr = sti.iterator();
     	while(itr.hasNext()){
     		StudentTestletInfo obj = itr.next();
-    		completionDateTime.put(obj.getCompletionDateTime(), obj.getItemSetLevel()+","+obj.getSubject());
-    		completionDate.add(obj.getCompletionDateTime());
+    		if(obj.getCompletionDateTime()!=null){
+    			completionDateTime.put(obj.getCompletionDateTime(), obj.getItemSetLevel()+","+obj.getSubject());
+    			completionDate.add(obj.getCompletionDateTime());
+    		}
     	}
     	if(completionDate!= null && completionDate.size()>=2 && completionDateTime.size()>=2 && completionDateTime!= null){
     		java.util.Collections.sort(completionDate);
