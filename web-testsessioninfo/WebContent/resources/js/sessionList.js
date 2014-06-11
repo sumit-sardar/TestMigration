@@ -148,6 +148,8 @@ var isScheduleSession = false; // Added for hide TABE Adult group in edit
 var studentMsgForTabeAdult = false; // Added for Defect #78880 
 var isAlertPopup = false;
 
+var endDateChange = "F"; // Added for End Date change popup
+
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
@@ -1176,6 +1178,8 @@ function registerDelegate(tree){
 			hasShowRosterAccomAndHierarchyConfig=false;
 			studentMsgForTabeAdult = false;
 			clickOkMessage = false;
+			endDateChange = "F";
+			$('#endDate').removeAttr("disabled");
 		}
 		var productSelected  = $("#testGroupList").val();
 		if(dailogId == 'closeScheduleSessionPopup'){
@@ -4015,7 +4019,9 @@ function registerDelegate(tree){
 		hideStudentMsgForTabeAdultCoreExp();
 		isSelectingStudent = false;
 		if (state == "EDIT"){
-			if (onChangeHandler.getData() == "T"){
+			if(endDateChange == "T"){
+    			openCloseScheduleSessionPopup();
+    		}else if (onChangeHandler.getData() == "T"){
 				openCloseScheduleSessionPopup();
 			}else{
 				closePopUp('scheduleSession');

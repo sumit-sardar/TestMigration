@@ -341,6 +341,7 @@ clear: both;
 					onSelect: function() {
 						var dateText = $.datepicker.formatDate("mm/dd/y", $(this).datepicker("getDate"));
     					$('#editEndDate').val(dateText);
+    					endDateChange = "T";
  					 }
 				});
 				//$("#endDate").val(nextDate);
