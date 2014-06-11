@@ -258,7 +258,8 @@ public class FileGeneratorForLL2ND {
 					System.out.println("Processing completed for roster:"+roster.getTestRosterId());
 				}
 			}
-			System.out.println("Processed completed for totar roster :"+ (studentCount-1));
+			orderFile.setCaseCount(studentCount.toString());
+			System.out.println("Processed completed for LL2ND -- total roster count is :"+ (studentCount));
 			
 		} finally {
 			SqlUtil.close(oascon);
