@@ -1110,7 +1110,7 @@ function enableEraser(isEnabled){
      	console.log("iframe state");
      	if(iframe){
 			  
-		    setAnswerNow('complete');
+		   
 		    //check whether iFrame loaded successfully or not
 		    if(iframe != null
 	    		&& iframe.contentWindow != null
