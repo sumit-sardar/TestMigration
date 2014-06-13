@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.ctb.lexington.db.ConnectionFactory;
@@ -15,9 +15,8 @@ import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.data.CurriculumData.Item;
 import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
+import com.ctb.lexington.db.data.CurriculumData.VirtualPrimObjsForTABECCSS;
 import com.ctb.lexington.util.SQLUtil;
-import java.math.BigDecimal;
-import java.util.HashMap;
 
 public class CurriculumCollector {
     private final Connection conn;
@@ -41,6 +40,8 @@ public class CurriculumCollector {
         else if("TC".equalsIgnoreCase(productType)) {
         	data.setContentAreas(getContentAreasForTABECCSS(oasRosterId));	  
         	data.setPrimaryObjectives(getPrimaryObjectivesForTABECCSS(oasRosterId));
+        	if("READING".equalsIgnoreCase(data.getPrimaryObjectives()[0].getSubtestName()))
+        		data.setVirtualPrimObjs(getVirtualPrimObjForTABECCSS(oasRosterId));
         }
         else {       
         	data.setContentAreas(getContentAreas(oasRosterId));	  
@@ -1239,25 +1240,29 @@ public class CurriculumCollector {
 			"        	       contentAreaId,  " + 
 			"        	       contentAreaName,  " + 
 			"        	       primaryObjectiveName,  " + 
-			"        	       primaryObjectiveType,  " + 
+			"        	       primaryObjectiveType,  " +
+			"				   categoryLevel, " + 
 			"        	       primaryPointsPossible,  " + 
 			"        	       primaryNumItems,  " + 
 			"        	       subtestForm,  " + 
 			"        	       subtestLevel,  " + 
 			"        	       subtestId,  " + 
-			"        	       productId,  " + 
+			"        	       productId,  " +
+			"				   subtestName, " + 
 			"        	       monarchId  " + 
 			"        	  from (select distinct prim.item_Set_id as primaryObjectiveId,  " + 
 			"        	                        prod.product_id || ca.item_Set_id as contentAreaId,  " + 
 			"        	                        ca.item_Set_name AS contentAreaName,  " + 
 			"        	                        prim.item_set_name as primaryObjectiveName,  " + 
-			"        	                        primcat.ITEM_SET_CATEGORY_NAME as primaryObjectiveType,  " + 
+			"        	                        primcat.ITEM_SET_CATEGORY_NAME as primaryObjectiveType,  " +
+			"									primcat.item_set_category_level as categoryLevel, " + 
 			"        	                        sum(dp.max_points) as primaryPointsPossible,  " + 
 			"        	                        count(distinct item.item_id) as primaryNumItems,  " + 
 			"        	                        td.item_set_form as subtestForm,  " + 
 			"        	                        roslevel.item_set_level as subtestLevel,  " + 
 			"        	                        td.item_set_id as subtestId,  " + 
-			"        	                        prod.product_id as productId,  " + 
+			"        	                        prod.product_id as productId,  " +
+			"									td.item_set_name as subtestName, " + 
 			"        	                        prim.ext_cms_item_set_id as monarchId  " + 
 			"        	          from item,  " + 
 			"        	               item_set prim,  " + 
@@ -1311,11 +1316,13 @@ public class CurriculumCollector {
 			"        	                  prod.product_id || ca.item_set_id,  " + 
 			"        	                  ca.item_Set_name,  " + 
 			"        	                  prim.item_set_name,  " + 
-			"        	                  primcat.ITEM_SET_CATEGORY_NAME,  " + 
+			"        	                  primcat.ITEM_SET_CATEGORY_NAME,  " +
+			"							  primcat.item_set_category_level, " + 
 			"        	                  td.item_set_form,  " + 
 			"        	                  roslevel.item_Set_level,  " + 
 			"        	                  td.item_Set_id,  " + 
-			"        	                  prod.product_id,  " + 
+			"        	                  prod.product_id,  " +
+			"							  td.item_set_name, " + 
 			"        	                  prim.ext_cms_item_set_id)";
         
         PreparedStatement ps = null;
@@ -1338,6 +1345,8 @@ public class CurriculumCollector {
                 primaryObjective.setPrimaryObjectiveIndex(new Long(rs.getLong("primaryObjectiveIndex")));
                 primaryObjective.setProductId(new Long(rs.getLong("productId")));
                 primaryObjective.setMonarchId(rs.getString("monarchId"));
+                primaryObjective.setSubtestName(rs.getString("subtestName"));
+                primaryObjective.setCategoryLevel(new Long(rs.getLong("categoryLevel")));
                 
                 String key = primaryObjective.getPrimaryObjectiveName() + "||" + primaryObjective.getProductId() + "||" + primaryObjective.getContentAreaId() + "||" + primaryObjective.getSubtestLevel();
                 
@@ -1926,9 +1935,12 @@ public class CurriculumCollector {
     		String var = objectiveName.split(" ")[0];
     		return var;
     	}else if("READING".equalsIgnoreCase(subtestName)){
-    		if(objectiveName.length() > 128)
-    			return objectiveName.substring(0,127);
-    		else return objectiveName;
+    		String var = objectiveName.split(" ")[0];
+    		if(var.contains(".")){
+    			String str[] = var.split("\\.");
+    			return (str[0] + "." + str[2]);
+    		}
+    		return var;
     	}else{
     		if(objectiveName.length() > 128)
     			return objectiveName.substring(0,127);
@@ -2840,6 +2852,147 @@ public class CurriculumCollector {
 	    	secObjList.add(overallAcademic);
     	}
     	return secObjList;
+    }
+    
+    public VirtualPrimObjsForTABECCSS [] getVirtualPrimObjForTABECCSS(Long oasRosterId) throws SQLException {
+        ArrayList primaryObjectives = new ArrayList();
+        HashMap poMap = new HashMap();
+        Long objectiveIndex = new Long(0);
+        
+        final String casql = 
+        	"SELECT primaryObjectiveId," + 
+        	"       rownum as primaryObjectiveIndex," + 
+        	"       contentAreaId," +
+        	"		secObjectiveId," + 
+        	"       contentAreaName," + 
+        	"       primaryObjectiveName," + 
+        	"       primaryObjectiveType," +
+        	"		categoryLevel," + 
+        	"       primaryPointsPossible," + 
+        	"       primaryNumItems," + 
+        	"       subtestForm," + 
+        	"       subtestLevel," + 
+        	"       subtestId," + 
+        	"       productId," + 
+        	"       monarchId" + 
+        	"  FROM (SELECT DISTINCT prim.item_Set_id AS primaryObjectiveId," + 
+        	"                        prod.product_id || ca.item_Set_id AS contentAreaId," +
+        	"						 sec.item_set_id AS secObjectiveId," + 
+        	"                        ca.item_Set_name AS contentAreaName," + 
+        	"                        prim.item_set_name AS primaryObjectiveName," + 
+        	"                        primcat.ITEM_SET_CATEGORY_NAME AS primaryObjectiveType," +
+        	"						 primcat.item_set_category_level AS categoryLevel," +
+        	"                        sum(dp.max_points) AS primaryPointsPossible," + 
+        	"                        count(distinct item.item_id) AS primaryNumItems," + 
+        	"                        td.item_set_form AS subtestForm," + 
+        	"                        roslevel.item_set_level AS subtestLevel," + 
+        	"                        td.item_set_id AS subtestId," + 
+        	"                        prod.product_id AS productId," + 
+        	"                        prim.ext_cms_item_set_id AS monarchId" + 
+        	"          FROM item," + 
+        	"               item_set ca," + 
+        	"               item_set prim," + 
+        	"               item_set sec," + 
+        	"               item_Set_category seccat," + 
+        	"               item_Set_category cacat," + 
+        	"               item_set_category primcat," + 
+        	"               item_Set_ancestor tcisa," + 
+        	"               item_Set_ancestor secisa," + 
+        	"               item_set_ancestor primisa," + 
+        	"               item_Set_ancestor caisa," + 
+        	"               item_set_item secisi," + 
+        	"               item_set_item tcisi," + 
+        	"               datapoint dp," + 
+        	"               test_roster ros," + 
+        	"               test_Admin adm," + 
+        	"               test_catalog tc," + 
+        	"               product prod," + 
+        	"               item_set td," + 
+        	"               tabe_ccss_roster_level roslevel," + 
+        	"               tabe_ccss_report_level_map trlm" + 
+        	"         WHERE ros.test_roster_id = ? " + 
+        	"           AND adm.test_admin_id = ros.test_admin_id" + 
+        	"           AND tc.test_catalog_id = adm.test_catalog_id" + 
+        	"           AND prod.product_id = tc.product_id" + 
+        	"           AND item.ACTIVATION_STATUS = 'AC'" + 
+        	"           AND tc.ACTIVATION_STATUS = 'AC'" + 
+        	"           AND tcisi.item_id = item.item_id" + 
+        	"           AND tcisa.item_set_id = tcisi.item_set_id" + 
+        	"           AND adm.item_set_id = tcisa.ancestor_item_set_id" + 
+        	"           AND item.item_id = secisi.item_id" + 
+        	"           AND secisa.item_set_id = secisi.item_set_id" + 
+        	"           AND sec.item_Set_id = secisa.ancestor_item_set_id" + 
+        	"           AND sec.item_set_type = 'RE'" + 
+        	"           AND seccat.item_set_category_id = sec.item_set_category_id" + 
+        	"           AND seccat.item_Set_category_level = trlm.sec_scoring_item_set_level" + 
+        	"           AND seccat.framework_product_id = prod.parent_product_id" + 
+        	"           AND primisa.item_set_id = sec.item_Set_id" + 
+        	"           AND prim.item_Set_id = primisa.ancestor_item_set_id" + 
+        	"           AND prim.item_set_type = 'RE'" + 
+        	"           AND prim.item_Set_category_id = primcat.item_Set_category_id" + 
+        	"           AND (primcat.item_Set_category_level <> trlm.scoring_item_set_level " +
+        	"				AND primcat.item_set_category_level > trlm.content_area_level" + 
+        	"               AND primcat.item_set_category_level < trlm.sec_scoring_item_set_level)" + 
+        	"           AND dp.item_id = item.item_id" + 
+        	"           AND dp.item_set_id = sec.item_Set_id" + 
+        	"           AND caisa.item_Set_id = prim.item_Set_id" + 
+        	"           AND ca.item_set_id = caisa.ancestor_item_Set_id" + 
+        	"           AND cacat.item_Set_category_id = ca.item_set_category_id" + 
+        	"           AND cacat.item_set_category_level = trlm.content_area_level" + 
+        	"           AND td.item_set_form = ros.form_assignment" + 
+        	"           AND td.item_set_id = tcisi.item_set_id" + 
+        	"           AND td.sample = 'F'" + 
+        	"           AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL')" + 
+        	"           AND trlm.test_catalog_name = tc.test_name" + 
+        	"           AND trlm.activation_status = 'AC'" + 
+        	"           AND trlm.item_set_level = roslevel.item_set_level" + 
+        	"           AND roslevel.test_roster_id = ros.test_roster_id" + 
+        	"         GROUP BY prim.item_Set_id," + 
+        	"                  prod.product_id || ca.item_set_id," +
+        	"				   sec.item_set_id, " + 
+        	"                  primcat.item_Set_category_level," + 
+        	"                  ca.item_Set_name," + 
+        	"                  prim.item_set_name," + 
+        	"                  primcat.ITEM_SET_CATEGORY_NAME," +
+        	"				   primcat.item_set_category_level," + 
+        	"                  td.item_set_form," + 
+        	"                  roslevel.item_Set_level," + 
+        	"                  td.item_Set_id," + 
+        	"                  prod.product_id," + 
+        	"                  td.item_set_name," + 
+        	"                  prim.ext_cms_item_set_id)";
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(casql);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+            	VirtualPrimObjsForTABECCSS primaryObjective = new VirtualPrimObjsForTABECCSS();
+                primaryObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
+                primaryObjective.setContentAreaId(new Long(rs.getLong("contentAreaId")));
+                primaryObjective.setSecObjId(new Long(rs.getLong("secObjectiveId")));
+                primaryObjective.setPrimaryObjectiveName(rs.getString("primaryObjectiveName"));
+                primaryObjective.setPrimaryObjectiveType(rs.getString("primaryObjectiveType"));
+                primaryObjective.setPrimaryObjectiveNumItems(new Long(rs.getLong("primaryNumItems")));
+                primaryObjective.setPrimaryObjectivePointsPossible(new Long(rs.getLong("primaryPointsPossible")));
+                primaryObjective.setSubtestId(new Long(rs.getLong("subtestId")));
+                primaryObjective.setSubtestForm(rs.getString("subtestForm"));
+                primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
+                primaryObjective.setPrimaryObjectiveIndex(new Long(rs.getLong("primaryObjectiveIndex")));
+                primaryObjective.setProductId(new Long(rs.getLong("productId")));
+                primaryObjective.setMonarchId(rs.getString("monarchId"));
+                primaryObjective.setCategoryLevel(new Long(rs.getLong("categoryLevel")));
+                
+                primaryObjectives.add(primaryObjective);
+                objectiveIndex = primaryObjective.getPrimaryObjectiveIndex();
+            }
+        } finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+        return (VirtualPrimObjsForTABECCSS []) primaryObjectives.toArray(new VirtualPrimObjsForTABECCSS[0]);
     }
     
 }

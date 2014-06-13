@@ -13,6 +13,7 @@ import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
 import com.ctb.lexington.db.data.StudentTestData;
 import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
+import com.ctb.lexington.db.data.CurriculumData.VirtualPrimObjsForTABECCSS;
 import com.ctb.lexington.db.irsdata.irstbdata.IrsTABESecObjFactData;
 import com.ctb.lexington.db.irsdata.irstcdata.IrsTCPrimObjFactData;
 import com.ctb.lexington.db.irsdata.irstcdata.IrsTCSecObjFactData;
@@ -75,6 +76,7 @@ public class StudentObjectiveScoresController {
     
     public IrsTCPrimObjFactData [] getPrimObjFactBeans() {
         PrimaryObjective [] prims = currData.getPrimaryObjectives();
+        String subtestName = null;
         ArrayList primaries = new ArrayList();
         for(int i=0;i<prims.length;i++) {
             PrimaryObjective prim = currData.getPrimObjById(prims[i].getPrimaryObjectiveId());
@@ -122,10 +124,66 @@ public class StudentObjectiveScoresController {
                 primObjFact.setAttr15id(contextData.getDemographicData().getAttr15Id());
                 primObjFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
                 
+                if(subtestName == null){
+                	subtestName = prim.getSubtestName();
+                }
                 primaries.add(primObjFact);
             }
         }
+        
+        if(null != subtestName && "READING".equalsIgnoreCase(subtestName) && new Long(1).equals(contextData.getCurrentResultId())){
+        	primaries = getVirtualPrimObjs(primaries);
+        }
         return (IrsTCPrimObjFactData[]) primaries.toArray(new IrsTCPrimObjFactData[0]);
+    }
+    
+    
+    
+    private ArrayList getVirtualPrimObjs(ArrayList primaries){
+
+    	VirtualPrimObjsForTABECCSS [] virtualPrims = currData.getVirtualPrimObjs();
+    	for(VirtualPrimObjsForTABECCSS vPrim : virtualPrims){
+    		IrsTCPrimObjFactData primObjFact = new IrsTCPrimObjFactData();
+            primObjFact.setPrimObjid(new Long(Long.parseLong(String.valueOf(vPrim.getProductId()) + String.valueOf(vPrim.getPrimaryObjectiveId()))));
+                
+            primObjFact.setAssessmentid(contextData.getAssessmentId());
+            primObjFact.setCurrentResultid(contextData.getCurrentResultId());
+            primObjFact.setFormid(adminData.getFormId());
+            primObjFact.setGradeid(contextData.getGradeId());
+            primObjFact.setLevelid(new Long(
+                                    "L".equals(vPrim.getSubtestLevel())?1:
+                                    "E".equals(vPrim.getSubtestLevel())?2:
+                                    "M".equals(vPrim.getSubtestLevel())?3:
+                                    "D".equals(vPrim.getSubtestLevel())?4:
+                                    "A".equals(vPrim.getSubtestLevel())?5:6));
+            primObjFact.setOrgNodeid(contextData.getOrgNodeId());
+            primObjFact.setProgramid(contextData.getProgramId());
+            primObjFact.setSessionid(contextData.getSessionId());
+            primObjFact.setStudentid(contextData.getStudentId());
+            primObjFact.setTestStartTimestamp(contextData.getTestStartTimestamp());
+            Timestamp subtestTime = testData.getBySubtestId(vPrim.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
+            if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
+            primObjFact.setTestCompletionTimestamp(subtestTime);  
+            primObjFact.setAttr1id(contextData.getDemographicData().getAttr1Id());
+            primObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
+            primObjFact.setAttr3id(contextData.getDemographicData().getAttr3Id());
+            primObjFact.setAttr4id(contextData.getDemographicData().getAttr4Id());
+            primObjFact.setAttr5id(contextData.getDemographicData().getAttr5Id());
+            primObjFact.setAttr6id(contextData.getDemographicData().getAttr6Id());
+            primObjFact.setAttr7id(contextData.getDemographicData().getAttr7Id());
+            primObjFact.setAttr8id(contextData.getDemographicData().getAttr8Id());
+            primObjFact.setAttr9id(contextData.getDemographicData().getAttr9Id());
+            primObjFact.setAttr10id(contextData.getDemographicData().getAttr10Id());
+            primObjFact.setAttr11id(contextData.getDemographicData().getAttr11Id());
+            primObjFact.setAttr12id(contextData.getDemographicData().getAttr12Id());
+            primObjFact.setAttr13id(contextData.getDemographicData().getAttr13Id());
+            primObjFact.setAttr14id(contextData.getDemographicData().getAttr14Id());
+            primObjFact.setAttr15id(contextData.getDemographicData().getAttr15Id());
+            primObjFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
+            
+            primaries.add(primObjFact);
+    	}
+    	return primaries;
     }
     
     public IrsTCSecObjFactData [] getSecObjFactBeans() {

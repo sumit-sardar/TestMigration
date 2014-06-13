@@ -191,6 +191,7 @@ public class TestResultDataCollector {
         filteredCurrData.setSecondaryObjectives((SecondaryObjective[]) secObjList.toArray(new SecondaryObjective[0]));
         filteredCurrData.setItems((Item[]) itemList.toArray(new Item[0]));
         filteredCurrData.setCrItemMap(crItemMap);
+        filteredCurrData.setVirtualPrimObjs(currData.getVirtualPrimObjs());
         return filteredCurrData;
     }
 

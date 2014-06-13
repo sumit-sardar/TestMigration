@@ -298,6 +298,8 @@ public class CurriculumData {
         private Integer highMasteryRange;
         private Integer lowMasteryRange;
         private String monarchId;
+        private String subtestName;
+        private Long categoryLevel;
         
         public PrimaryObjective() {
 			super();
@@ -318,6 +320,8 @@ public class CurriculumData {
 	        this.highMasteryRange = primaryObj.getHighMasteryRange();
 	        this.lowMasteryRange = primaryObj.getLowMasteryRange();
 	        this.monarchId = primaryObj.getMonarchId();
+	        this.subtestName = primaryObj.getSubtestName();
+	        this.categoryLevel = primaryObj.getCategoryLevel();
 		}
         public Long getProductId() {
 			return productId;
@@ -493,6 +497,31 @@ public class CurriculumData {
 		public void setMonarchId(String monarchId) {
 			this.monarchId = monarchId;
 		}
+		/**
+		 * @return the subtestName
+		 */
+		public String getSubtestName() {
+			return subtestName;
+		}
+		/**
+		 * @param subtestName the subtestName to set
+		 */
+		public void setSubtestName(String subtestName) {
+			this.subtestName = subtestName;
+		}
+		/**
+		 * @return the categoryLevel
+		 */
+		public Long getCategoryLevel() {
+			return categoryLevel;
+		}
+		/**
+		 * @param categoryLevel the categoryLevel to set
+		 */
+		public void setCategoryLevel(Long categoryLevel) {
+			this.categoryLevel = categoryLevel;
+		}
+		
     }
     
     public static class SecondaryObjective {
@@ -989,4 +1018,263 @@ public class CurriculumData {
 	public void setCrItemMap(Map crItemMap) {
 		this.crItemMap = crItemMap;
 	}
+	
+	 public static class VirtualPrimObjsForTABECCSS {
+	        private Long primaryObjectiveId;
+	        private Long contentAreaId;
+	        private String primaryObjectiveName;
+	        private String primaryObjectiveType;
+	        private Long primaryObjectiveNumItems;
+	        private Long primaryObjectivePointsPossible;
+	        private Long subtestId;
+	        private String subtestForm;
+	        private String subtestLevel;
+	        private Long primaryObjectiveIndex;
+	        private BigDecimal nationalAverage;
+	        private Long productId;
+	        private Integer highMasteryRange;
+	        private Integer lowMasteryRange;
+	        private String monarchId;
+	        private Long categoryLevel;
+	        private Long secObjId;
+	        
+	        public VirtualPrimObjsForTABECCSS() {
+				super();
+			}
+			public VirtualPrimObjsForTABECCSS(VirtualPrimObjsForTABECCSS primaryObj) {
+				this.primaryObjectiveId = primaryObj.getPrimaryObjectiveId();
+			    this.contentAreaId = primaryObj.getContentAreaId();
+		        this.primaryObjectiveName = primaryObj.getPrimaryObjectiveName();
+		        this.primaryObjectiveType = primaryObj.getPrimaryObjectiveType();
+		        this.primaryObjectiveNumItems = primaryObj.getPrimaryObjectiveNumItems();
+		        this.primaryObjectivePointsPossible = primaryObj.getPrimaryObjectivePointsPossible();
+		        this.subtestId = primaryObj.getSubtestId();
+		        this.subtestForm = primaryObj.getSubtestForm();
+		        this.subtestLevel = primaryObj.getSubtestLevel();
+		        this.primaryObjectiveIndex = primaryObj.getPrimaryObjectiveIndex();
+		        this.nationalAverage = primaryObj.getNationalAverage();
+		        this.productId = primaryObj.getProductId();
+		        this.highMasteryRange = primaryObj.getHighMasteryRange();
+		        this.lowMasteryRange = primaryObj.getLowMasteryRange();
+		        this.monarchId = primaryObj.getMonarchId();
+		        this.categoryLevel = primaryObj.getCategoryLevel();
+		        this.secObjId = primaryObj.getSecObjId();
+			}
+	        public Long getProductId() {
+				return productId;
+			}
+			
+			public void setProductId(Long productId) {
+				this.productId = productId;
+			}
+	        
+	        /**
+			 * @return Returns the nationalAverage.
+			 */
+			public BigDecimal getNationalAverage() {
+				return nationalAverage;
+			}
+			/**
+			 * @param nationalAverage The nationalAverage to set.
+			 */
+			public void setNationalAverage(BigDecimal nationalAverage) {
+				this.nationalAverage = nationalAverage;
+			}
+	        
+	        /**
+			 * @return Returns the primaryObjectiveIndex.
+			 */
+			public Long getPrimaryObjectiveIndex() {
+				return primaryObjectiveIndex;
+			}
+			/**
+			 * @param primaryObjectiveIndex The primaryObjectiveIndex to set.
+			 */
+			public void setPrimaryObjectiveIndex(Long primaryObjectiveIndex) {
+				this.primaryObjectiveIndex = primaryObjectiveIndex;
+			}
+			/**
+			 * @return Returns the subtestForm.
+			 */
+			public String getSubtestForm() {
+				return subtestForm;
+			}
+			/**
+			 * @param subtestForm The subtestForm to set.
+			 */
+			public void setSubtestForm(String subtestForm) {
+				this.subtestForm = subtestForm;
+			}
+			/**
+			 * @return Returns the subtestId.
+			 */
+			public Long getSubtestId() {
+				return subtestId;
+			}
+			/**
+			 * @param subtestId The subtestId to set.
+			 */
+			public void setSubtestId(Long subtestId) {
+				this.subtestId = subtestId;
+			}
+			/**
+			 * @return Returns the subtestLevel.
+			 */
+			public String getSubtestLevel() {
+				return subtestLevel;
+			}
+			/**
+			 * @param subtestLevel The subtestLevel to set.
+			 */
+			public void setSubtestLevel(String subtestLevel) {
+				this.subtestLevel = subtestLevel;
+			}
+			/**
+			 * @return Returns the contentAreaId.
+			 */
+			public Long getContentAreaId() {
+				return contentAreaId;
+			}
+			/**
+			 * @param contentAreaId The contentAreaId to set.
+			 */
+			public void setContentAreaId(Long contentAreaId) {
+				this.contentAreaId = contentAreaId;
+			}
+			/**
+			 * @return Returns the primaryObjectiveId.
+			 */
+			public Long getPrimaryObjectiveId() {
+				return primaryObjectiveId;
+			}
+			/**
+			 * @param primaryObjectiveId The primaryObjectiveId to set.
+			 */
+			public void setPrimaryObjectiveId(Long primaryObjectiveId) {
+				this.primaryObjectiveId = primaryObjectiveId;
+			}
+			/**
+			 * @return Returns the primaryObjectiveName.
+			 */
+			public String getPrimaryObjectiveName() {
+				return primaryObjectiveName;
+			}
+			/**
+			 * @param primaryObjectiveName The primaryObjectiveName to set.
+			 */
+			public void setPrimaryObjectiveName(String primaryObjectiveName) {
+				this.primaryObjectiveName = primaryObjectiveName;
+			}
+			/**
+			 * @return Returns the primaryObjectiveNumItems.
+			 */
+			public Long getPrimaryObjectiveNumItems() {
+				return primaryObjectiveNumItems;
+			}
+			/**
+			 * @param primaryObjectiveNumItems The primaryObjectiveNumItems to set.
+			 */
+			public void setPrimaryObjectiveNumItems(Long primaryObjectiveNumItems) {
+				this.primaryObjectiveNumItems = primaryObjectiveNumItems;
+			}
+			/**
+			 * @return Returns the primaryObjectivePointsPossible.
+			 */
+			public Long getPrimaryObjectivePointsPossible() {
+				return primaryObjectivePointsPossible;
+			}
+			/**
+			 * @param primaryObjectivePointsPossible The primaryObjectivePointsPossible to set.
+			 */
+			public void setPrimaryObjectivePointsPossible(
+					Long primaryObjectivePointsPossible) {
+				this.primaryObjectivePointsPossible = primaryObjectivePointsPossible;
+			}
+			/**
+			 * @return Returns the primaryObjectiveType.
+			 */
+			public String getPrimaryObjectiveType() {
+				return primaryObjectiveType;
+			}
+			/**
+			 * @param primaryObjectiveType The primaryObjectiveType to set.
+			 */
+			public void setPrimaryObjectiveType(String primaryObjectiveType) {
+				this.primaryObjectiveType = primaryObjectiveType;
+			}
+			/**
+			 * @return Returns the highMasteryRange.
+			 */
+			public Integer getHighMasteryRange() {
+				return highMasteryRange;
+			}
+			/**
+			 * @param highMasteryRange The highMasteryRange to set.
+			 */
+			public void setHighMasteryRange(Integer highMasteryRange) {
+				this.highMasteryRange = highMasteryRange;
+			}
+			/**
+			 * @return Returns the lowMasteryRange.
+			 */
+			public Integer getLowMasteryRange() {
+				return lowMasteryRange;
+			}
+			/**
+			 * @param lowMasteryRange The lowMasteryRange to set.
+			 */
+			public void setLowMasteryRange(Integer lowMasteryRange) {
+				this.lowMasteryRange = lowMasteryRange;
+			}
+
+			public String getMonarchId() {
+				return monarchId;
+			}
+
+			public void setMonarchId(String monarchId) {
+				this.monarchId = monarchId;
+			}
+			/**
+			 * @return the categoryLevel
+			 */
+			public Long getCategoryLevel() {
+				return categoryLevel;
+			}
+			/**
+			 * @param categoryLevel the categoryLevel to set
+			 */
+			public void setCategoryLevel(Long categoryLevel) {
+				this.categoryLevel = categoryLevel;
+			}
+			/**
+			 * @return the secObjId
+			 */
+			public Long getSecObjId() {
+				return secObjId;
+			}
+			/**
+			 * @param secObjId the secObjId to set
+			 */
+			public void setSecObjId(Long secObjId) {
+				this.secObjId = secObjId;
+			}
+			
+	    }
+	 
+	private VirtualPrimObjsForTABECCSS[] virtualPrimObjs;
+
+	/**
+	 * @return the virtualPrimObjs
+	 */
+	public VirtualPrimObjsForTABECCSS[] getVirtualPrimObjs() {
+		return virtualPrimObjs;
+	}
+
+	/**
+	 * @param virtualPrimObjs the virtualPrimObjs to set
+	 */
+	public void setVirtualPrimObjs(VirtualPrimObjsForTABECCSS[] virtualPrimObjs) {
+		this.virtualPrimObjs = virtualPrimObjs;
+	}
+	
 }

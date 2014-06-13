@@ -8,6 +8,7 @@ import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.data.CurriculumData.Item;
 import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
+import com.ctb.lexington.db.data.CurriculumData.VirtualPrimObjsForTABECCSS;
 import com.ctb.lexington.db.irsdata.IrsCompositeDimData;
 import com.ctb.lexington.db.irsdata.IrsContentAreaDimData;
 import com.ctb.lexington.db.irsdata.IrsItemDimData;
@@ -28,6 +29,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -41,6 +43,7 @@ public class CurriculumController {
     private IrsPrimObjDimMapper poMapper;
     private IrsSecObjDimMapper soMapper;
     private IrsItemDimMapper iMapper;
+    String subtestName = null;
 
     public CurriculumController(Connection conn, CurriculumData data, AdminData adminData, ContextData context) {
         this.data = data;
@@ -160,6 +163,7 @@ public class CurriculumController {
         IrsPrimObjDimData [] primaryObjectives = getIrsPrimObjBeans(data);
         
         if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){ // Changes for iBatis Batch Process implementation
+        	Long objectiveIndex = new Long(0);
         	SqlMapClient insertPrimClient = null;
             SqlMapClient updatePrimClient = null;
             Map<Long, IrsPrimObjDimData> existPrimObjMap = new HashMap<Long, IrsPrimObjDimData>();
@@ -175,6 +179,27 @@ public class CurriculumController {
 	                	updatePrimClient = poMapper.updateBatch(newPrimObj, updatePrimClient);
 	                }
 	            }
+            	if(objectiveIndex.longValue() < newPrimObj.getPrimObjIndex().longValue())
+            		objectiveIndex = newPrimObj.getPrimObjIndex();
+        	}
+        	subtestName = data.getPrimaryObjectives()[0].getSubtestName();
+        	
+        	if(null != subtestName && "READING".equalsIgnoreCase(subtestName)){
+        		IrsPrimObjDimData [] virtualObjs = getIrsVirtualPrimObjBeans(data, ++objectiveIndex);
+        		existPrimObjMap.clear();
+        		existPrimObjMap = poMapper.findByOASItemIdAndSecObjId(new ArrayList<IrsPrimObjDimData>(Arrays.asList(virtualObjs)), "primObjid");
+            	for(int i=0;i<virtualObjs.length;i++) {
+                    IrsPrimObjDimData newPrimObj = virtualObjs[i];
+                	if(!existPrimObjMap.containsKey(newPrimObj.getPrimObjid())) {
+                		insertPrimClient = poMapper.insertBatch(newPrimObj, insertPrimClient);
+                		existPrimObjMap.put(newPrimObj.getPrimObjid(), newPrimObj);
+    	            } else {
+    	            	IrsPrimObjDimData primObj = (IrsPrimObjDimData)existPrimObjMap.get(newPrimObj.getPrimObjid());
+    	                if(!newPrimObj.equals(primObj)) {
+    	                	updatePrimClient = poMapper.updateBatch(newPrimObj, updatePrimClient);
+    	                }
+    	            }
+            	}
         	}
         	poMapper.executeObjectiveBatch(insertPrimClient);
         	poMapper.executeObjectiveBatch(updatePrimClient);
@@ -197,7 +222,12 @@ public class CurriculumController {
         }
         
         // handle secondary objectives
-        IrsSecObjDimData [] secondaryObjectives = getIrsSecObjBeans(data);
+        IrsSecObjDimData [] secondaryObjectives = null;
+        if("TC".equals(this.adminData.getAssessmentType())){
+        	secondaryObjectives = getIrsSecObjBeansForTABECCSS(data);
+        }else {
+        	secondaryObjectives = getIrsSecObjBeans(data);
+        }
         
         if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){ // Changes for iBatis Batch Process implementation
         	SqlMapClient insertObjClient = null;
@@ -419,9 +449,6 @@ public class CurriculumController {
             SecondaryObjective so = data.getSecondaryObjectives()[i];
             sod[i].setPrimObjid((so.getPrimaryObjectiveId()==null)?null:new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getPrimaryObjectiveId()))));
             sod[i].setName(so.getSecondaryObjectiveName());
-//            if(so.getSecondaryObjectiveName().length() > 128) {
-//            	sod[i].setName(so.getSecondaryObjectiveName().substring(0, 127));
-//            }
             sod[i].setNumItems(so.getSecondaryObjectiveNumItems());
             sod[i].setPointsPossible(so.getSecondaryObjectivePointsPossible());
             sod[i].setSecObjid(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getSecondaryObjectiveId()))));
@@ -449,6 +476,63 @@ public class CurriculumController {
         }
         
         return idd;
+    }
+    
+    private IrsPrimObjDimData [] getIrsVirtualPrimObjBeans(CurriculumData data, Long objectiveIndex) {
+        Map<Long, VirtualPrimObjsForTABECCSS> primMap = new HashMap<Long, VirtualPrimObjsForTABECCSS>();
+        for(VirtualPrimObjsForTABECCSS virtualPrim : data.getVirtualPrimObjs()){
+        	if(!primMap.containsKey(virtualPrim.getPrimaryObjectiveId()))
+        		primMap.put(virtualPrim.getPrimaryObjectiveId(), virtualPrim);
+        }
+        IrsPrimObjDimData [] pod = new IrsPrimObjDimData[primMap.values().size()];
+    	int counter = 0;
+    	for(final Iterator it = primMap.values().iterator(); it.hasNext();) {
+            pod[counter] = new IrsPrimObjDimData();
+            VirtualPrimObjsForTABECCSS po = (VirtualPrimObjsForTABECCSS)it.next();
+            pod[counter].setContentAreaid(po.getContentAreaId());
+            pod[counter].setName(po.getPrimaryObjectiveName());
+            pod[counter].setNumItems(po.getPrimaryObjectiveNumItems());
+            pod[counter].setPointsPossible(po.getPrimaryObjectivePointsPossible());
+            pod[counter].setPrimObjid(new Long(Long.parseLong(String.valueOf(po.getProductId()) + String.valueOf(po.getPrimaryObjectiveId()))));
+            pod[counter].setPrimObjType(po.getPrimaryObjectiveType());
+            pod[counter].setPrimObjIndex(objectiveIndex);
+            pod[counter].setAssessmentid(context.getAssessmentId());
+            
+            objectiveIndex++;
+            counter++;
+        }
+        return pod;
+    }
+    
+    private IrsSecObjDimData [] getIrsSecObjBeansForTABECCSS(CurriculumData data) {
+    	IrsSecObjDimData [] sod = new IrsSecObjDimData[data.getSecondaryObjectives().length];
+        for(int i=0;i<data.getSecondaryObjectives().length;i++) {
+            sod[i] = new IrsSecObjDimData();
+            SecondaryObjective so = data.getSecondaryObjectives()[i];
+            if(null != subtestName && "READING".equalsIgnoreCase(subtestName)){
+            	Long primcatLvl = data.getPrimaryObjectives()[0].getCategoryLevel(); 
+                Long virtualLvl = data.getVirtualPrimObjs()[0].getCategoryLevel();
+                if(primcatLvl.longValue() < virtualLvl.longValue()){
+                	for(VirtualPrimObjsForTABECCSS virtual : data.getVirtualPrimObjs()){
+                		if(so.getSecondaryObjectiveId().longValue() == virtual.getSecObjId().longValue()){
+                			sod[i].setPrimObjid(new Long(Long.parseLong(String.valueOf(virtual.getProductId()) + String.valueOf(virtual.getPrimaryObjectiveId()))));
+                			break;
+                		}
+                	}
+                }else{
+                	sod[i].setPrimObjid(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getPrimaryObjectiveId()))));
+                }
+            }else{
+            	sod[i].setPrimObjid(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getPrimaryObjectiveId()))));
+            }
+            sod[i].setName(so.getSecondaryObjectiveName());
+            sod[i].setNumItems(so.getSecondaryObjectiveNumItems());
+            sod[i].setPointsPossible(so.getSecondaryObjectivePointsPossible());
+            sod[i].setSecObjid(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getSecondaryObjectiveId()))));
+            sod[i].setSecObjType(so.getSecondaryObjectiveType());
+            sod[i].setAssessmentid(context.getAssessmentId());
+        }
+        return sod;
     }
     
     private void copyItemIdsToCurrData(IrsItemDimData [] irsItems, CurriculumData data) {
