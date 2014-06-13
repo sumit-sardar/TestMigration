@@ -36,16 +36,9 @@ public class TestFormSelector
     			}
     		}
     	}
-    	if(retFrm == null){
-    		while(itr.hasNext()){
-        		FormAssignmentCount frm = itr.next();
-        		if(!alreadyAssignedForms.contains(frm.getForm())){
-        				retFrm = frm;
-        				count = frm.getCount().intValue();
-        				break;
-        		}
-        	}
-    	}
+    	if(retFrm == null) {
+			retFrm = forms.get(0);
+		}
     	int index = forms.indexOf(retFrm);
     	forms.remove(index);
     	retFrm.setCount(count+1);
