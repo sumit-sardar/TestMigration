@@ -131,7 +131,7 @@ public class StudentObjectiveScoresController {
             }
         }
         
-        if(null != subtestName && "READING".equalsIgnoreCase(subtestName) && new Long(1).equals(contextData.getCurrentResultId())){
+        if(null != subtestName && "READING".equalsIgnoreCase(subtestName)){
         	primaries = getVirtualPrimObjs(primaries);
         }
         return (IrsTCPrimObjFactData[]) primaries.toArray(new IrsTCPrimObjFactData[0]);
