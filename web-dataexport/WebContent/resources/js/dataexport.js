@@ -23,6 +23,7 @@ var testAdminIdsMap = new Map();
 var allSelectedTestAdminIds = {};
 var testSessionLocalData = {};
 var isDataExportBySession = 'false';
+var parentProductId;
 
 
 
@@ -680,7 +681,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		}else{
 			itemId = rowObject.itemId;
 		}
-
+		parentProductId = rowObject.parentProductId;
 		var type;
 		if(cellvalue=="AI") {
         	type = "Audio Response";
@@ -690,7 +691,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
         if(answered != undefined && answered == "Answered") {
         	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesAnsPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
-        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\"); return false;'>"+type+"</a>";
+        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\",\"" + parentProductId + "\"); return false;'>"+type+"</a>";
         } else {
         	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
         }
@@ -707,12 +708,12 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		}else{
 			itemId = rowObject.itemId;
 		}
-
+		parentProductId = rowObject.parentProductId;
 		var type = "View Question";
 		
         	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
-        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\"); return false;'>"+type+"</a>";
+        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\",\"" + rowObject.parentProductId + "\"); return false;'>"+type+"</a>";
       
 		return val;
 	}
@@ -830,7 +831,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		    addOption(select,i,i);
 		     } 
 	}
-	function showQuesPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus){
+	function showQuesPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus, parentProductId){
 			var score= null;
 			var status = null;
 			selectedRowObjectScoring.id = id;
@@ -839,12 +840,16 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			selectedRowObjectScoring.testRosterId = testRosterId;
 			selectedRowObjectScoring.itemSetId = itemSetId;
 			selectedRowObjectScoring.maxPoints = maxPoints;
-				
+			selectedRowObjectScoring.parentProductId = parentProductId;
 			document.getElementById('displayMessageForQues').style.display = "none";
 		 	var element = document.getElementById('questionInfo');
 		 	var iframe = document.createElement('iframe');
-			iframe.name = "swfFrame";
-			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "";
+			if (parentProductId == 7500){
+				iframe.name = "jsFrame";
+			}else {
+				iframe.name = "swfFrame";
+			}
+			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
 			iframe.width = "900";
 			iframe.height = "530";
 			element.appendChild(iframe);
@@ -867,7 +872,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			});	
 		 	
 }
- function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus){
+ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus, parentProductId){
 			var score= null;
 			var status = null;
 			selectedRowObjectScoring.id = id;
@@ -876,15 +881,19 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			selectedRowObjectScoring.testRosterId = testRosterId;
 			selectedRowObjectScoring.itemSetId = itemSetId;
 			selectedRowObjectScoring.maxPoints = maxPoints;
-			
+			selectedRowObjectScoring.parentProductId = parentProductId;
 			$("#crText").hide();
 			$("#audioPlayer").hide();
 				
 			document.getElementById('displayMessageForQues').style.display = "none";
 		 	var element = document.getElementById('questionInformation');
 		 	var iframe = document.createElement('iframe');
-			iframe.name = "swfFrame";
-			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "";
+		 	if (parentProductId == 7500){
+				iframe.name = "jsFrame";
+			}else {
+				iframe.name = "swfFrame";
+			}
+			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
 			iframe.width = "900";
 			iframe.height = "530";
 			element.appendChild(iframe);
@@ -1527,3 +1536,7 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 						}
 		});
 }
+
+function isWindows() {
+		return navigator.userAgent.indexOf('Win') > -1;
+	}
