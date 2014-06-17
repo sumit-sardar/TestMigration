@@ -937,6 +937,32 @@ public interface TestAdmin extends JdbcControl
     @JdbcControl.SQL(statement = " SELECT TAIS.ACCESS_CODE AS accessCode, ISET.ITEM_SET_NAME AS subtestName  FROM TEST_ADMIN_ITEM_SET TAIS, ITEM_SET ISET WHERE TAIS.TEST_ADMIN_ID = {sessionId} AND TAIS.ITEM_SET_ID = ISET.ITEM_SET_ID ORDER BY TAIS.ITEM_SET_ORDER ",
                      arrayMaxLength = 100)
     SubtestAccessCodeDetail [] getSessionAccessCodeDetails(Integer sessionId) throws SQLException;
+    
+    
+    
+    
+    /**
+     * @jc:sql statement::
+     * select
+     *     decode(count(1), 0, 'T', 'F') as locatorCompletionStatus 
+     * from 
+     *      test_admin   ta,
+     *      test_roster  tr,
+     *      student_item_set_status siss,
+     *      item_set  iset  
+     * where 
+     *      ta.test_admin_id = {testAdminId}
+     *  and ta.test_admin_id = tr.test_admin_id    
+     *  and tr.student_id = {studentId}    
+     *  and tr.test_roster_id = siss.test_roster_id    
+     *  and siss.item_set_id = iset.item_set_id    
+     *  and iset.item_set_level = 'L'
+     *  and siss.completion_status = 'SC'  
+     * array-max-length="1"
+     */
+    @JdbcControl.SQL(statement = " select decode ( count(1) , 0 , 'T' ,'F' ) as locatorCompletionStatus from test_admin ta , test_roster tr , student_item_set_status siss , item_set iset where ta.test_admin_id =  {testAdminId} and   ta.test_admin_id = tr.test_admin_id and   tr.student_id =  {studentId} and   tr.test_roster_id = siss.test_roster_id and   siss.item_set_id = iset.item_set_id and   iset.item_set_level = 'L' and   siss.completion_status = 'SC' ",
+            		 arrayMaxLength = 1)
+    java.lang.String  getAllLocatorCompletionStatus (Integer studentId , Integer testAdminId) throws SQLException;
   
 
 }

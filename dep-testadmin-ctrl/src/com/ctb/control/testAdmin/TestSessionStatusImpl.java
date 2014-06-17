@@ -2648,4 +2648,19 @@ public class TestSessionStatusImpl implements TestSessionStatus
     	return sACD; 
      }
      
+     
+     
+     public boolean getLocatorCompletionStatus(Integer studentId , Integer testAdminId) throws CTBBusinessException{
+    	 boolean isAllLocatorCompleted = false;    	 
+    	 try{
+    		 isAllLocatorCompleted = ("T").equalsIgnoreCase(this.testAdmin.getAllLocatorCompletionStatus(studentId , testAdminId)) ? true : false ;
+    	 }catch(SQLException se){
+    		 CTBBusinessException cbe = new CTBBusinessException("TestSessionStatusImpl: getLocatorCompletionStatus :: "+se.getMessage());
+    		 cbe.setStackTrace(se.getStackTrace());
+    		 throw cbe;
+    	 }
+    	return isAllLocatorCompleted; 
+     }
+     
+     
 } 

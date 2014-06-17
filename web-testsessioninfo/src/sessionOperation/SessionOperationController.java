@@ -7132,6 +7132,18 @@ public class SessionOperationController extends PageFlowController {
 		        }
 		        return ted;
 		    }
+		 
+		 
+		 private boolean getLocatorCompletionStatus(Integer studentId , Integer testAdminId){
+			 boolean status = false;
+			 try{
+				 status = this.testSessionStatus.getLocatorCompletionStatus( studentId , testAdminId );
+			 }
+			 catch(CTBBusinessException be){
+				 be.printStackTrace();
+			 }
+			 return status;
+		 }
 		
 		private RosterElementData getRosterForViewTestSession(Integer sessionId) 
 	    {
@@ -7834,8 +7846,12 @@ public class SessionOperationController extends PageFlowController {
 		        HashMap recLevelHM = new HashMap();
 		        if (isTabeSession) {
 		            subtestelements = orderedSubtestList(subtestelements, studentId, testAdminId);
-		        }                
+		        }  
+		        boolean isAllLocatorCompleted = false ;		       
 		        boolean isLocatorTD = false;
+		        
+		        isAllLocatorCompleted = getLocatorCompletionStatus(studentId, testAdminId);
+		        
 		        for (int i=0; i < subtestelements.length; i++)
 		        {
 		            TestElement te = subtestelements[i];          
@@ -7963,6 +7979,9 @@ public class SessionOperationController extends PageFlowController {
 		                                            else if (tdSubtestName.indexOf("Language") > 0)
 		                                                recLevelHM.put("Language", sss.getRecommendedLevel());
 		                                        }
+		                                    }
+		                                    else if (null != te.getIslocatorChecked()  &&  ("F").equalsIgnoreCase(te.getIslocatorChecked()) && isAllLocatorCompleted){
+		                                    	//Do nothing...
 		                                    }
 		                                    else
 		                                        sd_TD.setLevel("");
