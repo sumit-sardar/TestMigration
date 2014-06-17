@@ -329,7 +329,7 @@ var styleClass;
 						if(currentlySelectedNode=="") {
 							currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";	
 						} else {
-							currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";
+							currentlySelectedNode = currentlySelectedNode + " # " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";
 						//console.log("if not exist"+ trim($(element).text()));
 						}
 						if(assignedOrgNodeIds=="") {
@@ -347,7 +347,7 @@ var styleClass;
 					currentlySelectedNode ="";
 						//var newcurrentlySelectedNode = "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";
 						 var nodeId = trim($(element).attr("id"));	
-						var opList = optionHtml.split(",");
+						var opList = optionHtml.split("#");
 						for(var key=0; key<opList.length; key++){
 							var opListVal = $.trim(opList[key]);
 							 var resLen = opListVal.split(nodeId);
@@ -356,7 +356,7 @@ var styleClass;
 								if(currentlySelectedNode=="") {
 								currentlySelectedNode = opListVal;	
 								} else {
-								currentlySelectedNode = opListVal + " , " + currentlySelectedNode;
+								currentlySelectedNode = opListVal + " # " + currentlySelectedNode;
 							}
 							}
 							
@@ -389,6 +389,9 @@ var styleClass;
 					} else {
 						currentlySelectedNode = optionHtml;
 					}
+				}
+				if(currentlySelectedNode.length > 0 ) {
+					currentlySelectedNode = currentlySelectedNode.split("#").join(",");
 				}
 			}
 			if(isAddUser){
@@ -1118,11 +1121,12 @@ function fillselectedOrgNode( elementId, orgList) {
 		if(optionHtml == "") {
 			optionHtml += "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+trim(orgList[i].orgNodeName)+"</a>";	
 		} else {
-			optionHtml = optionHtml +" , " + "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+ trim(orgList[i].orgNodeName)+"</a>";	
+			optionHtml = optionHtml +" # " + "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+ trim(orgList[i].orgNodeName)+"</a>";	
 		}
 		
 	}
-	$(ddl).html(optionHtml);
+	var orgNames=optionHtml.split("#").join(",");
+	$(ddl).html(orgNames);
 	
 	if(orgList.length > 0 ) {
 		$("#notSelectedOrgNodes").css("display","none");
