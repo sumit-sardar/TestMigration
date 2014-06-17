@@ -273,6 +273,8 @@ function populateProgramStatusDetails(){
 										html += '</tr>';								
 									}
 									$("#subtestInfoList").html(html);
+									var subtestInfoListVar=document.getElementById("subtestInfoList");
+									subtestInfoListVar.style.border='1px solid #A6C9E2';
 									$("#testStatusInfo").show();
 								}								
 							    $.unblockUI(); 																														 						
@@ -365,6 +367,9 @@ function viewSubtestStatusDetails(subtestId,status,subtestName){
        		},
 			onSelectAll: function (rowIds, status) {
 						
+			},
+			beforeSelectRow: function(rowid, e) {
+			    return false;
 			},
 			onSelectRow: function (rowid) {
 			},
@@ -598,6 +603,8 @@ function getSubtestDetailsForSelectedTest(){
 										html += '</tr>';								
 									}
 									$("#subtestInfoList").html(html);
+									var subtestInfoListVar=document.getElementById("subtestInfoList");
+									subtestInfoListVar.style.border='1px solid #A6C9E2';
 									$("#testStatusInfo").show();
 								
 							    $.unblockUI(); 																														 						
