@@ -136,7 +136,7 @@
 		      			<tr>
 			      			<td>
 			      				<div id="testStatusInfo" style="margin-top: 10px"> 
-			      					<table id="subtestInfoList" style="width:920px;border: 1px solid #A6C9E2;bgcolor=#A6C9E2;" cellpadding="0" cellspacing="0"></table>
+			      					<table id="subtestInfoList" style="width:920px;border: 0px solid #A6C9E2;bgcolor=#A6C9E2;" cellpadding="0" cellspacing="0"></table>
 								</div>
 			      			</td>	
 		      			</tr>
