@@ -3366,6 +3366,35 @@ public class SessionOperationController extends PageFlowController {
 	        		ecs.setCode("");
 	        		ecs.setCopyable("T");
 		        }
+        	}        
+	       
+        	if(getRequest().getParameter("productSelected") != null && ssd.getSessionStudents().length >0){
+        		
+        		String studentIds = "";
+		        for (int i=0;i<ssd.getSessionStudents().length;i++)
+		        {
+		        	if (ssd.getSessionStudents()[i].getOutOfSchool()!="Yes")
+		        	{
+		        		if (studentIds.length()>0)
+			        	{
+		        			studentIds += ",";
+			        	}
+		        		studentIds += ssd.getSessionStudents()[i].getStudentId();
+		        	}
+		        }
+        		
+		        ScheduledSession scheduledSession = this.scheduleTest.getInActiveRosteredStudentsForSession(testAdminId);
+    	    	SessionStudent[] students =  scheduledSession.getStudents();
+    	    	
+    	    	for (int j=0;j<students.length;j++){
+    	    		for (int i=0;i<ssd.getSessionStudents().length;i++){
+    	    			if (ssd.getSessionStudents()[i].getOutOfSchool()!="Yes" && ssd.getSessionStudents()[i].getStudentId().equals(students[j].getStudentId()))
+			        	{
+			        		ssd.getSessionStudents()[i].setOutOfSchool("Yes");
+			        		break;
+			        	}			        		
+    	    		}
+    	    	}
         	}
 	        
 	        //** Story: TABE Adaptive FT - 06 - Modify TABE Scheduling – Logic

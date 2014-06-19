@@ -4217,6 +4217,23 @@ public class ScheduleTestImpl implements ScheduleTest
     }
     
     @Override
+    public ScheduledSession getInActiveRosteredStudentsForSession(Integer testAdminId) throws CTBBusinessException {
+    	try {
+    		ScheduledSession session = new ScheduledSession();
+    		SessionStudent[] roster = students.getInActiveRosteredStudentsForSession(testAdminId);
+    		if(roster != null){
+    			session.setStudents(roster);
+    		}
+			return session;
+		} catch (SQLException se) {
+			CTBBusinessException cbe = new UserDataNotFoundException("ScheduleTestImpl: getScheduledSessionDetails: "+ se.getMessage());
+			cbe.setStackTrace(se.getStackTrace());
+			throw cbe;
+		}  
+    	
+    }
+    
+    @Override
     public ScheduledSession getScheduledStudentsMinimalInfoDetails(String userName, Integer testAdminId) throws CTBBusinessException {
         validator.validateAdmin(userName, testAdminId, "testAdmin.getScheduledStudentsDetails");
         try {
