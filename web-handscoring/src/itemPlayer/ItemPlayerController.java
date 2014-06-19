@@ -78,6 +78,7 @@ public class ItemPlayerController extends PageFlowController {
     private String itemSortNumber = null;
 	MemoryCache aMemoryCache = MemoryCache.getInstance();
 	HashMap assetMap = aMemoryCache.getAssetMap();
+	private static HashMap<String, ItemData> itemMap = new HashMap<String, ItemData>();
     
     // Uncomment this declaration to access Global.app.
     // 
@@ -158,111 +159,110 @@ public class ItemPlayerController extends PageFlowController {
 			
 		}
 	)
-    protected Forward ContentServlet()
-    {
-    	String OK = "<OK />";
-        String ERROR = "<ERROR />";
-	
-        String result = OK; 
-        String method = getRequest().getParameter("method");
-        String requestXml = getRequest().getParameter("requestXML");
-        String itemId = getRequest().getParameter("itemNum");
-        String imageId = getRequest().getParameter("imageId");
-        Date createdDateTime = null;
-        try{
-        	System.out.println("Inside content servlet >>>>.");
-        	TE_ITEM_FOLDER_PATH  = this.getServletContext().getRealPath("itemPlayer"+File.separator+"items");
-        	System.out.println("path ===="+TE_ITEM_FOLDER_PATH);
-            if (method.equals("downloadItem"))
-                result = OK; 
-            else 
-            if (method.equals("getSubtest"))
-                return new Forward("subtest"); 
-            else 
-            if (method.equals("getItem")) { 
-            	System.out.println("item ID >>>"+itemId);
-           String ParentProductId = this.testScoring.getParentProductId(itemId) ;	
-           ItemData item;
-           if(ParentProductId.equalsIgnoreCase("7500"))
-            {
-        	    item =  this.testScoring.getItemXMLFromADSDev(itemId);
-            }
-           else
-           {
-             item = this.testScoring.getItemXML(itemId);	
-           }
-            
-            //ItemData item = this.testScoring.getItemXML("DR0015B564");
-           // System.out.println("item >>>"+item.toString());
-            createdDateTime = item.getCreatedDateTime();
-       //System.out.println("Item XML Length: " + item.getItem().length);
-           // 	ItemData item = this.testScoring.getItemXML("9D_RE_Sample_A_copy");
-            String itemXML = new String(item.getItem());
-           // System.out.println("ItemXml1-->"+itemXML);
-           itemXML = ItemPlayerUtils.doUTF8Chars(itemXML);
-           //System.out.println("ItemXml2-->"+itemXML);
-            
-           byte [] itemEncodedXML = itemXML.getBytes("UTF-8");
-         //  byte [] decryptedContent = item.getItem();
-            org.jdom.Document itemDoc = null;
-			synchronized(aMemoryCache.saxBuilder) {
+	protected Forward ContentServlet() 
+	{
+		String OK = "<OK />";
+		String ERROR = "<ERROR />";
+
+		String result = OK;
+		String method = getRequest().getParameter("method");
+		String requestXml = getRequest().getParameter("requestXML");
+		String itemId = getRequest().getParameter("itemNum");
+		String imageId = getRequest().getParameter("imageId");
+		Date createdDateTime = null;
+		try {
+			System.out.println("Inside content servlet >>>>.");
+			TE_ITEM_FOLDER_PATH = this.getServletContext().getRealPath("itemPlayer" + File.separator + "items");
+			System.out.println("path ====" + TE_ITEM_FOLDER_PATH);
+			if (method.equals("downloadItem"))
+				result = OK;
+			else if (method.equals("getSubtest"))
+				return new Forward("subtest");
+			else if (method.equals("getItem")) {
+				System.out.println("item ID >>>" + itemId);
+				String ParentProductId = this.testScoring.getParentProductId(itemId);
+				ItemData item;
+				if (ParentProductId.equalsIgnoreCase("7500")) {
+					// logic check map present
+					if(!itemMap.containsKey(itemId)) {
+						System.out.println("ADS DB Invoked :: " + new Date());
+						item = this.testScoring.getItemXMLFromADSDev(itemId);
+						itemMap.put(itemId, item);
+						System.out.println("Item put in Map :: " + new Date());
+					}
+					else {
+						item = (ItemData) itemMap.get(itemId);
+					}
+				} else {
+					item = this.testScoring.getItemXML(itemId);
+				}
+
+				// ItemData item = this.testScoring.getItemXML("DR0015B564");
+				// System.out.println("item >>>"+item.toString());
+				createdDateTime = item.getCreatedDateTime();
+				// System.out.println("Item XML Length: " + item.getItem().length);
+				// ItemData item = this.testScoring.getItemXML("9D_RE_Sample_A_copy");
+				String itemXML = new String(item.getItem());
+				// System.out.println("ItemXml1-->"+itemXML);
+				itemXML = ItemPlayerUtils.doUTF8Chars(itemXML);
+				// System.out.println("ItemXml2-->"+itemXML);
+
+				byte[] itemEncodedXML = itemXML.getBytes("UTF-8");
+				// byte [] decryptedContent = item.getItem();
+				org.jdom.Document itemDoc = null;
+				synchronized (aMemoryCache.saxBuilder) {
 					itemDoc = aMemoryCache.saxBuilder.build(new ByteArrayInputStream(itemEncodedXML));
-			}
-			org.jdom.Element element = (org.jdom.Element) itemDoc.getRootElement();
-			element = element.getChild("assets");
-			if (element != null) {
-				List imageList = element.getChildren();
-				for (int i = 0; i < imageList.size(); i++) {
-					element = (org.jdom.Element) imageList.get(i);
-					 imageId = element.getAttributeValue("id");
-					if (!assetMap.containsKey(imageId) ) {
-					createImageData(imageId, element, createdDateTime );
-						System.out.println("inside if of image caching process");
-					}else {
-						AssetInfo aAssetInfo = 	(AssetInfo)assetMap.get(imageId);
-						System.out.println("else date: "+ aAssetInfo.getCreatedDateTime());
-						if(aAssetInfo.getCreatedDateTime().before(createdDateTime)){
-						updateImageData(imageId, element, createdDateTime, aAssetInfo );
+				}
+				org.jdom.Element element = (org.jdom.Element) itemDoc.getRootElement();
+				element = element.getChild("assets");
+				if (element != null) {
+					List imageList = element.getChildren();
+					for (int i = 0; i < imageList.size(); i++) {
+						element = (org.jdom.Element) imageList.get(i);
+						imageId = element.getAttributeValue("id");
+						if (!assetMap.containsKey(imageId)) {
+							createImageData(imageId, element, createdDateTime);
+							System.out.println("inside if of image caching process");
+						} else {
+							AssetInfo aAssetInfo = (AssetInfo) assetMap.get(imageId);
+							System.out.println("else date: "+ aAssetInfo.getCreatedDateTime());
+							if (aAssetInfo.getCreatedDateTime().before(createdDateTime)) {
+								updateImageData(imageId, element, createdDateTime, aAssetInfo);
+							}
 						}
-						
-						
 					}
 				}
-			}
-			String itemxml = updateItem(itemEncodedXML, assetMap);
-			itemxml =  ItemPlayerUtils.doUTF8Chars(itemXML);
-		//aMemoryCache.clearContent();
-         //   System.out.println("**************************Item Xml**********************" + item.getItemId() + " :: " +  item.getItem().toString() + " ::  " + itemxml);
-            
-            
-           HttpServletResponse resp = this.getResponse();     
- 		   resp.setContentType("text/xml");
-           resp.flushBuffer();
- 	       OutputStream stream = resp.getOutputStream();
- 	       stream.write(itemxml.getBytes());
- 	       stream.close();
-           
-            }
-            else 
-            if (method.equals("getImage")) 
-                return getImage(requestXml);
-            else
-                result = ERROR;  
-                      
-            // return response to client
-          //  this.writeResponse(result);
-        }
-        catch(MalformedByteSequenceException e){
-              	e.printStackTrace();
-        }
-        catch(Exception e) { 
-        	OASLogger.getLogger("TestAdmin").error(
-					"Exception occurred while retrieving the item.", e); 
-             e.printStackTrace();
-        }
-        
-        return null; 
-    }
+				String itemxml = updateItem(itemEncodedXML, assetMap);
+				itemxml = ItemPlayerUtils.doUTF8Chars(itemXML);
+				
+				// aMemoryCache.clearContent();
+				// System.out.println("**************************Item
+				// Xml**********************" + item.getItemId() + " :: " + item.getItem().toString() + " :: " + itemxml);
+
+				HttpServletResponse resp = this.getResponse();
+				resp.setContentLength(itemxml.length());
+				resp.setContentType("text/xml");
+				resp.flushBuffer();
+				OutputStream stream = resp.getOutputStream();
+				stream.write(itemxml.getBytes());
+				stream.flush();
+				stream.close();
+			} 
+			else if (method.equals("getImage"))
+				return getImage(requestXml);
+			else
+				result = ERROR;
+			
+			// return response to client
+			// this.writeResponse(result);
+		} catch (MalformedByteSequenceException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			OASLogger.getLogger("TestAdmin").error("Exception occurred while retrieving the item.", e);
+			e.printStackTrace();
+		}
+		return null;
+	}
     
 
     /**
@@ -380,7 +380,6 @@ public class ItemPlayerController extends PageFlowController {
     
     private void createImageData(String imageId, Element element, Date createdDateTime){
        	String mimeType = element.getAttributeValue("type");
-       	if(!assetMap.containsKey(imageId)){
        		if(mimeType.contains("zip")){
 				String b64data = element.getText();
 				b64data = b64data.replace(" ", "");
@@ -398,8 +397,8 @@ public class ItemPlayerController extends PageFlowController {
 		}else{
 			String ext = mimeType.substring(mimeType
 					.lastIndexOf("/") + 1);
-			String b64data = element.getText();
-			b64data = ItemPlayerUtils.replaceAll(b64data,"&#43;","+"); //To Escape Base64 special character "+"
+			String b64data = element.getText();			
+			b64data = b64data.replaceAll("&#43;", "\\+");
 			byte[] imageData = Base64.decode(b64data);
 			AssetInfo aAssetInfo = new AssetInfo();
 			aAssetInfo.setData(imageData);
@@ -407,7 +406,6 @@ public class ItemPlayerController extends PageFlowController {
 			aAssetInfo.setExt(ext);
 			assetMap.put(imageId, aAssetInfo);
 		}
-      }
     }
     
     
@@ -418,7 +416,7 @@ public class ItemPlayerController extends PageFlowController {
 		System.out.println("Unzip >>>>>");
 		final int BUFFER_SIZE = 1024;
 		content = content.replace(" ", "");
-		content = ItemPlayerUtils.replaceAll(content,"&#43;","+"); //To Escape Base64 special character "+"
+		content = content.replaceAll("&#43;","\\+");
 		//System.out.println("Content >>>>"+content);
 		byte[] decodedBase64 = Base64.decode(content);
 		//System.out.println("decodedBase64"+decodedBase64);
@@ -496,11 +494,11 @@ public class ItemPlayerController extends PageFlowController {
 				.lastIndexOf("/") + 1);
 		String b64data = element.getText();
 		if(b64data.contains("&amp;#43;")){
-				b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); //To Escape Base64 special character "+"
+				b64data = b64data.replaceAll("&amp;#43;", "\\+");
 		}else if(b64data.contains("&#43;")){
-				b64data = ItemPlayerUtils.replaceAll(b64data,"&#43;","+"); 	
+				b64data = b64data.replaceAll("&#43;", "+");
 		}else{
-				b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); 	
+				b64data = b64data.replaceAll("&amp;#43;", "\\+");
 		}
 		
 		byte[] imageData = Base64.decode(b64data);

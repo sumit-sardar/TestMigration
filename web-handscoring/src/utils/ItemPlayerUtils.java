@@ -56,9 +56,8 @@ public class ItemPlayerUtils {
 				}
 			}
 		}
-		s = retVal.toString();
-		s = replaceAll( s, "&#+;", "&#x002B;" );
-		s = replaceAll( s, "+", "&#x002B;" );
+		s = retVal.toString();s = s.replaceAll("&#\\+;", "&#x002B;");
+		s = s.replaceAll("\\+", "&#x002B;");
 		//Defect# 64272: added for "<" Defect. 
 		s = s.replaceAll("&#x003C", "&LT;");
 		s = s.replaceAll("&lt;", "&LT;");
@@ -66,7 +65,7 @@ public class ItemPlayerUtils {
 		return s;
 	}
 	
-	public static String replaceAll( String src, String toBeReplace, String replaceWith )
+	/* public static String replaceAll( String src, String toBeReplace, String replaceWith )
 	{
 		String result = src;
 		int index = 0;
@@ -77,7 +76,7 @@ public class ItemPlayerUtils {
 			index += difference;
 		}
 		return result;
-	}
+	}*/
 	
 	public static synchronized void writeResponse(HttpServletResponse response, String xml) {
 		writeResponse(response, xml, null);
