@@ -729,9 +729,8 @@ public interface StudentItemSetStatus extends JdbcControl
 		 +"test_catalog_id FROM TEST_CATALOG WHERE PRODUCT_ID =4201) AND ii.SUBJECT = \n"
 		 +"{previousSubject} AND ii.sample='F' AND ii.item_set_level != 'L' AND \n"
 		 +"ITEM_SET_FORM IN (SELECT TESTLET_FORM FROM TESTLET_FORMS_BY_SUBJECT_LEVEL \n"
-		 +"WHERE subject = {previousSubject} AND TABE_LEVEL = {previousLevel} AND TESTLET_FORM NOT IN \n"
-		 +"(SELECT TESTLET_FORM FROM TESTLET_FORMS_BY_SUBJECT_LEVEL WHERE subject = \n"
-		 +"{previousSubject} AND TABE_LEVEL != {previousLevel})) ) WHERE rnum =1",arrayMaxLength = 100000)
+		 +"WHERE subject = {previousSubject} AND TABE_LEVEL = {previousLevel}) ) \n"
+		 +" WHERE rnum =1",arrayMaxLength = 100000)
 	 Integer getRosterId(Integer studentId,String previousLevel,String previousSubject) throws SQLException;
 		
 	@JdbcControl.SQL(statement ="UPDATE TEST_ROSTER SET ACTIVATION_STATUS = 'IN' WHERE TEST_ROSTER_ID = {rosterId}")
