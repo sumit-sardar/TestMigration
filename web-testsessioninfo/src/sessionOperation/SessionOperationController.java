@@ -3370,19 +3370,6 @@ public class SessionOperationController extends PageFlowController {
 	       
         	if(getRequest().getParameter("productSelected") != null && ssd.getSessionStudents().length >0){
         		
-        		String studentIds = "";
-		        for (int i=0;i<ssd.getSessionStudents().length;i++)
-		        {
-		        	if (ssd.getSessionStudents()[i].getOutOfSchool()!="Yes")
-		        	{
-		        		if (studentIds.length()>0)
-			        	{
-		        			studentIds += ",";
-			        	}
-		        		studentIds += ssd.getSessionStudents()[i].getStudentId();
-		        	}
-		        }
-        		
 		        ScheduledSession scheduledSession = this.scheduleTest.getInActiveRosteredStudentsForSession(testAdminId);
     	    	SessionStudent[] students =  scheduledSession.getStudents();
     	    	
