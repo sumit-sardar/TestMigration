@@ -5948,6 +5948,13 @@ public class SessionOperationController extends PageFlowController {
 			            			}
 
 		            			}
+		            			//** If roster is inactive and student has viewed testlet form, consider it taken and not allow same form to be scheduled.
+		            			//** Defect # 79544
+		            			else if (rosterActivationStatus.compareToIgnoreCase("IN") == 0 && completionStatus.compareToIgnoreCase("IN") == 0)
+		            			{
+		            				if (testletForms.length()>0) testletForms += ",";
+			            			testletForms += testletForm;
+		            			}
 	            			}
 	            		}
             		}
