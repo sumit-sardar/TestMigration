@@ -1902,7 +1902,7 @@ public class CurriculumCollector {
                 SecondaryObjective secondaryObjective = new SecondaryObjective();
                 secondaryObjective.setSecondaryObjectiveId(new Long(rs.getLong("secondaryObjectiveId")));
                 secondaryObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
-                secondaryObjective.setSecondaryObjectiveName(getSecodaryObjectiveSplitedName(rs.getString("secondaryObjectiveName"), rs.getString("subtestName")));
+                secondaryObjective.setSecondaryObjectiveName(rs.getString("secondaryObjectiveName"));
                 secondaryObjective.setSecondaryObjectiveType(rs.getString("secondaryObjectiveType"));
                 secondaryObjective.setSecondaryObjectiveNumItems(new Long(rs.getLong("secondaryNumItems")));
                 secondaryObjective.setSecondaryObjectivePointsPossible(new Long(rs.getLong("secondaryPointsPossible")));
@@ -1923,7 +1923,7 @@ public class CurriculumCollector {
         return (SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]);
     }
     
-    private String getSecodaryObjectiveSplitedName(String objectiveName, String subtestName){
+    /*private String getSecodaryObjectiveSplitedName(String objectiveName, String subtestName){
     	if("LANGUAGE".equalsIgnoreCase(subtestName)){
     		String var = objectiveName.split(" ")[0];
     		if(var.contains(".")){
@@ -1946,7 +1946,7 @@ public class CurriculumCollector {
     			return objectiveName.substring(0,127);
     		else return objectiveName;
     	}
-    }
+    }*/
     
     public SecondaryObjective [] getSecondaryObjectivesForTASC(Long oasRosterId) throws SQLException {
         ArrayList<SecondaryObjective> secondaryObjectives = new ArrayList<SecondaryObjective>();
