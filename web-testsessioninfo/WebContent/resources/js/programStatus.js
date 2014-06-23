@@ -132,7 +132,9 @@ function populateProgramStatusDetails(){
 	//selectedTestIdPS=$('#selectedTestIdPS').val();
 	var selectedTestCatalogId = $("#testNameOptions").val();
 
-	var params = "selectedProgramId="+selectedProgramIdPS+"&selectedOrgNodeId="+selectedOrgNodeIdPS+"&selectedOrgNodeName="+selectedOrgNodeNamePS+"&isBottomTwoLevels="+isBottomTwoLevels+"&selectedTestId="+selectedTestIdPS+"&subtestStatusAction="+subtestStatusAction;
+	var selectedOrgNodeNamePSEncoded = escapeSpecialChars(selectedOrgNodeNamePS);
+
+	var params = "selectedProgramId="+selectedProgramIdPS+"&selectedOrgNodeId="+selectedOrgNodeIdPS+"&selectedOrgNodeName="+selectedOrgNodeNamePSEncoded+"&isBottomTwoLevels="+isBottomTwoLevels+"&selectedTestId="+selectedTestIdPS+"&subtestStatusAction="+subtestStatusAction;
 			$.ajax(
 			{
 				async:		true,
@@ -273,8 +275,6 @@ function populateProgramStatusDetails(){
 										html += '</tr>';								
 									}
 									$("#subtestInfoList").html(html);
-									var subtestInfoListVar=document.getElementById("subtestInfoList");
-									subtestInfoListVar.style.border='1px solid #A6C9E2';
 									$("#testStatusInfo").show();
 								}								
 							    $.unblockUI(); 																														 						
@@ -367,9 +367,6 @@ function viewSubtestStatusDetails(subtestId,status,subtestName){
        		},
 			onSelectAll: function (rowIds, status) {
 						
-			},
-			beforeSelectRow: function(rowid, e) {
-			    return false;
 			},
 			onSelectRow: function (rowid) {
 			},
@@ -603,8 +600,6 @@ function getSubtestDetailsForSelectedTest(){
 										html += '</tr>';								
 									}
 									$("#subtestInfoList").html(html);
-									var subtestInfoListVar=document.getElementById("subtestInfoList");
-									subtestInfoListVar.style.border='1px solid #A6C9E2';
 									$("#testStatusInfo").show();
 								
 							    $.unblockUI(); 																														 						
@@ -618,5 +613,16 @@ function getSubtestDetailsForSelectedTest(){
 							}
 			}
 		);
+
+	function escapeSpecialChars(str) {
+		return encodeURIComponent(str)
+	 			.replace(/!/g, '%21')
+	 			.replace(/'/g, '%27')
+	 			.replace(/\(/g, '%28')
+	 			.replace(/\)/g, '%29')
+	 			.replace(/\*/g, '%2A')
+	 			.replace(/~/g, '%7E')
+	 			.replace(/&/g, '%26');
+	}
 
 }
