@@ -19,6 +19,15 @@ public class Configuration {
 	static String userEmailBody = "";
 	static String userEmailReplyTo = "";
 	
+	static String localFilePathEngrade = "";
+	static String ftphostLAUSD = "";
+	static String ftpuserLAUSD = "";
+	static String ftppasswordLAUSD = "";
+	static String ftpDataFilepathLAUSD = "";
+	static String ftpOrderFilepathLAUSD = "";
+	static Integer ftpFilePortLAUSD = 0;
+	
+	static String customerConfigurationName="";
 
 	static {
 
@@ -38,6 +47,15 @@ public class Configuration {
 		userEmailSubject = ExtractUtil.getDetail("oas.exportdata.user.email.subject");
 		userEmailBody = ExtractUtil.getDetail("oas.exportdata.user.email.body");
 		userEmailReplyTo = ExtractUtil.getDetail("oas.exportdata.user.email.replyTo");
+		
+		ftphostLAUSD = ExtractUtil.getDetail("engrade.exportdata.ftphost");
+		ftpuserLAUSD = ExtractUtil.getDetail("engrade.exportdata.ftpuser");
+		ftppasswordLAUSD = ExtractUtil.getDetail("engrade.exportdata.ftppassword");
+		ftpDataFilepathLAUSD = ExtractUtil.getDetail("engrade.exportdata.remote.ftp.datafile.filestore");
+		ftpOrderFilepathLAUSD = ExtractUtil.getDetail("engrade.exportdata.remote.ftp.orderfile.filestore");
+		ftpFilePortLAUSD = new Integer(ExtractUtil.getDetail("engrade.exportdata.remote.ftp.port"));
+		localFilePathEngrade = ExtractUtil.getDetail("engrade.exportdata.local.filestore");
+		customerConfigurationName = ExtractUtil.getDetail("engrade.customer.configuration.name");
 
 	}
 
@@ -146,7 +164,60 @@ public class Configuration {
 		return ftpFilePort;
 	}
 
+	/**
+	 * @return the ftphostLAUSD
+	 */
+	public static String getFtphostLAUSD() {
+		return ftphostLAUSD;
+	}
 
+	/**
+	 * @return the ftpuserLAUSD
+	 */
+	public static String getFtpuserLAUSD() {
+		return ftpuserLAUSD;
+	}
 
-	
+	/**
+	 * @return the ftppasswordLAUSD
+	 */
+	public static String getFtppasswordLAUSD() {
+		return ftppasswordLAUSD;
+	}
+
+	/**
+	 * @return the ftpDataFilepathLAUSD
+	 */
+	public static String getFtpDataFilepathLAUSD() {
+		return ftpDataFilepathLAUSD;
+	}
+
+	/**
+	 * @return the ftpOrderFilepathLAUSD
+	 */
+	public static String getFtpOrderFilepathLAUSD() {
+		return ftpOrderFilepathLAUSD;
+	}
+
+	/**
+	 * @return the ftpFilePortLAUSD
+	 */
+	public static Integer getFtpFilePortLAUSD() {
+		return ftpFilePortLAUSD;
+	}
+
+	/**
+	 * @return the customerConfigurationName
+	 */
+	public static String getCustomerConfigurationName() {
+		return customerConfigurationName;
+	}
+
+	/**
+	 * @return the localFilePathEngrade
+	 */
+	public static String getLocalFilePathEngrade() {
+		return localFilePathEngrade;
+	}
+
 }

@@ -24,8 +24,8 @@ import org.ffpojo.file.writer.FileSystemFlatFileWriter;
 import org.ffpojo.file.writer.FlatFileWriter;
 
 import com.ctb.bean.testAdmin.User;
+import com.ctb.db.AuditTrailDAO;
 import com.ctb.db.EmailProcessorDao;
-import com.ctb.dto.Accomodations;
 import com.ctb.dto.CustomerDemographic;
 import com.ctb.dto.CustomerDemographicValue;
 import com.ctb.dto.ItemResponsesGRTLL2ND;
@@ -122,7 +122,12 @@ public class FileGeneratorForLL2ND {
 		System.out.println("Collecting data for report....");
 		List<TfilLL2ND> myList = createList(orderFile,formettedTestRoster);
 		System.out.println("Data collected .");
-		String localFilePath = Configuration.getLocalFilePath();
+		String localFilePath = "";
+		if(isEngradeCustomer()){
+			localFilePath = Configuration.getLocalFilePathEngrade();
+		}else{
+			localFilePath = Configuration.getLocalFilePath();
+		}
 		String  formatedDate = fileDateOutputFormat.format(new Date()) ;
 		
 		String dataFileName = customerState + "_" + testDate.substring(0,6) + "_"
@@ -178,6 +183,11 @@ public class FileGeneratorForLL2ND {
 		}
 	}
 	
+	private boolean isEngradeCustomer() throws CTBBusinessException {
+		AuditTrailDAO dao = new AuditTrailDAO();
+		return (dao.isENGRADEcustomer(customerId));
+	}
+
 	private List<TfilLL2ND> createList(OrderFile orderFile,  List<String> formettedTestRoster) throws CTBBusinessException {
 		List<TestRoster> myrosterList = new ArrayList<TestRoster>();
 		List<CustomerDemographic> customerAccomList = new ArrayList<CustomerDemographic>();

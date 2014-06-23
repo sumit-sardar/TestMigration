@@ -53,7 +53,7 @@ public class ReportingDataProcessor {
 			/***********************
 			 ** job transfer file **
 			 ***********************/
-			transferFile(fileNameList);
+			transferFile(fileNameList, isENGRADEcustomer(customerId));
 			
 			intirmJobStatus =CTBConstants.JOB_STATUS_FILE_TRANSFER_COMPLETED;
 			message  = "File transfer completed.";
@@ -158,9 +158,9 @@ public class ReportingDataProcessor {
 	}
 	
 	
-	private void transferFile(List<String> fileNameList) throws CTBBusinessException {
+	private void transferFile(List<String> fileNameList, boolean isENGRADEcustomer) throws CTBBusinessException {
 		FileTransporter trsp = FileTransporter.getInstance();
-		trsp.transferFile(FileTransporter.TRANSPORT_TYPE_SFTP, fileNameList);
+		trsp.transferFile(FileTransporter.TRANSPORT_TYPE_SFTP, fileNameList, isENGRADEcustomer);
 		
 	}
 	
@@ -177,6 +177,11 @@ public class ReportingDataProcessor {
 		EmailProcessor processor = EmailProcessor.getInstance();
 		processor.processEmail(jobId, fileNameList);
 		
+	}
+	
+	private boolean isENGRADEcustomer(Integer customerId) throws CTBBusinessException {
+		AuditTrailDAO dao = new AuditTrailDAO();
+		return (dao.isENGRADEcustomer(customerId));
 	}
 	
 }

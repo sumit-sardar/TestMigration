@@ -2,9 +2,11 @@ package com.ctb.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.utils.Configuration;
 import com.ctb.utils.SqlUtil;
 
 public class AuditTrailDAO implements AuditTrailSQL {
@@ -89,6 +91,37 @@ public class AuditTrailDAO implements AuditTrailSQL {
 			SqlUtil.close(con);
 		}
 
+	}
+	
+	public boolean isENGRADEcustomer(Integer customerId) throws CTBBusinessException {
+		
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String customerConfig = Configuration.getCustomerConfigurationName();
+		try {
+			con = SqlUtil.openOASDBcon();
+			String sql = HAS_ENGRADE_CUSTOMER_CONFIGURATION;
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, customerId);
+			ps.setString(2, customerConfig);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				String value = rs.getString(1);
+				if("T".equals(value)){
+					return true;
+				}else{
+					return false;
+				}
+			}
+			return false;
+		} catch (Exception e) {
+			System.out.println("Verify isENGRADEcustomer failed:" + e.getMessage());
+			e.printStackTrace();
+			throw new CTBBusinessException("isLAUSDcustomer:Verify isENGRADEcustomer failed.");
+		} finally {
+			SqlUtil.close(con,ps,rs);
+		}
 	}
 
 }
