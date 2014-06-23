@@ -28,6 +28,7 @@ public class StudentSessionStatus extends CTBBean
     private String recommendedLevel;
     private String customerFlagStatus;
     private String itemSetName;
+    private String itemSetSample;
     private String itemSetLevel;    //Added for defect - 64622 
     private String totalItem;
     private String itemAnswered;
@@ -94,6 +95,18 @@ public class StudentSessionStatus extends CTBBean
 	 */
 	public void setMaxScore(Integer maxScore) {
 		this.maxScore = maxScore;
+	}
+	/**
+	 * @return Returns the itemSetSample.
+	 */  
+	public String getItemSetSample() {
+		return itemSetSample;
+	}
+	/**
+	 * @param itemSetName The itemSetName to set.
+	 */
+	public void setItemSetSample(String itemSetSample) {
+		this.itemSetSample = itemSetSample;
 	}
 	/**
 	 * @return Returns the itemSetName.
