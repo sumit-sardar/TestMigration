@@ -774,7 +774,7 @@
 		 $("#by_student_step3_student_subtest_list").jqGrid({
       	  data: vSubtestListToResetTest,         
           datatype: 'local',          
-          colNames:[ $("#titleSubTestName").val(),$("#titleSubTestStstus").val(), $("#titleStartDate").val() , $("#titleCompletionDate").val(), $("#titleItemAnsWered").val(), $("#titleTimeSpent").val(), '','','',''],
+          colNames:[ $("#titleSubTestName").val(),$("#titleSubTestStstus").val(), $("#titleStartDate").val() , $("#titleCompletionDate").val(), $("#titleItemAnsWered").val(), $("#titleTimeSpent").val(), '','','','', ''],
 		   	colModel:[
 		   		{name:'itemSetName',		index:'itemSetName', 		width:350, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'completionStatus',	index:'completionStatus', 	width:175, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -785,7 +785,8 @@
 		   		{name:'itemSetId',			index:'itemSetId', 			width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetLevel',		index:'itemSetLevel', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetOrder',		index:'itemSetOrder', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testAccessCode',		index:'testAccessCode', 	width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'testAccessCode',		index:'testAccessCode', 	width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetSample',		index:'itemSetSample', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		
 		   	],
 		   		jsonReader: { repeatitems : false, root:"rows", id:"itemSetId",
@@ -828,6 +829,12 @@
 						$("#"+(k+1)+" td input","#by_student_step3_student_subtest_list").attr("disabled", true);
 						$("#"+(k+1), "#by_student_step3_student_subtest_list").addClass('ui-state-disabled');
 					} 
+					/*
+					if(selectedRowData.itemSetSample == 'T'){
+						$("#"+(k+1)+" td input","#by_student_step3_student_subtest_list").attr("disabled", true);
+						$("#"+(k+1), "#by_student_step3_student_subtest_list").addClass('ui-state-disabled');
+					}
+					*/
 				}
 			},loadComplete: function () {
 				showHideMessage(false, "", "");

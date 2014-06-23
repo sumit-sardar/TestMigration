@@ -28,6 +28,7 @@ public class StudentSessionStatusVO implements java.io.Serializable
 	private String recommendedLevel;
 	private String customerFlagStatus;
     private String itemSetName;
+    private String itemSetSample;
     private String itemSetLevel;    //Added for defect - 64622 
     private String totalItem;
     private String itemAnswered;
@@ -66,6 +67,7 @@ public class StudentSessionStatusVO implements java.io.Serializable
 		this.recommendedLevel 	= 	sst.getRecommendedLevel();
 		this.customerFlagStatus = 	sst.getCustomerFlagStatus();
 	    this.itemSetName		= 	sst.getItemSetName();
+	    this.itemSetSample		= 	sst.getItemSetSample();
 	    this.itemSetLevel		= 	sst.getItemSetLevel();   //Added for defect - 64622
 	    this.totalItem			= 	sst.getTotalItem();
 	    this.itemAnswered		= 	(sst.getItemAnswered() != null  ? sst.getItemAnswered() : "0") +" of "+ totalItem;
@@ -284,6 +286,14 @@ public class StudentSessionStatusVO implements java.io.Serializable
 		this.itemSetName = itemSetName;
 	}
 
+	public String getItemSetSample() {
+		return itemSetSample;
+	}
+
+	public void setItemSetSample(String itemSetSample) {
+		this.itemSetSample = itemSetSample;
+	}
+	
 	public String getTotalItem() {
 		return totalItem;
 	}
