@@ -10,7 +10,7 @@ var pausedAssetID = null;
 var pausedDisabledAssetID = null;
 var iframeFolderId = null;
 var canNotAnswerFlag = false;
-
+var autoplayStopped = false;
 
 function iframeLoaded(id, iframe){
 	if(iframe){
@@ -89,11 +89,11 @@ function iframeLoaded(id, iframe){
 			}
 				assetCount++;
 				if(gController.lasAssetArray.length == assetCount){
-					setTimeout("startAutoplay()",500);
+					setTimeout("startAutoplay()",1000);
 					if(canNotAnswerFlag == false){
 					 	gController.setAttribute('canNotAnswer',false);
 					}else{
-						gController.setAttribute('canNotAnswer',false);
+						//gController.setAttribute('canNotAnswer',false);
 						gController.setAttribute('canNotAnswer',true);
 					}
 				}
@@ -135,11 +135,13 @@ function checkAllPlayedOnce() {
 				iframeFolderId = folderId ; 			
 				var frameid = getFrameId(gController.lasAssetArray[i]);					
 				if(!(iframeObject[currentLasAssetItemId][frameid].clickedOnce && iframeObject[currentLasAssetItemId][frameid].playedOnce)) {
+					iframeFolderId = null;
 					return false;
 				}
 			}
 		}
 	}
+	iframeFolderId = null;
 	return true;
 }
 function getCurrentPlayOrder(currIframeId){
@@ -314,30 +316,61 @@ function enableAssets(){
 }
 
 function startAutoplay(){
-		for(var i=0; i<gController.lasAssetArray.length;i++){
-			if(gController.lasAssetArray[i].data.getAttr('autoplay') == "true"){
-				var frameid = getFrameId(gController.lasAssetArray[i]);
-				autoPlayEvent = "true";
-				iframeObject[currentLasAssetItemId][frameid].iframeObj.contentWindow.autoPlay();
-				break;
+	
+	if(gController.isStopScreen || gController.isPauseScreen){
+		autoplayStopped = 'true';
+	}else{
+		if(iframeObject[currentLasAssetItemId] == undefined){
+			autoplayStopped = 'true';
+			autoplayIfStopped();
+		}else{
+			for(var i=0; i<gController.lasAssetArray.length;i++){
+				if(gController.lasAssetArray[i].data.getAttr('autoplay') == "true"){
+					var frameid = getFrameId(gController.lasAssetArray[i]);
+					if(iframeObject[currentLasAssetItemId][frameid] == undefined){
+						autoplayStopped = 'true';
+						autoplayIfStopped();
+					}else{
+						autoPlayEvent = "true";
+						iframeObject[currentLasAssetItemId][frameid].iframeObj.contentWindow.autoPlay();
+						break;
+					}
+				}
 			}
 		}
   }
-    function preview(arg){
+ }
+ function pauseScreenShown(){
+	currentPlayOrder = 0;
+	pausedAssetID = null;
+	pausedDisabledAssetID = null;
+	  
+  }
+ function autoplayIfStopped(){
+	console.log("autoplaystopped called::::::");
+ 	if(autoplayStopped == 'true'){
+ 		setTimeout("startAutoplay()",200);
+ 		autoplayStopped = 'false';
+ 	}
+ }
+ 
+ 
+  function preview(arg){
   //console.log("inside function preview(arg)"+arg);
 	  if(forLaslinksLayout != null && forLaslinksLayout!= undefined && forLaslinksLayout == 'laslinksLayout'){
 	  	arg.contentWindow.enable();
 	  	gController.setAttribute('unlockNavigation',true);
-	  	//gController.setAttribute('allowrevisit',true);
 	  	//arg.contentWindow.isPlaying = "false";
 	  }
   }
   
-   function restrictNavigation(arg){
+  function restrictNavigation(arg){
    if(arg  == 'unlock'){
 	 	if(checkAllPlayedOnce()) {
-			gController.setAttribute('unlockNavigation',true);
-		} else {
+	 		if(!gController.isStopScreen && !gController.isPauseScreen){
+					gController.setAttribute('unlockNavigation',true);
+					} 
+				}	 else {
 				gController.setAttribute('unlockNavigation',false);
 	 		}
  	}else {
@@ -345,8 +378,10 @@ function startAutoplay(){
  	}
   }
   
-    function pauseAudio() {
-    	gController.macFocusInCanvas();	
+   function pauseAudio() {
+     if(currentPlayOrder == 0){
+    	//Do nothing 
+   	}else{
 		for(var i=0; i<gController.lasAssetArray.length;i++){
 		if(gController.lasAssetArray[i].asset){
 			var frameid;
@@ -365,10 +400,9 @@ function startAutoplay(){
 				
 			}
   		}
+  	 }
   }
-  
   function playAudio(){
-  	gController.macFocusInCanvas();
   	if(pausedAssetID != null){
 		for(var i=0; i<gController.lasAssetArray.length;i++){
 				if(gController.lasAssetArray[i].asset){

@@ -60,7 +60,7 @@ public class ContentReviewPageFlowController extends PageFlowController
     public HashMap userMap;
     protected global.Global globalApp; 
     public String currentProductType;
-    
+    public static String lang;
     /**
      * @jpf:action
      * @jpf:forward name="login" path="login.jsp"
@@ -295,6 +295,11 @@ public class ContentReviewPageFlowController extends PageFlowController
         org.jdom.input.SAXBuilder saxBuilder = new org.jdom.input.SAXBuilder();
         org.jdom.Document assessmentDoc = saxBuilder.build(inputFile);
         Element assessment = assessmentDoc.getRootElement();
+        lang = assessment.getAttributeValue("Language");
+        if(lang == null )
+        {
+        	lang="";
+        }
         constructAssessment(assessment);
     }
     

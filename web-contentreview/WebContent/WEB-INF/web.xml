@@ -173,4 +173,9 @@
      <mime-type>image/svg+xml</mime-type>
    </mime-mapping>
    
+   <mime-mapping>
+      <extension>xml</extension>
+      <mime-type>application/xml</mime-type>
+   </mime-mapping>
+   
 </web-app>

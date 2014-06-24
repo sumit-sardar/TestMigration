@@ -1,6 +1,9 @@
 package TestClientPageFlow;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
+
+import ContentReviewPageFlow.ContentReviewPageFlowController;
+
 import com.ctb.bean.content.DeliverableUnitBean;
 import com.ctb.bean.content.ItemBean;
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
@@ -359,7 +362,7 @@ public class TestClientPageFlowController extends PageFlowController
     	 //System.out.println("\n\nglobalApp.currentDeliverableUnitBean.getItemReferences() >>\t"+globalApp.currentDeliverableUnitBean.getItemReferences());
         }
         
-        
+        getRequest().setAttribute("lang", ContentReviewPageFlowController.lang);
         getRequest().setAttribute("title", globalApp.currentDeliverableUnitBean.getTitle().replaceAll( "& ", "&amp; " ));
         getRequest().setAttribute("startingQuestionNumber", globalApp.currentDeliverableUnitBean.getStartingQuestionNumber());
         getRequest().setAttribute("itemReferences", globalApp.currentDeliverableUnitBean.getItemReferences());

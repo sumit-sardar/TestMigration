@@ -26,13 +26,15 @@
 <script type="text/javascript" src="../includes/embed-compressed.js"></script>
 <script type="text/javascript" src="../includes/manipulative_manager.js"></script>
 <script type="text/javascript" src="../lps/includes/laslinks_utils.js"></script>
-<script type="text/javascript" src="../lps/includes/jquery-ui-1.9.2.custom.min.js"></script>
 <script type="text/javascript" src="../lps/jquery.min.js"></script>
-<script type="text/javascript" src="lps/jquery.min.js"></script>
 <script type="text/javascript" src="../ContentReviewPageFlow/assets/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="../lps/includes/jquery-ui-1.9.2.custom.min.js"></script>
 
 <script type="text/javascript" src="lps/jquery.magnifier.js"></script>
 <script type="text/javascript" src="../ContentReviewPageFlow/assets/imageZoomer.js"></script>
+<script type='text/javascript'>  
+ //var $jq = jQuery.noConflict();  
+</script> 
 <style type="text/css">
 html,body { /* http://www.quirksmode.org/css/100percheight.html */
 	height: 100%;
@@ -45,16 +47,14 @@ html,body { /* http://www.quirksmode.org/css/100percheight.html */
 }
 
 body {
-	background-color: #ffffff;
+	background-color: #6691b4;
 	-webkit-font-smoothing: antialiased;
 	/* -moz-font-smoothing: antialiased; - No longer available in FF */
 	font-smoothing: antialiased; //
 	text-rendering: optimizeLegibility;
 }
 
-img {
-	border: 0 none;
-}
+img { border: 0 none;}
 
 @font-face {
 	font-family: "CTB";
@@ -180,6 +180,16 @@ function getLasAssetPath(){
 	lz.embed.setCanvasAttribute("LASAssetPath", LASAssetPath);
 }
 
+window.onmouseup = function  () {
+	lz.embed.setCanvasAttribute("fromLogin", 'true');
+}
+
+window.onkeydown = function (e) {
+       if(e.which == 33 || e.which == 34){
+                return false;
+        }
+}
+
 function isAppPreviewer(){
 	lz.embed.setCanvasAttribute("isPreviewer", true);
 }
@@ -205,16 +215,9 @@ function load() {
     %>
      var productTypeVal = "<%=productType%>";
      //alert("prodtype******"+productTypeVal);
-     if(productTypeVal == 'Laslinks'|| productTypeVal== 'laslinksLayout'){
         forLaslinksLayout = productTypeVal;
         //alert("forLaslinksLayout****"+forLaslinksLayout)
         loadJsApplication();
-     }else if(productTypeVal == 'TeIstep'){
-            loadTeJsApplication();
-     }
-     else {
-        loadSwfApplication();
-     }
 }
 
 
@@ -317,8 +320,9 @@ function getReadable(){
 }
 
 function freezeUI(){
-if(document.getElementById('__lz0')){
-		document.getElementById('__lz0').contentWindow.freezeUI();
+var elementArr = document.getElementsByTagName('iframe');
+if(elementArr[0].id){
+		document.getElementById(elementArr[0].id).contentWindow.freezeUI();
 	}
 }
 
@@ -348,7 +352,7 @@ function setScaleFactor(xscalefactor,yscalefactor){
     }
 }
 
-/*
+
 function getFontAccomodation(){
 	var fontAccom = lz.embed.lzapp.getCanvasAttribute('fontString');
 	fontAccom = fontAccom.split("|");
@@ -359,41 +363,6 @@ function getFontAccomodation(){
 	fontObj.hasFontMag = fontAccom[3];
 	return fontObj;
 }
-*/
-
-function getFontAccomodation(){
-	var fontObj = new Object();
-	var questionBgColor = gController.questionBgColor;
-	var questionFontColor = gController.questionFontColor;
-	
-	if(typeof questionBgColor == "number"){
-		questionBgColor = questionBgColor.toString(16);
-		while(questionBgColor.length<6)
-        {
-            questionBgColor='0'+questionBgColor;
-        }
-		if(questionBgColor.indexOf("0x") < 0){
-			questionBgColor = "0x"+ questionBgColor;
-		}
-	}
-	
-	if(typeof questionFontColor == "number"){
-		questionFontColor = questionFontColor.toString(16);
-		while(questionFontColor.length<6)
-        {
-            questionFontColor='0'+questionFontColor;
-        }
-		if(questionFontColor.indexOf("0x") < 0){
-			questionFontColor = "0x"+ questionFontColor;
-		}
-	}
-	fontObj.bgcolor = questionBgColor.replace('0x', '#');
-	fontObj.fgcolor = questionFontColor.replace('0x', '#');
-	fontObj.hasFontMag = gController.hasFontAccommodation;
-	return fontObj;
-}
-
-/*
 function getBackColorAccomodation(){
 	var backColorString = lz.embed.lzapp.getCanvasAttribute('backColorString');
 	backColorString = backColorString.split("|");
@@ -402,40 +371,12 @@ function getBackColorAccomodation(){
 	bgColorObj.responseArea = backColorString[1].replace('0x', '#');
 	return bgColorObj;
 }
-*/
-function getBackColorAccomodation(){
-	var bgColorObj = new Object();
-	var questionBgColor = gController.questionBgColor;
-	var answerBgColor = gController.answerBgColor;
-	
-	if(typeof questionBgColor == "number"){
-		questionBgColor = questionBgColor.toString(16);
-		while(questionBgColor.length<6)
-        {
-            questionBgColor='0'+questionBgColor;
-        }
-		if(questionBgColor.indexOf("0x") < 0){
-			questionBgColor = "0x"+ questionBgColor;
-		}
-	}
-	
-	if(typeof answerBgColor == "number"){
-		answerBgColor = answerBgColor.toString(16);
-		while(answerBgColor.length<6)
-        {
-            answerBgColor='0'+answerBgColor;
-        }
-		if(answerBgColor.indexOf("0x") < 0){
-			answerBgColor = "0x"+ answerBgColor;
-		}
-	}
-	
-	bgColorObj.stemArea = questionBgColor.replace('0x', '#');
-	bgColorObj.responseArea = answerBgColor.replace('0x', '#');
-	return bgColorObj;
-}
 function setHtmlGeneralManip(htmlGeneralManip){
   	lz.embed.setCanvasAttribute('htmlManip',htmlGeneralManip);
+}
+
+function showPleaseWaitPopupforTE(arg){
+       	lz.embed.setCanvasAttribute('exitPleaseWaitPopupforTE', arg);
 }
 
 function exitPleaseWaitPopup(){
@@ -450,8 +391,10 @@ function setFootnoteText(arg){
 }
 
 function setFocusOnScratchpad(){
-document.getElementById('__lz0').contentWindow.setFocus();
+var elementArr = document.getElementsByTagName('iframe');
+document.getElementById(elementArr[0].id).contentWindow.setFocus();
 }
+
 
 function setCurLasItemId(id) {
 	currentLasAssetItemId = id;
@@ -464,7 +407,8 @@ function setCurLasItemId(id) {
 
 
 function eventMonitor(id,event) {
-
+    console.log("EventMonitor:id::",id);
+    console.log("EventMonitor:event::",event);
 	var currIframeId = frameFolderObject[id];
  	if(event == 'play' || event == 'jsplay') {
  		setPlayingAttr(event,'true');
@@ -540,12 +484,12 @@ function hideScrollbarForCRitem(arg){
 function setCRscrollEdittextWidth(elmId,comWidth,fontSize){
     var crItemid = document.getElementById(elmId);
     var fontcolor = getCRcolor();
-    crItemid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; color: '+fontcolor+'; width: '+comWidth+'; font-size: '+fontSize+';');
+    crItemid.setAttribute('style','font-family: CTB; overflow-x: hidden; white-space: pre-line; overflow-y: scroll; color: '+fontcolor+'; width: '+comWidth+'; font-size: '+fontSize+';');
 }
 function setCRscrollEdittextHeight(elmId,comHeight,fontSize){
     var crItemid = document.getElementById(elmId);
     var fontcolor = getCRcolor();
-    crItemid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; color: '+fontcolor+'; height: '+comHeight+'; font-size: '+fontSize+';');
+    crItemid.setAttribute('style','font-family: CTB; overflow-x: hidden; white-space: pre-line; overflow-y: scroll; color: '+fontcolor+'; height: '+comHeight+'; font-size: '+fontSize+';');
 }
 
 function getCRcolor(){
@@ -630,17 +574,17 @@ var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
 
 function hideScrollbar(arg){
     var scrid = document.getElementById(arg);
-    scrid.setAttribute('style',"overflow-x: hidden; white-space: pre-line; overflow-y: scroll;");
+    scrid.setAttribute('style',"font-family: CTB; overflow-x: hidden; white-space: pre-line; overflow-y: scroll;");
 }
 
 function setScrollEdittextWidth(elmId,comWidth,fontSize,textFontColor){
     var scrid = document.getElementById(elmId);
-    scrid.setAttribute('style','overflow-x: hidden;  overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; width: '+comWidth+'');
+    scrid.setAttribute('style','font-family: CTB; overflow-x: hidden;  overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; width: '+comWidth+'');
 }
 
 function setScrollEdittextHeight(elmId,comHeight,fontSize,textFontColor){
     var scrid = document.getElementById(elmId);
-    scrid.setAttribute('style','overflow-x: hidden;  overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; height: '+comHeight+'');
+    scrid.setAttribute('style','font-family: CTB; overflow-x: hidden;  overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; height: '+comHeight+'');
 }
 
 <!-- End scratchpad scrollbar functions-->
@@ -708,9 +652,7 @@ function isSPRequired(){
 	return isSP;
 }
 function enableHotKeys(arg) {
-	if ( 0 == gController.uisemaphore ) {
-		gHotKeys.handleHtmlKeyPress(arg);
-	}
+	gHotKeys.handleHtmlKeyPress(arg);
 }
 
 function enableManipBar(arg) {
@@ -768,7 +710,7 @@ function preventTextDragging(){
 			});
 }
 
-
+/*
 function buttonClicked(magnifierPosition){
   	if(magnifierPosition == "T") {
   		$.setPreviousPosition();
@@ -782,27 +724,53 @@ function buttonClicked(magnifierPosition){
 		olddiv.parentNode.removeChild(olddiv);
 	$.closeMagnifier();
 }
-
+*/
 function disableShortcuts() {
 	var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
+	
+	if(event.which == 9 && gController.scratchpadOpen) { 
+		//console.log("TAB!!!!!!!!!!!!");
+		event.preventDefault();
+		event.stopPropagation();
+	}
+	
 	if (event.ctrlKey) {
 		switch(keystroke){
 			case 'l':
-			    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+			    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
 					gHotKeys.toggleMark();
 					event.preventDefault(); // disable Ctrl+L
 				}	
 				break;
 			case 's':
-			    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+				event.preventDefault();
+			    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
 					gHotKeys.stop();
 					event.preventDefault(); // disable Ctrl+S
 				}	
 				break;
 			case 'u':
-			    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+			    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
 					gHotKeys.pause();
 					event.preventDefault(); // disable Ctrl+U
+				}	
+				break;
+			case 'o':
+				if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+					gHotKeys.toggleTimer();
+					event.preventDefault(); // disable Ctrl+O
+				}
+				break;
+			case 'j':
+				if(gController.iskeyEnabled) {
+					gHotKeys.goBack();
+					event.preventDefault(); // disable Ctrl+J
+				}
+				break;			
+			case 'k' :
+				if(gController.iskeyEnabled) {
+					gHotKeys.goOn();
+					event.preventDefault(); // disable Ctrl+K
 				}	
 				break;		
 			case 'd':
@@ -817,13 +785,27 @@ function disableShortcuts() {
 			case 'v':
 				if(window.navigator.platform.indexOf('Mac')>=0){
 					event.preventDefault(); // disable Ctrl+V
+				} 
+				else if(gController.isPauseTest) {
+					event.preventDefault();
 				}
 				break;
 			default:
 				break;
 				}
 	}
+	if(event.metaKey) {
+		switch(keystroke){
+			case 'v':
+				if(gController.isPauseTest) {
+					event.preventDefault();
 }
+				break;
+			default:
+				break;
+ 		}
+ 	}     
+ }
 
 function getOS() {
 	var os = window.navigator.platform;
@@ -956,8 +938,6 @@ body {
 }
 #magnifierWindow {cursor: pointer;}
 </style>
-<script type="text/javascript" src="includes/diff_match_patch.js"></script>
-<script type="text/javascript" src="includes/TextHistory.js"></script>
 </HEAD>
 
 <!--SA041005 start -->
@@ -1022,20 +1002,7 @@ body {
 </p>
 </div>
 <script type="text/javascript" defer>
- function loadTeJsApplication(){
- 						try {
-	                  lz.embed.dhtml({url: '/ContentReviewWeb/TestClientPageFlow/TestClient_ISTEP.js?servletUrl=/ContentReviewWeb/TestClientPageFlow', lfcurl: '/ContentReviewWeb/TestClientPageFlow/lps/includes/lfc/LFCdhtml.js', serverroot: '/ContentReviewWeb/TestClientPageFlow/lps/resources/', bgcolor: '#6691b4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, cancelkeyboardcontrol: false, skipchromeinstall: false, usemastersprite: false, approot: '', appenddivid: 'appcontainer'});
-                       setTimeout(function(){
-                    	removeStatusDiv();
-                        }, 500);
-	                  lz.embed.applications.lzapp.onload = function loaded() {
-	                    // called when this application is done loading
-	                    //removeStatusDiv();
-	                  }
-	                  } catch (exception) {
-	                  	//alert("Exception"+ exception.message);
-	                  }
-                  }
+ var jQ = jQuery.noConflict();
  function loadJsApplication(){
  						try {
 	                  lz.embed.dhtml({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.js?servletUrl=/ContentReviewWeb/TestClientPageFlow', lfcurl: '/ContentReviewWeb/TestClientPageFlow/lps/includes/lfc/LFCdhtml.js', serverroot: '/ContentReviewWeb/TestClientPageFlow/lps/resources/', bgcolor: '#6691b4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, cancelkeyboardcontrol: false, skipchromeinstall: false, usemastersprite: false, approot: '', appenddivid: 'appcontainer'});
@@ -1050,32 +1017,7 @@ body {
 	                  	//alert("Exception"+ exception.message);
 	                  }
                   }
-                  function loadSwfApplication(){
-                      lz.embed.resizeWindow('100%', '100%');
-	                  lz.embed.swf({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.lzx.swf?&lzr=swf10&servletUrl=<%=url%>&eliminatorResource=http://oascqa-ewdc.ctb.com/ContentReviewWeb/resources/eliminator.swf', allowfullscreen: 'true', bgcolor: '#6691B4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, appenddivid: 'appcontainer', wmode: 'transparent'});
-					  //lz.embed.swf({url: 'TestClient.lzx.swf?&lzr=swf10&folder=calif&servletUrl=http://192.168.2.2:12345/servlet/fixed&eliminatorResource=resources/eliminator.swf', allowfullscreen: 'false', bgcolor: '#6691B4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, appenddivid: 'appcontainer'});
-					  	
-	                  lz.embed.applications.lzapp.onloadstatus = function loadstatus(p) {
-	                    // called with a percentage (0-100) indicating load progress
-	                    var el = document.getElementById('lzsplashtext');
-	                    if (el) {
-	                        if (p == 100) {
-	                            var splash = document.getElementById('lzsplash');
-	                            if (splash) {
-	                                splash.parentNode.removeChild(splash);
-	                            }
-	                        } else {
-	                            el.innerHTML = p + '% loaded'
-	                        }
-	                    }
-	                  }
-	
-	                  lz.embed.applications.lzapp.onload = function loaded() {
-	                    // called when this application is done loading and the 
-	                    // canvas has initted
-	                  }
-	              }
-                  
+              
                   function removeStatusDiv() {
                     var el = document.getElementById('lzsplashtext');
                         if (el) {
