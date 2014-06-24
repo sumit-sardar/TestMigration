@@ -597,7 +597,7 @@ function showHideMessage(show, messageTitle, message){
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId"],
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId", "parentProductId"],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'int', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -608,7 +608,8 @@ function showHideMessage(show, messageTitle, message){
 		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sorttype:scoreStatusUnformatter, sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left",sorttype:scoreObtainedUnformatter, sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'parentProductId',index:'parentProductId',editable: true, hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
 		    records: function(obj) {
@@ -651,6 +652,14 @@ function showHideMessage(show, messageTitle, message){
 					$("#"+rowId).removeClass('ui-state-highlight');
 			},
 			loadComplete: function () {
+			var $this = $(this),
+				        datatype = $this.getGridParam('datatype');
+				
+				    if (datatype === "xml" || datatype === "json") {
+				        setTimeout(function () {
+				            $this.trigger("reloadGrid");
+				        }, 100);
+				    }
 				if ($('#studentItemListGrid').getGridParam('records') === 0) {
             		$('#sp_1_studentItemListPager').text("1");
             		$('#next_studentItemListPager').addClass('ui-state-disabled');
@@ -872,7 +881,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			});	
 		 	
 }
- function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus, parentProductId){
+ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus , parentProductId){
 			var score= null;
 			var status = null;
 			selectedRowObjectScoring.id = id;
@@ -932,20 +941,20 @@ function getScorePoints(){
 				var pointStatus = [];
 				if(rowElement){				
 					
-					var score = rowElement.lastChild.previousSibling.innerHTML;
-					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.innerHTML;
+					var score = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
+					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML;
 					if ( isNaN(status)){
 						score = trim(score);
 						status = trim(status);
 						pointStatus[0] = score;
 						pointStatus[1] = status;
 						}else{
-							rowElement = $('#'+selectedRowObjectScoring.testRosterId,'#studentItemListGrid');
+							rowElement = $('#'+selectedRowObjectScoring.testRosterId+',#studentItemListGrid');
 							rowElement = rowElement[0];
 							
 							if(rowElement){
-								score = rowElement.lastChild.innerHTML;
-								status = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
+								score = rowElement.lastChild.previousSibling.innerHTML;
+								status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.innerHTML;
 								score = trim(score);
 								status = trim(status);
 								pointStatus[0] = score;
