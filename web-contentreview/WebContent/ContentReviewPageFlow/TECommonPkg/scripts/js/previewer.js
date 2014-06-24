@@ -1172,6 +1172,7 @@ function blockingUserSelection() {
             txtVal.removeAttr("onselectstart");
         }
     }
+	$("body").addClass("no-user-select");
     if (isPad()) {
         $("body").addClass("no-user-select").attr({
             "onmousedown": "event.preventDefault();",
@@ -1309,7 +1310,7 @@ function makeDrggable() {
     if (isStandAlone) {
         options = {
             cursor: "move",
-            revert: "invalid",
+            //revert: "invalid",
             handle: ".handle",
             appendTo: "body",
             iframeFix: true,
@@ -1329,6 +1330,30 @@ function makeDrggable() {
                 startHighLighting(event);
 
             },
+			/*79456*/
+			revert : function(event,ui){
+				var checkdropped=$('body').find(".ui-draggable-dragging");
+				var id = $(this).attr('id');
+				if(event){
+					var dropChildLen = event;
+					var previousCount = parseInt($(dropChildLen).attr("currentChildCount"));
+					var currentCount = $(dropChildLen).find(".element").length + $(dropChildLen).find(".palette-button").length+ $(dropChildLen).find(".dropped").length;
+					if(previousCount == undefined){
+						return true;
+					}
+					else if(currentCount > previousCount){
+						//Something has been dropped. Do not return.
+						return false;
+					}
+					else{
+						return true;
+					}
+				}else{
+					//means dropped outside dropbox
+					return true;
+				}				
+			},
+			/*79456*/
             helper: function () {
                 var $this = $(this);
                 $this.removeAttr("background");
@@ -1473,26 +1498,32 @@ function makeDroppable() {
                 passageRes = $("#previewArea .editor:visible").find("[interactiontype = 6]");
                 passageFreeFlow = $("#previewArea .editor:visible").find("[interactiontype = 7]");
                 $this = $(this);
+				/*79456*/
+				var dropChildLen = $this.find(".element").length + $this.find(".palette-button").length+ $this.find(".dropped").length;
+				$this.attr("currentChildCount",dropChildLen);
+				/*79456*/
                 if (passageRes.length > 0 && ui.draggable.parents(".divbox").attr("interactiontype") == "6") {
                     makePassageRes(ui.draggable, $this, "dropAns");
                 } else if (passageFreeFlow.length > 0 && ui.draggable.parents(".divbox").attr("interactiontype") == "7") {
                     makePassageDroppable("", $this);
                 } else {
-                    var dropChildLen = $this.find(".element").length + $this.find(".palette-button").length,
-                        dropMax = parseInt($this.attr("maxallowed"), 10);
+                   
+                    var dropMax = parseInt($this.attr("maxallowed"), 10);
                     var dropAllowMul = $this.attr("allowmultiple");
                     if (dropAllowMul == 1) {
                         dropMax = 1;
                     } else {
                         dropMax = dropMax;
                     }
-                    if (dropChildLen < dropMax) {
-                        eleId = ui.draggable.attr("id");
+					 eleId = ui.draggable.attr("id");
+					var isSameDNDElement = $this.find("#"+eleId).length > 0 && !$("#"+eleId).is(".palette-button")?true:false;//Already present and not palet button
+					if (dropChildLen < dropMax) {
+                       
 						if($("#"+eleId).is(".palette-button")){
 							prepareDNDElements(ui.draggable, $this);
 						}
 						else{
-							if($this.find("#"+eleId).length == 0) { 
+							if(!isSameDNDElement) { 
 								prepareDNDElements(ui.draggable, $this);
 							}
 						}
