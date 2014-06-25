@@ -633,4 +633,26 @@ public interface TestRoster extends JdbcControl
     
     @JdbcControl.SQL(statement = "select count(1) from customer_configuration cc where cc.customer_id = {customerId} and cc.customer_configuration_name = 'WV_Customer' and cc.default_value = 'T' ")
 	Boolean isWVCustomer(Integer customerId) throws SQLException;
+    
+    /** 
+     * @jc:sql statement::
+     * INSERT INTO TABE_CCSS_ROSTER_LEVEL (TEST_ROSTER_ID, ITEM_SET_LEVEL) VALUES
+     *  ((SELECT TEST_ROSTER_ID FROM TEST_ROSTER WHERE TEST_ADMIN_ID = {testAdminId} AND STUDENT_ID = {studentId}), {level} )::
+    */ 
+    @JdbcControl.SQL(statement = "INSERT INTO TABE_CCSS_ROSTER_LEVEL (TEST_ROSTER_ID, ITEM_SET_LEVEL) VALUES ((SELECT TEST_ROSTER_ID FROM TEST_ROSTER WHERE TEST_ADMIN_ID = {testAdminId} AND STUDENT_ID = {studentId}), {level} ) ")
+    void storeTABELevelInfoForTestlet(Integer testAdminId, Integer studentId, String level) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     * DELETE FROM TABE_CCSS_ROSTER_LEVEL WHERE TEST_ROSTER_ID = 1 = {testRosterId}::
+     */
+    @JdbcControl.SQL(statement = "DELETE FROM TABE_CCSS_ROSTER_LEVEL WHERE TEST_ROSTER_ID = {testRosterId} ")
+    void deleteTABELevelInfoForRoster(Integer testRosterId) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     * DELETE FROM TABE_CCSS_ROSTER_LEVEL WHERE TEST_ROSTER_ID IN (SELECT TEST_ROSTER_ID FROM TEST_ROSTER WHERE TEST_ADMIN_ID = {testAdminId})::
+     */
+    @JdbcControl.SQL(statement = "DELETE FROM TABE_CCSS_ROSTER_LEVEL WHERE TEST_ROSTER_ID IN (SELECT TEST_ROSTER_ID FROM TEST_ROSTER WHERE TEST_ADMIN_ID = {testAdminId}) ")
+    void deleteTABELevelInfoForAdmin(Integer testAdminId) throws SQLException;
 }
