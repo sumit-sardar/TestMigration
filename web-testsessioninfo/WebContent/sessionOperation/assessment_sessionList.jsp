@@ -131,11 +131,11 @@
 				</table>
 				
 				<div style="float:left;width:1200px;padding-left:2px;">
-				<%if(userScheduleAndFindSessionPermission) { %>
+			
 					<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
 			   			<a id="showTreeSliderID" href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>
 			   		</div>
-			   	<%} %>
+			   
 					<div id="orgSlider" style="float:left;width:0px;display:none;white-space: nowrap;" class="transparent">
 						<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="text-align:left;">
 							<div style="float:left;" >&nbsp;<lb:label key="homepage.hierarchy.title" /></div> 
