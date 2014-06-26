@@ -503,7 +503,9 @@ function getSubtestDetailsForSelectedTest(){
 	$("#subtestStatusInfo").hide();
 	$('#subtestStatusInfoList').GridUnload();
 	
-	var params = "selectedProgramId="+selectedProgramIdPS+"&selectedOrgNodeId="+selectedOrgNodeIdPS+"&selectedOrgNodeName="+selectedOrgNodeNamePS+"&isBottomTwoLevels="+isBottomTwoLevels+"&selectedTestId="+selectedTestIdPS;
+	var selectedOrgNodeNamePSEncoded = escapeSpecialChars(selectedOrgNodeNamePS);
+	
+	var params = "selectedProgramId="+selectedProgramIdPS+"&selectedOrgNodeId="+selectedOrgNodeIdPS+"&selectedOrgNodeName="+selectedOrgNodeNamePSEncoded+"&isBottomTwoLevels="+isBottomTwoLevels+"&selectedTestId="+selectedTestIdPS;
 			$.ajax(
 			{
 				async:		true,
