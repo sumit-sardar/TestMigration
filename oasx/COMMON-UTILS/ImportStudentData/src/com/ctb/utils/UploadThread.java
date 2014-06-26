@@ -1,0 +1,43 @@
+package com.ctb.utils;
+
+import java.io.File;
+import java.util.Date;
+
+import org.apache.log4j.Logger;
+
+import com.ctb.bean.UploadMoveData;
+
+public class UploadThread implements Runnable{
+	private Integer customerId;
+	private File inFile;
+	private Integer uploadFileId ;
+	private UploadMoveData uploadMoveData;
+	private static Logger logger = Logger.getLogger(UploadThread.class.getName());
+	
+	public UploadThread(Integer customerId, File inFile,
+			Integer uploadFileId , UploadMoveData uploadMoveData) {
+		super();
+		this.customerId = customerId;
+		this.inFile = inFile;
+		this.uploadFileId = uploadFileId;
+		this.uploadMoveData = uploadMoveData;
+	}
+	
+	public void run(){
+		try{
+			System.out.println("Actual Process Start Time for file :"+ this.inFile.getName() + "-->" + new Date(System.currentTimeMillis()));
+			UploadStudentFile studentUpload = new UploadStudentFile(customerId ,inFile,uploadFileId ,this.uploadMoveData.getOrgNodeCategory() , this.uploadMoveData.getStudentFileRowHeader(),
+					this.uploadMoveData.getNoOfUserColumn(),this.uploadMoveData.getValueForStudentId() , this.uploadMoveData.getValueForStudentId2(),
+					this.uploadMoveData.isStudentIdUnique());
+			
+			studentUpload.startProcessing();
+		}catch(Exception e){
+			logger.error("Exception in run() of UploadThread.. Thread Error.");
+			System.out.println("Exception in run() of UploadThread.. Thread Error.. ");
+		}
+		
+	}
+	
+	
+
+}
