@@ -29,7 +29,7 @@ public class SQLUtil {
 		try {
 			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			conn = DriverManager.getConnection(connURL, user, password);
-			conn.setAutoCommit(false);
+			//conn.setAutoCommit(false);
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();

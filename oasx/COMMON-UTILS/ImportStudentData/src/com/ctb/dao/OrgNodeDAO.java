@@ -11,27 +11,39 @@ import oracle.jdbc.OraclePreparedStatement;
 import org.apache.log4j.Logger;
 
 import com.ctb.bean.Node;
-import com.ctb.bean.OrgNodeCategory;
 import com.ctb.utils.SQLUtil;
 
 public class OrgNodeDAO implements IOrgNodeDAO {
 
 	private static Logger logger = Logger.getLogger(OrgNodeDAO.class.getName());
 	
-	public Node getOrgNodeById(Integer orgNodeId) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Node createOrganization(Node orgNode) throws SQLException {
+	public Node createOrganization(Node orgNode) throws Exception {
 		Connection conn = null;
-		OraclePreparedStatement pstmt = null;
+		PreparedStatement pstmt = null;
 	   	ResultSet rSet = null;
-	   	String queryString = "Insert into  org_node(  org_node_id,  org_node_category_id,  org_node_name,  customer_id,  created_by,  org_node_code,  activation_status, org_node_mdr_number)  values (  ? , ?,  ?,  ?, ?, ?,  ?, ? ) RETURN ORG_NODE_ID INTO ? ";
+		String keyGeneration = " select SEQ_ORG_NODE_ID.Nextval as orgId from dual ";
+		Integer orgNodeId = 0;
+		ResultSet rs = null;
+		try{
+			conn = SQLUtil.getConnection();
+			pstmt = conn.prepareStatement(keyGeneration);
+			
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				orgNodeId = rs.getInt("orgId");
+			}
+			
+		}catch(Exception e){
+			throw e;
+		}
+		
+		SQLUtil.closeDbObjects(null, pstmt, rs);
+		
+	   	String queryString = "Insert into  org_node (  org_node_id,  org_node_category_id,  org_node_name,  customer_id,  created_by,  org_node_code,  activation_status, org_node_mdr_number )  values (  ? , ?,  ?,  ?, ?, ?,  ?, ? )  ";
 	   	try{
-	   		conn = SQLUtil.getConnection();
-	   		pstmt = (OraclePreparedStatement) conn.prepareStatement(queryString);
-	   		pstmt.setString(1, "SEQ_ORG_NODE_ID.Nextval");
+	   		orgNode.setOrgNodeId(orgNodeId);
+	   		pstmt = conn.prepareStatement(queryString);
+	   		pstmt.setInt(1, orgNodeId);
 	   		pstmt.setInt(2, orgNode.getOrgNodeCategoryId());
 	   		pstmt.setString(3, orgNode.getOrgNodeName());
 	   		pstmt.setInt(4, orgNode.getCustomerId());
@@ -40,27 +52,21 @@ public class OrgNodeDAO implements IOrgNodeDAO {
 	   		pstmt.setString(7, orgNode.getActivationStatus());
 	   		pstmt.setString(8, orgNode.getMdrNumber());
 	   		
-	   		pstmt.registerReturnParameter(9, Types.INTEGER);
+	   		//pstmt.registerReturnParameter(9, Types.NUMERIC);
 	   		pstmt.execute();
-	   		rSet = pstmt.getReturnResultSet();
-	   		rSet.next();
-	   		orgNode.setOrgNodeId(rSet.getInt(1));
-	   		
+	   			   		
 	   		return orgNode;
-	   	}catch(SQLException e){
-	   		logger.error("SQL Exception in createDataFileTemp-- >"+ e.getErrorCode());
-	   		e.printStackTrace();
 	   	}catch(Exception e){
-	   		logger.error("Exception in createDataFileTemp");
+	   		logger.error("Exception in createOrganization");
 	   		e.printStackTrace();
+	   		throw e;
 	   	}
 	   	finally {
         	SQLUtil.closeDbObjects(conn, pstmt, null);
         }
-	   	return null;
 	}
 
-	public void insertOrgNodeForParent(Node orgNode) throws SQLException {
+	public void insertOrgNodeForParent(Node orgNode) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 	   	String queryString = "Insert into  org_node_parent (  parent_org_node_id,  org_node_id,  customer_id,  created_by  )  values ( ?, ?, ?, ? ) ";
@@ -74,51 +80,13 @@ public class OrgNodeDAO implements IOrgNodeDAO {
 	   			   		
 	   		pstmt.executeQuery();
 	   		
-	   	}catch(SQLException e){
-	   		logger.error("SQL Exception in insertOrgNodeForParent-- >"+ e.getErrorCode());
-	   		e.printStackTrace();
 	   	}catch(Exception e){
 	   		logger.error("Exception in insertOrgNodeForParent");
 	   		e.printStackTrace();
+	   		throw e;
 	   	}
 	   	finally {
         	SQLUtil.closeDbObjects(conn, pstmt, null);
         }
 	}
-
-	public OrgNodeCategory getOrgNodeCategories(Integer orgNodeId)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Node getParentOrgNode(Integer childOrgNodeId) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Integer[] getTopOrgNodeIdsForUser(String username)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Integer getCustomerIdbyOrgNode(Integer orgNodeId)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Node getTopOrgNodeForCustomer(Integer customerId)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Node[] getOrgNodesByParent(Integer parentOrgNodeId)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

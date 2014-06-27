@@ -8,6 +8,7 @@ public class OrganizationNode extends Node
     private Integer studentCount;
     private String bottomLevelNodeFlag;
     private Integer numberOfLevels;
+    private String hasRoster;
     
     public OrganizationNode() {
         super();
@@ -108,5 +109,21 @@ public class OrganizationNode extends Node
 	public void setNumberOfLevels(Integer numberOfLevels) {
 		this.numberOfLevels = numberOfLevels;
 	}
+
+	/**
+	 * @return the hasRoster
+	 */
+	public String getHasRoster() {
+		return hasRoster;
+	}
+
+	/**
+	 * @param hasRoster the hasRoster to set
+	 */
+	public void setHasRoster(String hasRoster) {
+		this.hasRoster = hasRoster;
+	}
+	
+	
 } 
 

@@ -1,5 +1,7 @@
 package com.ctb.utils;
 
+import java.io.File;
+
 public class Constants {
 
 	public static final boolean SUCCESS = true;
@@ -41,7 +43,7 @@ public class Constants {
 	public final static String LARGER_FONT_SIZE = "1.5";
 	public static final String ACTIVATION_STATUS_ACTIVE = "AC";
 	public static final String ROLE_NAME_ACCOUNT_MANAGER = "ACCOUNT MANAGER";
-	public static final String FILE_SEPARATOR = "/";
+	public static final String FILE_SEPARATOR = File.separator;
 	
 	// color List
 	public static final String WHITE = "WHITE";

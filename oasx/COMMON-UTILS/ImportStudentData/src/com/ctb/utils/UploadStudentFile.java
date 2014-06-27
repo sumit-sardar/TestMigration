@@ -114,6 +114,7 @@ public class UploadStudentFile {
 	private StudentManagementControl studentManagement = new StudentManagementControl();
 	private static Logger logger = Logger.getLogger(UploadStudentFile.class.getName());
 	private static List<UploadStudent> finalStudentList = new ArrayList<UploadStudent>();
+	private static List<UploadStudent> finalUpdateStudentList = new ArrayList<UploadStudent>();
 	private static Set<String> studentUserNames = new HashSet<String>();
 	
 	
@@ -659,10 +660,18 @@ public class UploadStudentFile {
 				isBlankRow = true;
 			}
 			
-			System.out.println("CreateOrganizationAndStudent Start Time:" + new Date(System.currentTimeMillis()));
-			System.out.println("ExecuteStudentCreation Start Time:" + new Date(System.currentTimeMillis()));
-			this.studentManagement.executeStudentCreation(this.finalStudentList, this.studentUserNames);
-			System.out.println("ExecuteStudentCreation End Time:" + new Date(System.currentTimeMillis()));
+			if(finalStudentList.size() > 0){
+				System.out.println("ExecuteStudentCreation Start Time:" + new Date(System.currentTimeMillis()));
+				this.studentManagement.executeStudentCreation(this.finalStudentList, this.studentUserNames);
+				System.out.println("ExecuteStudentCreation End Time:" + new Date(System.currentTimeMillis()));
+			}
+			
+			if(finalUpdateStudentList.size() > 0){
+				System.out.println("ExecuteStudentUpdate Start Time:" + new Date(System.currentTimeMillis()));
+				this.studentManagement.executeStudentUpdate(UploadStudentFile.finalUpdateStudentList, this.customerId);
+				System.out.println("ExecuteStudentUpdate End Time:" + new Date(System.currentTimeMillis()));
+			}
+			
 			
 			if ( this.dataFileAudit.getFailedRecordCount() == null ||
 					this.dataFileAudit.getFailedRecordCount().intValue() == 0 )  {
@@ -820,25 +829,10 @@ public class UploadStudentFile {
 				setStudentAccommodationData (studentAccommodations , studentDataMap);
 				createNewStudent(manageStudent,studentAccommodations,studentDemographic,studentNode);
 			} 
-			else {/* // Update student Record
-				Integer studentId = manageStudent.getId();  
-				OrganizationNode[] studentOrgNodes = this.studentManagement.getStudentsOrganizationUpload (studentId);
-
-//				if ( !isOrganizationPresent(studentOrgNode[0].getOrgNodeId(), studentOrgNodes ) ) {
-//					int size = studentOrgNodes.length;
-//					OrganizationNode []updateNodes = new OrganizationNode[size + 1];
-//					for (int i = 0; i < studentOrgNodes.length; i++) {
-//						updateNodes[i] = studentOrgNodes[i];
-//					}
-//					updateNodes[size] = studentOrgNode[0];
-//					manageStudent.setOrganizationNodes(updateNodes);
-//				} else {
-//					manageStudent.setOrganizationNodes(studentOrgNodes);
-//				}
-
+			else { // Update student Record
+				manageStudent.setOrganizationNodes(studentOrgNode);
 				setStudentAccommodationData ( studentAccommodations , studentDataMap);
 				updateStudent(manageStudent,studentAccommodations,studentDemographic);
-*/
 			}
 
 
@@ -857,12 +851,11 @@ public class UploadStudentFile {
 	private void  updateStudent (ManageStudent manageStudent,StudentAccommodations studentAccommodations,StudentDemoGraphics[] studentDemographic) throws Exception {
 
 		studentAccommodations.setStudentId(manageStudent.getId());
-		this.studentManagement.updateStudentUpload(manageStudent);
-		this.studentManagement.updateStudentAccommodations(studentAccommodations);
-		this.studentManagement.updateStudentDemographicsUpload(manageStudent.getId(), studentDemographic);
 		StudentFileRow studentFileRow = new StudentFileRow();
 		copyStudentDetail (studentFileRow, manageStudent, studentAccommodations); 
 		this.visibleStudent.put(studentFileRow.getUserName(), studentFileRow);
+		
+		this.finalUpdateStudentList.add(new UploadStudent(manageStudent, studentAccommodations, studentDemographic, null));
 	}
 	
 	/**
@@ -1395,8 +1388,11 @@ public class UploadStudentFile {
 	
 	private String generateKey(ManageStudent student) {
 		
+		String middleName = "";
+		if(null != student.getMiddleName())
+			middleName = student.getMiddleName().toUpperCase();
 		String key = student.getFirstName().toUpperCase()
-				+ student.getMiddleName().toUpperCase()
+				+ middleName
 				+ student.getLastName().toUpperCase()
 				+ student.getGender();
 		

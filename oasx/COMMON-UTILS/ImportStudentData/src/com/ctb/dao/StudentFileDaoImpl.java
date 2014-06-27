@@ -339,8 +339,11 @@ public class StudentFileDaoImpl implements StudentFileDao {
 
 	private String generateKey(StudentFileRow studentFileRow) {
 
+		String middleName = "";
+		if(null!=studentFileRow.getMiddleName())
+			middleName = studentFileRow.getMiddleName().toUpperCase();
 		String key = studentFileRow.getFirstName().toUpperCase()
-				+ studentFileRow.getMiddleName().toUpperCase()
+				+ middleName
 				+ studentFileRow.getLastName().toUpperCase()
 				+ studentFileRow.getGender();
 
