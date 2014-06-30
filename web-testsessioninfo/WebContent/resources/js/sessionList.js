@@ -764,7 +764,7 @@ function populateCompletedSessionListGrid() {
 		 $("#orgSlider").width("0");
 		 $("#sessionGrid").width("1150");
 		// $("#sessionGrid").css('padding-left',0);
-		$('#orgSlider').show('slide', {direction: 'right'}, 1000);
+		$('#orgSlider').show('slide', {direction: 'right'}, 0);
 		document.getElementById('orgSlider').style.display = 'none';
 		var width = jQuery("#sessionGrid").width();
 	    width = width -80; // Fudge factor to prevent horizontal scrollbars
