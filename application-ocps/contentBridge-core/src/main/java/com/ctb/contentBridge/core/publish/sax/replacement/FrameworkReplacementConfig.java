@@ -18,7 +18,7 @@ import com.ctb.contentBridge.core.publish.tools.XMLResource;
  */
 public class FrameworkReplacementConfig extends XMLResource {
 
-    /*public static String FRAMEWORK_CONFIG_XML = "conf/badFrameworks.xml";*/
+    //public static String FRAMEWORK_CONFIG_XML = "D://OCPS_Local_File//badFrameworks.xml";
 	public static String FRAMEWORK_CONFIG_XML = System.getProperty("CONF_PATH") + "badFrameworks.xml";
     static FrameworkReplacementConfig instance = null;
 
