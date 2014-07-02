@@ -36,6 +36,7 @@ import com.ctb.contentBridge.core.util.ClosableHelper;
 import com.ctb.contentBridge.core.util.PublishCommon;
 import com.ctb.contentBridge.core.util.XMLParsing;
 import com.ctb.contentBridge.core.util.crypto.Crypto;
+import com.propertiesFileLoader.AssessmentValueLoader;
 
 /**
  * @author
@@ -475,6 +476,7 @@ public class ContentPublishDAO {
 			ps.setString(1, ((String) arrList.get(0)).trim());
 			rs = ps.executeQuery();
 			String XMLDATA = (String) arrList.get(2);
+			//System.out.println("XML for aa_item :: "+XMLDATA);
 			byte outData[] = new byte[XMLDATA.length()];
 			outData = XMLDATA.getBytes();
 			updateBlobData(conn, rs, outData);
@@ -1040,6 +1042,46 @@ public class ContentPublishDAO {
 		insertDecryptedItemXml(conn,strAppendedXML , (String)assetIdList.get(0));
 		return strAppendedXML;
 	}
+	
+	public static String createAppendedXMLWithPakageForDAS(Connection conn,
+			ArrayList assetIdList, String strObItemId, AppendXML appendXML)
+			throws SystemException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String strAppendedXML = null;
+		Integer count = 0;
+		try {
+			StringBuffer sbufQuery = new StringBuffer("SELECT ast.asset_blob");
+			sbufQuery.append(LINE_SEP);
+			sbufQuery.append(",ast.asset_id");
+			sbufQuery.append(LINE_SEP);
+			sbufQuery.append(",ast.asset_type");
+			sbufQuery.append(LINE_SEP);
+			sbufQuery.append("FROM aa_asset ast");
+			sbufQuery.append(LINE_SEP);
+			sbufQuery.append("WHERE ast.asset_id = ?");
+
+			if (assetIdList.size() > 0)
+				count++;
+
+			if (count > 0) {
+				ps = conn.prepareStatement(sbufQuery.toString());
+				ps.setString(1, (String) assetIdList.get(0));
+				rs = ps.executeQuery();
+				strAppendedXML = appendXML.parseWithDOMForDAS(rs, assetIdList, strObItemId);
+			} else {
+				strAppendedXML = appendXML
+						.parseWithDOMForDAS(null, null, strObItemId);
+			}
+
+		} catch (SQLException e) {
+			throw new SystemException(e);
+		} finally {
+			ClosableHelper.close(ps, rs);
+		}
+		insertDecryptedItemXml(conn,strAppendedXML , (String)assetIdList.get(0));
+		return strAppendedXML;
+	}
    public static  String getDecryptedItemXml(Connection conn, String itemId) throws SystemException{
 	   
 	   PreparedStatement ps = null;
@@ -1079,6 +1121,7 @@ public class ContentPublishDAO {
 			String itemId) throws SystemException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		//System.out.println("\n\n\nXML for aa_item_decrypted :: "+itemXml);
 		try {
 			StringBuffer sbufQuery = new StringBuffer(
 					"DELETE FROM aa_item_decrypted");
@@ -1847,6 +1890,7 @@ public class ContentPublishDAO {
 				XMLParsing.FLAG = -1;
 			}
 			Element assessment_title = doc.createElement("assessment_title");
+			assessment_title.setAttribute("language", AssessmentValueLoader.getLanguage());
 			rootElement.appendChild(assessment_title);
 			Element ob_element_list = doc.createElement("ob_element_list");
 			for (int x = 0; x < iObItemIdArr.size(); x++) {
