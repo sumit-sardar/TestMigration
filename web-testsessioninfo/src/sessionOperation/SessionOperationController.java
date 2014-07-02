@@ -8733,9 +8733,17 @@ public class SessionOperationController extends PageFlowController {
 			String[] itemSetisDefault      	= RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IS_SESSION_DEFAULT, true ,  new String [itemSetIdTDs.length]);
 			String autoLocator			   	=  RequestUtil.getValueFromRequest(request, RequestUtil.HAS_AUTOLOCATOR, true, "false");
        	 	String[] islocatorChecked      	= RequestUtil.getValuesFromRequest(request, RequestUtil.LOCATOR_CHECKBOX, true ,  new String [itemSetIdTDs.length]);
+       	    String[] locatorTDsForTABE		= RequestUtil.getValuesFromRequest(request, "locatorItemTD", true ,  new String [0]);
 			
 			//added for copy test session : handling for not selecting select test acco
-			boolean isSelectTestUpdatedForCopy = true;
+			boolean isSelectTestUpdatedForCopy = true;	
+			Map<Integer,String> locatorItemSetTDMap = new HashMap<Integer,String>();
+	       	 for(int indx =0; indx<locatorTDsForTABE.length; indx++){
+	       		 String[] strArr = locatorTDsForTABE[indx].split("~");
+	       		 Integer TDid = Integer.valueOf(strArr[0].trim());
+	       		 String testName = strArr[1].trim();
+	    			 locatorItemSetTDMap.put(TDid, testName);
+	       	 }
 			String isSelectTestUpdated = request.getParameter("isSelectTestUpdated");// RequestUtil.getValueFromRequest(request, RequestUtil.IS_STUDENT_LIST_UPDATED, true, "true");
 			if(isSelectTestUpdated.equalsIgnoreCase("false"))
 				isSelectTestUpdatedForCopy = false;
@@ -8794,6 +8802,8 @@ public class SessionOperationController extends PageFlowController {
 							locatorSubtest.setLevel(lItemSetForms);
 						}
 						subtestList.add(0, locatorSubtest);
+						scheduledSession.setHasLocator(true);
+	        			scheduledSession.setLocatorSubtestTD(locatorItemSetTDMap);
 					} else {
 						TestSessionUtils.setDefaultLevels(subtestList, "E");
 					
