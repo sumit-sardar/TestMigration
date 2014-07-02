@@ -39,6 +39,7 @@ import com.ctb.contentBridge.core.publish.xml.XMLUtils;
 import com.ctb.contentBridge.core.publish.xml.item.ItemProcessor;
 import com.ctb.contentBridge.core.util.FileListUtils;
 import com.ctb.contentBridge.core.util.RegexUtils;
+import com.propertiesFileLoader.AssessmentValueLoader;
 
 
 public class CIMCommandProcessor {
@@ -165,11 +166,13 @@ public class CIMCommandProcessor {
 	        ScorableItemConfig scoringConfig = new ScorableItemConfig(new File(cmd.getTargetEnvironment()));
 	        ProductConfig productConfig = new ProductConfig(new File(cmd.getTargetEnvironment()));
 	        /*ADSConfig adsConfig = new ADSConfig(new File(cmd.getTargetEnvironment()));*/
-	        
+	        String lang = rootElement.getAttributeValue(PremadeTestHolderAssembler.LANG) ;
+	        new AssessmentValueLoader().setLanguage(lang);
 	        String fwkCode = rootElement.getAttributeValue(PremadeTestHolderAssembler.FRAMEWORK_CODE);
 	        String maxPanelWidth = rootElement.getAttributeValue(PremadeTestHolderAssembler.MAX_PANEL_WIDTH);
 	        String includeAcknowledgment = rootElement.getAttributeValue(PremadeTestHolderAssembler.INCLUDE_ACKNOWLEDGMENT);
 	        String mappingDir = getMappingDir(cmd.getTargetEnvironment());
+	        //String mappingDir ="D:\\OCPS_Local_File";
 	
 	        CommandProcessorFactoryUtil.loadFrameworkResources(getFwkFile(mappingDir, fwkCode),
 	                getObjFile(mappingDir, fwkCode), getMappingFile(mappingDir, fwkCode), cmd
