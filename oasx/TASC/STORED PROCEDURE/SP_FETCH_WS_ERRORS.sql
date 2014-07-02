@@ -1,4 +1,4 @@
-create or replace PROCEDURE SP_FETCH_WS_ERRORS(fetchSize in number) AS
+CREATE OR REPLACE PROCEDURE "OAS"."SP_FETCH_WS_ERRORS" (fetchSize in number) AS
 BEGIN
 declare
   cursor c1          is select * from (select rowid FROM WS_ERROR_LOG WHERE STATUS = 'Progress' 
@@ -14,3 +14,4 @@ begin
        insert into TMP_WS_ERROR_LOG_ROWNUM (row_id) values (vRowidTbl(i)) ;
 end;
 END;
+/
