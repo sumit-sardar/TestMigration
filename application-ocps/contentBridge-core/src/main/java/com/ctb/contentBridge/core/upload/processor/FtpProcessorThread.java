@@ -35,6 +35,7 @@ public class FtpProcessorThread extends StopableThread {
 		this.itemSetTD = itemSetTD;
 		
 		String sPropFilePath = System.getProperty("PROPERTIES_FILE_PATH");
+		//String sPropFilePath = "D://OCPS_Local_File//SystemConfig.properties";
 		File configFile=new File(sPropFilePath);
 		ocsConfig = new OCSConfig(configFile);
 		emailGateway = new EmailGateway(ocsConfig);
@@ -104,6 +105,10 @@ public class FtpProcessorThread extends StopableThread {
 								sourceFile);
 						System.out.println("Ftp completed for file ["
 								+ value.getVal() + "]");
+						//Sftp Thread closed session
+						if (sftpSession != null) {
+							FtpUtil.closeSFtpClient(sftpSession);
+						}
 						
 					}
 						 FileUtil.deleteFile(sourceDir, sourceFile);
