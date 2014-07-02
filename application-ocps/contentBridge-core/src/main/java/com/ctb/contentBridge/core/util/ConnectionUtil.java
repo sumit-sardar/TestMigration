@@ -88,6 +88,7 @@ public class ConnectionUtil {
 		if (conf.isUseThin()) {
 			url = "jdbc:oracle:thin:@" + conf.getHost() + ":1521:"
 					+ conf.getSid();
+			//url = "jdbc:oracle:thin:@168.116.29.112:1521:OASR51D1";
 		} else {
 			url = "jdbc:oracle:oci:@" + conf.getSid();
 		}

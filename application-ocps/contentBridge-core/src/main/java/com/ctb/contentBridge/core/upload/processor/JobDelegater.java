@@ -32,6 +32,7 @@ public class JobDelegater extends StopableThread {
 		AdsDelegater delegater = null;/*AdsDelegater.getInstance(config)*/; 
 		try {
 			String sPropFilePath = System.getProperty("PROPERTIES_FILE_PATH");
+			//String sPropFilePath = "D://OCPS_Local_File//SystemConfig.properties";
 			Configuration config = new Configuration();
 			config.load(new File(sPropFilePath));
 			delegater = AdsDelegater.getInstance(config); 

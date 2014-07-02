@@ -31,7 +31,9 @@ public class ZippedFileCreaterThread extends StopableThread {
 		ZipOutputStream out = null;
 		System.out.println("inside temp file generation");
 		String tempFileName = configuration.getLocalFilePath()+File.separator+itemSetTD.getAdsid() + "$" + itemSetTD.getHash() + ".zip.tmp";
+		//String tempFileName = "D:\\OCPS_Local_File\\download"+File.separator+itemSetTD.getAdsid() + "$" + itemSetTD.getHash() + ".zip.tmp";
 		String fileName = configuration.getLocalFilePath()+File.separator+itemSetTD.getAdsid() + "$" + itemSetTD.getHash() + ".zip";
+		//String fileName = "D:\\OCPS_Local_File\\download"+File.separator+itemSetTD.getAdsid() + "$" + itemSetTD.getHash() + ".zip";
 		System.out.println("End inside temp file generation");
 		try {
 			out = ZipUtil.createZipFile(tempFileName);
