@@ -11,6 +11,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.propertiesFileLoader.PropertiesLoader;
+import com.propertiesFileLoader.PropertiesFileReader;
+
 
 public class ConnectionManager {
 
@@ -27,7 +30,7 @@ public class ConnectionManager {
     	   *  "username" with Oracle DB username and "password" with oracle DB password
     	   * 
     	   * 
-    	   */
+    	   */ 
     	  
        //  String url = "jdbc:oracle:thin:@168.116.29.112:1521:OASR51D1"; 
          // assuming "DataSource" is your DataSource name
@@ -35,10 +38,11 @@ public class ConnectionManager {
          //Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
          Class.forName("oracle.jdbc.driver.OracleDriver");
          try
-         {            	
+         {  
+        	//For code remediation
             //con = DriverManager.getConnection("jdbc:oracle:thin:@168.116.29.112:1521:OASR51D1","ads","ads#123");
-        	 con = DriverManager.getConnection("jdbc:oracle:thin:@168.116.29.112:1521:OASR51D1","oas","oasr5d");
-             								
+        	 con = DriverManager.getConnection("jdbc:oracle:thin:@"+PropertiesFileReader.getValue("ConnectionManager.oracle.ipaddress")+":1521:OASR51D1","oas","oasr5d");
+         //PropertiesLoader.getDetail("ConnectionManager.oracle.ipaddress")    								
          // assuming your SQL Server's	username is "username"               
          // and password is "password"
               

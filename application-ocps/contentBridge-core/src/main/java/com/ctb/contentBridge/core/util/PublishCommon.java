@@ -21,6 +21,7 @@ import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
 
 import com.ctb.contentBridge.core.exception.SystemException;
+import com.propertiesFileLoader.PropertiesLoader;
 
 // Referenced classes of package com.stgglobal.ads.common:
 //            ExceptionHandler
@@ -73,8 +74,9 @@ public class PublishCommon {
 			String strMsg, String methodName) throws SystemException {
 		String xmlFile1 = "";
 		try {
+			//For code remediation
 			Element rElement = new Element("ads_publish_response", "xsi",
-					"http://www.w3.org/2001/XMLSchema-instance");
+					PropertiesLoader.getDetail("PublishCommon.createXMLResposnse")/*"http://www.w3.org/2001/XMLSchema-instance"*/);
 			rElement.setAttribute("method", methodName);
 			Document jDOMDoc = new Document(rElement);
 			Element c1_Element = new Element("response");
