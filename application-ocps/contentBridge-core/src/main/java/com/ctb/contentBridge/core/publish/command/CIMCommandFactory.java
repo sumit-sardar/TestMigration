@@ -59,7 +59,9 @@ public class CIMCommandFactory {
     }
 
     public static CIMCommand createCIMCommandFromCommandLine(CommandLine cmdLine) {
+    	//System.out.println("cmdLine output ::"+cmdLine.getCommand());
         String cmd = cmdLine.getCommand();
+        //System.out.println("cmd output ::"+cmd);
         /*if (cmd.equals(CIMCommand.MAPPING_HIERARCHY)) {
             return createCIMCommandCreateMappingHierarchy(cmdLine);
         } else if (cmd.equals(CIMCommand.FLATTENED_MAPPING_HIERARCHY)) {
@@ -257,6 +259,12 @@ public class CIMCommandFactory {
 
     private static CIMCommandBuildAssessment createCIMCommandBuildAssessment(CommandLine cmdLine) {
         String imageArea = cmdLine.getParameterValue(IMAGEAREA);
+       // System.out.println("IMAGE Area:::"+imageArea);
+       // System.out.println("Environment Value :::"+cmdLine.getOptionalParameterValue(ENV, _DEFAULT_ENV) + PROPERTIES_SUFFIX);
+       // System.out.println("FileParameterValue :::"+ cmdLine.getFileParameter(ITEMFILE));
+       // System.out.println("Mapping Directory :::"+cmdLine.getOptionalParameterValue(MAPPING_DIR, null));
+       // System.out.println("Local Image Area :::"+ cmdLine.getOptionalParameterValue(LOCALIMAGEAREA, imageArea));
+        //System.out.println("Subtest Media :::"+cmdLine.getOptionalParameterValue("subtestmedia", "No"));
         return new CIMCommandBuildAssessment(
             cmdLine.getOptionalParameterValue(ENV, _DEFAULT_ENV)
                 + PROPERTIES_SUFFIX,
@@ -266,6 +274,18 @@ public class CIMCommandFactory {
             cmdLine.getOptionalParameterValue(LOCALIMAGEAREA, imageArea),
             cmdLine.getOptionalParameterValue(FILEFORMAT, _SHORT),
             cmdLine.getOptionalParameterValue("subtestmedia", "No"));
+    /*      
+          
+     
+       return new CIMCommandBuildAssessment(
+               "D:\\OCPS_Local_File\\DEV.properties",
+                cmdLine.getFileParameter(ITEMFILE),
+                "D:\\OCPS_Local_File\\DEMO",
+                "D:\\OCPS_Local_File",
+                "D:\\OCPS_Local_File",
+                cmdLine.getOptionalParameterValue(FILEFORMAT, _SHORT),
+                cmdLine.getOptionalParameterValue("subtestmedia", "No"));
+        */
     }
 
     /*private static CIMCommandRoundTripMap createCIMCommandRoundTripMap(CommandLine cmdLine) {

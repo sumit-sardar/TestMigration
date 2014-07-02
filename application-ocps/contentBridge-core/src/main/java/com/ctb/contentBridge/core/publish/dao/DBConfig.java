@@ -100,6 +100,7 @@ public class DBConfig extends Config {
 
         if (getUseThin()) {
             url = "jdbc:oracle:thin:@" + getHost() + ":1521:" + getSid();
+        	//url = "jdbc:oracle:thin:@168.116.29.112:1521:" + getSid();
         } else {
             url = "jdbc:oracle:oci:@" + getSid();
         }

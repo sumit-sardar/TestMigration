@@ -105,6 +105,7 @@ public class CommandLine {
 
     public File getFileParameter(String parameterName) {
         String fileName = getParameterValue(parameterName);
+    	//String fileName="D:\\OCPS_Local_File\\Offshore_Test_1.xml";
         File file = new File(fileName);
 
         if (!file.exists()) {

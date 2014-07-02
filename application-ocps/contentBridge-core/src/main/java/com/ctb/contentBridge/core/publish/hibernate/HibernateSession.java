@@ -22,7 +22,7 @@ public class HibernateSession {
     public static final String SOURCE_CONNECTION = "SOURCE";
 
     private static final ThreadLocal sessions = new ThreadLocal();
-    /*private static final String HIBERNATE_CFG_XML = "/conf/hibernate.cfg.xml";*/
+    //private static final String HIBERNATE_CFG_XML = "D:\\OCPS_Local_File\\hibernate.cfg.xml";
     private static final String HIBERNATE_CFG_XML = System.getProperty("CONF_PATH") + "hibernate.cfg.xml";
 
     public static void setUp(Connection conn) {
