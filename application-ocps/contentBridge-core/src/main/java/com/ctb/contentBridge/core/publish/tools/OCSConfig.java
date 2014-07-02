@@ -8,10 +8,17 @@ import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.propertiesFileLoader.PropertiesLoader;
+import com.propertiesFileLoader.PropertiesFileReader;
+
 public class OCSConfig extends Config {
-    private String[] emailTo = { "bobby_magee@mcgraw-hill.com" };
-    private String emailFrom = "bobby_magee@mcgraw-hill.com";
-    public static final String DEFAULT_SMTP_HOST = "mhemtymsg01.mhe.mhc";
+	//For code remediation
+    private String[] emailTo = {PropertiesFileReader.getValue("OCSConfig.emailTo")};
+    	//{ PropertiesLoader.getDetail("OCSConfig.emailTo")/*"bobby_magee@mcgraw-hill.com" */};
+    private String emailFrom = PropertiesFileReader.getValue("OCSConfig.emailFrom");
+    		//PropertiesLoader.getDetail("OCSConfig.emailFrom") /*"bobby_magee@mcgraw-hill.com"*/;
+    public static final String DEFAULT_SMTP_HOST =  PropertiesFileReader.getValue("OCSConfig.DEFAULT_SMTP_HOST");
+    		//PropertiesLoader.getDetail("OCSConfig.DEFAULT_SMTP_HOST")/*"mhemtymsg01.mhe.mhc"*/;
     private String smtpHost = DEFAULT_SMTP_HOST;
     private boolean emailEnabled = true;
     private boolean isTest = false;
