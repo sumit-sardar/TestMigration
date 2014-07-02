@@ -38,6 +38,9 @@ import java.io.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
+import com.propertiesFileLoader.PropertiesLoader;
+import com.propertiesFileLoader.PropertiesFileReader;
+
 /**
  * Base class for SAX2 Parsers
  */
@@ -190,14 +193,29 @@ public abstract class SaxParserBase implements XMLReader
     public boolean getFeature (String name)
         throws SAXNotRecognizedException, SAXNotSupportedException
     {
-        if( name.equals( "http://xml.org/sax/features/namespaces" ))
+        /*if( name.equals( "http://xml.org/sax/features/namespaces" ))
         {
             return true;
         }
-
-        if( name.equals( "http://xml.org/sax/features/namespace-prefixes" ))
+        if( name.equals( PropertiesLoader.getDetail("SaxParserBase.getFeature.name1") ))
+        {
+            return true;
+        }*/
+    	if( name.equals( PropertiesFileReader.getValue("SaxParserBase.getFeature.name1") ))
+        {
+            return true;
+        }
+       /* if( name.equals( "http://xml.org/sax/features/namespace-prefixes" ))
         {
             return false;
+        }
+    	if( name.equals( PropertiesLoader.getDetail("SaxParserBase.getFeature.name2") ))
+        {
+            return true;
+        }*/
+    	if( name.equals( PropertiesFileReader.getValue("SaxParserBase.getFeature.name2") ))
+        {
+            return true;
         }
         
         throw new SAXNotRecognizedException( name );
@@ -206,8 +224,8 @@ public abstract class SaxParserBase implements XMLReader
     public void setFeature( String name, boolean value )
         throws SAXNotRecognizedException, SAXNotSupportedException
     {        
-        if(   name.equals( "http://xml.org/sax/features/namespaces" )
-           || name.equals( "http://xml.org/sax/features/namespace-prefixes" ))
+        if(   name.equals( PropertiesFileReader.getValue("SaxParserBase.getFeature.name1") )
+           || name.equals( PropertiesFileReader.getValue("SaxParserBase.getFeature.name2") ))
         {
             return;
         }    

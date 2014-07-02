@@ -57,6 +57,8 @@ import com.ctb.contentBridge.core.publish.anotherbigidea.io.OutStream;
 import com.ctb.contentBridge.core.publish.anotherbigidea.util.Base64;
 import com.ctb.contentBridge.core.publish.anotherbigidea.util.xml.SaxParserBase;
 import com.ctb.contentBridge.core.publish.anotherbigidea.util.xml.XMLWriter;
+import com.propertiesFileLoader.PropertiesLoader;
+import com.propertiesFileLoader.PropertiesFileReader;
 
 /**
  * A SAX2 parser (XMLReader) that implements the SWFTagTypes interface
@@ -68,7 +70,8 @@ public class SWFSaxParser extends SaxParserBase
     /**
      * The namespace for the SWF XML vocabulary
      */
-    public static final String NAMESPACE = "http://www.anotherbigidea.com/javaswf2";
+    public static final String NAMESPACE = PropertiesFileReader.getValue("SWFSaxParser.NAMESPACE");
+    		//PropertiesLoader.getDetail("SWFSaxParser.NAMESPACE");// "http://www.anotherbigidea.com/javaswf2";
        
     protected String frameLabel;
     protected boolean definingSprite;
