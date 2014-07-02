@@ -351,6 +351,7 @@ public class JobDAO {
 			sbufQuery.append("WHERE cpj.job_status =  ?");
 
 			ps = conn.prepareStatement(sbufQuery.toString());
+			//ps.setString(1, "AODC");
 			ps.setString(1, "New");
 			rs = ps.executeQuery();
 
