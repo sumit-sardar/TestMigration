@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.propertiesFileLoader.PropertiesLoader;
+import com.propertiesFileLoader.PropertiesFileReader;
+
 /**
  * @author wmli
  */
@@ -38,7 +41,9 @@ public class MediaType implements Serializable {
     public static final String FLASH_CLASS_ID = "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000";
 
     public static final String PDF_CODE_BASE = null;
-    public static final String FLASH_CODE_BASE = "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0";
+    //For code remediation
+    public static final String FLASH_CODE_BASE = PropertiesFileReader.getValue("MediaType.FLASH_CODE_BASE");
+    		//PropertiesLoader.getDetail("MediaType.FLASH_CODE_BASE");//"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0";
 
     public static final String PDF_WIDTH = "650";
     public static final String FLASH_WIDTH = "650";
