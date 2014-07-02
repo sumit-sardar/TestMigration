@@ -39,6 +39,7 @@ public class ContentPublishBO {
 		Connection conn = null;
 		try {
 			String sPropFilePath = System.getProperty("PROPERTIES_FILE_PATH");
+			//String sPropFilePath  = "D://OCPS_Local_File//SystemConfig.properties";
 			Configuration configuration = new Configuration();
 			configuration.load(new File(sPropFilePath));
 			conn = ConnectionUtil.getADSConnection(configuration);
@@ -73,6 +74,7 @@ public class ContentPublishBO {
 			Validation.validationOfXMLData(abtValues, "item");
 			String xsltPath = System.getProperty("ITM_XSLT_FILE_PATH")
 					+ "Item_Pkg.xslt";
+			//String xsltPath = "D:\\OCPS_Local_File\\xslt\\Item_Pkg.xslt";
 
 			String strCfgFileURL = PublishCommon.getXSLTXSDContent(new File(
 					xsltPath));
@@ -84,12 +86,22 @@ public class ContentPublishBO {
 			if (sourcePubId == null || sourcePubId.length() == 0) {
 				throw new SystemException("Parameters are not defined in table");
 			}
+            //For Others
             //System.out.println("\n\nBefore Transform xmlFile"+xmlFile);
-            xmlFile = xmlFile.replaceAll("&#x00A0;", " "); // For Question Mark(?) Issue
-            xmlFile = xmlFile.replaceAll("&#160;", " ");// For Question Mark(?) Issue
+            //xmlFile = xmlFile.replaceAll("&#x00A0;", " "); // For Question Mark(?) Issue
+            //xmlFile = xmlFile.replaceAll("&#160;", " ");// For Question Mark(?) Issue
             //System.out.println("\n\nReplace String Transform xmlFile"+xmlFile);
 			xmlFile = PublishCommon.transforms(xmlFile, strCfgFileURL);
 			//System.out.println("\n\nAfter Transform xmlFile-->"+xmlFile);
+				
+			/*// For Laslinks
+			//System.out.println("\n\nBefore Transform xmlFile"+xmlFile); 
+            xmlFile = xmlFile.replaceAll("&#", "&amp;#"); // For Question Mark(?) Issue 
+            //System.out.println("\n\nReplace String Transform xmlFile"+xmlFile); 
+            xmlFile = PublishCommon.transforms(xmlFile, strCfgFileURL); 
+            //System.out.println("\n\nAfter Transform xmlFile-->"+xmlFile); 
+            xmlFile = xmlFile.replaceAll("&amp;#", "&#"); // For Question Mark(?) Issue 
+*/            
 			if (xmlFile == null || xmlFile.length() == 0) {
 				throw new SystemException(
 						"Error has occurred transforming Item LML using xslt.");
@@ -116,6 +128,7 @@ public class ContentPublishBO {
 					(String) abtValues.get(0));
 			appendXML = new AppendXML(xmlFile);
 			String htmlWidget = appendXML.parseWithDOMHtmlWidget();
+			String dasHtmlWidget = appendXML.parseWithDOMDasHtmlWidget();
 
 			String hash = null;
 			if ("Insert".equals(strFlag)) {
@@ -131,7 +144,17 @@ public class ContentPublishBO {
 					strAppendedXML = ContentPublishDAO
 							.createAppendedXMLWithPakage(conn, abtValues,
 									obItemPkgId, appendXML);
-				} else {
+				} 
+				else if("true".equals(dasHtmlWidget))
+				{
+					/*strAppendedXML = ContentPublishDAO
+							.createAppendedXMLWithPakage(conn, abtValues,
+									obItemPkgId, appendXML);*/
+					strAppendedXML = ContentPublishDAO
+							.createAppendedXMLWithPakageForDAS(conn, abtValues,
+									obItemPkgId, appendXML);
+				}
+				else {
 					strAppendedXML = ContentPublishDAO.createAppendedXML(conn,
 							abtValues, obItemPkgId, appendXML);
 				}
@@ -151,15 +174,24 @@ public class ContentPublishBO {
 				System.out.println("Update Item...");
 				String decXml=null;
 				decXml=ContentPublishDAO.getDecryptedItemXml(conn, finalValues.get(0).toString());
+				//System.out.println("Old Database Item XML already published :: " + decXml);
 				appendXML = new AppendXML(xmlFile);
 				String strAppendedXML = null;
 				if ("true".equals(htmlWidget)) {
 					strAppendedXML = ContentPublishDAO
 							.createAppendedXMLWithPakage(conn, abtValues,
 									obItemPkgId, appendXML);
-				} else {
+					//System.out.println("Created New XML after updating TE ITEM :: " + strAppendedXML);
+				}
+				else if ("true".equals(dasHtmlWidget)) {
+					strAppendedXML = ContentPublishDAO
+							.createAppendedXMLWithPakageForDAS(conn, abtValues,
+									obItemPkgId, appendXML);
+					//System.out.println("Created New XML after updating TE ITEM :: " + strAppendedXML);
+				}else {
 					strAppendedXML = ContentPublishDAO.createAppendedXML(conn,
 							abtValues, obItemPkgId, appendXML);
+					//System.out.println("Created New XML after updating NON-TE ITEM :: " + strAppendedXML);
 				}
 				
 				byte outData[] = (byte[]) null;
@@ -172,22 +204,31 @@ public class ContentPublishBO {
 				//String decXml=ContentPublishDAO.getDecryptedItemXml(conn, finalValues.get(0).toString());
 				String decXml2=ContentPublishDAO.getDecryptedItemXml(conn, finalValues.get(0).toString());
 				
-				Pattern pattern = Pattern.compile("id=\\\"widget\\d*");
+				//System.out.println("Newly published Dycrypted XML Content from database :: " + decXml2);
+				//System.out.println("Newly published Dycrypted XML LENGTH from database :: " + decXml2.length());
+				//Changed for non TE Prewriting Tag
+				Pattern pattern =Pattern.compile("id=\\\"[a-zA-Z0-9]*[\\S+]*(widget)+[a-zA-Z0-9]*[\\S+]*\"");
+				//Pattern pattern =Pattern.compile("id=\\\"[a-zA-Z0-9]*[\\S+]*\"");// Pattern.compile("id=\\\"widget\\d*");
 				Matcher matcher =pattern.matcher(decXml);
 				
-			     String decTemp1Xml=matcher.replaceAll("id=\"");
+			     String decTemp1Xml= matcher.replaceAll("id=\"\""); //matcher.replaceAll("id=\"");
+			     
+			     //System.out.println("Old database Item after replacing ID attribute :: " + decTemp1Xml);
 			     //Matcher matcherBSave =pattern.matcher(strAppendedXML);
 			     Matcher matcherBSave =pattern.matcher(decXml2);
-			     String decTemp2Xml=matcherBSave.replaceAll("id=\"");
+			     String decTemp2Xml= matcherBSave.replaceAll("id=\"\"");//matcherBSave.replaceAll("id=\"");
 			     
+			     //System.out.println("Newly published Item after replacing ID attribute :: " + decTemp2Xml);
 			     String decTemp2FinalOrig = decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
 			     String decTemp1FinalOrig = decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
+			    System.out.println("Old database Item after replacing New_line, tab and space:: " + decTemp1FinalOrig);
+			     System.out.println("Newly published Item after replacing New_line, tab and space:: " + decTemp2FinalOrig);
 			     
 			     //String decTemp2Final = decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "").replaceAll("\\p{Cntrl}", "").replaceAll("[^\\p{Print}]", "").replaceAll("\\p{C}", "");
 			     //String decTemp1Final = decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "").replaceAll("\\p{Cntrl}", "").replaceAll("[^\\p{Print}]", "").replaceAll("\\p{C}", "");
 			     
-			     System.out.println("111111111113111111111111ORIG:::::"+decTemp1Xml.length());
-			     System.out.println("222222222232222222222222ORIG::::::"+decTemp2Xml.length());
+			     //System.out.println("Old Db content lenght after replacing id attributes           ::::::"+decTemp1Xml.length());
+			    //ystem.out.println("Newly published content length after replacing id attributes  ::::::"+decTemp2Xml.length());
 			     
 			     //XMLUnitBasedComparator unitBasedComparator = new XMLUnitBasedComparator();
 			     /*String decTemp2Final = URLEncoder.encode(decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", ""),"UTF-8");
@@ -195,8 +236,8 @@ public class ContentPublishBO {
 			     //System.out.println("111111111113111111111111Without NonPrint:::::"+decTemp1Final.length());
 			     //System.out.println("222222222232222222222222Without NonPrint::::::"+decTemp2Final.length());
 			     
-			     System.out.println("111111111113111111111111:::::"+decTemp1FinalOrig.length());
-			     System.out.println("222222222232222222222222::::::"+decTemp2FinalOrig.length());
+			     System.out.println("Old Db content lenght after replacing space newline attributes           ::::::"+decTemp1FinalOrig.length());
+			     System.out.println("Newly published content lenght after replacing space newline attributes  ::::::"+decTemp2FinalOrig.length());
 			     
 			     System.out.println(decTemp2FinalOrig.length() == decTemp1FinalOrig.length());
 			     System.out.println(decTemp2FinalOrig.equals(decTemp1FinalOrig));
@@ -214,8 +255,8 @@ public class ContentPublishBO {
 					// outData);
 				} else {
 					System.out.println("Content changed...");
-					/*System.out.println("New XML ::: " + decTemp2Final);
-					System.out.println("Old XML ::: " + decTemp1Final);*/
+					//System.out.println("New XML ::: " + decTemp2FinalOrig);
+					//System.out.println("Old XML ::: " + decTemp1FinalOrig);
 					ContentPublishDAO.updateItem(conn, finalValues);
 					hash = crypto.generateHash(outData);
 					System.out.println("new hash-->>"+hash);
@@ -256,6 +297,7 @@ public class ContentPublishBO {
 		Connection conn = null;
 		try {
 			String sPropFilePath = System.getProperty("PROPERTIES_FILE_PATH");
+			//String sPropFilePath = "D://OCPS_Local_File//SystemConfig.properties";
 			Configuration configuration = new Configuration();
 			configuration.load(new File(sPropFilePath));
 			conn = ConnectionUtil.getADSConnection(configuration);
@@ -360,12 +402,14 @@ public class ContentPublishBO {
 	public static void publishAsset(String xmlFile)
 			throws SystemException {
 		XMLParsing xmlParsing = new XMLParsing();
+	//	System.out.println("A::xmlFile"+xmlFile);
 		String XMLFILE = xmlFile;
 		AppendXML appendXML;
 		Crypto crypto = new Crypto();
 		Connection conn = null;
 		try {
 			String sPropFilePath = System.getProperty("PROPERTIES_FILE_PATH");
+			//String sPropFilePath  = "D://OCPS_Local_File//SystemConfig.properties";
 			Configuration configuration = new Configuration();
 			configuration.load(new File(sPropFilePath));
 			conn = ConnectionUtil.getADSConnection(configuration);
@@ -407,6 +451,7 @@ public class ContentPublishBO {
 		Connection conn = null;
 		try {
 			String sPropFilePath = System.getProperty("PROPERTIES_FILE_PATH");
+			//String sPropFilePath = "D://OCPS_Local_File//SystemConfig.properties";
 			Configuration configuration = new Configuration();
 			configuration.load(new File(sPropFilePath));
 			conn = ConnectionUtil.getADSConnection(configuration);
