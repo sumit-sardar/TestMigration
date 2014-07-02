@@ -27,6 +27,7 @@ public class PremadeTestHolderAssembler {
     public static final String MAX_PANEL_WIDTH = "MaxpanelWidth";
     public static final String INCLUDE_ACKNOWLEDGMENT = "IncludeAcknowledgment";
     public static final String CTBS4_OBJECTIVE = "*";
+    public static final String LANG = "Language";
     PremadeTestHolder testHolder;
 
     public PremadeTestHolderAssembler() {}
