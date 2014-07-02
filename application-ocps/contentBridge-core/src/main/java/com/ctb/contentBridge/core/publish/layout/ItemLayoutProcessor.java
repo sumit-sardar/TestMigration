@@ -17,23 +17,34 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.CDATA;
@@ -43,8 +54,16 @@ import org.jdom.ProcessingInstruction;
 import org.jdom.Text;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import sun.net.www.content.text.PlainTextInputStream;
+
+import com.propertiesFileLoader.PropertiesFileReader;
 
 /**
  * @author wen-jin_chang
@@ -63,6 +82,7 @@ public class ItemLayoutProcessor {
 	public Element answer;
 	public Element accommodation;
 	public Element html;
+
 	
 	public static HashMap manipulateMapping = null;
 	public static HashMap allManipulateMapping = null;
@@ -78,6 +98,7 @@ public class ItemLayoutProcessor {
 	public static int startY = 74 + defaultSpacing - fontLeading;
 	public static String text_widget = "text_widget";
 	public static String html_widget = "html_widget";
+	public static String DAS_html_widget = "DAS_html_widget";
 	public static String passage_widget = "scrolling_text_widget";
 	public static String footnote_widget = "footnote";
 	public static String table_widget = "table";
@@ -100,7 +121,9 @@ public class ItemLayoutProcessor {
 	public int pointSize;
 	public int totalDownloadSize;
 	public boolean addCData;
-	public static String teamSite = "file://MCSDOAS15.mhe.mhc";
+	//For code remediation
+	public static String teamSite = PropertiesFileReader.getValue("ItemLayoutProcessor.teamSite");
+			//PropertiesLoader.getDetail("ItemLayoutProcessor.teamSite");//"file://MCSDOAS15.mhe.mhc";
 	public List unicodeList;
 	public boolean useStimulusDisplayID;
 	boolean stimulusLeftLocated;
@@ -257,7 +280,7 @@ public class ItemLayoutProcessor {
 													// Links
 		
 		else if (!"IN".equals(itemElement.getAttributeValue("ItemType"))
-				&& !"CR".equals(itemElement.getAttributeValue("ItemType")))
+				&& !"CR".equals(itemElement.getAttributeValue("ItemType")) && !"DS".equals(itemElement.getAttributeValue("ItemType")))
 			extractSRChoice();
 		// previously was
 		// else
@@ -284,6 +307,23 @@ public class ItemLayoutProcessor {
 		}
 
 		// end
+		
+		// added for das TE item
+		
+		if ("DS".equals(itemElement.getAttributeValue("ItemType"))){
+			
+			html = new Element("DAS_html_widget");
+			html.setAttribute("src",itemElement.getAttributeValue("ID"));
+			html.setAttribute("id", getUniqueId());			
+			html.setAttribute("width", "784");
+			html.setAttribute("height", "443");
+			html.setAttribute("x", "0");
+			html.setAttribute("x", "79");
+			html.setAttribute("inline", "no");
+			html.setAttribute("image", "no");
+			//html.setAttribute("isDAS", "true");
+		}
+		//end
 		if ("NI".equals(itemElement.getAttributeValue("ItemType"))) { // FOR
 																		// NI
 																		// ITEM
@@ -3244,11 +3284,26 @@ public class ItemLayoutProcessor {
 			throws Exception {
 
 		File folder = new File(srcFile);
+		//File cmnFile=new File("/iwmnt/default/main/OAS/WORKAREA/highwire/images/TEAssets/CmnFileFolder");
+		//String cpyDirLoc="/iwmnt/default/main/OAS/WORKAREA/highwire/images/TEAssets";
+		//String cmnFile="/iwmnt/default/main/OAS/WORKAREA/highwire/images/TEAssets/CmnFileFolder";
 		ZipEntry zipEntry = null;
 		
 		if (folder.isDirectory()) {
+		//	Exclude the common package
+		/*	if(folder.getName().equalsIgnoreCase("scripts")||
+					folder.getName().equalsIgnoreCase("styles"))
+				return;*/
 			addFolderToZip(path, srcFile, zip);
 		} else {
+			//copying Previewer html in TE package
+			/*if(folder.getName().equalsIgnoreCase("previewer.html"))
+			{
+			   
+				
+				srcFile=cmnFile+File.separator+"previewer.html";
+				
+			}	*/
 			byte[] buf = new byte[1024];
 			int len;
 			FileInputStream in = new FileInputStream(srcFile);
@@ -3276,6 +3331,7 @@ public class ItemLayoutProcessor {
 	      }
 	    }
 	  }*/
+	
 
 	  static private void addFolderToZip(String path, String srcFolder, ZipOutputStream zip)
 	      throws Exception {
@@ -3326,6 +3382,182 @@ public class ItemLayoutProcessor {
 			String path = tePackagePath + image_widget.getAttributeValue("src") + "zip";
 			assetPkgList.add(path);
 		}
+	}
+	
+	//DAS TE
+	public static void getDasPackageAsset(Element layoutItem, List DASassetPkgList,
+			String itemID,String pkgName) throws Exception {
+		//logger.info("Inside getPackageAsset()...");
+		List localAssetList = extractAllElement(".//" + DAS_html_widget, layoutItem);
+		/*for (int i = 0; i < localAssetList.size(); i++) {
+			Element image_widget = (Element) localAssetList.get(i);
+			String path = image_widget.getAttributeValue("src");
+			assetPkgList.add(path);
+		}*/
+		
+		/*Properties prop = new Properties();
+		prop.load(new FileInputStream(adsConfig.getFile()));*/
+		String dasPackagePath = PropertiesFileReader.getValue("ItemLayoutProcessor.getDasPackageAsset.dasPackagePath");
+		String dirName=dasPackagePath+"zip"+File.separator+itemID;
+		File theDir = new File(dirName);
+
+		  // if the directory does not exist, create it
+		  if (!theDir.exists()) {
+		    System.out.println("creating directory: " + dirName);
+		    boolean result = theDir.mkdir();  
+
+		     if(result) {    
+		       System.out.println("DIR created");  
+		     }
+		  }
+		dasTEoperation(dasPackagePath+pkgName+File.separator,itemID);
+		//String tePackagePath ="D:\\OCPS_Local_File\\Assets";
+		//String sourcs=prop.getProperty("te.package.path")+"\\"+itemID;
+		//String destination=prop.getProperty("pakagePath")+"\\"+itemID;
+		//String destination=prop.getProperty("te.package.path")+"\\"+itemID+"zip";
+		//String destination="/mappingdata/InnovativeItems/"+itemID+"zip";
+		String sourcs = dasPackagePath +"zip"+File.separator+itemID;
+		String destination = dasPackagePath +"zip"+File.separator+itemID+"zip";
+		//logger.info("source > "+sourcs);
+		//logger.info("destination > "+destination);
+		File destFile = new File(destination);
+		if(destFile.exists()) {
+			destFile.delete();
+		}
+		zipFolder(sourcs, destination);
+		//logger.info("Zip Folder created....");
+		System.out.println("Zip Folder created....");
+		for (int i = 0; i < localAssetList.size(); i++) {
+			Element image_widget = (Element) localAssetList.get(i);
+			String path = dasPackagePath + image_widget.getAttributeValue("src") + "zip";
+			DASassetPkgList.add(path);
+		}
+	}
+	
+	public static void dasTEoperation(String path,String itemId) throws ParserConfigurationException, SAXException, IOException, TransformerException
+	{
+		String main=null;
+		String chagedLink=null;
+		File file = new File(path+itemId+".xml");
+		InputStream inputStream= new FileInputStream(file);
+		Reader reader = new InputStreamReader(inputStream,"ISO-8859-1");
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		org.w3c.dom.Document doc = dBuilder.parse(file);
+		//System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+		doc.getDocumentElement().normalize();
+		NodeList nList = doc.getElementsByTagName("itemContent");
+		//for (int temp = 0; temp < nList.getLength(); temp++)
+		//{
+			Node nNode1 = nList.item(0);
+			//System.out.println(" ==============>" + nNode1.toString());
+			//if(nNode1.getNodeName().equalsIgnoreCase("itemContent"))
+			//{
+				Node cDATANode = nNode1.getFirstChild();
+				if(cDATANode.getNodeType() == Node.CDATA_SECTION_NODE){
+					//System.out.println(cDATANode instanceof CharacterData);
+					//System.out.println(" ==============>" + ((CharacterData)cDATANode).getData());
+					org.jsoup.nodes.Document htmlDoc = Jsoup.parse(((CharacterData)cDATANode).getData());
+					 Elements links = htmlDoc.select("img");
+					 for (org.jsoup.nodes.Element link : links) {
+							chagedLink="data:image;base64,"+encryptDashItem(link.attr("src"),path);
+							link.attr("src", chagedLink);
+							/*link.removeClass("html");
+							link.removeClass("head");
+							link.removeClass("body");*/
+						}
+					 //System.out.println(" ==============>" + htmlDoc.toString());
+					// cDATANode.setNodeValue(htmlDoc.toString().replaceAll("\\<.*html\\>", ""));
+					 cDATANode.setNodeValue(htmlDoc.toString().replaceAll("<body>", "").replaceAll("<head>", "").replaceAll("<html>", "").replaceAll("</body>", "").replaceAll("</head>", "").replaceAll("</html>", ""));
+					 
+				}
+				nNode1 = nList.item(0);
+				cDATANode = nNode1.getFirstChild();
+				//System.out.println(" ==============>" + ((CharacterData)cDATANode).getData());
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StringWriter writer = new StringWriter();
+			       StreamResult result = new StreamResult(writer);
+			       TransformerFactory tf = TransformerFactory.newInstance();
+			       transformer = tf.newTransformer();
+			       transformer.transform(source, result);
+			       StringBuffer buff=new StringBuffer(writer.toString());
+			       //String xmlCode="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";		       
+			      // int length=xmlCode.length();
+			       //buff.delete(0,length);
+			       main=buff.toString();
+			       System.out.println("Main Length-->"+main.length());
+			      // System.out.println("Main-->"+main);
+			       
+              convertXml(main,itemId);
+                      
+		
+	}
+	
+	
+	
+	
+	private static void convertXml(String xml,String itemId) throws IOException {
+		/*DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    InputSource source = new InputSource(new StringReader(xml));
+	    org.w3c.dom.Document document =factory.newDocumentBuilder().parse(source);        
+	    TransformerFactory tf = TransformerFactory.newInstance();
+	    Transformer transformer = tf.newTransformer();
+	    File newXMLFile = new File(PropertiesFileReader.getValue("ItemLayoutProcessor.getDasPackageAsset.dasPackagePath")+"zip"
+	    	    +File.separator+itemId+File.separator+itemId+".xml");
+	    
+	    Result result = new StreamResult(newXMLFile);
+	    Source s = new DOMSource(document);
+	    transformer.transform(s, result);*/
+		 File file = new File(PropertiesFileReader.getValue("ItemLayoutProcessor.getDasPackageAsset.dasPackagePath")+"zip"
+		    	    +File.separator+itemId+File.separator+itemId+".xml");
+	      // creates the file
+	      file.createNewFile();
+	      // creates a FileWriter Object
+	      FileWriter writer = new FileWriter(file); 
+	      // Writes the content to the file
+	      writer.write(xml);
+	      System.out.println("File Write Complete");
+	      writer.flush();
+	      writer.close();
+		
+	}
+
+	private static String encryptDashItem(String src,String imgPath) throws IOException 
+	{
+		String imagePath= imgPath+src;
+		File file = new File(imagePath);
+		byte[] bytes = loadFile(file);
+		byte[] encoded = Base64.encodeBase64(bytes);
+		String encodedString = new String(encoded);
+		//System.out.println("encodedString-->"+encodedString);
+		return encodedString;
+		
+	}
+	
+	private static byte[] loadFile(File file) throws IOException {
+	    InputStream is = new FileInputStream(file);
+ 
+	    long length = file.length();
+	    if (length > Integer.MAX_VALUE) {
+	        // File is too large
+	    }
+	    byte[] bytes = new byte[(int)length];
+	    
+	    int offset = 0;
+	    int numRead = 0;
+	    while (offset < bytes.length
+	           && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+	        offset += numRead;
+	    }
+ 
+	    if (offset < bytes.length) {
+	        throw new IOException("Could not completely read file "+file.getName());
+	    }
+ 
+	    is.close();
+	    return bytes;
 	}
 	
 	public static void adjustJDOMDifference(Element itemLML) throws Exception {
