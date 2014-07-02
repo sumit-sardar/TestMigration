@@ -9122,22 +9122,12 @@ public class SessionOperationController extends PageFlowController {
 		
 						scheduledSession.setProctors(proctorList.toArray(new User[proctorList.size()]));
 					} else {
-						User[] proctorArray = new User[1];
-						proctorArray[0]= this.user;
-						scheduledSession.setProctors(proctorArray);
+						ArrayList<User> sessionProctorsForCopy = getProctors(testAdminIdBeforCopy);
+						//check if default scheduler value needs to be reset
+						scheduledSession.setProctors(sessionProctorsForCopy.toArray(new User[sessionProctorsForCopy.size()]));
 					}
 				} else {
-					//fetch proctor details from db using original test_admin_id
-					ScheduledSession schSession = this.scheduleTest.getScheduledProctorsMinimalInfoDetails(this.userName, testAdminIdBeforCopy);
-					User[] sessionProctors = schSession.getProctors();
-					//User[] sessionProctorsForCopy = new User[sessionProctors.length];
-					ArrayList<User> sessionProctorsForCopy = new ArrayList<User>(sessionProctors.length);
-					for(int i=0; i< sessionProctors.length; i++){
-						User user = sessionProctors[i];
-						if(user.getCopyable().equals("T")){
-							sessionProctorsForCopy.add(user); 
-						}
-					}
+					ArrayList<User> sessionProctorsForCopy = getProctors(testAdminIdBeforCopy);
 					//check if default scheduler value needs to be reset
 					scheduledSession.setProctors(sessionProctorsForCopy.toArray(new User[sessionProctorsForCopy.size()]));
 				}
@@ -9151,6 +9141,20 @@ public class SessionOperationController extends PageFlowController {
 			}
 
 		}
+		
+		private ArrayList<User> getProctors(Integer testAdminIdBeforCopy) throws CTBBusinessException{
+			ScheduledSession schSession = this.scheduleTest.getScheduledProctorsMinimalInfoDetails(this.userName, testAdminIdBeforCopy);
+			User[] sessionProctors = schSession.getProctors();
+			ArrayList<User> sessionProctorsForCopy = new ArrayList<User>(sessionProctors.length);
+			for(int i=0; i< sessionProctors.length; i++){
+				User user = sessionProctors[i];
+				if(user.getCopyable().equals("T")){
+					sessionProctorsForCopy.add(user); 
+				}
+			}
+			return sessionProctorsForCopy;
+		}
+		
 		@Jpf.Action(forwards = { 
 			    @Jpf.Forward(name = "success",
 		                     path = "view_subtest_details.jsp")
