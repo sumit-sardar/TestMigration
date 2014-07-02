@@ -270,6 +270,10 @@ public class DBDatapointGateway {
         int maxPoints) {
 
         DatapointRecord datapoint = new DatapointRecord();
+       // System.out.println("Max Point"+new Long(maxPoints));
+       // System.out.println("Min Point"+new Long(minPoints));
+        //System.out.println("Updated By"+new Long(OASConstants.CREATED_BY));
+       // System.out.println("Created By"+new Date());
         datapoint.setItemId(itemId);
         datapoint.setItemSetId(new Long(itemSetID));
         datapoint.setMinPoints(new Long(minPoints));
@@ -284,6 +288,7 @@ public class DBDatapointGateway {
             session.flush();
             Long datapointId = (Long) session.save(datapoint);
             System.out.println("before insertDatapointConditionCodes");
+           // System.out.println("conditionCodes-->"+conditionCodes);
             insertDatapointConditionCodes(datapointId, conditionCodes);
             System.out.println("after insertDatapointConditionCodes");
         } catch (HibernateException e) {
@@ -291,7 +296,7 @@ public class DBDatapointGateway {
             throw new SystemException(e.getMessage());
         }catch (Exception e)
         {
-        
+        	throw new SystemException(e.getMessage());
         }
     }
 
