@@ -146,7 +146,7 @@ public class FtpSftpUtil {
 			channel.connect();
 			sftpChannel = (ChannelSftp) channel;
 			sftpChannel.cd(sourceDir);
-			Vector fileList = sftpChannel.ls("*.xls");
+			Vector fileList = sftpChannel.ls("*.csv");
 			
 			if(fileList != null && fileList.size() > 0){
 				if(fileList.size() > 1){

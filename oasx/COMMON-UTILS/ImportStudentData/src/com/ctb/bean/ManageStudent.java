@@ -18,7 +18,7 @@ public class ManageStudent extends CTBBean
     private String middleName;
     private String lastName;
     private String studentName;
-    private String studentIdNumber;
+    private String studentIdNumber;// This value represents ExtPin1
     private String studentIdNumber2;
     private String grade;
     private String productNameList;

@@ -25,7 +25,8 @@ public class StudentManagementControl {
 	final int BATCH_SIZE = 998;
 	private IStudentManagementDAO studentManagement=new StudentManagementDAO();
 	
-	public void executeStudentCreation(List<UploadStudent> finalStudentList, Set<String> studentUserNames) throws Exception {
+	public void executeStudentCreation(List<UploadStudent> finalStudentList, Set<String> studentUserNames ,
+										Map<String,Integer> studentIdExtPinMap) throws Exception {
 		StringBuilder inClause = new StringBuilder();
 		boolean firstValue = true;
 		int newStudentCount = 0;
@@ -45,7 +46,7 @@ public class StudentManagementControl {
 				}
 		}
 		studentManagement.populateActualStudentUserName(finalStudentList, inClause.toString(), new Integer(newStudentCount));
-		finalStudentList = studentManagement.populateActualStudentIds(finalStudentList, new Integer(newStudentCount));
+		finalStudentList = studentManagement.populateActualStudentIds(finalStudentList, new Integer(newStudentCount) ,studentIdExtPinMap);
 		
 		
 		
@@ -54,9 +55,11 @@ public class StudentManagementControl {
 		studentManagement.createOrgnodeStudent(finalStudentList);
 		studentManagement.createStudentAccommodations(finalStudentList);
 		studentManagement.createStudentDemographicData(finalStudentList);
+		
+		
 	}
 	
-	public void executeStudentUpdate(List<UploadStudent> finalStudentList, Integer customerId) throws Exception{
+	public void executeStudentUpdate(List<UploadStudent> finalStudentUpdateList, Integer customerId , Map<String,Integer> studentIdExtPinMap ) throws Exception{
 		
 		Map<Integer, ArrayList<OrganizationNode>> studentOrgMap = new HashMap<Integer, ArrayList<OrganizationNode>>();
 		Map<Integer, StudentAccommodations> studentAccomMap = new HashMap<Integer, StudentAccommodations>();
@@ -64,14 +67,18 @@ public class StudentManagementControl {
 		int counter = 0;
 		boolean firstValue = true;
 		StringBuilder inClause = new StringBuilder();
-		//StringBuilder demographicIds = new StringBuilder();
-		//Set<Integer> demoIdSet  = new HashSet<Integer>();
 		
-		
-		for(UploadStudent upStd : finalStudentList){
+		for(UploadStudent upStd : finalStudentUpdateList){
+			Integer studentId = 0;
+			if (upStd.getManageStudent().getId()==null){
+				studentId = studentIdExtPinMap.get(upStd.getManageStudent().getStudentIdNumber().trim());
+				upStd.getManageStudent().setId(studentId);
+				upStd.getStudentAccommodations().setStudentId(studentId);
+				//upStd.getStudent().setStudentId(studentId);
+			}else{
+				studentId = upStd.getManageStudent().getId();
+			}
 			
-			Integer studentId = upStd.getManageStudent().getId();
-			//demographicIds = generateDemographicIds(demographicIds,upStd.getStudentDemographic(),demoIdSet, firstValue);
 			if(firstValue){
 				firstValue = false;
 			}else{
@@ -99,10 +106,10 @@ public class StudentManagementControl {
 		
 		
 		// Update student details, accommodation, demographic 
-		studentManagement.updateStudent(finalStudentList, studentOrgMap);
-		updateOrgNodeStudent(finalStudentList, studentOrgMap, customerId);
-		updateAccommodation(finalStudentList, studentAccomMap);
-		updateStudentDemographicData(finalStudentList, studentDemoMap);
+		studentManagement.updateStudent(finalStudentUpdateList, studentOrgMap);
+		updateOrgNodeStudent(finalStudentUpdateList, studentOrgMap, customerId);
+		updateAccommodation(finalStudentUpdateList, studentAccomMap);
+		updateStudentDemographicData(finalStudentUpdateList, studentDemoMap);
 		
 	}
 	
@@ -145,8 +152,9 @@ public class StudentManagementControl {
 			}
 			
 		}
-		
-		studentManagement.createOrgnodeStudentDuringUpdate(newOrgStudentList);
+		if(newOrgStudentList.size() > 0) {
+			studentManagement.createOrgnodeStudentDuringUpdate(newOrgStudentList);
+		}
 		
 	}
 	
@@ -155,7 +163,6 @@ public class StudentManagementControl {
 		while(it.hasNext()){
 			OrganizationNode newONode = it.next();
 			if(newONode.getOrgNodeId().intValue() == orgNodeId.intValue()){
-				it.remove();
 				return true;
 			}
 		}

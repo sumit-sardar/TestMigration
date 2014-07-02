@@ -1,9 +1,8 @@
 package com.ctb.importData;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.FilenameFilter;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -25,7 +24,7 @@ import com.jcraft.jsch.Session;
 public class ImportDataProcessor {
 	
 	static Logger logger = Logger.getLogger(ImportDataProcessor.class.getName());
-    static String propertiesFilePathLocation = "/export/home/oasdev/operations/operation-tools/java/ImportDataFromEngradeToOAS/PropertiesFiles/";
+    static final String propertiesFilePathLocation = "/export/home/oasdev/operations/operation-tools/java/ImportDataFromEngradeToOAS/PropertiesFiles/";
 	//static String propertiesFilePathLocation = "C:\\Documents and Settings\\545946\\Desktop\\Sprint 75\\ImportDataFromEngradeToOAS\\";
 	static String sourceDir , targetDir ,archiveDir = "";
 	static Integer customerId = new Integer(0);	
@@ -34,9 +33,8 @@ public class ImportDataProcessor {
 	
 	public static void main(String[] args) {
 		System.out.println("StartTime:" + new Date(System.currentTimeMillis()));
-		//PropertyConfigurator.configure("conf/log4j.properties");
 		String envName = getPropFileFromCommandLine(args);
-		ExtractUtil.loadExternalPropetiesFile(envName, propertiesFilePathLocation);
+		ExtractUtil.loadExternalPropetiesFile(envName, propertiesFilePathLocation); 
 		sourceDir = Configuration.getFtpFilePath();
 		targetDir = Configuration.getLocalFilePath();
 		archiveDir = Configuration.getArchivePath();
@@ -85,29 +83,41 @@ public class ImportDataProcessor {
 	
 	private void processImportedFiles() throws Exception{
 		File folder = new File(targetDir);
-		File[] listOfFiles = folder.listFiles();
-		int uploadDataFileId = 0; 
-		if(listOfFiles != null && listOfFiles.length > 0){
-			for (int j = 0; j < listOfFiles.length; j++) {				
+		
+		File[] listOfFiles = folder.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String filename) {
+				return filename.endsWith(".csv");
+			}
+		});
+		
+		//File[] listOfFiles = folder.listFiles();
+		
+		int uploadDataFileId = 0;
+		if (listOfFiles != null && listOfFiles.length > 0) {
+			int lerngth =listOfFiles.length;
+			for (int j = 0; j < lerngth ; j++) {
 				File inFile = listOfFiles[j];
-				System.out.println("File Process Started for-> "+inFile.getName());
-				if(inFile.isFile()){
+				System.out.println("File Process Started for-> "+ inFile.getName() + " \t Customer-id used : "	+ ImportDataProcessor.customerId);
+				logger.info("File Process Started for-> " + inFile.getName()+ " \t Customer-id used : "+ ImportDataProcessor.customerId);
+				
+				if (inFile.isFile()) {
 					System.out.println("ReadFileContent Start Time:" + new Date(System.currentTimeMillis()));
-					uploadDataFileId = readFileContent(inFile).intValue();	
-					if(uploadDataFileId != 0){
-						addErrorDataFile( inFile , new Integer(uploadDataFileId));
-						System.out.println("ReadFileContent End Time:" + new Date(System.currentTimeMillis()));
-						try{
-							if (null != uploadMoveData){
-								UploadThread uploadThread = new UploadThread(customerId ,inFile,new Integer(uploadDataFileId) ,uploadMoveData);
+					
+					uploadDataFileId = readFileContent(inFile).intValue();
+					if (uploadDataFileId != 0) {
+						addErrorDataFile(inFile, new Integer(uploadDataFileId));
+						System.out.println("ReadFileContent End Time:"+ new Date(System.currentTimeMillis()));
+						try {
+							if (null != uploadMoveData) {
+								UploadThread uploadThread = new UploadThread(customerId, inFile, new Integer(uploadDataFileId),	uploadMoveData);
 								new Thread(uploadThread).start();
 							}
-						}catch(Exception e){
+						} catch (Exception e) {
 							System.out.println("Thread invoking Error.. ");
 							logger.error("Thread invoking Error..");
 							throw e;
 						}
-					}else{
+					} else {
 						System.out.println("Upload Process Failed.. ");
 						logger.error("Upload Process Failed..");
 					}
@@ -139,8 +149,8 @@ public class ImportDataProcessor {
 		String strFileName = inFile.getName(); 
 		Integer uploadDataFileId = new Integer(0);
         if (!UploadFormUtils.verifyFileExtension(strFileName)){ 
-        	logger.error("Upload File Extension must be .xls");
-        	System.out.println("Upload File Extension must be .xls");
+        	logger.error("Upload File Extension must be .csv");
+        	System.out.println("Upload File Extension must be .csv");
             return new Integer(0);
          }        
         long filesize = (inFile.getTotalSpace());        
@@ -150,9 +160,8 @@ public class ImportDataProcessor {
             return new Integer(0);       
         }            
         try {
-            //String saveFileName = getSaveFileName(strFileName);            
             uploadDataFileId = uploadFormUtils.saveFileToDBTemp(inFile);
-            System.out.println("File saved in data_file_temp table..");
+            System.out.println("File Data saved in data_file_temp table..");
             return uploadDataFileId;        
         } catch (Exception e) {        	
             e.printStackTrace();       
@@ -165,25 +174,19 @@ public class ImportDataProcessor {
 	public Integer addErrorDataFile(File inFile , Integer uploadDataFileId)throws CTBBusinessException {
 		int noOfUserColumn = 0;		
 		// Used to read the file type
-		InputStream fileInputStrean = null;	
 		UploadFormUtils  uploadFormUtils = new UploadFormUtils();
 		try {
 			DataFileAudit dataFileAudit = new DataFileAudit();			
 			Integer customerId = ImportDataProcessor.customerId;			
-			boolean isLaslinksCustomer = uploadFormUtils.checkCustomerConfigurationEntries(customerId,"ENGRADE_Customer");			
-			/*if ( serverFilePath.indexOf(String.valueOf(customerId.intValue())) <=  -1  ) {			
-				CTBBusinessException be = new CTBBusinessException("Uploaded.Failed");
-				 throw be;
-			}*/				
-			if ( !isLaslinksCustomer) {	
-				System.out.println("Configuration not present..");
+			boolean isEngradeCustomer = uploadFormUtils.checkCustomerConfigurationEntries(customerId,"ENGRADE_Customer");			
+			if ( !isEngradeCustomer) {	
+				System.out.println("ENGRADE_Customer Configuration not present..");
 				throw  new CTBBusinessException("Uploaded.Failed") ;				
 			}	
 			OrgNodeCategory[] orgNodeCategory = uploadFormUtils.getOrgNodeCategories(customerId);
 			noOfUserColumn = (orgNodeCategory.length) * 3 + 1;		
-			fileInputStrean = new FileInputStream(inFile);
 			//Validating the excel sheet			
-			String fileType = uploadFormUtils.getUploadFileCheck(fileInputStrean,noOfUserColumn,customerId,orgNodeCategory);    
+			String fileType = uploadFormUtils.getUploadFileCheck(inFile,noOfUserColumn,customerId,orgNodeCategory);    
 			if ( fileType == "") {				
 				throw  new CTBBusinessException("Uploaded.Failed") ;				
 			}
@@ -234,5 +237,6 @@ public class ImportDataProcessor {
 		
 		return uploadDataFileId;
 	}
+	
 
 }

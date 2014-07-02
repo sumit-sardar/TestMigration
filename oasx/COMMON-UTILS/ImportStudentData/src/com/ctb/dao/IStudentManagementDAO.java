@@ -15,7 +15,7 @@ import com.ctb.bean.UploadStudent;
 public interface IStudentManagementDAO {
 	
 	void populateActualStudentUserName(List<UploadStudent> finalStudentList, String userNames, Integer studentCount) throws Exception;
-	List<UploadStudent> populateActualStudentIds(List<UploadStudent> finalStudentList, Integer newStudentCount) throws Exception;
+	List<UploadStudent> populateActualStudentIds(List<UploadStudent> finalStudentList, Integer newStudentCount , Map<String,Integer> studentIdExtPinMap) throws Exception;
 	void insertStudentDetails(List<UploadStudent> finalStudentList) throws Exception;
 	void createStudentAccommodations(List<UploadStudent> finalStudentList) throws Exception;
 	void createStudentDemographicData(List<UploadStudent> finalStudentList) throws Exception;

@@ -48,15 +48,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	public void createDataFileTemp(DataFileTemp tempFile) throws Exception{
 		Connection conn = null;
 	   	PreparedStatement pstmt = null;
-	   //	ResultSet rSet = null;
 	   	String queryString = "insert into DATA_FILE_TEMP  ( DATA_FILE_AUDIT_ID, DATA_FILE )  values ( ?, ? )";
 	   	try{
 	   		conn = SQLUtil.getConnection();
 	   		pstmt = conn.prepareStatement(queryString);
 	   		pstmt.setInt(1, tempFile.getDataFileAuditId());
 	   		pstmt.setBytes(2, tempFile.getDataFile());
-	   		int status = pstmt.executeUpdate();	 
-	   		System.out.print("status "+status);
+	   		pstmt.executeUpdate();	 
 	   	}catch(SQLException e){
 	   		logger.error("SQL Exception in createDataFileTemp-- >"+ e.getErrorCode());
 	   		e.printStackTrace();

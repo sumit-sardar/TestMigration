@@ -1,9 +1,11 @@
 package com.ctb.utils;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -21,12 +24,13 @@ import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.ctb.bean.CustomerConfig;
 import com.ctb.bean.CustomerConfiguration;
@@ -114,6 +118,7 @@ public class UploadStudentFile {
 	private StudentManagementControl studentManagement = new StudentManagementControl();
 	private static Logger logger = Logger.getLogger(UploadStudentFile.class.getName());
 	private static List<UploadStudent> finalStudentList = new ArrayList<UploadStudent>();
+	private static Map<String,Integer> studentIdExtPinMap = new HashMap<String, Integer>(); 
 	private static List<UploadStudent> finalUpdateStudentList = new ArrayList<UploadStudent>();
 	private static Set<String> studentUserNames = new HashSet<String>();
 	
@@ -157,15 +162,13 @@ public class UploadStudentFile {
 	public void startProcessing() throws Exception {
 		System.out.println("Data Validation Start Time:" + new Date(System.currentTimeMillis()));
 		studentDao = new StudentFileDaoImpl();
-		POIFSFileSystem pfs = null;
-		HSSFSheet sheet = null;
 		HashMap<Integer, ArrayList<String>> requiredMap = new HashMap<Integer, ArrayList<String>>();
 		HashMap<Integer,ArrayList<String>> maxLengthMap = new HashMap<Integer,ArrayList<String>>();
 		HashMap<Integer,ArrayList<String>> minLengthMap = new HashMap<Integer,ArrayList<String>>();
 		HashMap<Integer,ArrayList<String>> invalidCharMap = new HashMap<Integer,ArrayList<String>>();
 		HashMap<Integer,ArrayList<String>> logicalErrorMap = new HashMap<Integer,ArrayList<String>>();
 		HashMap<Integer,ArrayList<String>> hierarchyErrorMap = new HashMap<Integer,ArrayList<String>>();
-		HashMap<Integer,ArrayList<String>> leafNodeErrorMap = new HashMap<Integer,ArrayList<String>>();
+		HashMap<Integer,String> leafNodeErrorMap = new HashMap<Integer,String>();
 		HashMap<Integer,String> blankRowMap = new HashMap<Integer,String>();
 		boolean isBlankRow = true;
 		String strCellName = "";
@@ -184,54 +187,49 @@ public class UploadStudentFile {
 				this.visibleStudent.put(studentFileRow[i].getKey(),
 						studentFileRow[i]);
 			}
-			//System.out.println("this.uploadedStream 1 "+this.uploadedStream);
-			pfs = new POIFSFileSystem(this.uploadedStream);
-			HSSFWorkbook wb = new HSSFWorkbook(pfs);
-			sheet = wb.getSheetAt(0);
-			int totalRows = 0;
-			if (sheet != null) {
-				totalRows = sheet.getPhysicalNumberOfRows();
-			}
-			HSSFRow rowHeader = sheet.getRow(0);
-			for (int i = 1; i < totalRows; i++) {
-				/*System.out.println("    ***** Upload Control: Processing row "
-						+ i);*/
-				HSSFRow row = sheet.getRow(i);
-				if (row == null) {
-					totalRows++;
+			
+			CSVReader csv = new CSVReader(new BufferedReader(new FileReader(this.inFile)), ',');
+			int rowIndex = 0;
+			boolean isFirstRow = true;
+			String[]  rowHeader = new String[0] ;
+			String[]  row ;
+			while ((row = csv.readNext()) != null) {
+				//System.out.println("rowIndex " + rowIndex );
+				if (isFirstRow) {
+					rowHeader = new String[row.length];
+					rowHeader = row;
+					isFirstRow = false;
+					rowIndex++;
 					continue;
-				} else {
-					int totalCells = rowHeader.getPhysicalNumberOfCells();
-					for (int k = 0; k < totalCells; k++) {
-						HSSFCell cell = row.getCell((short) k);
-						if (cell != null
-								&& (!getCellValue(cell).trim().equals("") && !(cell
-										.getCellType() == 3))) {
-							isBlankRow = false;
-						}
+				}
+				int totalCells = row.length;
+				for (int k = 0; k < totalCells; k++) {
+					String cell = row[k];
+					if (cell != null && (!getCellValue(cell).trim().equals(""))) {
+						isBlankRow = false;
 					}
-					if (isBlankRow) {
-						blankRowMap.put(new Integer(i), "BlankRow");
-						continue;
-					}
+					
+				}
+				if (isBlankRow) {
+					blankRowMap.put(new Integer(rowIndex), "BlankRow");
+					continue;
+				}
 
-				}// else block ends
-				
 				/**
-				 * This function is used to check all the Data error present in file.
+				 * This function is used to check all the Data error present in
+				 * file.
 				 * */
-				getEachRowStudentDetail(i, row, rowHeader, requiredMap,
+				getEachRowStudentDetail(rowIndex, row, rowHeader, requiredMap,
 						maxLengthMap, invalidCharMap, logicalErrorMap,
 						minLengthMap);
 
-				//System.out.println("Error checking complete for row " + i);
 
-				if (!(requiredMap.containsKey(new Integer(i))
-						|| invalidCharMap.containsKey(new Integer(i))
-						|| minLengthMap.containsKey(new Integer(i))
-						|| maxLengthMap.containsKey(new Integer(i)) || logicalErrorMap
-						.containsKey(new Integer(i)))) {
-					
+				if (!(requiredMap.containsKey(new Integer(rowIndex))
+						|| invalidCharMap.containsKey(new Integer(rowIndex))
+						|| minLengthMap.containsKey(new Integer(rowIndex))
+						|| maxLengthMap.containsKey(new Integer(rowIndex)) || logicalErrorMap
+						.containsKey(new Integer(rowIndex)))) {
+
 					loginUserPosition = getLoginUserOrgPosition(row, rowHeader,
 							this.userTopOrgNode);
 
@@ -239,8 +237,7 @@ public class UploadStudentFile {
 					Node[] node = this.studentFileRowHeader[0]
 							.getOrganizationNodes();
 					Integer[] parentOrgId = new Integer[1];
-					HSSFCell loginUserOrgCell = row
-							.getCell((short) loginUserPosition);
+					String loginUserOrgCell = row[loginUserPosition];
 					String loginUserOrgName = getCellValue(loginUserOrgCell);
 					Node loginUserNode = getLoginUserOrgDetail(
 							this.userTopOrgNode, loginUserOrgName);
@@ -250,11 +247,10 @@ public class UploadStudentFile {
 
 					for (int j = loginUserPosition + orgPosFact; j < OrgHeaderLastPosition; j = j
 							+ orgPosFact) {
-
-						HSSFCell cellHeaderName = rowHeader.getCell(j);
-						HSSFCell cellHeaderId = rowHeader.getCell(j + 1);
-						HSSFCell cellName = row.getCell(j);
-						HSSFCell cellId = row.getCell(j + 1);
+						String cellHeaderName = rowHeader[j];
+						String cellHeaderId = rowHeader[j + 1];
+						String cellName = row[j];
+						String cellId = row[j + 1];
 
 						strCellName = getCellValue(cellName);
 						strCellId = getCellValue(cellId);
@@ -262,12 +258,11 @@ public class UploadStudentFile {
 						strCellHeaderId = getCellValue(cellHeaderId);
 						Integer categoryId = null;
 
-						HSSFCell cellHeaderMdr = rowHeader.getCell(j + 2);
-						HSSFCell cellMdr = row.getCell(j + 2);
+						String cellHeaderMdr = rowHeader[j + 2];
+						String cellMdr = row[j + 2];
 						strCellMdr = getCellValue(cellMdr);
 						strCellHeaderMdr = getCellValue(cellHeaderMdr);
-						HSSFCell OrgCellHeaderName = rowHeader
-								.getCell((short) j);
+						String OrgCellHeaderName = rowHeader[j];
 						String headerName = getCellValue(OrgCellHeaderName);
 						Node[] nodeCategory = this.studentFileRowHeader[0]
 								.getOrganizationNodes();
@@ -282,7 +277,8 @@ public class UploadStudentFile {
 							 */
 							ArrayList<String> requiredList = new ArrayList<String>();
 							requiredList.add(strCellHeaderName);
-							requiredMap.put(new Integer(i), requiredList);
+							requiredMap
+									.put(new Integer(rowIndex), requiredList);
 							break;
 						} else if (strCellName.equals("")
 								&& hasOrganization(j - orgPosFact, row)
@@ -291,9 +287,10 @@ public class UploadStudentFile {
 							// cellHeaderName
 							ArrayList<String> requiredList = new ArrayList<String>();
 							requiredList.add(strCellHeaderName);
-							requiredMap.put(new Integer(i), requiredList);
+							requiredMap
+									.put(new Integer(rowIndex), requiredList);
 							break;
-						} else if (!isValidMDR(i, isMatchUploadOrgIds,
+						} else if (!isValidMDR(rowIndex, isMatchUploadOrgIds,
 								strCellId, parentOrgId, categoryId,
 								requiredMap, invalidCharMap, logicalErrorMap,
 								newMDRList, strCellMdr, strCellName,
@@ -311,7 +308,7 @@ public class UploadStudentFile {
 									 */
 									ArrayList<String> invalidList = new ArrayList<String>();
 									invalidList.add(strCellHeaderId);
-									invalidCharMap.put(new Integer(i),
+									invalidCharMap.put(new Integer(rowIndex),
 											invalidList);
 									break;
 								} else {
@@ -320,14 +317,14 @@ public class UploadStudentFile {
 									if (!isMaxLength50(strCellName)) {
 										ArrayList<String> maxLengthList = new ArrayList<String>();
 										maxLengthList.add(strCellHeaderName);
-										maxLengthMap.put(new Integer(i),
+										maxLengthMap.put(new Integer(rowIndex),
 												maxLengthList);
 										flag = true;
 									}
 									if (!isMaxLength32(strCellHeaderId)) {
 										ArrayList<String> maxLengthList = new ArrayList<String>();
 										maxLengthList.add(strCellHeaderId);
-										maxLengthMap.put(new Integer(i),
+										maxLengthMap.put(new Integer(rowIndex),
 												maxLengthList);
 										flag = true;
 									}
@@ -340,26 +337,32 @@ public class UploadStudentFile {
 								// cellHeaderName
 								ArrayList<String> invalidList = new ArrayList<String>();
 								invalidList.add(strCellHeaderName);
-								invalidCharMap.put(new Integer(i), invalidList);
+								invalidCharMap.put(new Integer(rowIndex),
+										invalidList);
 								break;
 							}
 						}
 					}// end for
-					checkLeafNodeError(i, row, rowHeader, leafNodeErrorMap);
+					checkLeafNodeError(rowIndex, row, rowHeader,
+							leafNodeErrorMap);
 				}// end if
 				isBlankRow = true;
-			}// for loop end of total row processing
+				rowIndex ++;
+				
+			}// while loop end of total row processing
 
 			if (requiredMap.size() > 0 || minLengthMap.size() > 0
 					|| maxLengthMap.size() > 0 || invalidCharMap.size() > 0
 					|| logicalErrorMap.size() > 0
 					|| hierarchyErrorMap.size() > 0
 					|| leafNodeErrorMap.size() > 0) {
-				System.out.println("Error Excel Start Time:" + new Date(System.currentTimeMillis()));	
+				System.out.println("Error Excel Start Time:" + new Date(System.currentTimeMillis()));
 				
-				errorExcelCreation(requiredMap, maxLengthMap, invalidCharMap,
+				System.out.println("Excel not generated for the time being. But error records are present.");
+				
+				/*errorExcelCreation(requiredMap, maxLengthMap, invalidCharMap,
 						logicalErrorMap, hierarchyErrorMap, leafNodeErrorMap,
-						minLengthMap);
+						minLengthMap);*/
 				
 				System.out.println("Error Excel End Time:" + new Date(System.currentTimeMillis()));
 			}
@@ -371,7 +374,7 @@ public class UploadStudentFile {
 					maxLengthMap, invalidCharMap, logicalErrorMap,
 					hierarchyErrorMap, studentDataMap, leafNodeErrorMap,
 					blankRowMap, isMatchUploadOrgIds, this.userTopOrgNode,
-					isBlankRow , pfs);
+					isBlankRow);
 			
 			/**
 			 * Archiving Process 
@@ -393,282 +396,357 @@ public class UploadStudentFile {
 	private void createOrganizationAndStudent(HashMap<Integer, ArrayList<String>> requiredMap,
 			HashMap<Integer, ArrayList<String>> minLengthMap, HashMap<Integer, ArrayList<String>> maxLengthMap, HashMap<Integer, ArrayList<String>> invalidCharMap,
 			HashMap<Integer, ArrayList<String>> logicalErrorMap, HashMap<Integer, ArrayList<String>> hierarchyErrorMap,
-			HashMap<String,String> studentDataMap, HashMap<Integer, ArrayList<String>> leafNodeErrorMap,
+			HashMap<String,String> studentDataMap, HashMap<Integer, String> leafNodeErrorMap,
 			HashMap<Integer,String> blankRowMap, boolean isMatchUploadOrgIds,
-			Node[] loginUserNodes, boolean isMatchMdrNo, POIFSFileSystem pfs2) throws Exception {
+			Node[] loginUserNodes, boolean isMatchMdrNo) throws Exception {
 		
 		System.out.println("CreateOrganizationAndStudent Start Time:" + new Date(System.currentTimeMillis()));
-		HSSFSheet sheet = null;
 		int loginUserOrgPosition = 0;
 		Node organization = null;
 		Integer orgNodeId = null;
 		boolean isBlankRow = true;
-		try {		
-			HSSFWorkbook wb = new HSSFWorkbook(pfs2);
-			sheet = wb.getSheetAt(0);
-			int totalRows = 0;
-			if ( sheet != null) {
-				totalRows =  sheet.getPhysicalNumberOfRows();
-			}
-			HSSFRow rowHeader = sheet.getRow(0);
+		try {	
+			String[] rowHeader = new String[0];
+			String[] row ;
+			int rowIndex = 0;
+			boolean isRowHeader = true;
 			Node []nodeCategory = this.studentFileRowHeader[0].getOrganizationNodes();
 			int orgHeaderLastPosition = nodeCategory.length * orgPosFact;
-			for ( int i = 1; i < totalRows; i++ ) {
-				//System.out.println("    ***** Upload Control: 2nd loop: Processing row " + i);
-				HSSFRow bodyRow = sheet.getRow(i);
-				if ( bodyRow == null ) {
-					totalRows++;
+			CSVReader csv = new CSVReader(new BufferedReader(new FileReader(this.inFile)), ',');
+			while ((row = csv.readNext()) != null){
+				if (isRowHeader) {
+					rowHeader = new String[row.length];
+					rowHeader = row;
+					isRowHeader = false;
+					rowIndex++;
 					continue;
-				} else {
-					int totalCells = rowHeader.getPhysicalNumberOfCells();         
-					// retrive each cell value for user
-					for (int k = 0; k < totalCells; k++) {
-						HSSFCell cell = bodyRow.getCell((short)k);
-						if ( cell != null && (!getCellValue(cell).trim().equals("") 
-								&& !(cell.getCellType() == 3)) ) {
-							isBlankRow = false;                  
-						} 
-					}
-					if (isBlankRow) {
-						continue;
+				}
+				int totalCells = rowHeader.length;
+				// retrieve each cell value for user
+				for (int k = 0; k < totalCells; k++) {
+					String cell = row[k];
+					if (cell != null && (!getCellValue(cell).trim().equals(""))) {
+						isBlankRow = false;
 					}
 				}
-				if ( !(requiredMap.containsKey(new Integer(i)) 
-						|| invalidCharMap.containsKey(new Integer(i)) 
-						|| minLengthMap.containsKey(new Integer(i)) 
-						|| maxLengthMap.containsKey(new Integer(i)) 
-						|| logicalErrorMap.containsKey(new Integer(i)) 
-						|| hierarchyErrorMap.containsKey(new Integer(i))
-						|| leafNodeErrorMap.containsKey(new Integer(i))
-						|| blankRowMap.containsKey(new Integer(i))) ) {
+				if (isBlankRow) {
+					continue;
+				}
+				if (!(requiredMap.containsKey(new Integer(rowIndex))
+						|| invalidCharMap.containsKey(new Integer(rowIndex))
+						|| minLengthMap.containsKey(new Integer(rowIndex))
+						|| maxLengthMap.containsKey(new Integer(rowIndex))
+						|| logicalErrorMap.containsKey(new Integer(rowIndex))
+						|| hierarchyErrorMap.containsKey(new Integer(rowIndex))
+						|| leafNodeErrorMap.containsKey(new Integer(rowIndex)) || blankRowMap
+						.containsKey(new Integer(rowIndex)))) {
+					//System.out.println("Insertion will happen for" + rowIndex);
 
-					//OrganizationCreation or Existency check process
-					loginUserOrgPosition = getLoginUserOrgPosition(
-							bodyRow, rowHeader,
-							loginUserNodes);
+					// OrganizationCreation or Existence check process
+					loginUserOrgPosition = getLoginUserOrgPosition(row,
+							rowHeader, loginUserNodes);
 
-					HSSFCell loginUserOrgCell = bodyRow.getCell(
-							(short)loginUserOrgPosition);
+					String loginUserOrgCell = row[loginUserOrgPosition];
 
 					String loginUserOrgName = getCellValue(loginUserOrgCell);
-					Node loginUserNode = getLoginUserOrgDetail(
-							loginUserNodes, loginUserOrgName);
+					Node loginUserNode = getLoginUserOrgDetail(loginUserNodes,
+							loginUserOrgName);
 
-					//orgNodeId and parentId initialization process
+					// orgNodeId and parentId initialization process
 					Integer parentOrgId = loginUserNode.getOrgNodeId();
 					orgNodeId = loginUserNode.getOrgNodeId();
-					int lastOrganization = 0; 
-					String leafName="";
-					// For  MDR columns needs to be removed for nonLaslinks
-					for ( int ii = loginUserOrgPosition + orgPosFact; ii < orgHeaderLastPosition; ii = ii + orgPosFact ) { 
-						HSSFCell OrgCellName = bodyRow.getCell((short)ii);
-						HSSFCell OrgCellId = bodyRow.getCell((short)ii + 1);
-						HSSFCell orgCellHeaderName = rowHeader.getCell((short)ii);
+					int lastOrganization = 0;
+					// For MDR columns needs to be removed for nonLaslinks
+					for (int ii = loginUserOrgPosition + orgPosFact; ii < orgHeaderLastPosition; ii = ii
+							+ orgPosFact) {
+						String OrgCellName = row[ii];
+						String OrgCellId =  row[ii + 1];
+						String orgCellHeaderName = rowHeader[ii];
 						String orgCode = getCellValue(OrgCellId);
 						String orgName = getCellValue(OrgCellName);
-						HSSFCell OrgCellHeaderName = rowHeader.getCell((short)ii);
+						String OrgCellHeaderName = rowHeader[ii];
 						String headerName = getCellValue(OrgCellHeaderName);
-						Integer categoryId = getCategoryId (headerName, nodeCategory);
+						Integer categoryId = getCategoryId(headerName,
+								nodeCategory);
 						String orgMdr = null;
-						if(isMatchMdrNo){
-							HSSFCell OrgCellMdr = bodyRow.getCell((short)ii + 2);
-	                        orgMdr = getCellValue(OrgCellMdr);
+						if (isMatchMdrNo) {
+							String OrgCellMdr = row[ii + 2];
+							orgMdr = getCellValue(OrgCellMdr);
 						}
-						if ( !hasOrganization(ii,bodyRow) && orgName.equals("")
+						if (!hasOrganization(ii, row) && orgName.equals("")
 								&& orgCode.equals("")) {
 							lastOrganization = ii;
 							break;
-						} else if (hasOrganization(ii,bodyRow) && orgName.equals("") 
-								&& orgCode.equals("")) {
+						} else if (hasOrganization(ii, row)
+								&& orgName.equals("") && orgCode.equals("")) {
 							continue;
 						} else {
-							// Search Organization by OrgCode    
-							if ( isMatchUploadOrgIds ) {
-								boolean isOrgExist = isOrganizationExist (orgCode, parentOrgId, categoryId, isMatchUploadOrgIds);
-								if (!orgCode.trim().equals("") || !orgName.trim().equals("") ) {
+							// Search Organization by OrgCode
+							if (isMatchUploadOrgIds) {
+								boolean isOrgExist = isOrganizationExist(
+										orgCode, parentOrgId, categoryId,
+										isMatchUploadOrgIds);
+								if (!orgCode.trim().equals("")
+										|| !orgName.trim().equals("")) {
 									// Search Organization by OrgName
-									if ( !isOrgExist ) {
-										isOrgExist = isOrganizationExist (orgName, parentOrgId, categoryId, !isMatchUploadOrgIds);
+									if (!isOrgExist) {
+										isOrgExist = isOrganizationExist(
+												orgName, parentOrgId,
+												categoryId,
+												!isMatchUploadOrgIds);
 										// No organization Exist
-										if ( !isOrgExist ) {
+										if (!isOrgExist) {
 											organization = new Node();
-											organization.setCustomerId(customerId);
-											organization.setOrgNodeName(orgName);
-											organization.setOrgNodeCode(orgCode); 
-											organization.setOrgNodeCategoryId(categoryId);
-											organization.setParentOrgNodeId(parentOrgId);
-											 if(isMatchMdrNo) {
-                                             	organization.setMdrNumber(orgMdr);
-                                             }
-											//create Organization
-											organization = this.organizationManagement.createOrganization(null, organization);
-											//parentId and orgNodeId updated
-											parentOrgId = organization.getOrgNodeId();
-											orgNodeId = organization.getOrgNodeId();
-											ArrayList<Node> tempList = new ArrayList<Node>( Arrays.asList(this.detailNodeM));
+											organization
+													.setCustomerId(customerId);
+											organization
+													.setOrgNodeName(orgName);
+											organization
+													.setOrgNodeCode(orgCode);
+											organization
+													.setOrgNodeCategoryId(categoryId);
+											organization
+													.setParentOrgNodeId(parentOrgId);
+											if (isMatchMdrNo) {
+												organization
+														.setMdrNumber(orgMdr);
+											}
+											// create Organization
+											organization = this.organizationManagement
+													.createOrganization(null,
+															organization);
+											// parentId and orgNodeId updated
+											parentOrgId = organization
+													.getOrgNodeId();
+											orgNodeId = organization
+													.getOrgNodeId();
+											ArrayList<Node> tempList = new ArrayList<Node>(
+													Arrays.asList(this.detailNodeM));
 											tempList.add(organization);
-											this.detailNodeM = (Node[])tempList.toArray(new Node[0]);
+											this.detailNodeM = (Node[]) tempList
+													.toArray(new Node[0]);
 										} else {
-											// retrive existing organization by passing orgName
-											organization = getOrgNodeDetail(orgName, parentOrgId, categoryId, false);
-											//Is Organization Exist
+											// retrieve existing organization by
+											// passing orgName
+											organization = getOrgNodeDetail(
+													orgName, parentOrgId,
+													categoryId, false);
+											// Is Organization Exist
 											if (organization != null) {
-												parentOrgId = organization.getOrgNodeId();
-												orgNodeId = organization.getOrgNodeId();
-												continue;    
-											}else {
-												//new Organization creation
+												parentOrgId = organization
+														.getOrgNodeId();
+												orgNodeId = organization
+														.getOrgNodeId();
+												continue;
+											} else {
+												// new Organization creation
 												organization = new Node();
-												organization.setCustomerId(customerId);
-												organization.setOrgNodeName(orgName);
-												organization.setOrgNodeCode(orgCode); 
-												organization.setOrgNodeCategoryId(categoryId);
-												organization.setParentOrgNodeId(parentOrgId);
-												if(isMatchMdrNo) {
-	                                             	organization.setMdrNumber(orgMdr);
-	                                             }
-												//create Organization
-												organization = this.organizationManagement.createOrganization(null, organization);
-												//parentId and orgNodeId updated
-												parentOrgId = organization.getOrgNodeId();
-												orgNodeId = organization.getOrgNodeId();
-												ArrayList<Node> tempList = new ArrayList<Node>( Arrays.asList(this.detailNodeM));
+												organization
+														.setCustomerId(customerId);
+												organization
+														.setOrgNodeName(orgName);
+												organization
+														.setOrgNodeCode(orgCode);
+												organization
+														.setOrgNodeCategoryId(categoryId);
+												organization
+														.setParentOrgNodeId(parentOrgId);
+												if (isMatchMdrNo) {
+													organization
+															.setMdrNumber(orgMdr);
+												}
+												// create Organization
+												organization = this.organizationManagement
+														.createOrganization(
+																null,
+																organization);
+												// parentId and orgNodeId
+												// updated
+												parentOrgId = organization
+														.getOrgNodeId();
+												orgNodeId = organization
+														.getOrgNodeId();
+												ArrayList<Node> tempList = new ArrayList<Node>(
+														Arrays.asList(this.detailNodeM));
 												tempList.add(organization);
-												this.detailNodeM = (Node[])tempList.toArray(new Node[0]);
+												this.detailNodeM = (Node[]) tempList
+														.toArray(new Node[0]);
 											}
 										}
 									} else {
-										// retrive existing organization by passing orgCode
-										organization = getOrgNodeDetail(orgCode, parentOrgId, categoryId, isMatchUploadOrgIds);
-										//Is Organization Exist
+										// retrieve existing organization by
+										// passing orgCode
+										organization = getOrgNodeDetail(
+												orgCode, parentOrgId,
+												categoryId, isMatchUploadOrgIds);
+										// Is Organization Exist
 										if (organization != null) {
-											parentOrgId = organization.getOrgNodeId();
-											orgNodeId = organization.getOrgNodeId();
-											continue;    
+											parentOrgId = organization
+													.getOrgNodeId();
+											orgNodeId = organization
+													.getOrgNodeId();
+											continue;
 										} else {
-											//new Organization creation
+											// new Organization creation
 											organization = new Node();
-											organization.setCustomerId(customerId);
-											organization.setOrgNodeName(orgName);
-											organization.setOrgNodeCode(orgCode); 
-											organization.setOrgNodeCategoryId(categoryId);
-											organization.setParentOrgNodeId(parentOrgId);
-											if(isMatchMdrNo) {
-                                             	organization.setMdrNumber(orgMdr);
-                                            }
-											//create Organization
-											organization = this.organizationManagement.createOrganization(null, organization);
-											//parentId and orgNodeId updated
-											parentOrgId = organization.getOrgNodeId();
-											orgNodeId = organization.getOrgNodeId();
-											ArrayList<Node> tempList = new ArrayList<Node>( Arrays.asList(this.detailNodeM));
+											organization
+													.setCustomerId(customerId);
+											organization
+													.setOrgNodeName(orgName);
+											organization
+													.setOrgNodeCode(orgCode);
+											organization
+													.setOrgNodeCategoryId(categoryId);
+											organization
+													.setParentOrgNodeId(parentOrgId);
+											if (isMatchMdrNo) {
+												organization
+														.setMdrNumber(orgMdr);
+											}
+											// create Organization
+											organization = this.organizationManagement
+													.createOrganization(null,
+															organization);
+											// parentId and orgNodeId updated
+											parentOrgId = organization
+													.getOrgNodeId();
+											orgNodeId = organization
+													.getOrgNodeId();
+											ArrayList<Node> tempList = new ArrayList<Node>(
+													Arrays.asList(this.detailNodeM));
 											tempList.add(organization);
-											this.detailNodeM = (Node[])tempList.toArray(new Node[0]);
+											this.detailNodeM = (Node[]) tempList
+													.toArray(new Node[0]);
 										}
 									}
 								}// End if
-							} else { // if no MatchUploadOrgIds present in customer configuration 
-								boolean isOrgExist = isOrganizationExist (orgName, parentOrgId, categoryId, false);
-								if (!orgName.trim().equals("")) {   
+							} else { // if no MatchUploadOrgIds present in
+										// customer configuration
+								boolean isOrgExist = isOrganizationExist(
+										orgName, parentOrgId, categoryId, false);
+								if (!orgName.trim().equals("")) {
 									// if no organization exist
 									if (!isOrgExist) {
-										//new Organization creation
+										// new Organization creation
 										organization = new Node();
 										organization.setCustomerId(customerId);
 										organization.setOrgNodeName(orgName);
-										organization.setOrgNodeCode(orgCode); 
-										organization.setOrgNodeCategoryId(categoryId);
-										organization.setParentOrgNodeId(parentOrgId);
-										if(isMatchMdrNo) {
-                                         	organization.setMdrNumber(orgMdr);
-                                         }
-										//create Organization
-										organization = this.organizationManagement.createOrganization(null, organization);
-										//parentId and orgNodeId updated
-										parentOrgId = organization.getOrgNodeId();
+										organization.setOrgNodeCode(orgCode);
+										organization
+												.setOrgNodeCategoryId(categoryId);
+										organization
+												.setParentOrgNodeId(parentOrgId);
+										if (isMatchMdrNo) {
+											organization.setMdrNumber(orgMdr);
+										}
+										// create Organization
+										organization = this.organizationManagement
+												.createOrganization(null,
+														organization);
+										// parentId and orgNodeId updated
+										parentOrgId = organization
+												.getOrgNodeId();
 										orgNodeId = organization.getOrgNodeId();
-										ArrayList<Node> tempList = new ArrayList<Node>( Arrays.asList(this.detailNodeM));
+										ArrayList<Node> tempList = new ArrayList<Node>(
+												Arrays.asList(this.detailNodeM));
 										tempList.add(organization);
-										this.detailNodeM = (Node[])tempList.toArray(new Node[0]);
+										this.detailNodeM = (Node[]) tempList
+												.toArray(new Node[0]);
 									} else {
-										// retrive existing organization by passing orgName
-										organization = getOrgNodeDetail(orgName, parentOrgId, categoryId, false);
-										//Is Organization Exist
+										// retrieve existing organization by
+										// passing orgName
+										organization = getOrgNodeDetail(
+												orgName, parentOrgId,
+												categoryId, false);
+										// Is Organization Exist
 										if (organization != null) {
-											parentOrgId = organization.getOrgNodeId();
-											orgNodeId = organization.getOrgNodeId();
-											continue;    
+											parentOrgId = organization
+													.getOrgNodeId();
+											orgNodeId = organization
+													.getOrgNodeId();
+											continue;
 										} else {
-											//new Organization creation
+											// new Organization creation
 											organization = new Node();
-											organization.setCustomerId(customerId);
-											organization.setOrgNodeName(orgName);
-											organization.setOrgNodeCode(orgCode); 
-											organization.setOrgNodeCategoryId(categoryId);
-											organization.setParentOrgNodeId(parentOrgId);
-											if(isMatchMdrNo) {
-                                             	organization.setMdrNumber(orgMdr);
-                                             }
-											//create Organization
-											organization = this.organizationManagement.createOrganization(null, organization);
-											//parentId and orgNodeId updated
-											parentOrgId = organization.getOrgNodeId();
-											orgNodeId = organization.getOrgNodeId();
-											ArrayList<Node> tempList = new ArrayList<Node>( Arrays.asList(this.detailNodeM));
+											organization
+													.setCustomerId(customerId);
+											organization
+													.setOrgNodeName(orgName);
+											organization
+													.setOrgNodeCode(orgCode);
+											organization
+													.setOrgNodeCategoryId(categoryId);
+											organization
+													.setParentOrgNodeId(parentOrgId);
+											if (isMatchMdrNo) {
+												organization
+														.setMdrNumber(orgMdr);
+											}
+											// create Organization
+											organization = this.organizationManagement
+													.createOrganization(null,
+															organization);
+											// parentId and orgNodeId updated
+											parentOrgId = organization
+													.getOrgNodeId();
+											orgNodeId = organization
+													.getOrgNodeId();
+											ArrayList<Node> tempList = new ArrayList<Node>(
+													Arrays.asList(this.detailNodeM));
 											tempList.add(organization);
-											this.detailNodeM = (Node[])tempList.toArray(new Node[0]);
+											this.detailNodeM = (Node[]) tempList
+													.toArray(new Node[0]);
 										}
 									}
 								}// End of checking orgName
 							} // Else block end
 						} // Else block (Organization creation process)
 					}
-					
-					Node []orgDetail = new Node[1];
+
+					Node[] orgDetail = new Node[1];
 					orgDetail[0] = new Node();
 					orgDetail[0].setOrgNodeId(orgNodeId);
-					for ( int j = orgHeaderLastPosition ; j < rowHeader.
-					getPhysicalNumberOfCells() ; j++ ) {
-						HSSFCell headerCell = rowHeader.getCell(j);
-						HSSFCell bodyCell  = bodyRow.getCell(j);
+					for (int j = orgHeaderLastPosition; j < rowHeader.length; j++) {
+						String headerCell = rowHeader[j];
+						String bodyCell = row[j];
 						String strHeaderValue = getCellValue(headerCell);
 						String strBodyValue = getCellValue(bodyCell);
 						studentDataMap.put(strHeaderValue, strBodyValue);
-					}  
+					}
 
-					HashMap<String,String> studentDemoMap = new HashMap<String,String>();
+					HashMap<String, String> studentDemoMap = new HashMap<String, String>();
 					ArrayList<String> demolist = new ArrayList<String>();
-					//Get the position of Demographic details
-					int start = rowHeader.
-					getPhysicalNumberOfCells() - noOfDemographicList ;  
-					for (int d = start ; d < rowHeader.
-					getPhysicalNumberOfCells() ; d++) {
-						HSSFCell headerCell = rowHeader.getCell(d);
-						HSSFCell bodyCell  = bodyRow.getCell(d);
+					// Get the position of Demographic details
+					int start = rowHeader.length
+							- noOfDemographicList;
+					for (int d = start; d < rowHeader.length; d++) {
+						String headerCell = rowHeader[d];
+						String bodyCell = row[d];
 						String strHeaderValue = getCellValue(headerCell);
 						String strBodyValue = getCellValue(bodyCell);
-						if ( !(strBodyValue.equals("")) && strBodyValue!= null ) {
+						if (!(strBodyValue.equals("")) && strBodyValue != null) {
 							studentDemoMap.put(strHeaderValue, strBodyValue);
 							demolist.add(strHeaderValue);
 						}
-					}  
-					//populate finalStudent List
-					createStudent(studentDataMap,orgHeaderLastPosition,
-							orgDetail,studentDemoMap,demolist); 
+					}
+					// populate finalStudent List
+					createStudent(studentDataMap, orgHeaderLastPosition,
+							orgDetail, studentDemoMap, demolist);
 					uploadRecordCount++;
 				}
 				isBlankRow = true;
+				rowIndex++;
 			}
 			
 			if(finalStudentList.size() > 0){
 				System.out.println("ExecuteStudentCreation Start Time:" + new Date(System.currentTimeMillis()));
-				this.studentManagement.executeStudentCreation(this.finalStudentList, this.studentUserNames);
+				this.studentManagement.executeStudentCreation(UploadStudentFile.finalStudentList, UploadStudentFile.studentUserNames ,UploadStudentFile.studentIdExtPinMap);
 				System.out.println("ExecuteStudentCreation End Time:" + new Date(System.currentTimeMillis()));
 			}
 			
 			if(finalUpdateStudentList.size() > 0){
 				System.out.println("ExecuteStudentUpdate Start Time:" + new Date(System.currentTimeMillis()));
-				this.studentManagement.executeStudentUpdate(UploadStudentFile.finalUpdateStudentList, this.customerId);
+				this.studentManagement.executeStudentUpdate(UploadStudentFile.finalUpdateStudentList, this.customerId ,UploadStudentFile.studentIdExtPinMap);
 				System.out.println("ExecuteStudentUpdate End Time:" + new Date(System.currentTimeMillis()));
 			}
 			
@@ -726,13 +804,13 @@ public class UploadStudentFile {
 	/*
 	 * 
 	 */ 
-	private boolean hasOrganization (int currentPosition, HSSFRow row) {
+	private boolean hasOrganization (int currentPosition, String[] row) {
 
 		Node []node = this.studentFileRowHeader[0].getOrganizationNodes();
 		int OrgHeaderLastPosition = node.length * orgPosFact;		 // 
 		for (int j = currentPosition + orgPosFact ; j < OrgHeaderLastPosition; j = j + orgPosFact ) { 
-			HSSFCell cellName = row.getCell(j);
-			HSSFCell cellId = row.getCell(j + 1);
+			String cellName = row[j];
+			String cellId = row[j + 1];
 			if ( !getCellValue(cellName).equals("") 
 					|| (!getCellValue(cellId).equals(""))) {
 				return true;
@@ -753,10 +831,7 @@ public class UploadStudentFile {
 			ArrayList<String> demolist)  throws Exception {
 
 
-		Student student = new Student();
 		boolean isNewStudent = true;
-		boolean isNewOrgAssigned = true;
-		boolean isNewStudentExtId = true;
 		boolean matchWithOtherCriteria = false; 
 
 		// Set into student Demographic
@@ -823,7 +898,6 @@ public class UploadStudentFile {
 				}
 			}
 
-
 			if (isNewStudent) { // Create new Student
 				manageStudent.setOrganizationNodes(studentOrgNode);
 				setStudentAccommodationData (studentAccommodations , studentDataMap);
@@ -834,15 +908,10 @@ public class UploadStudentFile {
 				setStudentAccommodationData ( studentAccommodations , studentDataMap);
 				updateStudent(manageStudent,studentAccommodations,studentDemographic);
 			}
-
-
-
 		} catch ( Exception e) {
 			e.printStackTrace();
 			throw e;
 		} 
-
-
 	}
 	
 	/**
@@ -853,7 +922,7 @@ public class UploadStudentFile {
 		studentAccommodations.setStudentId(manageStudent.getId());
 		StudentFileRow studentFileRow = new StudentFileRow();
 		copyStudentDetail (studentFileRow, manageStudent, studentAccommodations); 
-		this.visibleStudent.put(studentFileRow.getUserName(), studentFileRow);
+		//this.visibleStudent.put(studentFileRow.getExtPin1().trim(), studentFileRow);
 		
 		this.finalUpdateStudentList.add(new UploadStudent(manageStudent, studentAccommodations, studentDemographic, null));
 	}
@@ -1299,85 +1368,14 @@ public class UploadStudentFile {
 		return StudentDemoGraphics;
 	}
 	
-	/**
-	 *  Check whether student exists or not. If exists then return student id
-	 *//*
-	private StudentFileRow isStudentExists( ManageStudent student , StudentFileRow[] studentFileRow ) {
-
-		if ( studentFileRow.length!=0 && studentFileRow!=null ) {
-
-			for ( int i = 0 ; i < studentFileRow.length ; i++ ) {
-
-				// check by first name and last name
-				if ( studentFileRow[i].getFirstName().equalsIgnoreCase(student.getFirstName())
-						&& studentFileRow[i].getLastName().equalsIgnoreCase(student.getLastName()) ) {
-
-					// check by middle  name 
-					boolean middleName = false;
-					if (student.getMiddleName() != null && !student.getMiddleName().trim().equals("")) {
-						if ( studentFileRow[i].getMiddleName() !=null
-								&& studentFileRow[i].getMiddleName().
-								equalsIgnoreCase(student.getMiddleName())) {
-							// Update Student
-							middleName = true;
-						} else {
-							middleName = false;
-						}
-					} else {
-						if ( studentFileRow[i].getMiddleName() == null  
-								|| studentFileRow[i].getMiddleName().trim().equals("")) {
-							middleName = true;
-						} else {
-							middleName = false;
-						}
-					}
-					// check by gender
-					boolean gender = false;
-					if ( studentFileRow[i].getGender() != null ) {
-						gender = studentFileRow[i].getGender().equals(student.getGender());
-					}
-					
-					// check by date of birth  name 
-					boolean dateOfBirth = false;
-					Date studentBday = student.getBirthDate();
-					Date dbDate = studentFileRow[i].getBirthdate();
-					if (studentBday!= null && !studentBday.equals("")) {
-						if ( dbDate != null && !dbDate.equals("")) {
-							// Update Student
-							SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-							String datefromDB   = sdf.format(dbDate);                           
-							String studentBDate = sdf.format(studentBday);
-							dateOfBirth = datefromDB.equals(studentBDate);
-						} else {
-							dateOfBirth = false;
-						}
-					} else {
-						if ( dbDate == null  
-								|| dbDate.equals("")) {
-							dateOfBirth = true;
-						} else {
-							dateOfBirth = false;
-						}
-					}					
-					// check middle name,gender and data of birth is true. If true then 
-					// return student Id
-					if (  middleName &&  gender && dateOfBirth ) {
-						return studentFileRow[i];
-					}
-				}
-			}
-		}
-		return null;
-	}*/
 	
 	
 	/**
 	 *  Check whether student exists or not. If exists then return student id
 	 */
 	private StudentFileRow isStudentExists( ManageStudent student) {
-
 		if (this.visibleStudent.size() > 0) {
-			String newFileKey = generateKey(student);
+			String newFileKey = (student.getStudentIdNumber()!= null)? student.getStudentIdNumber().trim() : generateKey(student) ;
 			if(this.visibleStudent.containsKey(newFileKey)){
 				StudentFileRow studentFileRow = this.visibleStudent.get(newFileKey);
 				return studentFileRow;
@@ -1414,7 +1412,7 @@ public class UploadStudentFile {
 		Student student = createStudentUpload(manageStudent, customerId);
 		StudentFileRow studentFileRow = new StudentFileRow();
 		copyStudentDetail (studentFileRow, student, studentAccommodations);
-		this.visibleStudent.put(student.getUserName(), studentFileRow);
+		this.visibleStudent.put(student.getExtPin1().trim(), studentFileRow);
 		
 		
 		finalStudentList.add(new UploadStudent(manageStudent, studentAccommodations, studentDemographic, student));
@@ -1422,59 +1420,36 @@ public class UploadStudentFile {
 	
 	private Student createStudentUpload(ManageStudent manageStudent,
 			Integer customerId2) {
-			OrganizationNode [] organizationNodes = manageStudent.getOrganizationNodes();
-			
-				Student student = new Student();
-				student.setActivationStatus("AC");
-				student.setFirstName(manageStudent.getFirstName());
-				student.setMiddleName(manageStudent.getMiddleName());
-				student.setLastName(manageStudent.getLastName());
-				student.setBirthdate(manageStudent.getBirthDate());
-				student.setGender(manageStudent.getGender());
-				student.setGrade(manageStudent.getGrade());
+			Student student = new Student();
+			student.setActivationStatus("AC");
+			student.setFirstName(manageStudent.getFirstName());
+			student.setMiddleName(manageStudent.getMiddleName());
+			student.setLastName(manageStudent.getLastName());
+			student.setBirthdate(manageStudent.getBirthDate());
+			student.setGender(manageStudent.getGender());
+			student.setGrade(manageStudent.getGrade());
 
-				student.setExtPin1(manageStudent.getStudentIdNumber());
-				student.setExtPin2(manageStudent.getStudentIdNumber2());
-				student.setCreatedBy(new Integer(1));
-				student.setCreatedDateTime(new Date());
-				student.setCustomerId(customerId);
-				String studentUserName =  StudentUtils.generateUniqueStudentUserName(this.studentUserNames,student);
-				student.setUserName(studentUserName);
-
-//				for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) {
-//					Node node = orgNode.getOrgNodeById(organizationNodes[i].getOrgNodeId());                
-//					OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
-//					orgNodeStudent.setActivationStatus("AC");
-//					orgNodeStudent.setCreatedBy(userId);
-//					orgNodeStudent.setCreatedDateTime(new Date());
-//					orgNodeStudent.setCustomerId(node.getCustomerId());
-//					orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
-//					orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
-//					orgNodeStudent.setStudentId(student.getStudentId());
-//					orgNodeStudents.createOrgNodeStudent(orgNodeStudent);                                
-//				}
-				return student;
+			student.setExtPin1(manageStudent.getStudentIdNumber());
+			student.setExtPin2(manageStudent.getStudentIdNumber2());
+			student.setCreatedBy(new Integer(1));
+			student.setCreatedDateTime(new Date());
+			student.setCustomerId(customerId);
+			String studentUserName =  StudentUtils.generateUniqueStudentUserName(this.studentUserNames,student);
+			student.setUserName(studentUserName);
+			return student;
 	}
 
 	/*
 	 * Is Student already associate with orgNodeId
 	 */ 
 	private static boolean isOrganizationPresent (Integer orgNodeId, OrganizationNode []organizationNode) {
-
-
 		for (int i = 0; i < organizationNode.length ; i++) {
-
 			OrganizationNode tempNode = organizationNode[i];
-
 			if (orgNodeId.intValue() == tempNode.getOrgNodeId().intValue()) {
-
 				return true;
 			}
-
 		}
-
 		return false;
-
 	}
 	
 	/*
@@ -1952,7 +1927,7 @@ public class UploadStudentFile {
 
 	}
 
-	private int getLoginUserOrgPosition(HSSFRow row, HSSFRow rowHeader,
+	private int getLoginUserOrgPosition(String[] row, String[] rowHeader,
 			Node[] loginUserNode) {
 		int loginUserPosition = 0;
 		try {
@@ -1961,9 +1936,9 @@ public class UploadStudentFile {
 			String leafOrgName = "";
 			for (int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j
 					+ orgPosFact) {
-				HSSFCell cell = row.getCell(j);
+				String cell = row[j];
 				if (!getCellValue(cell).equals(" ")) {
-					leafOrgName = cell.getStringCellValue();
+					leafOrgName = cell;
 					if (isLoginUserOrganization(leafOrgName, loginUserNode,
 							false)) {
 						loginUserPosition = j;
@@ -2075,6 +2050,7 @@ public class UploadStudentFile {
 		}
 		if (!isOrganizationExists(isMatchUploadOrgIds, orgCode, parentOrgId,
 				categoryId, newMDRList, strCellMdr, orgName)) {
+			//New Organization
 			if (!validMdrNo(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
 				requiredList.add(strCellHeaderMdr);
@@ -2098,9 +2074,30 @@ public class UploadStudentFile {
 
 			}
 			newMDRList.add(strCellMdr);
+		} else {
+			//Update Organization
+			if (!validMdrNo(strCellMdr)) {
+				ArrayList<String> requiredList = new ArrayList<String>();
+				requiredList.add(strCellHeaderMdr);
+				requiredMap.put(new Integer(cellPos), requiredList);
+				return false;
+			} else if (!validMdrNoLength(strCellMdr)) {
+				ArrayList<String> requiredList = new ArrayList<String>();
+				requiredList.add(strCellHeaderMdr);
+				invalidCharMap.put(new Integer(cellPos), requiredList);
+				return false;
+			} else if (!validMdrNoNumeric(strCellMdr)) {
+				ArrayList<String> requiredList = new ArrayList<String>();
+				requiredList.add(strCellHeaderMdr);
+				invalidCharMap.put(new Integer(cellPos), requiredList);
+				return false;
+			}
+			//TODO Block need to check
+			//newMDRList.add(strCellMdr);
 		}
 		return true;
 	}
+
 
 	private boolean isOrganizationExists(boolean isMatchUploadOrgIds,
 			String orgCode, Integer[] parentOrgIdArray, Integer categoryId,
@@ -2280,36 +2277,15 @@ public class UploadStudentFile {
 		return true;
 	}
 
+	private String getCellValue(String cell) {
+		return  (null == cell)?"":cell.trim() ;
+	}
 	private String getCellValue(HSSFCell cell) {
-		String cellValue = "";
-		int cellType = 0;
-		if (cell != null) {
-			cellType = cell.getCellType();
-			if (cellType == 0) {
-				// Check is cell date formatted or not
-				boolean datFormat = HSSFDateUtil.isCellDateFormatted(cell);
-				if (!datFormat) {
-					cellValue = String.valueOf((new Double(cell
-							.getNumericCellValue())).longValue());
-				}
-				// date formatted is true, then format it to mm/dd/yyyy
-				if (datFormat) {
-					Date cellDate = cell.getDateCellValue();
-					SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-					cellValue = sdf.format(cellDate);
-				}
-			} else if (cellType == 1) {
-				cellValue = cell.getStringCellValue();
-			} else if (cellType == 4) {
-				boolean cellBoolValue = cell.getBooleanCellValue();
-				cellValue = new Boolean(cellBoolValue).toString();
-			}
-		}
-		return cellValue.trim();
+		return  "";
 	}
 
-	private void getEachRowStudentDetail(int rowPosition, HSSFRow row,
-			HSSFRow rowHeader, HashMap<Integer, ArrayList<String>> requiredMap,
+	private void getEachRowStudentDetail(int rowPosition, String[] row,
+			String[] rowHeader, HashMap<Integer, ArrayList<String>> requiredMap,
 			HashMap<Integer, ArrayList<String>> maxLengthMap,
 			HashMap<Integer, ArrayList<String>> invalidCharMap,
 			HashMap<Integer, ArrayList<String>> logicalErrorMap,
@@ -2323,7 +2299,7 @@ public class UploadStudentFile {
 		// retrive header category Array
 		Node[] node = this.studentFileRowHeader[0].getOrganizationNodes();
 		int studentHeaderStartPosition = node.length * orgPosFact;
-		// checking for required field,invalid charecter,maxlength,logical error
+		// checking for required field,invalid character,maxlength,logical error
 		if (isRequired(studentHeaderStartPosition, row, rowHeader, requiredList)) {
 			requiredMap.put(new Integer(rowPosition), requiredList);
 		} else if (isInvalidChar(studentHeaderStartPosition, row, rowHeader,
@@ -2341,10 +2317,10 @@ public class UploadStudentFile {
 		}
 	}
 
-	private boolean isLogicalError(int studentHeaderStartPosition, HSSFRow row,
-			HSSFRow rowHeader, ArrayList<String> logicalErrorList) {
-		int totalCells = rowHeader.getPhysicalNumberOfCells();
-		// retrive each cell value for user
+	private boolean isLogicalError(int studentHeaderStartPosition, String[] row,
+			String[] rowHeader, ArrayList<String> logicalErrorList) {
+		int totalCells = rowHeader.length;
+		// retrieve each cell value for user
 		String msBackGroundColor = "";
 		String strCell = "";
 		boolean isEthnicityPresent = false;
@@ -2353,59 +2329,51 @@ public class UploadStudentFile {
 		int start = totalCells - noOfDemographicList;
 		boolean isDemographicStart = false;
 		for (int i = studentHeaderStartPosition; i < totalCells; i++) {
-			HSSFCell cellHeader = rowHeader.getCell((short) i);
-			HSSFCell cell = row.getCell((short) i);
+			String cellHeader = rowHeader[i];
+			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!(strCell == null || strCell.equals(""))) {
-				if (cellHeader.getStringCellValue().equals(
+				if (cellHeader.equals(
 						Constants.REQUIREDFIELD_DATE_OF_BIRTH)
 						&& isFutureDate(strCell)) {
 					logicalErrorList.add(Constants.REQUIREDFIELD_DATE_OF_BIRTH);
 				}
 				// For validating combination of question background and font
 				// color
-				else if (cellHeader.getStringCellValue().equals(
+				else if (cellHeader.equals(
 						Constants.QUESTION_BACKGROUND_COLOR)) {
 					msBackGroundColor = strCell;
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.QUESTION_FONT_COLOR)
 						&& !strCell.trim().equals("")
 						&& !isValidColorCombination(msBackGroundColor, strCell)) {
 					logicalErrorList.add(Constants.QUESTION_FONT_COLOR);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.ANSWER_BACKGROUND_COLOR)) {
 					msBackGroundColor = strCell;
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.ANSWER_FONT_COLOR)
 						&& !strCell.trim().equals("")
 						&& !isValidColorCombination(msBackGroundColor, strCell)) {
 					logicalErrorList.add(Constants.ANSWER_FONT_COLOR);
 				}
 
-				if (this.isStudentIdUnique
-						&& cellHeader.getStringCellValue().equals(
-								Constants.STUDENT_ID)) {
-					if (isStudentIdUnique(strCell)
-							&& !studentIdList.contains(strCell.trim())) {
-						System.out
-								.println("studentIdList.contains(strCell.trim()) : "
-										+ studentIdList.contains(strCell.trim()));
-						if (logicalErrorList.size() == 0) {
+				/*if (this.isStudentIdUnique && (cellHeader.equals(Constants.STUDENT_ID) || cellHeader.equals(this.studentIdLabel))) {
+					if (isStudentIdUnique(strCell.trim()) && !studentIdList.contains(strCell.trim())) {
 							studentIdList.add(strCell.trim());
-						}
 					} else {
-						logicalErrorList.add(Constants.STUDENT_ID);
+						logicalErrorList.add((this.isStudentIdConfigurable)?this.studentIdLabel:Constants.STUDENT_ID);
 					}
-				}
+				}*/
 			}
 		}
 		// Demographic checking for logical error start
 		for (int i = start; i < totalCells; i++) {
-			HSSFCell cellHeader = rowHeader.getCell((short) i);
-			HSSFCell cell = row.getCell((short) i);
+			String cellHeader = rowHeader[i];
+			String cell = row[i];
 			strCell = getCellValue(cell);			
 
-			if (cellHeader.getStringCellValue().equalsIgnoreCase(
+			if (cellHeader.equalsIgnoreCase(
 					this.ethnicityLabel)) {
 				if (!strCell.trim().equals("")) {
 					isEthnicityPresent = true;
@@ -2414,10 +2382,10 @@ public class UploadStudentFile {
 					}
 				}
 			}
-			if (cellHeader.getStringCellValue().equalsIgnoreCase(
+			if (cellHeader.equalsIgnoreCase(
 					this.subEthnicityLabel)) {
 				if (isSubEthnicityRequired && strCell.trim().equals("")) {
-					System.out.println("**Logical error ethnicity.. do nothing**");
+					//TODO
 				}
 				if (!isSubEthnicityRequired && !strCell.trim().equals("")) {
 					logicalErrorList.add(Constants.ETHNICITY_LABEL);					
@@ -2434,39 +2402,36 @@ public class UploadStudentFile {
 		}
 	}
 
-	private boolean isRequired(int studentHeaderStartPosition, HSSFRow row,
-			HSSFRow rowHeader, ArrayList<String> requiredList) {
-		int totalCells = rowHeader.getPhysicalNumberOfCells();
+	private boolean isRequired(int studentHeaderStartPosition, String[] row,
+			String[] rowHeader, ArrayList<String> requiredList) {
+		int totalCells = rowHeader.length;
 		String strCell = "";
-		// retrive each cell value for user
+		// retrieve each cell value for student
 		for (int i = studentHeaderStartPosition; i < totalCells; i++) {
-			HSSFCell cellHeader = rowHeader.getCell((short) i);
-			HSSFCell cell = row.getCell((short) i);
+			String cellHeader = rowHeader[i];
+			String cell = row[i];
 			strCell = getCellValue(cell);
 			// Required field checking
-			if (strCell.equals("")
-					|| cell.getCellType() == 3
-					|| (cell.getCellType() == 1 && cell.getStringCellValue()
-							.trim().equals(""))) {
-				if (cellHeader.getStringCellValue().equals(
+			if (strCell.equals("")) {
+				if (cellHeader.equals(
 						Constants.REQUIREDFIELD_FIRST_NAME)) {
 					requiredList.add(Constants.REQUIREDFIELD_FIRST_NAME);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.REQUIREDFIELD_LAST_NAME)) {
 					requiredList.add(Constants.REQUIREDFIELD_LAST_NAME);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.REQUIREDFIELD_DATE_OF_BIRTH)) {
 					if (!disableMandatoryBirthdate) {
 						requiredList.add(Constants.REQUIREDFIELD_DATE_OF_BIRTH);
 					}
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.REQUIREDFIELD_GRADE)) {
 					requiredList.add(Constants.REQUIREDFIELD_GRADE);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.REQUIREDFIELD_GENDER)) {
 					requiredList.add(Constants.REQUIREDFIELD_GENDER);
 				} else if (this.isStudentIdMandatory) {
-					if (cellHeader.getStringCellValue().equals(
+					if (cellHeader.equals(
 							this.studentIdLabel)) {
 						requiredList.add(this.studentIdLabel);
 					}
@@ -2480,112 +2445,113 @@ public class UploadStudentFile {
 		}
 	}
 
-	private boolean isInvalidChar(int studentHeaderStartPosition, HSSFRow row,
-			HSSFRow rowHeader, ArrayList invalidList) {
+	private boolean isInvalidChar(int studentHeaderStartPosition, String[] row,
+			String[] rowHeader, List<String> invalidList) {
 
-		int totalCells = rowHeader.getPhysicalNumberOfCells();
+		int totalCells = rowHeader.length;
 		String strCellHeader = "";
+		
 		// Get the position of Demographic details
 		int start = totalCells - noOfDemographicList;
 		String strCell = "";
 		boolean isDemographicStart = false;
 		for (int i = studentHeaderStartPosition; i < totalCells; i++) {
-			HSSFCell cellHeader = rowHeader.getCell((short) i);
-			HSSFCell cell = row.getCell((short) i);
+			String cellHeader = rowHeader[i];
+			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (i == start) {
 				isDemographicStart = true;
 			}
 			if (!strCell.equals("")) {
-				if (cellHeader.getStringCellValue().equals(
+				if (cellHeader.equals(
 						Constants.REQUIREDFIELD_FIRST_NAME)
 						&& !validNameString(strCell)) {
 					invalidList.add(Constants.REQUIREDFIELD_FIRST_NAME);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.MIDDLE_NAME)
 						&& !validNameString(strCell)) {
 					invalidList.add(Constants.MIDDLE_NAME);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.REQUIREDFIELD_LAST_NAME)
 						&& !validNameString(strCell)) {
 					invalidList.add(Constants.REQUIREDFIELD_LAST_NAME);
 				}
 
-				else if (cellHeader.getStringCellValue().equals(
+				else if (cellHeader.equals(
 						Constants.REQUIREDFIELD_GRADE)
 						&& !isValidGrade(strCell)) {
 					invalidList.add(Constants.REQUIREDFIELD_GRADE);
 				}
 
-				else if (cellHeader.getStringCellValue().equals(
+				else if (cellHeader.equals(
 						Constants.REQUIREDFIELD_GENDER)
 						&& !isValidGender(strCell)) {
 					invalidList.add(Constants.REQUIREDFIELD_GENDER);
 				}
 				// Changes for GACRCT2010CR007 .
 				else if (!(strCell == null || strCell.equals(""))
-						&& cellHeader.getStringCellValue().equals(
+						&& cellHeader.equals(
 								Constants.REQUIREDFIELD_DATE_OF_BIRTH)
 						&& !validateDateString(strCell)) {
 					invalidList.add(Constants.REQUIREDFIELD_DATE_OF_BIRTH);
 				}
 				// Student accomodation
 
-				else if (cellHeader.getStringCellValue().equals(
+				else if (cellHeader.equals(
 						Constants.SCREEN_READER)
 						&& !strCell.trim().equals("")
 						&& !isValidCheckBox(strCell)) {
 					invalidList.add(Constants.SCREEN_READER);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.CALCULATOR)
 						&& !strCell.trim().equals("")
 						&& !isValidCheckBox(strCell)) {
 					invalidList.add(Constants.CALCULATOR);
 				}
 
-				else if (cellHeader.getStringCellValue().equals(
+				else if (cellHeader.equals(
 						Constants.TEST_PAUSE)
 						&& !strCell.trim().equals("")
 						&& !isValidCheckBox(strCell)) {
 					invalidList.add(Constants.TEST_PAUSE);
 				}
 
-				else if (cellHeader.getStringCellValue().equals(
+				else if (cellHeader.equals(
 						Constants.UNTIMED_TEST)
 						&& !strCell.trim().equals("")
 						&& !isValidCheckBox(strCell)) {
 					invalidList.add(Constants.UNTIMED_TEST);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.HIGHLIGHTER)
 						&& !strCell.trim().equals("")
 						&& !isValidCheckBox(strCell)) {
 					invalidList.add(Constants.HIGHLIGHTER);
 				}
 
-				else if (cellHeader.getStringCellValue().equals(
+				else if (cellHeader.equals(
 						Constants.QUESTION_BACKGROUND_COLOR)
 						&& !strCell.trim().equals("") && !isValidColor(strCell)) {
 					invalidList.add(Constants.QUESTION_BACKGROUND_COLOR);
 				}
 
-				else if (cellHeader.getStringCellValue().equals(
+				else if (cellHeader.equals(
 						Constants.QUESTION_FONT_COLOR)
 						&& !strCell.trim().equals("") && !isValidColor(strCell)) {
 					invalidList.add(Constants.QUESTION_FONT_COLOR);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.ANSWER_BACKGROUND_COLOR)
 						&& !strCell.trim().equals("") && !isValidColor(strCell)) {
 					invalidList.add(Constants.ANSWER_BACKGROUND_COLOR);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.ANSWER_FONT_COLOR)
 						&& !strCell.trim().equals("") && !isValidColor(strCell)) {
 					invalidList.add(Constants.ANSWER_FONT_COLOR);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.FONT_SIZE)
 						&& !strCell.trim().equals("")
 						&& !isValidFontSize(strCell)) {
 					invalidList.add(Constants.FONT_SIZE);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						this.studentIdLabel)
 						&& !strCell.trim().equals("")) {
 					if (!this.isStudentIdConfigurable
@@ -2600,7 +2566,7 @@ public class UploadStudentFile {
 							&& !validConfigurableStudentId(strCell)) {
 						invalidList.add(this.studentIdLabel);
 					}
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						this.studentId2Label)
 						&& !strCell.trim().equals("")) {
 					if (!this.isStudentId2Configurable
@@ -2636,54 +2602,54 @@ public class UploadStudentFile {
 	}
 
 	private boolean isMaxlengthExceed(int studentHeaderStartPosition,
-			HSSFRow row, HSSFRow rowHeader, ArrayList maxLengthList) {
-		int totalCells = rowHeader.getPhysicalNumberOfCells();
+			String[] row, String[] rowHeader, ArrayList<String> maxLengthList) {
+		int totalCells = rowHeader.length;
 		String strCell = "";
 		for (int i = studentHeaderStartPosition; i < totalCells; i++) {
-			HSSFCell cellHeader = rowHeader.getCell((short) i);
-			HSSFCell cell = row.getCell((short) i);
+			String cellHeader = rowHeader[i];
+			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!strCell.equals("")) {
-				if (cellHeader.getStringCellValue().equals(
+				if (cellHeader.equals(
 						Constants.REQUIREDFIELD_FIRST_NAME)
 						&& !isMaxLength32(strCell)) {
 					maxLengthList.add(Constants.REQUIREDFIELD_FIRST_NAME);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.MIDDLE_NAME)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength32(strCell)) {
 					maxLengthList.add(Constants.MIDDLE_NAME);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.REQUIREDFIELD_LAST_NAME)
 						&& !isMaxLength32(strCell)) {
 					maxLengthList.add(Constants.REQUIREDFIELD_LAST_NAME);
 				}
 				// Changes for GA2011CR001
-				else if (cellHeader.getStringCellValue().equals(
+				else if (cellHeader.equals(
 						this.studentIdLabel)
 						&& !strCell.trim().equals("")
 						&& this.isStudentIdConfigurable
 						&& !isMaxLengthConfigurableStudentId(strCell)
 						&& this.maxlengthStudentID != null) {
 					maxLengthList.add(this.studentIdLabel);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.STUDENT_ID)
 						&& !strCell.trim().equals("")
 						&& !this.isStudentIdConfigurable
-						&& !isMaxLength64(strCell)) {
+						&& !isMaxLength32(strCell)) {
 					maxLengthList.add(Constants.STUDENT_ID);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						this.studentId2Label)
 						&& !strCell.trim().equals("")
 						&& this.isStudentId2Configurable
 						&& !isMaxLengthConfigurableStudentId2(strCell)
 						&& this.maxlengthStudentId2 != null) {
 					maxLengthList.add(this.studentId2Label);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						Constants.STUDENT_ID2)
 						&& !strCell.trim().equals("")
 						&& !this.isStudentIdConfigurable
-						&& !isMaxLength64(strCell)) {
+						&& !isMaxLength32(strCell)) {
 					maxLengthList.add(Constants.STUDENT_ID2);
 				}
 			}
@@ -2696,22 +2662,22 @@ public class UploadStudentFile {
 
 	}
 
-	private boolean isMinlength(int studentHeaderStartPosition, HSSFRow row,
-			HSSFRow rowHeader, ArrayList minLengthList) {
-		int totalCells = rowHeader.getPhysicalNumberOfCells();
+	private boolean isMinlength(int studentHeaderStartPosition, String[] row,
+			String[] rowHeader, ArrayList<String> minLengthList) {
+		int totalCells = rowHeader.length;
 		String strCell = "";
 		for (int i = studentHeaderStartPosition; i < totalCells; i++) {
-			HSSFCell cellHeader = rowHeader.getCell((short) i);
-			HSSFCell cell = row.getCell((short) i);
+			String cellHeader = rowHeader[i];
+			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!strCell.equals("")) {
-				if (cellHeader.getStringCellValue().equals(this.studentIdLabel)
+				if (cellHeader.equals(this.studentIdLabel)
 						&& !strCell.trim().equals("")
 						&& this.isStudentIdConfigurable
 						&& !isMinLengthConfigurableStudentId(strCell)
 						&& this.studentIdMinLength != null) {
 					minLengthList.add(this.studentIdLabel);
-				} else if (cellHeader.getStringCellValue().equals(
+				} else if (cellHeader.equals(
 						this.studentId2Label)
 						&& !strCell.trim().equals("")
 						&& this.isStudentId2Configurable
@@ -2835,24 +2801,21 @@ public class UploadStudentFile {
 		return true;
 	}
 
-	private void checkLeafNodeError(int position, HSSFRow row,
-			HSSFRow rowHeader, HashMap leafNodeErrorMap) {
+	private void checkLeafNodeError(int position, String[] row,
+			String[] rowHeader, Map<Integer,String> leafNodeErrorMap) {
 
 		Node[] node = this.studentFileRowHeader[0].getOrganizationNodes();
 		int OrgHeaderLastPosition = node.length;
-		String leafOrgName = "";
-		ArrayList excelCommonPathList = new ArrayList();
-		int loginUserPosition = 0;
 		int lastNodePos = 0;
 		int lastCellPos = 0;
-		HSSFCell cellName = null;
-		HSSFCell cellId = null;
+		String cellName = null;
+		String cellId = null;
 
 		for (int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j
 				+ orgPosFact) {
 			if (!hasOrganization(j, row)) {
-				cellName = row.getCell(j);
-				cellId = row.getCell(j + 1);
+				cellName = row[j];
+				cellId = row[j + 1];
 				if ((!getCellValue(cellName).equals(""))
 						|| (!getCellValue(cellId).equals(""))) {
 					lastNodePos = i;
@@ -2862,29 +2825,17 @@ public class UploadStudentFile {
 		}
 		if (lastNodePos != (OrgHeaderLastPosition - 1)) {
 			leafNodeErrorMap.put(new Integer(position),
-					getCellValue(rowHeader.getCell(lastCellPos)));
+					getCellValue(rowHeader[lastCellPos]));
 		}
 
 	}
 
 	private boolean isStudentIdUnique(String value) {
-		studentDao = new StudentFileDaoImpl();
-		String status = null;
-		if (value != null) {
-			try {
-				status = studentDao.checkUniqueStudentId(value.trim(),
-						this.customerId);
-				if (status.equalsIgnoreCase("T")) {
-					return true;
-				}
-			} catch (Exception se) {
-				se.printStackTrace();
-			}
-		} else {
-			return true;
-		}
-
-		return false;
+		 if(this.visibleStudent.containsKey(value))
+			 return false;
+		 else 
+			 return true;
+		
 	}
 
 	/**
@@ -3230,17 +3181,11 @@ public class UploadStudentFile {
 	 */
 
 	private boolean isMaxLength32(String value) {
-
 		if (value.length() <= 32) {
-
 			return true;
-
 		} else {
-
 			return false;
-
 		}
-
 	}
 
 	/*
@@ -3248,37 +3193,14 @@ public class UploadStudentFile {
 	 */
 
 	private boolean isMaxLengthConfigurableStudentId(String value) {
-
 		if (Integer.parseInt(this.maxlengthStudentID) > 32) {
 			this.maxlengthStudentID = "32";
 		}
-
 		if (value.length() <= Integer.parseInt(this.maxlengthStudentID)) {
-
 			return true;
-
 		} else {
-
 			return false;
 		}
-
-	}
-
-	/*
-	 * check wheather Maxlength is 64
-	 */
-
-	private boolean isMaxLength64(String value) {
-
-		if (value.length() <= 64) {
-
-			return true;
-
-		} else {
-
-			return false;
-		}
-
 	}
 
 	/**

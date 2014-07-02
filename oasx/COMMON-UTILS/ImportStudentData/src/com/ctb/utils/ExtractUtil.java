@@ -34,8 +34,9 @@ import org.apache.log4j.Logger;
 				loader = new URLClassLoader(urls);
 			}catch (MalformedURLException e) {
 				// TODO: handle exception
-				logger.error("Properties File Loading Error.");
-				e.printStackTrace();
+				logger.error("Properties File Loading Error. System exiting..");
+				e.printStackTrace(); 
+				System.exit(1);
 			}
 			rb = ResourceBundle.getBundle(baseName, Locale.getDefault(), loader);
 			logger.info("Properties File Successfully Loaded of Environment :: "+ baseName);

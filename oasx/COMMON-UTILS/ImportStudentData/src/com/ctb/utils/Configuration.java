@@ -12,10 +12,7 @@ public class Configuration {
 	static String customerId = "";
 	static String errorPath = "";
 	
-
-
 	static {
-
 		localFilePath = ExtractUtil.getDetail("oas.importdata.local.filepath");
 		ftpHost = ExtractUtil.getDetail("oas.importdata.ftpHost");
 		ftpUser = ExtractUtil.getDetail("oas.importdata.ftpUser");
@@ -26,8 +23,6 @@ public class Configuration {
 		errorPath = ExtractUtil.getDetail("oas.importdata.ftp.errorpath");
 		customerId = ExtractUtil.getDetail("oas.customerId");
 	}
-
-
 
 	/**
 	 * @return the localFilePath

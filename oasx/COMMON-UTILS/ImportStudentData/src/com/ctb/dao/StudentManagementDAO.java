@@ -83,7 +83,8 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 		
 	}
 	
-	public List<UploadStudent> populateActualStudentIds(List<UploadStudent> finalStudentList, Integer newStudentCount) throws Exception {
+	public List<UploadStudent> populateActualStudentIds(List<UploadStudent> finalStudentList, Integer newStudentCount , 
+														Map<String,Integer> studentIdExtPinMap) throws Exception {
 		
 		Integer [] studentIds = new Integer[finalStudentList.size()];
 		Connection conn = null;
@@ -106,6 +107,7 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   			student.setStudentId(studentIds[count]);
 	   			uStud.getStudentAccommodations().setStudentId(student.getStudentId());
 	   			uStud.getManageStudent().setId(student.getStudentId());
+	   			studentIdExtPinMap.put(student.getExtPin1().trim(), student.getStudentId());
 	   			count++;
 	   		}
 	   		
@@ -375,7 +377,7 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	public void updateStudent(List<UploadStudent> finalStudentList,	Map<Integer, ArrayList<OrganizationNode>> studentOrgMap) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String query = "update student set user_name = ?, first_name = ?, middle_name = ?, last_name  = ?, gender  = ?, birthdate = ?, grade = ?, ext_pin1  = ?, ext_pin2 = ?, test_purpose = ?, updated_By = ?, updated_Date_Time = SYSDATE , out_of_school = ? where student_id = ?";
+		String query = "update student set  first_name = ?, middle_name = ?, last_name  = ?, gender  = ?, birthdate = ?, grade = ?, ext_pin1  = ?, ext_pin2 = ?, test_purpose = ?, updated_By = ?, updated_Date_Time = SYSDATE , out_of_school = ? where student_id = ?";
 		int counter = 0;
 		try{
 			conn = SQLUtil.getConnection();
@@ -387,19 +389,19 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 				setOrganizationNodeForStudent(upload.getManageStudent(), studentOrgMap);
 				
 				ManageStudent mStud = upload.getManageStudent();
-				pstmt.setString(1, mStud.getLoginId());
-				pstmt.setString(2, mStud.getFirstName());
-				pstmt.setString(3, mStud.getMiddleName());
-				pstmt.setString(4, mStud.getLastName());
-				pstmt.setString(5, mStud.getGender());
-				pstmt.setDate(6, new java.sql.Date(mStud.getBirthDate().getTime()));
-				pstmt.setString(7, mStud.getGrade());
-				pstmt.setString(8, mStud.getStudentIdNumber());
-				pstmt.setString(9, mStud.getStudentIdNumber2());
-				pstmt.setString(10, mStud.getTestPurpose());
-				pstmt.setInt(11, 1);
-				pstmt.setString(12, mStud.getOutOfSchool());
-				pstmt.setInt(13, mStud.getId());
+				//pstmt.setString(1, mStud.getLoginId());
+				pstmt.setString(1, mStud.getFirstName());
+				pstmt.setString(2, mStud.getMiddleName());
+				pstmt.setString(3, mStud.getLastName());
+				pstmt.setString(4, mStud.getGender());
+				pstmt.setDate(5, new java.sql.Date(mStud.getBirthDate().getTime()));
+				pstmt.setString(6, mStud.getGrade());
+				pstmt.setString(7, mStud.getStudentIdNumber());
+				pstmt.setString(8, mStud.getStudentIdNumber2());
+				pstmt.setString(9, mStud.getTestPurpose());
+				pstmt.setInt(10, 1);
+				pstmt.setString(11, mStud.getOutOfSchool());
+				pstmt.setInt(12, mStud.getId());
 				pstmt.addBatch();
 				counter++;
 				if(counter % BATCH_SIZE == 0){

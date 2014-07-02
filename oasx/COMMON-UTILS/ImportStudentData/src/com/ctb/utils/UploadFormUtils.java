@@ -4,16 +4,20 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.ctb.bean.CustomerConfig;
 import com.ctb.bean.CustomerConfiguration;
@@ -49,15 +53,10 @@ public class UploadFormUtils {
 	private UploadMoveData uploadMoveData = new UploadMoveData();
 	
 	public static boolean verifyFileExtension (String fileName) {	    
-        boolean isValidFileExt = false;        
-        if ( fileName != null && !fileName.equals("") && fileName.length() >= 5 ) {
-            String fileExt = fileName.substring(fileName.length()-4 ,fileName.length());           
-            if ( fileExt.equalsIgnoreCase(".xls") ) {            
-                isValidFileExt = true;            
-            }            
-        } else {            
-            isValidFileExt = false;
-        }        
+        boolean isValidFileExt = false; 
+        if(fileName.endsWith(".csv")){
+        	isValidFileExt = true;
+        }
         return isValidFileExt;                                
     }
 	
@@ -74,14 +73,13 @@ public class UploadFormUtils {
 		while(0<readCnt){
 			bout.write(readBuf,0,readCnt);
 			readCnt=bin.read(readBuf);
-			
 		}
 		bin.close();
 		in.close();
 		outputArray=bout.toByteArray();	    
 	    
 	    uploadDataFileId = dao.getNextPKForTempFile();
-	    System.out.print("uploadDataFileId -->"+ uploadDataFileId);
+	    System.out.println("UploadDataFileId is --> "+ uploadDataFileId);
 	    temp.setDataFile(outputArray);
 	    temp.setDataFileAuditId(uploadDataFileId);
 	    dao.createDataFileTemp(temp);
@@ -103,107 +101,98 @@ public class UploadFormUtils {
 		
 	}
 	
-	public String getUploadFileCheck(InputStream fileInputStream,int noOfUserColumn,Integer customerId,
+	public String getUploadFileCheck(File file,int noOfUserColumn,Integer customerId,
 									OrgNodeCategory[] orgNodeCategory) throws Exception{	    
        isStudentIDConfigurableCustomer(customerId);
        String fileType = "";
        StudentFileRow [] studentFileRow = new StudentFileRow[1];
        try {                              
-            POIFSFileSystem pfs  = new POIFSFileSystem( fileInputStream );
-            HSSFWorkbook wb = new HSSFWorkbook(pfs);
-            HSSFSheet sheet = wb.getSheetAt(0);
-            HSSFCell cells = null;  
-            String fullHeader = "";
-            String fullDBHeader = ""; 
-            ArrayList orgNodeListFromTemplate = new ArrayList(); 
-            ArrayList headerList = new ArrayList();
-            ArrayList orgNodeList = new ArrayList();
-            ArrayList headerListFromTemplate = new ArrayList(); 
-            ArrayList demographicsHeaderListTemplate = new ArrayList(); 
-            int count = 0;
-             if ( sheet != null) {	                
-                HSSFRow row = sheet.getRow(0);	                
-                if(row == null){
-                    throw  new CTBBusinessException("No Rows in File.. System will stop processing files.Please start again.") ;
-                }	                
-                else { 	                
-                    int totalColumns = row.getPhysicalNumberOfCells();               
-                    for ( int i = noOfUserColumn ; i < totalColumns ; i++  ){	                        
-                        cells = row.getCell((short)i);	                        
-                        if (cells.getStringCellValue().equals("Gender")) {
-                          fileType = "Upload_Student_Data" ;
-                          break;
-                        }
-                    }
-                    if ( fileType.equals("Upload_Student_Data") ){
-                         createTemplateHeader(customerId,orgNodeCategory,studentFileRow); 	                         
-                         for ( int i = 0 ; i < noOfUserColumn - 1 ; i++  ) {	                           
-                            cells = row.getCell((short)i);
-                            orgNodeListFromTemplate.add(cells.getStringCellValue());	                        
-                         }
-                                        
-                        /* check if the uploaded excel node category header 
-                         * and template are same or not
-                         */	                        
-                        Node[] orgNodes =  studentFileRow[0].getOrganizationNodes();
-                        for( int i = 0; i < orgNodes.length; i++ ) {	                            
-                            orgNodeList.add(orgNodes[i].getOrgNodeCategoryName());
-                            orgNodeList.add(orgNodes[i].getOrgNodeCode());
-                            orgNodeList.add(orgNodes[i].getMdrNumber());	                                                       
-                         }
-                         /* postion should be at the begining and should 
-                          * end before student details       
-                         */
-                        for ( int i =  0 ; i < orgNodeListFromTemplate.size() - 1; i++ ) {
-                        	if( !orgNodeList.get(i).equals(orgNodeListFromTemplate.get(i))) {	                                
-                                throw  new CTBBusinessException("FileHeader.Failed") ;                                    
-                            }                            
-                        }
-                         
-                         if(isStudentIdConfigurable || isStudentId2Configurable){  
-                         headerListFromTemplate = getStudentIDHeaderOrderList();    
-                         }
-                         else{
-                        	 headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();  
-                         }
-                         for ( int i = noOfUserColumn - 1; i < totalColumns; i++) {	                         
-                            cells = row.getCell((short)i);
-                            headerList.add(cells.getStringCellValue());	                            
-                         }	                         
-                         /* check if the uploaded excel student info
-                            * header and template are same or not*/	                         
-                         for ( int i = 0; i < headerListFromTemplate.size(); i++ ) {	                           
-                            if( !headerListFromTemplate.get(i).equals(headerList.get(i)) ) {	                            
-                                throw  new CTBBusinessException("FileHeader.Failed") ;	                            
-                            }
-                         }	                         
-                          /* check if the uploaded excel student demographic info
-                            * header and template are same or not*/ 
-                         StudentDemoGraphics[] studentDemoGraphics = 
-                                            studentFileRow[0].getStudentDemoGraphics();	                         
-                        //put the demographic details into list to maintain order
-                        for( int i = 0; i < studentDemoGraphics.length; i++ ) {	                            
-                            demographicsHeaderListTemplate.add(
-                                            studentDemoGraphics[i].getLabelName()); 	                            
-                         }
-                         
-                        //if actual demographic field does not match with given demographic field
-                        if((headerList.size()-headerListFromTemplate.size())
-                                !=demographicsHeaderListTemplate.size()){
-                            throw new CTBBusinessException("FileHeader.Failed") ;
-                        }
-                         //postion should be after student personal details to end       
-                        for ( int i = headerListFromTemplate.size(); i < headerList.size() - 1; i++ ){ 
-                            if( !headerList.get(i).equals(demographicsHeaderListTemplate.get(count))){	                                
-                                throw  new CTBBusinessException("FileHeader.Failed") ;	                                    
-                            }
-                            count++;
-                        }	                           
-                    } // end of student header validation    
-                    else{
-                         throw  new CTBBusinessException("FileHeader.Failed") ;
+			CSVReader csv = new CSVReader(new FileReader(file), ',');
+			List<String> orgNodeListFromTemplate = new ArrayList<String>();
+			List<String> headerList = new ArrayList<String>();
+			List<String> orgNodeList = new ArrayList<String>();
+			List<String> headerListFromTemplate = new ArrayList<String>();
+			List<String> demographicsHeaderListTemplate = new ArrayList<String>();
+			int count = 0;
+			String[] firstRow;
+			boolean firstRowProcessed = false;
+			
+			while((firstRow = csv.readNext()) != null  && !firstRowProcessed) {
+				firstRowProcessed = true;
+                int totalColumns = firstRow.length;               
+                for ( int i = noOfUserColumn ; i < totalColumns ; i++  ){	                        
+                    if (firstRow[i].equals("Gender")) {
+                      fileType = "Upload_Student_Data" ;
+                      break;
                     }
                 }
+                if ( fileType.equals("Upload_Student_Data") ){
+                     createTemplateHeader(customerId,orgNodeCategory,studentFileRow); 	                         
+                     for ( int i = 0 ; i < noOfUserColumn - 1 ; i++  ) {	                           
+                        orgNodeListFromTemplate.add(firstRow[i]);	                        
+                     }
+                                    
+                    /* check if the uploaded excel node category header 
+                     * and template are same or not
+                     */	                        
+                    Node[] orgNodes =  studentFileRow[0].getOrganizationNodes();
+                    for( int i = 0; i < orgNodes.length; i++ ) {	                            
+                        orgNodeList.add(orgNodes[i].getOrgNodeCategoryName());
+                        orgNodeList.add(orgNodes[i].getOrgNodeCode());
+                        orgNodeList.add(orgNodes[i].getMdrNumber());	                                                       
+                     }
+                     /* postion should be at the begining and should 
+                      * end before student details       
+                     */
+                    for ( int i =  0 ; i < orgNodeListFromTemplate.size() - 1; i++ ) {
+                    	if( !orgNodeList.get(i).equals(orgNodeListFromTemplate.get(i))) {	                                
+                            throw  new CTBBusinessException("FileHeader.Failed") ;                                    
+                        }                            
+                    }
+                     
+                     if(isStudentIdConfigurable || isStudentId2Configurable){  
+                    	 headerListFromTemplate = getStudentIDHeaderOrderList();    
+                     }
+                     else{
+                    	 headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();  
+                     }
+                     for ( int i = noOfUserColumn - 1; i < totalColumns; i++) {	                         
+                        headerList.add(firstRow[i]);	                            
+                     }	                         
+                     /* check if the uploaded excel student info
+                        * header and template are same or not*/	                         
+                     for ( int i = 0; i < headerListFromTemplate.size(); i++ ) {	                           
+                        if( !headerListFromTemplate.get(i).equals(headerList.get(i)) ) {	                            
+                            throw  new CTBBusinessException("FileHeader.Failed") ;	                            
+                        }
+                     }	                         
+                      /* check if the uploaded excel student demographic info
+                        * header and template are same or not*/ 
+                     StudentDemoGraphics[] studentDemoGraphics = 
+                                        studentFileRow[0].getStudentDemoGraphics();	                         
+                    //put the demographic details into list to maintain order
+                    for( int i = 0; i < studentDemoGraphics.length; i++ ) {	                            
+                        demographicsHeaderListTemplate.add(
+                                        studentDemoGraphics[i].getLabelName()); 	                            
+                     }
+                     
+                    //if actual demographic field does not match with given demographic field
+                    if((headerList.size()-headerListFromTemplate.size())
+                            !=demographicsHeaderListTemplate.size()){
+                        throw new CTBBusinessException("FileHeader.Failed") ;
+                    }
+                     //postion should be after student personal details to end       
+                    for ( int i = headerListFromTemplate.size(); i < headerList.size() - 1; i++ ){ 
+                        if( !headerList.get(i).equals(demographicsHeaderListTemplate.get(count))){	                                
+                            throw  new CTBBusinessException("FileHeader.Failed") ;	                                    
+                        }
+                        count++;
+                    }	                           
+                } // end of student header validation    
+                else{
+                     throw  new CTBBusinessException("FileHeader.Failed") ;
+                }
+                
             }
        } catch (IOException e) {
             FileNotUploadedException fileNotUploadedException = 
@@ -219,12 +208,11 @@ public class UploadFormUtils {
             throw fileHeaderException;
        } 
        uploadMoveData.setNoOfUserColumn(noOfUserColumn);
-       //uploadMoveData.setOrgNodeCate(orgNodeCate);
        uploadMoveData.setValueForStudentId(valueForStudentId);
        uploadMoveData.setValueForStudentId2(valueForStudentId2);
        uploadMoveData.setOrgNodeCategory(orgNodeCategory);
        uploadMoveData.setStudentFileRowHeader(studentFileRow);
-        return fileType;
+       return fileType;
      }
 	
 	private void createTemplateHeader (Integer customerId,OrgNodeCategory []OrgNodeCategory, StudentFileRow []object) {
@@ -321,10 +309,11 @@ public class UploadFormUtils {
 					}					
 					this.valueForStudentId = getDefaultValue(valueForStudentId, Constants.STUDENT_ID);					
 				}
-			   //For TABE-BAUM Unique Student Id
+			    /*//For TABE-BAUM Unique Student Id
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Unique_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T")){
 					this.isStudentIdUnique = true;
-				}
+				}*/
+				this.isStudentIdUnique = true;// For the time being making this Unique checking mandatory.
 			}
 		} 
     	catch(Exception e){

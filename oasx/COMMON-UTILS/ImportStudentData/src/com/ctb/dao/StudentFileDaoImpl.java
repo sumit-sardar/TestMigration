@@ -320,7 +320,7 @@ public class StudentFileDaoImpl implements StudentFileDao {
 				studentFileRow.setExtElmId(rSet.getString("extElmId"));
 				studentFileRow.setExtPin1(rSet.getString("extPin1"));
 				studentFileRow.setExtPin2(rSet.getString("extPin2"));
-				studentFileRow.setKey(generateKey(studentFileRow));
+				studentFileRow.setKey((studentFileRow.getExtPin1()!= null )? studentFileRow.getExtPin1().trim() : generateKey(studentFileRow) );
 				studentFileRowList.add(studentFileRow);
 			}
 		} catch (SQLException e) {

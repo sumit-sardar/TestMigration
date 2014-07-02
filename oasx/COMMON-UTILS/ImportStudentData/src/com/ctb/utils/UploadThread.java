@@ -26,6 +26,7 @@ public class UploadThread implements Runnable{
 	public void run(){
 		try{
 			System.out.println("Actual Process Start Time for file :"+ this.inFile.getName() + "-->" + new Date(System.currentTimeMillis()));
+			
 			UploadStudentFile studentUpload = new UploadStudentFile(customerId ,inFile,uploadFileId ,this.uploadMoveData.getOrgNodeCategory() , this.uploadMoveData.getStudentFileRowHeader(),
 					this.uploadMoveData.getNoOfUserColumn(),this.uploadMoveData.getValueForStudentId() , this.uploadMoveData.getValueForStudentId2(),
 					this.uploadMoveData.isStudentIdUnique());
