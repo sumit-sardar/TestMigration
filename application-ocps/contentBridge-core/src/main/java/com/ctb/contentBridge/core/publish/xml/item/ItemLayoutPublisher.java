@@ -59,7 +59,10 @@ public class ItemLayoutPublisher {
 		String itemId = rootElement.getAttributeValue("ID");
 		ArrayList htmlList = new ArrayList();
 		ArrayList htmlAssetList = new ArrayList();
-		//end fro TE item
+		//end for TE item
+		//Start For DAS TE
+		String folderName=rootElement.getAttributeValue("folderName");
+		ArrayList DASTEAssetList = new ArrayList();
 		Element itemLml ;	
 		ArrayList assetList = new ArrayList();
 		try
@@ -74,6 +77,9 @@ public class ItemLayoutPublisher {
 			//added by for TE item
 			if ("IN".equals(itemType))
 				ItemLayoutProcessor.getPackageAsset(itemLml, htmlList,itemId);
+			//added for DASTE item
+			else if("DS".equals(itemType))
+				ItemLayoutProcessor.getDasPackageAsset(itemLml, DASTEAssetList,itemId,folderName);
 			else
 				ItemLayoutProcessor.getAsset(itemLml, assetList, /*adsConfig,*/ htmlAssetList);
 			ItemLayoutProcessor.modifyItemLMLForADS_Puslishing(itemLml, itemType);
@@ -94,6 +100,10 @@ public class ItemLayoutPublisher {
 			if (assetList != null && !assetList.isEmpty()) {
 				/* this.sendfiles_ftp(assetList); */
 				this.publishAssets(assetList);
+			}
+			if(DASTEAssetList != null && DASTEAssetList.size() > 0)
+			{
+				this.publishDASPkgAssets(DASTEAssetList,itemId);
 			}
 			if (htmlList != null && htmlList.size() > 0) {
 				 this.publishPkgAssets(htmlList,itemId);
@@ -167,6 +177,67 @@ public class ItemLayoutPublisher {
 			/*System.out.println(request);*/
 			ContentPublishBO.publishAsset(request);
 			System.out.println("Publish te pkg ends...");
+			//logger.info("responseStr >> "+responseStr);
+			/*if (responseStr == null) {
+				throw new SystemException(
+						"Error in Publishing Asset. Response is null. ");
+			}
+
+			ByteArrayInputStream bais = new ByteArrayInputStream(responseStr
+					.toString().getBytes());
+			org.jdom.input.SAXBuilder saxBuilder = new org.jdom.input.SAXBuilder();
+			org.jdom.Document itemDoc = saxBuilder.build(bais);
+			Element responseElm = itemDoc.getRootElement();
+
+			Element response = ItemLayoutProcessor.extractSingleElement(
+					".//response", responseElm);
+			Attribute status = response.getAttribute("status");
+			String statusStr = status.getValue();
+			//logger.info("statusStr >> "+statusStr);
+			if (!statusStr.equals(statusOk)) {
+				Element msg = ItemLayoutProcessor.extractSingleElement(
+						".//msg", response);
+				if (!(msg.getText()).equals(status_republish_asset)) {
+					throw new SystemException(
+							"Error in Publishing Asset. Status = " + statusStr
+									+ " Error message: " + msg.getText());
+				}
+			}*/
+		
+	}
+	
+	
+	public void publishDASPkgAssets(List inputFiles,String itemID) throws Exception {
+		//logger.info("Inside publishPkgAssets method...");
+		//CommonClient client = clientLocator.getCommonClient();
+        System.out.println("publishDASPkgAssets::"+itemID);
+        System.out.println("publishDASPkgAssets::size"+inputFiles.size());
+		String request = "";
+
+		Iterator iter = inputFiles.iterator();
+		String destinationPkgPath = "";
+		while (iter.hasNext()) {
+			destinationPkgPath = "/iwmnt/default/main/OAS/WORKAREA/highwire/images/DASTEAsset/zip/"+itemID+"zip";
+			//destinationPkgPath = "D:\\OCPS_Local_File\\DASTEAsset\\zip\\"+itemID+"zip";
+			System.out.println("destinationPkgPath::"+(String) iter.next());
+		}
+			
+		/*String destinationPkgPath = itemID+"zip";*/
+			request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request>"
+					+ "<publish_asset> <asset ident= \""
+					+ itemID
+					+ "\" pkgtype=\"zip"					
+					+ "\">"
+					+ " <file_location uri=\""
+					+ destinationPkgPath
+					+ "\" />"
+					+ "</asset> </publish_asset> </ads_publish_request>";
+			/*ContentPublishBO.publishAsset(connection, request);*/
+			System.out.println("publishDASPkgAssets::Request::"+request);
+			System.out.println("Publish Das te pkg starts...");
+			/*System.out.println(request);*/
+			ContentPublishBO.publishAsset(request);
+			System.out.println("Publish Das te pkg ends...");
 			//logger.info("responseStr >> "+responseStr);
 			/*if (responseStr == null) {
 				throw new SystemException(

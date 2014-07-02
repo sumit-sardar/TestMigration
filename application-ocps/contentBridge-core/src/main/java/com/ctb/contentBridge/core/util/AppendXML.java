@@ -65,6 +65,26 @@ public class AppendXML {
 		}
 
 	}
+	
+	public String parseWithDOMDasHtmlWidget() throws SystemException {
+		String xml = null;
+		NodeList htmlWidget = null;
+		DOMBuilder jdomBuilder = null;
+		try {
+			jdomBuilder = new DOMBuilder();
+			JDOMdoc = jdomBuilder.build(w3cDOMdoc);
+			XMLOutputter xop = new XMLOutputter();
+			xml = xop.outputString(JDOMdoc);
+			htmlWidget = w3cDOMdoc.getElementsByTagName("DAS_html_widget");//DAS_html_widget
+			if (htmlWidget.getLength() > 0)
+				return "true";
+			else
+				return "false";
+		} catch (Exception exception) {
+			throw new SystemException(exception);
+		}
+
+	}
 
 	public String parseWithDOM(ResultSet resultSet, ArrayList arrlist,
 			String obItemId) throws SystemException {
@@ -99,6 +119,54 @@ public class AppendXML {
 				w3cDOMdoc = insertNode_with_CDATASection(w3cDOMdoc, arrlist,
 						resultSet);
 			else if (arrlist != null && htmlWidget.getLength() > 0)
+
+				w3cDOMdoc = insertNode_with_CDATASection_for_pkg(w3cDOMdoc,
+						arrlist, resultSet);
+			JDOMdoc = jdomBuilder.build(w3cDOMdoc);
+			XMLOutputter xop = new XMLOutputter();
+			xml = xop.outputString(JDOMdoc);
+		} catch (Exception e) {
+			throw new SystemException(e);
+		}
+
+		/*System.out.println(xml);*/
+		return xml;
+
+	}
+	
+	public String parseWithDOMForDAS(ResultSet resultSet, ArrayList arrlist,
+			String obItemId) throws SystemException {
+		String xml = null;
+		DOMBuilder jdomBuilder = null;
+
+		NodeList DAShtmlWidget = null;
+		try {
+			jdomBuilder = new DOMBuilder();
+			JDOMdoc = jdomBuilder.build(w3cDOMdoc);
+			if (ASSET_FLAG)
+				JDOMdoc = modifyAttributeValue(JDOMdoc, obItemId);
+			XMLOutputter xop = new XMLOutputter();
+			xml = xop.outputString(JDOMdoc);
+			DAShtmlWidget = w3cDOMdoc.getElementsByTagName("DAS_html_widget");
+
+		} catch (Exception exception) {
+			throw new SystemException(exception);
+		}
+		if (ASSET_FLAG) {
+			if (DAShtmlWidget.getLength() == 0)
+				xml = xml.replaceAll("src", "image_ref");
+			// else
+			// xml = xml.replaceAll("src", "id");
+
+			ASSET_FLAG = false;
+
+		}
+		try {
+			w3cDOMdoc = db.parse(new InputSource(new StringReader(xml)));
+			if (arrlist != null && DAShtmlWidget.getLength() == 0)
+				w3cDOMdoc = insertNode_with_CDATASection(w3cDOMdoc, arrlist,
+						resultSet);
+			else if (arrlist != null && DAShtmlWidget.getLength() > 0)
 
 				w3cDOMdoc = insertNode_with_CDATASection_for_pkg(w3cDOMdoc,
 						arrlist, resultSet);
