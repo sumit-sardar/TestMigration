@@ -45,7 +45,7 @@
 		<description></description>
 		<display-name>LTIAuthServlet</display-name>
 		<servlet-name>LTIAuthServlet</servlet-name>
-		<servlet-class>LTIAuthServlet</servlet-class>
+		<servlet-class>com.ctb.ltitest.LTIAuthServlet</servlet-class>
 		<init-param>
 			<param-name>secretkey</param-name>
 			<param-value>abcd123</param-value>
@@ -59,7 +59,7 @@
 		<description></description>
 		<display-name>LTISignServlet</display-name>
 		<servlet-name>LTISignServlet</servlet-name>
-		<servlet-class>LTISignServlet</servlet-class>
+		<servlet-class>com.ctb.ltitest.LTISignServlet</servlet-class>
 		<init-param>
 			<param-name>secretkey</param-name>
 			<param-value>sample</param-value>
