@@ -59,6 +59,8 @@ public class DownloadOperationController extends PageFlowController {
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
 	
+	private boolean isEngradeCustomer = false;
+	
 	// Changes for - LAS Online – 2013 – Defect 74768 – support MDR number upload-download
 	private boolean isLaslinkCustomerUploadDownlod = false;
   
@@ -1157,6 +1159,11 @@ public class DownloadOperationController extends PageFlowController {
             		cc.getDefaultValue().equals("T")) {
         		hasBlockUserManagement = Boolean.TRUE;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("ENGRADE_Customer") && 
+            		cc.getDefaultValue().equals("T")) {
+        		this.isEngradeCustomer = true;
+        		continue;
+            }
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")
 					//[IAA]&& cc.getDefaultValue().equals("T")) {
             		){
@@ -1206,6 +1213,9 @@ public class DownloadOperationController extends PageFlowController {
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
      	//Done for 3to8 customer to block user module
      	this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
+     	//Done for Engrade customer to block admin users from adding/editing/deleting users
+     	this.getSession().setAttribute("hasBlockUserModifications", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));     	
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

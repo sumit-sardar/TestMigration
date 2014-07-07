@@ -40,6 +40,7 @@
 <input type="hidden" id="delUserTitleID" name = "delUserTitleID" value=<lb:label key="user.label.titleDelete" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noUsertTitleGrd" name = "noUsertTitleGrd" value=<lb:label key="user.noUserSelected.title" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noUserMsgGrd" name = "noUserMsgGrd" value=<lb:label key="user.noUserSelected.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="isEngradeCustomer" name = "isEngradeCustomer" value='<%=session.getAttribute("isEngradeCustomer") %>'/>
 
 <table class="transparent" width="97%" style="margin:15px auto;">
  	<tr class="transparent">

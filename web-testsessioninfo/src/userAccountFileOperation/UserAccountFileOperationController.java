@@ -81,6 +81,7 @@ public class UserAccountFileOperationController extends PageFlowController{
 	private String userName = null;
 	private boolean hasLicenseConfig = false; 
 	public boolean isOKCustomer = false;
+	public boolean isEngradeCustomer = false;
 	private boolean forceTestBreak = false;
 	public ReportManager reportManager = null;
 	private UserNodeData userTopNodes = null;
@@ -407,6 +408,11 @@ public class UserAccountFileOperationController extends PageFlowController{
 	            		cc.getDefaultValue().equals("T")) {
 	        		hasBlockUserManagement = Boolean.TRUE;
 				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("ENGRADE_Customer") && 
+	            		cc.getDefaultValue().equals("T")) {
+	        		this.isEngradeCustomer = true;
+	        		continue;
+	            }
 			}
 
 		}
@@ -465,6 +471,9 @@ public class UserAccountFileOperationController extends PageFlowController{
 		this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
 		//Done for 3to8 customer to block user module
 		this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
+     	//Done for Engrade customer to block admin users from adding/editing/deleting users
+     	this.getSession().setAttribute("hasBlockUserModifications", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

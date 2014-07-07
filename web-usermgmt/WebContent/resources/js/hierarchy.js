@@ -130,6 +130,10 @@ function createSingleNodeSelectedTree(jsondata) {
  		    if(!gridloaded) {
  		  		gridloaded = true;
  		        populateTreeSelect();
+ 		        var isEngradeCust=$("input#isEngradeCustomer").val();
+ 		        if (isEngradeCust != null && isEngradeCust.toLowerCase()=="true")
+ 		        populateGridViewOnly();
+ 		        else
 			    populateGrid();
 			}
 			else
@@ -616,6 +620,112 @@ function populateGrid() {
 		    		 AddUserDetail();
 			    }, position: "first", title:"Add User", cursor: "pointer",id:"add_list2"
 			});  
+			jQuery("#refresh_list2").bind("click",function(){
+				$("#searchUserByKeywordInput").val('');
+				setAnchorButtonState('changePWButton', true);
+			});
+		setupButtonPerUserPermission();	 
+}
+
+function populateGridViewOnly() {
+
+		//document.getElementById('changePW').style.visibility = "visible";
+		// $("#changePWDBtn").attr('disabled', true); 
+		setAnchorButtonState('changePWButton', true);
+		resetSearchCrit();
+		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+ 		
+         $("#list2").jqGrid({         
+         url:'userOrgNodeHierarchyGrid.do', 
+		 mtype:   'POST',
+		 datatype: "json",         
+          postData: postDataObject,      
+          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(),$("#jqgLoginID").val(), $("#jqgRoleID").val(), $("#jqgEmailID").val(),$("#jqgOrgID").val()],
+		   	colModel:[
+		   	
+		   	    {name:'lastName',index:'lastName', width:130, editable: true,align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:130, editable: true,align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'loginId',index:'loginId', width:130, editable: true,align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'role',index:'role',editable: true, width:200, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		     	{name:'email',index:'email',editable: true, width:150,align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr',editable: true, align:"left" ,width:200, edittype:"newtree",editoptions:{readonly:true},sortable:true,sorttype:'text', cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		
+		   	],
+		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId",records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
+		   	 
+		   	loadui: "disable",
+			rowNum:20,
+			loadonce:true, 
+			multiselect:false,
+			pager: '#pager2', 
+			sortname: 'lastName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 370,
+			width: $("#jqGrid-content-section").width(), 
+			//editurl: 'userOrgNodeHierarchyGrid.do',
+			//ondblClickRow: function(rowid) {EditUserDetail();},
+			caption:"User List",
+			onPaging: function() {
+				var reqestedPage = parseInt($('#list2').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_pager2').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#list2').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#list2').setGridParam({"page": minPageSize});
+				}
+				setAnchorButtonState('changePWButton', true);
+				
+			},
+			onSortCol:function(){
+				setAnchorButtonState('changePWButton', true);
+			},
+			onSelectRow: function (rowid) {
+				document.getElementById('displayMessageMain').style.display = "none";	
+			},
+			loadComplete: function () {
+				if ($('#list2').getGridParam('records') === 0) {
+            		$('#sp_1_pager2').text("1");
+            		$('#next_pager2').addClass('ui-state-disabled');
+            		$('#last_pager2').addClass('ui-state-disabled');
+            		$('#list2').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#list2').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/UserWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noUsertTitleGrd").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noUserMsgGrd").val()+"</td></tr></tbody></table></td></tr>");
+            	}
+				$.unblockUI();  
+				$("#list2").setGridParam({datatype:'local'});
+				
+				var tdList = ("#pager2_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				 
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();  
+						window.location.href="/SessionWeb/logout.do";
+						
+					}
+	 });
+			jQuery("#list2").jqGrid('navGrid','#pager2',
+			{
+				search: false,add:false,edit:false,del:false 
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
+			    	$("#searchUserByKeyword").dialog({  
+						title:$("#searchUserID").val(),  
+					 	resizable:false,
+					 	autoOpen: true,
+					 	width: '300px',
+					 	modal: true,
+						closeOnEscape: false,
+					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+					 	});
+			    }, position: "one-before-last", title:"Search User", cursor: "pointer"
+			});
 			jQuery("#refresh_list2").bind("click",function(){
 				$("#searchUserByKeywordInput").val('');
 				setAnchorButtonState('changePWButton', true);

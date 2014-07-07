@@ -54,6 +54,8 @@ public class TestContentOperationController extends PageFlowController {
 	private boolean isUserLinkSelected = false;
    /* Changes for DEX Story - Add intermediate screen : End */
 	
+	private boolean isEngradeCustomer = false;
+	
 	/**
 	 * @return the userName
 	 */
@@ -999,6 +1001,11 @@ public class TestContentOperationController extends PageFlowController {
             		cc.getDefaultValue().equals("T")) {
         		hasBlockUserManagement = Boolean.TRUE;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("ENGRADE_Customer") && 
+            		cc.getDefaultValue().equals("T")) {
+        		this.isEngradeCustomer = true;
+        		continue;
+            }
 		}
 		if (isWVCustomer)
 		{
@@ -1033,6 +1040,9 @@ public class TestContentOperationController extends PageFlowController {
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//Done for 3to8 customer to block user module
 		this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
+     	//Done for Engrade customer to block admin users from adding/editing/deleting users
+     	this.getSession().setAttribute("hasBlockUserModifications", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

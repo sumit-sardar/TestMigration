@@ -207,6 +207,7 @@ public class SessionOperationController extends PageFlowController {
 	public boolean isTABECustomer = false;
 	public boolean isTABEAdaptiveCustomer = false;
 	public boolean isTASCCustomer = false;
+	public boolean isEngradeCustomer = false;
 	public boolean isTASCReadinessCustomer = false;
 	public boolean isTERRANOVA_Customer = false;
 	private boolean forceTestBreak = false;
@@ -5292,6 +5293,11 @@ public class SessionOperationController extends PageFlowController {
 	            		cc.getDefaultValue().equals("T")) {
 	        		hasBlockUserManagement = Boolean.TRUE;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("ENGRADE_Customer") && 
+	            		cc.getDefaultValue().equals("T")) {
+	        		this.isEngradeCustomer = true;
+	        		continue;
+	            }
 				if(cc.getCustomerConfigurationName().equalsIgnoreCase("Show_Roster_Accom_Hierarchy") && 
 						cc.getDefaultValue().equals("T")) {
 					this.hasShowRosterAccomAndHierarchy = Boolean.TRUE;
@@ -5376,6 +5382,10 @@ public class SessionOperationController extends PageFlowController {
      	
      	//Done for 3to8 customer to block user module
      	this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
+     	
+     	//Done for Engrade customer to block admin users from adding/editing/deleting users
+     	this.getSession().setAttribute("hasBlockUserModifications", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
     }
    
     private boolean checkUserLevel(Integer defaultVisibilityLevel){

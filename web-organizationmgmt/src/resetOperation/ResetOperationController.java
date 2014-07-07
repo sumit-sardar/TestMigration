@@ -84,6 +84,7 @@ public class ResetOperationController extends PageFlowController {
     
     private boolean isLasLinkCustomer = false;
     private boolean isTASCCustomer = false;
+    private boolean isEngradeCustomer = false;
     public static String CONTENT_TYPE_JSON = "application/json";
     
     /* Changes for DEX Story - Add intermediate screen : Start */
@@ -1567,6 +1568,11 @@ public class ResetOperationController extends PageFlowController {
             		cc.getDefaultValue().equals("T")) {
         		hasBlockUserManagement = Boolean.TRUE;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("ENGRADE_Customer") && 
+            		cc.getDefaultValue().equals("T")) {
+        		this.isEngradeCustomer = true;
+        		continue;
+            }
 			//Added for story Config Reset Test for TASC top level admin
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")
 					//[IAA]&& cc.getDefaultValue().equals("T")) {
@@ -1618,6 +1624,9 @@ public class ResetOperationController extends PageFlowController {
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
      	//Done for 3to8 customer to block user module
      	this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
+     	//Done for Engrade customer to block admin users from adding/editing/deleting users
+     	this.getSession().setAttribute("hasBlockUserModifications", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));     	
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

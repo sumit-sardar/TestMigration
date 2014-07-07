@@ -46,12 +46,14 @@
 					&nbsp;								
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
 					<% 
-						Boolean hasBlockUserManagement=(Boolean)session.getAttribute("hasBlockUserManagement");
-						if((hasBlockUserManagement==null) || (hasBlockUserManagement!=null && hasBlockUserManagement==false) || ((session.getAttribute("is3to8Selected") != null) && !is3to8Selected)) {
+					Boolean hasBlockUserManagement=(Boolean)session.getAttribute("hasBlockUserManagement");
+					Boolean hasBlockUserModifications=(Boolean)session.getAttribute("hasBlockUserModifications");
+					if((hasBlockUserManagement==null) || (hasBlockUserManagement!=null && hasBlockUserManagement==false) || ((session.getAttribute("is3to8Selected") != null) && !is3to8Selected)) {
+					if ((hasBlockUserModifications==null) || (hasBlockUserModifications!=null && hasBlockUserModifications==false)){
 					%>
 						<a href="#" onClick="viewMyProfile();"><b>My Profile</b></a>&nbsp;&nbsp;
 						<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
-					<% } %>
+					<% }} %>
                 	<a href="<netui-template:attribute name="helpLink"/>" onClick="return showHelpWindow(this.href);"><b>Help</b></a>&nbsp;&nbsp;
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
 					<a href="#" onclick="gotoAction('logout.do');"><b>Logout</b></a>&nbsp;&nbsp;
