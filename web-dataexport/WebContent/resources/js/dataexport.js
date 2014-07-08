@@ -30,7 +30,7 @@ var parentProductId;
 function getStudentList() { 
 		var postDataObject = {};
 		postDataObject.frameworkProductId=$('#frameworkProductId').val();
-		
+		postDataObject.productId=$('#formSelect').val();
 		
 		$.ajax({
 			async:		true,
@@ -46,13 +46,22 @@ function getStudentList() {
 							if(data.testSessionList.length>0){
 								populate_to_be_export_student_grid(data.testSessionList);
 								$('#data_export_step1').show();
+								showHideMessage(false,$("#dataExportSearchResultTitle").val(),$("#exportStudentTestSessionSearchResultEmpty").val());
+								$('#step1msg').show();
+								$('#data_export_session_student_list_div').show();
+								$('#data_export_step2').hide();
+								$('#data_export_step3').hide();
 								notCompletedStudentCountVal = data.notCompletedStudentCount;
 								notTakenStudentCountVal = data.notTakenStudentCount;
 								scheduledStudentCountVal = data.scheduledStudentCount;
 								totalExportedStudentCountVal = data.studentBeingExportCount;
 							} else {
 								showHideMessage(true,$("#dataExportSearchResultTitle").val(),$("#exportStudentTestSessionSearchResultEmpty").val());
-								$('#data_export_step1').hide();
+								$('#data_export_step1').show();
+								$('#step1msg').hide();
+								$('#data_export_session_student_list_div').hide();
+								$('#data_export_step2').hide();
+								$('#data_export_step3').hide();
 							}
 							
 							
@@ -68,8 +77,10 @@ function getStudentList() {
 }
 
 function populate_to_be_export_student_grid(testSessionList){
+		testAdminIdsMap = new Map();
+		testSessionLocalData = testSessionList;
 		if(isGridToBeExportStudentLoaded ){
-			reload_populate_to_be_export_student_grid(testSessionList);
+			reload_populate_reset_by_session_step3_student_grid(testSessionList);
 		} else {
 			load_populate_to_be_export_student_grid(testSessionList);
 		}
@@ -307,6 +318,8 @@ function getUnscoredStudentDetails(isDataExportForSelectedSessions) {
 		postDataObject.selectedTestSessionIds = '';
 	}
 	postDataObject.frameworkProductId = $('#frameworkProductId').val();	
+	postDataObject.productId=$('#formSelect').val();
+	
 	$.ajax({
 			async:		true,
 			beforeSend:	function(){
@@ -1510,6 +1523,8 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 	function refreshStudentList() { 
 		var postDataObject = {};		
 		postDataObject.frameworkProductId=$('#frameworkProductId').val();
+		postDataObject.productId=$('#formSelect').val();
+		
 		$.ajax({
 			async:		true,
 			beforeSend:	function(){

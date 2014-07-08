@@ -7,12 +7,40 @@
 		<lb:label key="data.export.submitJobResult"/>
 </div>
 <div id="session_student_for_export" style="">
+
+		<%
+			Integer frameworkProductId = Integer.parseInt(request.getAttribute("frameworkProductId").toString());
+			Boolean isFormAB = Boolean.parseBoolean(request.getAttribute("isFormAB").toString());
+			Boolean isEspA = Boolean.parseBoolean(request.getAttribute("isEspA").toString());
+			Boolean isFormCD = Boolean.parseBoolean(request.getAttribute("isFormCD").toString());
+			Boolean isEspB = Boolean.parseBoolean(request.getAttribute("isEspB").toString());
+		%>
 	
 	<table id="session_student_for_export_table">
 	<!--  Steps 1 Starts Here -->
 	<tr id="data_export_step1" style="display: none">
 		<td width="10px;"> </td>
-		<td class="transparent"><lb:label key="data.export.step1.message" /> <BR />
+		<td class="transparent"><div id="step1msg"><lb:label key="data.export.step1.message" /> </div>
+			<BR />
+			<b><lb:label key="data.export.formSelect.message" /></b>
+			&nbsp;&nbsp;<select id="formSelect" onchange="return getStudentList();">
+			<% if(frameworkProductId==7000) { %>
+				<% if(isFormAB) { %>
+					<option id="7001" value="7001">Forms A/B</option>
+				<% } %>
+				<% if(isEspA) { %>
+					<option id="7003" value="7003">Form Espa&#xf1;ol A</option>
+				<% } %>
+			<% } else if(frameworkProductId==7500) { %>
+				<% if(isFormCD) { %>
+					<option id="7501" value="7501">Forms C/D</option>
+				<% } %>
+				<% if(isEspB) { %>
+					<option id="7502" value="7502">Form Espa&#xf1;ol B</option>
+				<% } %>
+			<% } %>
+</select>
+			<BR />
 			<BR />
 				<div id="data_export_session_student_list_div" style=" background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 					<table id="to_be_export_student_list" class="gridTable"></table>
