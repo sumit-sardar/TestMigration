@@ -573,6 +573,7 @@ public class DataExportOperationController extends PageFlowController {
 			 return new Forward("linkPage");
 			 
 		 }else{
+			 checkLasProductIds(frameProducts[0]);
 			 this.getRequest().setAttribute("frameworkProductId", frameProducts[0]);
 			 return new Forward("success");
 		 }
@@ -592,6 +593,50 @@ public class DataExportOperationController extends PageFlowController {
 		}
 		return frameworkProductIds;
 	}
+	
+	private Integer[] getProductIds(Integer customerId, Integer frameworkProductId) {
+		
+		Integer[] productIds =null;
+		try {
+			productIds = dataexportManagement.getProductIds(customerId, frameworkProductId);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		return productIds;
+	}
+	
+	private void checkLasProductIds(Integer frameworkProductId) {
+		Integer[] prodIds = getProductIds(this.customerId, frameworkProductId);
+		
+		boolean isFormAB = false;
+		boolean isEspA = false;
+		boolean isFormCD = false;
+		boolean isEspB = false;
+		
+		if(frameworkProductId == 7000) {
+			for(Integer x:prodIds) {
+				if(x == 7001 || x == 7002) {
+					isFormAB = true;
+				} else if(x == 7003) {
+					isEspA = true;
+				}
+			}
+		} else if(frameworkProductId == 7500) {
+			for(Integer x:prodIds) {
+				if(x == 7501) {
+					isFormCD = true;
+				} else if(x == 7502) {
+					isEspB = true;
+				}
+			}
+		}
+		
+		this.getRequest().setAttribute("frameworkProductId", frameworkProductId);
+		this.getRequest().setAttribute("isFormAB", new Boolean(isFormAB));
+		this.getRequest().setAttribute("isEspA", new Boolean(isEspA));
+		this.getRequest().setAttribute("isFormCD", new Boolean(isFormCD));
+		this.getRequest().setAttribute("isEspB", new Boolean(isEspB));
+	}
 
 	@Jpf.Action(forwards = { 
 			 @Jpf.Forward(name = "success", path = "data_export.jsp") 
@@ -599,7 +644,7 @@ public class DataExportOperationController extends PageFlowController {
 	 protected Forward dataExport()
 	 {
 		Integer frameworkProductId = Integer.parseInt(this.getRequest().getParameter("frameworkId"));
-		this.getRequest().setAttribute("frameworkProductId", frameworkProductId);
+		checkLasProductIds(frameworkProductId);
 		return new Forward("success");
 	 }
 	@Jpf.Action()
@@ -611,6 +656,7 @@ public class DataExportOperationController extends PageFlowController {
 		ManageTestSessionData mtsData = null;
 		DataExportVO vo = new DataExportVO();
 		Integer frameworkProductId = Integer.parseInt(this.getRequest().getParameter("frameworkProductId").toString());
+		Integer productId = Integer.parseInt(this.getRequest().getParameter("productId").toString());
 		if (this.userName == null) {
 			getLoggedInUserPrincipal();
 			getUserDetails();
@@ -619,7 +665,7 @@ public class DataExportOperationController extends PageFlowController {
 		{	
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
 			Date date = new Date();  
-			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, null, this.userName, frameworkProductId);
+			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, null, this.userName, frameworkProductId, productId);
 			Date date1 = new Date();  
 			if ((mtsData != null)) {
 				if( (mtsData.getFilteredCount().intValue() > 0)) {
@@ -698,6 +744,7 @@ public class DataExportOperationController extends PageFlowController {
 		Integer [] selectedTestSessionIds = null;
 		String selectedTestSessionIdStr = (String) getRequest().getParameter("selectedTestSessionIds");
 		Integer frameworkId = (getRequest().getParameter("frameworkProductId") == null)?-1:Integer.parseInt(getRequest().getParameter("frameworkProductId").toString());
+		Integer productId = (getRequest().getParameter("productId") == null)?-1:Integer.parseInt(getRequest().getParameter("productId").toString());
 		if(selectedTestSessionIdStr != null && !selectedTestSessionIdStr.equalsIgnoreCase("")){			
 			selectedTestSessionIdArr =  selectedTestSessionIdStr.split(",");
 			selectedTestSessionIds  = new Integer[selectedTestSessionIdArr.length];
@@ -707,7 +754,7 @@ public class DataExportOperationController extends PageFlowController {
 		}
 		try {
 			if(selectedTestSessionIds != null && selectedTestSessionIds.length > 0){
-				mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, selectedTestSessionIds, this.userName, frameworkId);
+				mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, selectedTestSessionIds, this.userName, frameworkId, productId);
 				if (mtsData != null) {
 					if( (mtsData.getFilteredCount().intValue() > 0)) {
 						rosterListForSelectedSessions = mtsData.getToBeExportedStudentRosterList();

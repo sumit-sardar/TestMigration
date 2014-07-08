@@ -371,7 +371,7 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 	}
 
 	@Override
-	public ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort, Integer[] selectedTestSessionIds, String userName, Integer frameworkId) throws CTBBusinessException{
+	public ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort, Integer[] selectedTestSessionIds, String userName, Integer frameworkId, Integer productId) throws CTBBusinessException{
 		
 		ManageTestSessionData mtsd = new ManageTestSessionData();
 		ManageTestSession[] testSessions = null;
@@ -443,7 +443,22 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 	    	   } else{
 	    		   //testSessions = dataExportManagement.getTestSessionForExportWithStudents(customerId);
 	    		   //testSessions = dataExportManagement.getTestSessionForExportWithStudentsForUser(customerId, userName);
-	    		   testSessions = dataExportManagement.getTestSessionForExportWithStudentsForUserWithFrameworkId(customerId, userName, frameworkId);
+	    		   String sqlQuery="prod.product_id in (";
+	    		   if(frameworkId==7000) {
+		    		   if(productId==7001) {
+		    			   sqlQuery+="7001,7002) ";
+		    		   } else if(productId==7003) {
+		    			   sqlQuery+="7003) ";
+		    		   }
+	    		   } else if(frameworkId==7500) {
+	    			   if(productId==7501) {
+		    			   sqlQuery+="7501) ";
+		    		   } else if(productId==7502) {
+		    			   sqlQuery+="7502) ";
+		    		   }
+	    		   }
+	    		   
+	    		   testSessions = dataExportManagement.getTestSessionForExportWithStudentsForUserWithFrameworkId(customerId, userName, frameworkId, sqlQuery);
 	    	   }
     	    }
 			for (int i = 0; i <testSessions.length; i++ ){
@@ -587,6 +602,24 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 
 		
 		return frameworkProductIds;
+	}
+	
+	@Override
+	public Integer[] getProductIds(Integer customerId, Integer frameworkProductId) throws CTBBusinessException{
+		
+		Integer[] productIds = null;
+		try{
+			productIds = product.getProductIds(customerId, frameworkProductId);
+		}catch(SQLException e) {
+			ProductDetailsNotFoundException tee = new ProductDetailsNotFoundException(
+					"DataExportManagementImpl: getProductIds: "
+							+ e.getMessage());
+			tee.setStackTrace(e.getStackTrace());
+			throw tee;
+		}
+
+		
+		return productIds;
 	}
 	
 } 

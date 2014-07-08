@@ -1594,14 +1594,14 @@ public class FileGenerator {
 					tfil.setTestForm("A");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"LAS Links", new Integer(10))
+								"LAS LINKS", new Integer(10))
 								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("B")) {
 					tfil.setTestName("LAS LINKS OPERATIONAL");
 					tfil.setTestForm("B");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"LAS Links", new Integer(10))
+								"LAS LINKS", new Integer(10))
 								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("Espanol")) {
 					tfil.setTestName("LAS LINKS OPERATIONAL");
