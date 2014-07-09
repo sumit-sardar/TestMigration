@@ -7,5 +7,11 @@
 			<context-root>OrganizationWeb</context-root>
 		</web>
 	</module>
+	<module id="WebModule_1404932318182">
+		<web>
+			<web-uri>platform-webservices.war</web-uri>
+			<context-root>platform-webservices-newui</context-root>
+		</web>
+	</module>
 </application>
  

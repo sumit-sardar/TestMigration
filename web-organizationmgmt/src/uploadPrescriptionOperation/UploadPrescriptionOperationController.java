@@ -589,7 +589,7 @@ public class UploadPrescriptionOperationController extends PageFlowController {
     private void invokeService(String userName, String fullFilePath, Integer uploadFileId, String instanceURL, int trycount) {
     	try {
             System.out.println("***** Upload App: invoking process service: " + this.userName + " : " + saveFileName);
-            String endpoint = instanceURL + "/platform-webservices/UploadDownloadManagement";
+            String endpoint = instanceURL + "/platform-webservices-newui/UploadDownloadManagement";
             uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
             System.out.println("***** Upload App: using service endpoint: " + endpoint);
             uploadDownloadManagementServiceControl.uploadFile(this.userName, fullFilePath, uploadFileId);
