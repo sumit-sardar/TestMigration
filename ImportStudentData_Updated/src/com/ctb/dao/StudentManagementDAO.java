@@ -716,7 +716,7 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 		try{
 			conn = SQLUtil.getConnection();
 			if(!studentIds.contains("#")){
-				query += studentIds + "))";
+				query += studentIds + ")";
 				pstmt  = conn.prepareStatement(query);
 				pstmt.execute();
 			}else{
@@ -724,7 +724,7 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 				for(int indx=0; indx<splitedstr.length;indx++){
 					if(splitedstr[indx] == null)
 						continue;
-					String splitQuery = query + splitedstr[indx].toString()+"))";
+					String splitQuery = query + splitedstr[indx].toString()+")";
 					pstmt  = conn.prepareStatement(splitQuery);
 					pstmt.execute();
 					SQLUtil.closeDbObjects(null, pstmt, null);
