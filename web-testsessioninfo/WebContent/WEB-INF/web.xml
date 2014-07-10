@@ -15,12 +15,7 @@
         <filter-name>TamperFilter</filter-name>
         <filter-class>com.ctb.util.web.filter.TamperFilter</filter-class>
     </filter>
-   
-    <filter-mapping>
-        <filter-name>LTIAuthFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    
+       
     <filter-mapping>
         <filter-name>TamperFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -170,7 +165,7 @@
         </auth-constraint>
         <user-data-constraint>
             <description>This is how the user data must be transmitted.</description>
-            <transport-guarantee>NONE</transport-guarantee>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
     
@@ -258,11 +253,7 @@
     </listener>
     <listener>
         <listener-class>org.apache.beehive.netui.pageflow.HttpSessionMutexListener</listener-class>
-    </listener>
-    <servlet>
-        <servlet-name>LTIAuthentication</servlet-name>
-        <servlet-class>sessionOperation.LTIAuthentication</servlet-class>
-    </servlet>
+    </listener>    
     <servlet>
         <servlet-name>XmlHttpRequestServlet</servlet-name>
         <servlet-class>org.apache.beehive.netui.pageflow.xmlhttprequest.XmlHttpRequestServlet</servlet-class>
