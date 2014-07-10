@@ -2,11 +2,12 @@
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <display-name>Workshop Application</display-name>
     <description/>
-     <filter>
+
+   <filter>
         <filter-name>LTIAuthFilter</filter-name>
         <filter-class>com.ctb.util.web.filter.LTIAuthFilter</filter-class>
     </filter>
-    <filter>
+     <filter>
         <filter-name>NoCacheFilter</filter-name>
         <filter-class>com.ctb.util.web.filter.NoCacheFilter</filter-class>
     </filter>
@@ -14,6 +15,12 @@
         <filter-name>TamperFilter</filter-name>
         <filter-class>com.ctb.util.web.filter.TamperFilter</filter-class>
     </filter>
+   
+    <filter-mapping>
+        <filter-name>LTIAuthFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
     <filter-mapping>
         <filter-name>TamperFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -46,6 +53,7 @@
         <filter-name>NoCacheFilter</filter-name>
         <url-pattern>/testTicketOperation/*</url-pattern>
     </filter-mapping>
+   
     <servlet>
         <description/>
         <servlet-name>action</servlet-name>
@@ -162,9 +170,10 @@
         </auth-constraint>
         <user-data-constraint>
             <description>This is how the user data must be transmitted.</description>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+            <transport-guarantee>NONE</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
+    
     <login-config>
         <auth-method>FORM</auth-method>
         <realm-name>OAS</realm-name>
@@ -173,6 +182,7 @@
             <form-error-page>/loginError.do</form-error-page>
         </form-login-config>
     </login-config>
+    
     <security-role>
         <description>A root user</description>
         <role-name>root</role-name>
@@ -257,6 +267,20 @@
         <servlet-name>XmlHttpRequestServlet</servlet-name>
         <servlet-class>org.apache.beehive.netui.pageflow.xmlhttprequest.XmlHttpRequestServlet</servlet-class>
     </servlet>
+    <servlet>
+    	<description>
+    	</description>
+    	<display-name>
+    	LTIAuthentication</display-name>
+    	<servlet-name>LTIAuthentication</servlet-name>
+    	<servlet-class>
+    	sessionOperation.LTIAuthentication</servlet-class>
+    	 <init-param>
+            <description/>
+            <param-name>secret-key</param-name>
+            <param-value>secret</param-value>
+        </init-param>
+    </servlet>
     <servlet-mapping>
         <servlet-name>action</servlet-name>
         <url-pattern>*.jpf</url-pattern>
@@ -276,5 +300,9 @@
     <servlet-mapping>
         <servlet-name>XmlHttpRequestServlet</servlet-name>
         <url-pattern>*.render</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>LTIAuthentication</servlet-name>
+    	<url-pattern>/LTIAuthentication</url-pattern>
     </servlet-mapping>
 </web-app>
