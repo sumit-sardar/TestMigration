@@ -9,6 +9,10 @@
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
 	</context-param>
+	<context-param>
+		<param-name>OAS-URL</param-name>
+		<param-value>https://oastest.ctb.com/SessionWeb/LTIAuthentication</param-value>
+	</context-param>
 	<listener>
 		<listener-class>
 			com.sun.faces.config.ConfigureListener
@@ -61,8 +65,8 @@
 		<servlet-name>LTISignServlet</servlet-name>
 		<servlet-class>com.ctb.ltitest.LTISignServlet</servlet-class>
 		<init-param>
-			<param-name>secretkey</param-name>
-			<param-value>sample</param-value>
+			<param-name>secret-key</param-name>
+			<param-value>secret</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
