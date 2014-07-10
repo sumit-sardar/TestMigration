@@ -1336,12 +1336,19 @@
 			 	msmParam += "&itemSetIdTD_l=" + subTestDetails.locatorSubtest.id;
 			 	msmParam += "&subtestName_l=" +formatString(subTestDetails.locatorSubtest.subtestName);
 			 }
-			for(var ii=0; ii<finalSelectedSubtestsMsm.length; ii++){
-				msmParam += "&itemSetIdTD=" + finalSelectedSubtestsMsm[ii].id;
-			   	if(finalSelectedSubtestsMsm[ii].level != undefined){
-			   		msmParam += "&itemSetForm=" + finalSelectedSubtestsMsm[ii].level;
-			   	}
-			   	msmParam += "&subtestName=" +formatString(finalSelectedSubtestsMsm[ii].subtestName);
+			if(isTabeTutorialProduct){
+				for(var i=0; i<subTestDetails.subtests.length; i++){
+					msmParam += "&itemSetIdTD=" + subTestDetails.subtests[i].id;
+			   		msmParam += "&subtestName=" + subTestDetails.subtests[i].subtestName;
+				}
+			}else{
+				for(var ii=0; ii<finalSelectedSubtestsMsm.length; ii++){
+					msmParam += "&itemSetIdTD=" + finalSelectedSubtestsMsm[ii].id;
+			   		if(finalSelectedSubtestsMsm[ii].level != undefined){
+			   			msmParam += "&itemSetForm=" + finalSelectedSubtestsMsm[ii].level;
+			   		}
+			   		msmParam += "&subtestName=" +formatString(finalSelectedSubtestsMsm[ii].subtestName);
+				}
 			}  
 	        param += "testAdminId="+ selectedTestAdminId;
 			param += "&studentId=" + selectedStudentId;
