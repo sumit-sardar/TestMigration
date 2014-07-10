@@ -290,10 +290,6 @@
         <url-pattern>*.do</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>LTIAuthentication</servlet-name>
-        <url-pattern>/LTIAuthentication</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>XmlHttpRequestServlet</servlet-name>
         <url-pattern>*.xhr</url-pattern>
     </servlet-mapping>
@@ -301,8 +297,8 @@
         <servlet-name>XmlHttpRequestServlet</servlet-name>
         <url-pattern>*.render</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-    	<servlet-name>LTIAuthentication</servlet-name>
-    	<url-pattern>/LTIAuthentication</url-pattern>
+ 	<servlet-mapping>
+        <servlet-name>LTIAuthentication</servlet-name>
+        <url-pattern>/LTIAuthentication</url-pattern>
     </servlet-mapping>
 </web-app>
