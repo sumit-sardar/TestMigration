@@ -27,7 +27,7 @@ alert("test");
 </head>
 <body><h1>LTI authentication test client</h1><br/>
 <h2>Only  consumer key, user id and signature can be modified.</h2>
-<form action="http://localhost:7001/SessionWeb/LTIAuthentication" name="ltiLaunchForm" id="ltiLaunchForm" method="post" encType="application/x-www-form-urlencoded" name="ltiLaunchForm" id="ltiLaunchForm" method="post" encType="application/x-www-form-urlencoded">
+<form action="<%=application.getInitParameter("OAS-URL") %>" name="ltiLaunchForm" id="ltiLaunchForm" method="post" encType="application/x-www-form-urlencoded" name="ltiLaunchForm" id="ltiLaunchForm" method="post" encType="application/x-www-form-urlencoded">
 <table><tr><td>OAuth Version</td><td>
 <input type="text" name="oauth_version" value="1.0" readonly="readonly"/></td>
 </tr><tr>
@@ -57,7 +57,7 @@ alert("test");
 <input type="text" name="oauth_callback" value="about:blank" readonly="readonly"/></td></tr><tr>
 <td>
 OAuth Signature</td><td>
-<input type="text" name="oauth_signature" id="oauth_signature" value="e5b60db1ef154bf47243be2c6dfe02dc4b88778a" /></td></tr><tr>
+<input type="text" name="oauth_signature" id="oauth_signature" value="21807ea2ff90a12f65f2238d0373a47292ab2092" /></td></tr><tr>
 <td><button onclick="javascript:signRequest()" type="button">Calculate signature</button></td>
 <td  align="center">
 <button >Authenticate</button></td></tr>
