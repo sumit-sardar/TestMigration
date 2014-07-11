@@ -8,6 +8,7 @@ import java.security.SignatureException;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
    static final String OAUTH_PREFIX = "oauth_";
    static final String OAUTH_SIGNATURE = "oauth_signature";
    
+   private String secretKey = null;
+   
     /* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
 	 */
@@ -29,9 +32,16 @@ import javax.servlet.http.HttpServletResponse;
 		super();
 	}   	
 	
+	@Override
+	public void init(ServletConfig config)
+	{
+		secretKey = config.getInitParameter("secret-key");
+		System.out.println("secretKey init-->"+secretKey);
+	}
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}  	
@@ -39,6 +49,8 @@ import javax.servlet.http.HttpServletResponse;
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Map<String,String> oauthMap = new TreeMap<String,String>();
@@ -71,7 +83,9 @@ import javax.servlet.http.HttpServletResponse;
 	       {
 	    	   String signString = baseString.substring(0,baseString.length()-1);
 	    	   try {
-				String oauthSignature = HmacSha1Signature.calculateRFC2104HMAC(signString,this.getInitParameter("secret-key"));
+				String oauthSignature = HmacSha1Signature.calculateRFC2104HMAC(signString,secretKey);
+				System.out.println("Sign string-->"+signString);
+				System.out.println("!!!!!!!!->"+secretKey);
 				System.out.println("OAuth signature..."+oauthSignature);
 				response.getWriter().write(oauthSignature);
 			} catch (InvalidKeyException e) {
