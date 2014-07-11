@@ -5164,6 +5164,8 @@ public class SessionOperationController extends PageFlowController {
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
     	boolean hasBlockUserManagement = false;
+    	boolean hasSSOHideUserProfile = false;
+    	boolean hasSSOBlockUserModifications = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -5293,6 +5295,14 @@ public class SessionOperationController extends PageFlowController {
 	            		cc.getDefaultValue().equals("T")) {
 	        		hasBlockUserManagement = Boolean.TRUE;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Hide_User_Profile") && 
+	            		cc.getDefaultValue().equals("T")) {
+					hasSSOHideUserProfile = Boolean.TRUE;
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Block_User_Modifications") && 
+	            		cc.getDefaultValue().equals("T")) {
+					hasSSOBlockUserModifications = Boolean.TRUE;
+	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("ENGRADE_Customer") && 
 	            		cc.getDefaultValue().equals("T")) {
 	        		this.isEngradeCustomer = true;
@@ -5384,7 +5394,8 @@ public class SessionOperationController extends PageFlowController {
      	this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
      	
      	//Done for Engrade customer to block admin users from adding/editing/deleting users
-     	this.getSession().setAttribute("hasBlockUserModifications", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
+     	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
     }
    

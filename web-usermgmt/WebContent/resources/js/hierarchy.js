@@ -130,8 +130,8 @@ function createSingleNodeSelectedTree(jsondata) {
  		    if(!gridloaded) {
  		  		gridloaded = true;
  		        populateTreeSelect();
- 		        var isEngradeCust=$("input#isEngradeCustomer").val();
- 		        if (isEngradeCust != null && isEngradeCust.toLowerCase()=="true")
+ 		        var hasSSOBlockUserModifications=$("input#hasSSOBlockUserModifications").val();
+ 		        if (hasSSOBlockUserModifications != null && hasSSOBlockUserModifications.toLowerCase()=="true")
  		        populateGridViewOnly();
  		        else
 			    populateGrid();
