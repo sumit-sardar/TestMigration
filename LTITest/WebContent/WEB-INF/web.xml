@@ -7,11 +7,9 @@
 	<display-name>LTITest</display-name>
 	<context-param>
 		<param-name>OAS-URL</param-name>
-		<param-value>
-			https://oastest.ctb.com/SessionWeb/LTIAuthentication
-		</param-value>
+		  <param-value>	https://oastest.ctb.com/SessionWeb/LTIAuthentication</param-value>
 
-		<!-- - <param-value>http://localhost:7001/SessionWeb/LTIAuthentication</param-value> -->
+		<!--  <param-value>http://localhost:7001/SessionWeb/LTIAuthentication</param-value>  -->
 
 	</context-param>
 
@@ -45,7 +43,7 @@
 		<servlet-class>com.ctb.ltitest.LTISignServlet</servlet-class>
 		<init-param>
 			<param-name>secret-key</param-name>
-			<param-value>sample</param-value>
+			<param-value>oasctb123</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
