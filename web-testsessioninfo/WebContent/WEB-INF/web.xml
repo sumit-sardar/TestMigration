@@ -269,7 +269,7 @@
     	 <init-param>
             <description/>
             <param-name>secret-key</param-name>
-            <param-value>secret</param-value>
+            <param-value>oasctb123</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
