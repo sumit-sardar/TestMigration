@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletResponse;
 	       {
 	    	   String signString = baseString.substring(0,baseString.length()-1);
 	    	   try {
-				String oauthSignature = HmacSha1Signature.calculateRFC2104HMAC(signString,this.getInitParameter("secretkey"));
+				String oauthSignature = HmacSha1Signature.calculateRFC2104HMAC(signString,this.getInitParameter("secret-key"));
 				System.out.println("OAuth signature..."+oauthSignature);
 				response.getWriter().write(oauthSignature);
 			} catch (InvalidKeyException e) {
