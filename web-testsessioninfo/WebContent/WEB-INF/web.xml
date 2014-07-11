@@ -165,7 +165,7 @@
         </auth-constraint>
         <user-data-constraint>
             <description>This is how the user data must be transmitted.</description>
-            <transport-guarantee>NONE</transport-guarantee>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
     
@@ -266,12 +266,7 @@
     	<servlet-name>LTIAuthentication</servlet-name>
     	<servlet-class>
     	sessionOperation.LTIAuthentication</servlet-class>
-    	 <init-param>
-            <description/>
-            <param-name>secret-key</param-name>
-            <param-value>oasctb123</param-value>
-        </init-param>
-    </servlet>
+    	</servlet>
     <servlet-mapping>
         <servlet-name>action</servlet-name>
         <url-pattern>*.jpf</url-pattern>
