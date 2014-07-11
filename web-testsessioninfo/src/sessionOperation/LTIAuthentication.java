@@ -77,11 +77,11 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 			return;
 		}
 		LTIValidation validation = new LTIValidation();
-		String secretKey = getServletConfig().getInitParameter("secret-key");
+		String secretKey = validation.getSecretKey(customerID);
 		if(secretKey == null || secretKey.isEmpty())
 		{
-			System.out.println("Secret key cannot be blank");
-			request.setAttribute("message","Secret key cannot be blank");
+			System.out.println("Secret key not defined for customer "+customerID);
+			request.setAttribute("message","Secret key not defined for customer "+customerID);
 			gotoErrorPage(request,response);
 			
 			return;

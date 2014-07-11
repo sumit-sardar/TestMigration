@@ -28,6 +28,43 @@ public class LTIValidation {
 	private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 	private static final String DATASOURCE_NAME = "oasDataSource";
 
+	public String getSecretKey(String customerID)
+	{
+		String skey = null;
+		InitialContext ctx;
+		try {
+			ctx = new InitialContext();
+
+			DataSource ds = null;
+
+			ds = (DataSource) ctx.lookup(DATASOURCE_NAME);
+
+			Connection con = ds.getConnection();
+			PreparedStatement secretKeyStmt = con
+					.prepareStatement("SELECT secret_key FROM ENGRADE_CUSTOMER_KEY WHERE CUSTOMER_ID = ? ");
+
+			// Query for a secret key by the customer id
+			secretKeyStmt.setString(1, customerID);
+			ResultSet rs = secretKeyStmt.executeQuery();
+
+			boolean exists = rs.next();
+			if (exists) {
+				skey = rs.getString("secret_key");
+			}
+			rs.close();
+			secretKeyStmt.close();
+			con.close();
+
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return skey;
+	}
 	public boolean validateRequest(HttpServletRequest request, String secretKey) {
 		boolean result = false;
 
@@ -106,6 +143,7 @@ public class LTIValidation {
 		return formatter.toString();
 	}
 
+	
 	// validate customerID(in LTI it referred as consumer)
 	public boolean validateCustomer(String customerID) {
 		boolean result = false;
@@ -128,6 +166,7 @@ public class LTIValidation {
 			boolean exists = rs.next();
 			rs.close();
 			customerStmt.close();
+			con.close();
 			if (exists) {
 				result = true;
 			}
