@@ -159,7 +159,7 @@ public class LTIValidation {
 			PreparedStatement userStmt = con
 					.prepareStatement("select u.user_id as userid, u.user_name as username  from user_role ur, org_node org , "
 							+ "users u where ur.org_node_id = org.org_node_id and  ur.user_id = u.user_id and u.activation_status = 'AC' and  "
-							+ "org.customer_id = ? and ur.user_id =  ? ");
+							+ "org.customer_id = ? and u.ext_school_id =  ? ");
 
 			// Query for a customer by the customer id
 			userStmt.setString(1, customerID);
@@ -176,36 +176,70 @@ public class LTIValidation {
 			}
 			userRS.close();
 			userStmt.close();
-
-			PreparedStatement roleStmt = con
-					.prepareStatement("SELECT DISTINCT r.role_id as roleId,  INITCAP(r.role_name) as roleName "
-							+ "FROM Role r,User_Role ur, Users us "
-							+ "WHERE  ur.activation_status = 'AC'  and  r.activation_status = 'AC'  and  r.role_id = ur.role_id  and "
-							+ " ur.user_id = us.user_id and us.user_id = ?");
-
-			roleStmt.setString(1, userID);
-
-			ResultSet roleRS = roleStmt.executeQuery();
-
-			exists = roleRS.next();
-
 			if (exists) {
-				ltiRole = new Role();
-				ltiRole.setRoleId(roleRS.getInt("roleId"));
-				ltiRole.setRoleName(roleRS.getString("roleName"));
-				ltiUser.setRole(ltiRole);
+				PreparedStatement roleStmt = con
+						.prepareStatement("SELECT DISTINCT r.role_id as roleId,  INITCAP(r.role_name) as roleName "
+								+ "FROM Role r,User_Role ur, Users us "
+								+ "WHERE  ur.activation_status = 'AC'  and  r.activation_status = 'AC'  and  r.role_id = ur.role_id  and "
+								+ " ur.user_id = us.user_id and us.user_id = ?");
+
+				roleStmt.setInt(1, ltiUser.getUserId());
+
+				ResultSet roleRS = roleStmt.executeQuery();
+
+				exists = roleRS.next();
+
+				if (exists) {
+					ltiRole = new Role();
+					ltiRole.setRoleId(roleRS.getInt("roleId"));
+					ltiRole.setRoleName(roleRS.getString("roleName"));
+					ltiUser.setRole(ltiRole);
+				}
+				roleRS.close();
+				roleStmt.close();
 			}
-			roleRS.close();
-			roleStmt.close();
-			con.close();		
+
+			con.close();
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return ltiUser;
+	}
+
+	public void updateLogInTime(Integer userID) {
+
+		try {
+			DataSource ds = null;
+			InitialContext ctx = new InitialContext();
+
+			ds = (DataSource) ctx.lookup(DATASOURCE_NAME);
+
+			Connection con;
+
+			con = ds.getConnection();
+
+			con.setAutoCommit(false);
+			PreparedStatement updStmt = con
+					.prepareStatement("UPDATE Users set last_login_date_time = sysdate where user_id = ?");
+
+			updStmt.setInt(1, userID.intValue());
+			int rowCount = updStmt.executeUpdate();
+
+			con.commit();
+			con.close();
+
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		} catch (NamingException e) {
+			
+			e.printStackTrace();
+		}
+
 	}
 }

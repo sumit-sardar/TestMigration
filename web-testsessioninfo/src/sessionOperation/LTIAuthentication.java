@@ -77,7 +77,16 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 			return;
 		}
 		LTIValidation validation = new LTIValidation();
-		if (validation.validateRequest(request, "sample")) {
+		String secretKey = getServletConfig().getInitParameter("secret-key");
+		if(secretKey == null || secretKey.isEmpty())
+		{
+			System.out.println("Secret key cannot be blank");
+			request.setAttribute("message","Secret key cannot be blank");
+			gotoErrorPage(request,response);
+			
+			return;
+		}
+		if (validation.validateRequest(request,secretKey )) {
 			
 			if (validation.validateCustomer(customerID)) {
 				
@@ -91,6 +100,7 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 				}
 				else
 				{//the user is valid
+					validation.updateLogInTime(user.getUserId());
 					System.out.println("LTI Authentication Successful."+user.getUserId()+","+user.getUserName()+
 							","+user.getRole().getRoleName());
 					HttpSession sess = request.getSession(true);
