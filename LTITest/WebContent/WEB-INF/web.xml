@@ -7,10 +7,9 @@
 	<display-name>LTITest</display-name>
 	<context-param>
 		<param-name>OAS-URL</param-name>
-		  <param-value>	https://oastest.ctb.com/SessionWeb/LTIAuthentication</param-value>
+		<param-value>	https://oastest.ctb.com/SessionWeb/LTIAuthentication</param-value>
 
 		<!--  <param-value>http://localhost:7001/SessionWeb/LTIAuthentication</param-value>  -->
-
 	</context-param>
 
 	<welcome-file-list>
@@ -27,11 +26,7 @@
 		<display-name>LTIAuthServlet</display-name>
 		<servlet-name>LTIAuthServlet</servlet-name>
 		<servlet-class>com.ctb.ltitest.LTIAuthServlet</servlet-class>
-		<init-param>
-			<param-name>secretkey</param-name>
-			<param-value>abcd123</param-value>
-		</init-param>
-	</servlet>
+		</servlet>
 	<servlet-mapping>
 		<servlet-name>LTIAuthServlet</servlet-name>
 		<url-pattern>/LTIAuthServlet</url-pattern>
@@ -41,11 +36,7 @@
 		<display-name>LTISignServlet</display-name>
 		<servlet-name>LTISignServlet</servlet-name>
 		<servlet-class>com.ctb.ltitest.LTISignServlet</servlet-class>
-		<init-param>
-			<param-name>secret-key</param-name>
-			<param-value>oasctb123</param-value>
-		</init-param>
-	</servlet>
+		</servlet>
 	<servlet-mapping>
 		<servlet-name>LTISignServlet</servlet-name>
 		<url-pattern>/LTISignServlet</url-pattern>
