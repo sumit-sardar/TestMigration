@@ -608,23 +608,26 @@ public class DataExportOperationController extends PageFlowController {
 	private void checkLasProductIds(Integer frameworkProductId) {
 		Integer[] prodIds = getProductIds(this.customerId, frameworkProductId);
 		
-		boolean isFormAB = false;
+		boolean isFormA = false;
+		boolean isFormB = false;
 		boolean isEspA = false;
-		boolean isFormCD = false;
+		boolean isFormC = false;
 		boolean isEspB = false;
 		
 		if(frameworkProductId == 7000) {
 			for(Integer x:prodIds) {
-				if(x == 7001 || x == 7002) {
-					isFormAB = true;
-				} else if(x == 7003) {
+				if(x == 7001 ) {
+					isFormA = true;
+				} else if(x == 7002) {
+					isFormB = true;
+				}else if(x == 7003) {
 					isEspA = true;
 				}
 			}
 		} else if(frameworkProductId == 7500) {
 			for(Integer x:prodIds) {
 				if(x == 7501) {
-					isFormCD = true;
+					isFormC = true;
 				} else if(x == 7502) {
 					isEspB = true;
 				}
@@ -632,9 +635,10 @@ public class DataExportOperationController extends PageFlowController {
 		}
 		
 		this.getRequest().setAttribute("frameworkProductId", frameworkProductId);
-		this.getRequest().setAttribute("isFormAB", new Boolean(isFormAB));
+		this.getRequest().setAttribute("isFormA", new Boolean(isFormA));
+		this.getRequest().setAttribute("isFormB", new Boolean(isFormB));
 		this.getRequest().setAttribute("isEspA", new Boolean(isEspA));
-		this.getRequest().setAttribute("isFormCD", new Boolean(isFormCD));
+		this.getRequest().setAttribute("isFormC", new Boolean(isFormC));
 		this.getRequest().setAttribute("isEspB", new Boolean(isEspB));
 	}
 

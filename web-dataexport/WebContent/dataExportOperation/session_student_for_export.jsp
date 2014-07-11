@@ -10,9 +10,10 @@
 
 		<%
 			Integer frameworkProductId = Integer.parseInt(request.getAttribute("frameworkProductId").toString());
-			Boolean isFormAB = Boolean.parseBoolean(request.getAttribute("isFormAB").toString());
+			Boolean isFormA = Boolean.parseBoolean(request.getAttribute("isFormA").toString());
+			Boolean isFormB = Boolean.parseBoolean(request.getAttribute("isFormB").toString());
 			Boolean isEspA = Boolean.parseBoolean(request.getAttribute("isEspA").toString());
-			Boolean isFormCD = Boolean.parseBoolean(request.getAttribute("isFormCD").toString());
+			Boolean isFormC = Boolean.parseBoolean(request.getAttribute("isFormC").toString());
 			Boolean isEspB = Boolean.parseBoolean(request.getAttribute("isEspB").toString());
 		%>
 	
@@ -25,15 +26,18 @@
 			<b><lb:label key="data.export.formSelect.message" /></b>
 			&nbsp;&nbsp;<select id="formSelect" onchange="return getStudentList();">
 			<% if(frameworkProductId==7000) { %>
-				<% if(isFormAB) { %>
-					<option id="7001" value="7001">Forms A/B</option>
+				<% if(isFormA) { %>
+					<option id="7001" value="7001">Form A</option>
+				<% } %>
+				<% if(isFormB) { %>
+					<option id="7002" value="7002">Form B</option>
 				<% } %>
 				<% if(isEspA) { %>
 					<option id="7003" value="7003">Form Espa&#xf1;ol A</option>
 				<% } %>
 			<% } else if(frameworkProductId==7500) { %>
-				<% if(isFormCD) { %>
-					<option id="7501" value="7501">Forms C/D</option>
+				<% if(isFormC) { %>
+					<option id="7501" value="7501">Form C</option>
 				<% } %>
 				<% if(isEspB) { %>
 					<option id="7502" value="7502">Form Espa&#xf1;ol B</option>

@@ -446,7 +446,9 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 	    		   String sqlQuery="prod.product_id in (";
 	    		   if(frameworkId==7000) {
 		    		   if(productId==7001) {
-		    			   sqlQuery+="7001,7002) ";
+		    			   sqlQuery+="7001) ";
+		    		   } else if(productId==7002) {
+		    			   sqlQuery+="7002) ";
 		    		   } else if(productId==7003) {
 		    			   sqlQuery+="7003) ";
 		    		   }
