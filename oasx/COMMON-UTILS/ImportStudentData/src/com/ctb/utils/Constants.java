@@ -108,4 +108,14 @@ public class Constants {
 	public static final String MULTIPLE_DEMOGRAPHIC = "MULTIPLE";
 	
 	public static final int USER_ID = 1;
+	
+	//Error File Names
+	public static final String ERROR_FIELD_NAME = "ERRONEOUS COLUMN_NAME";
+	public static final String ERROR_FIELD_DESCRIPTION = "ERROR_CODE";
+	
+	public static final String REQUIRED_FIELD_ERROR = "Required Field Missing";
+	public static final String LOGICAL_FIELD_ERROR = "Logical Error";
+	public static final String MINIMUM_FIELD_ERROR = "Minimum Length Error";
+	public static final String MAXIMUM_FIELD_ERROR = "Maximum Length Error";
+	public static final String INVALID_FIELD_ERROR = "Invalid Field";
 }

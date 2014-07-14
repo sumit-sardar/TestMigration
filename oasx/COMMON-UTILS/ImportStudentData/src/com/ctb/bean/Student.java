@@ -1,8 +1,6 @@
 package com.ctb.bean; 
 
-import com.ctb.bean.CTBBean;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * Data bean representing the contents of the OAS.STUDENT table

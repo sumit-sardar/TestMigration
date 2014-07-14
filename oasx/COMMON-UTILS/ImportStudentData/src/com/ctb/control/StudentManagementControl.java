@@ -3,12 +3,14 @@ package com.ctb.control;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
+import com.ctb.bean.ManageStudent;
 import com.ctb.bean.OrgNodeStudent;
 import com.ctb.bean.OrganizationNode;
 import com.ctb.bean.StudentAccommodations;
@@ -19,13 +21,15 @@ import com.ctb.bean.UploadStudent;
 import com.ctb.dao.IStudentManagementDAO;
 import com.ctb.dao.StudentManagementDAO;
 import com.ctb.utils.Constants;
+import com.ctb.utils.cache.StudentNewRecordCacheImpl;
+import com.ctb.utils.cache.StudentUpdateRecordCacheImpl;
 
 public class StudentManagementControl {
-	
+	private static Logger logger = Logger.getLogger(StudentManagementControl.class.getName());
 	final int BATCH_SIZE = 998;
 	private IStudentManagementDAO studentManagement=new StudentManagementDAO();
 	
-	public void executeStudentCreation(List<UploadStudent> finalStudentList, Set<String> studentUserNames ,
+	public void executeStudentCreation(StudentNewRecordCacheImpl newStdRecordCacheImpl, Set<String> studentUserNames ,
 										Map<String,Integer> studentIdExtPinMap) throws Exception {
 		StringBuilder inClause = new StringBuilder();
 		boolean firstValue = true;
@@ -45,115 +49,44 @@ public class StudentManagementControl {
 					inClause.append("#");
 				}
 		}
-		studentManagement.populateActualStudentUserName(finalStudentList, inClause.toString(), new Integer(newStudentCount));
-		finalStudentList = studentManagement.populateActualStudentIds(finalStudentList, new Integer(newStudentCount) ,studentIdExtPinMap);
+		studentManagement.populateActualStudentUserName(newStdRecordCacheImpl, inClause.toString(), new Integer(newStudentCount));
+		studentManagement.populateActualStudentIds(newStdRecordCacheImpl, new Integer(newStudentCount) ,studentIdExtPinMap);
 		
 		
 		
 		
-		studentManagement.insertStudentDetails(finalStudentList);
-		studentManagement.createOrgnodeStudent(finalStudentList);
-		studentManagement.createStudentAccommodations(finalStudentList);
-		studentManagement.createStudentDemographicData(finalStudentList);
+		studentManagement.insertStudentDetails(newStdRecordCacheImpl);
+		studentManagement.createOrgnodeStudent(newStdRecordCacheImpl);
+		studentManagement.createStudentAccommodations(newStdRecordCacheImpl);
+		studentManagement.createStudentDemographicData(newStdRecordCacheImpl);
 		
 		
 	}
 	
-	public void executeStudentUpdate(List<UploadStudent> finalStudentUpdateList, Integer customerId , Map<String,Integer> studentIdExtPinMap ) throws Exception{
+	public void executeStudentUpdate(StudentUpdateRecordCacheImpl updateStdRecordCacheImpl, Integer customerId , Map<String,Integer> studentIdExtPinMap ) throws Exception{
 		
-		Map<Integer, ArrayList<OrganizationNode>> studentOrgMap = new HashMap<Integer, ArrayList<OrganizationNode>>();
-		Map<Integer, StudentAccommodations> studentAccomMap = new HashMap<Integer, StudentAccommodations>();
-		Map<Integer, HashMap<Integer, ArrayList<StudentDemographicValue>>> studentDemoMap = new HashMap<Integer, HashMap<Integer, ArrayList<StudentDemographicValue>>>();
-		int counter = 0;
-		boolean firstValue = true;
-		StringBuilder inClause = new StringBuilder();
-		
-		for(UploadStudent upStd : finalStudentUpdateList){
-			Integer studentId = 0;
-			if (upStd.getManageStudent().getId()==null){
-				studentId = studentIdExtPinMap.get(upStd.getManageStudent().getStudentIdNumber().trim());
-				upStd.getManageStudent().setId(studentId);
-				upStd.getStudentAccommodations().setStudentId(studentId);
-				//upStd.getStudent().setStudentId(studentId);
-			}else{
-				studentId = upStd.getManageStudent().getId();
-			}
-			
-			if(firstValue){
-				firstValue = false;
-			}else{
-				inClause.append(',');
-			}
-			inClause.append(studentId);
-			counter++;
-			if(counter % BATCH_SIZE == 0){
-				studentManagement.populateStudentOrgNodes(inClause.toString(), studentOrgMap, customerId);
-				studentManagement.populateStudentAccommodation(inClause.toString(), studentAccomMap);
-				//studentManagement.populateStudentDemoValue(inClause.toString(),demographicIds.toString(),studentDemoMap);
-				studentManagement.setRosterUpdateFlag(inClause.toString());
-				firstValue = true;
-				counter = 0;
-				inClause = new StringBuilder();
-			}
-		}
-		
-		// Populate org node and accommodation details and set updated date time for roster.
-		studentManagement.populateStudentOrgNodes(inClause.toString(), studentOrgMap, customerId);
-		studentManagement.populateStudentAccommodation(inClause.toString(), studentAccomMap);
-		//studentManagement.populateStudentDemoValue(inClause.toString(),demographicIds.toString(),studentDemoMap);
-		studentManagement.setRosterUpdateFlag(inClause.toString());
-		
-		
-		
-		// Update student details, accommodation, demographic 
-		studentManagement.updateStudent(finalStudentUpdateList, studentOrgMap);
-		updateOrgNodeStudent(finalStudentUpdateList, studentOrgMap, customerId);
-		updateAccommodation(finalStudentUpdateList, studentAccomMap);
-		updateStudentDemographicData(finalStudentUpdateList, studentDemoMap);
+		studentManagement.updateStudent(updateStdRecordCacheImpl, studentIdExtPinMap);
+		updateOrgNodeStudent(updateStdRecordCacheImpl,  customerId);
+		updateAccommodation(updateStdRecordCacheImpl);
+		updateStudentDemographicData(updateStdRecordCacheImpl);
+		System.gc();
 		
 	}
 	
-	private void updateOrgNodeStudent(List<UploadStudent> finalStudentList, Map<Integer, ArrayList<OrganizationNode>> studentOrgMap, Integer customerId) throws Exception{
+	private void updateOrgNodeStudent(StudentUpdateRecordCacheImpl updateStdRecordCacheImpl,  Integer customerId) throws Exception{
 		
-		List<OrgNodeStudent> newOrgStudentList = new ArrayList<OrgNodeStudent>();
-		for(UploadStudent updateStudent :  finalStudentList){
-			List<OrganizationNode> newOrgList = new ArrayList<OrganizationNode>();
-			Integer studentId = updateStudent.getManageStudent().getId();
-			OrganizationNode [] organizationNodes = updateStudent.getManageStudent().getOrganizationNodes();
-			for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) {
-				boolean foundInNewOrgNodes = hasOrgNodePresentInDB(organizationNodes[i].getOrgNodeId(),studentOrgMap.get(studentId));
-				if (foundInNewOrgNodes) {
-					//do nothing
-				}else{
-					newOrgList.add(organizationNodes[i]);
-				}
-			}
-			if(studentOrgMap.get(studentId).size() > 0){
-				Iterator<OrganizationNode> it = studentOrgMap.get(studentId).iterator();
-				while(it.hasNext()){
-					OrganizationNode newONode = it.next();
-					if("true".equalsIgnoreCase(newONode.getHasRoster())){
-						//deactivated but as per existing logic this block will never executed 
-					}else{
-						//delete but as per existing logic this block will never executed 
-					}
-				}
-			}
+		try{
 			
-			for(OrganizationNode orgNode: newOrgList){
-				OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
-				orgNodeStudent.setActivationStatus("AC");
-				orgNodeStudent.setCreatedBy(Constants.USER_ID);
-				orgNodeStudent.setCreatedDateTime(new Date());
-				orgNodeStudent.setCustomerId(customerId);
-				orgNodeStudent.setOrgNodeId(orgNode.getOrgNodeId());
-				orgNodeStudent.setStudentId(studentId);
-				newOrgStudentList.add(orgNodeStudent);                                
-			}
-			
+			studentManagement.createOrgnodeStudentDuringUpdate(updateStdRecordCacheImpl);
+		} 
+		catch(Exception e)
+		{
+			logger.error(e.getMessage(), e);
+			throw e;
 		}
-		if(newOrgStudentList.size() > 0) {
-			studentManagement.createOrgnodeStudentDuringUpdate(newOrgStudentList);
+		finally
+		{
+			logger.info("updateOrgNodeStudent() completed");
 		}
 		
 	}
@@ -188,76 +121,30 @@ public class StudentManagementControl {
 		return demographicIds;
 	}
 
-	private void updateAccommodation(List<UploadStudent> finalStudentList, Map<Integer, StudentAccommodations> studentAccomMap) throws Exception{
+	private void updateAccommodation(StudentUpdateRecordCacheImpl updateStdRecordCacheImpl ) throws Exception{
 	
-		List<UploadStudent> createList = new ArrayList<UploadStudent>();
-		List<UploadStudent> updateList = new ArrayList<UploadStudent>();
-		Iterator<UploadStudent> it = finalStudentList.iterator();
-		while(it.hasNext()){
-			UploadStudent upload = it.next();
-			StudentAccommodations newAccom = upload.getStudentAccommodations();
-			if (!studentAccomMap.containsKey(newAccom.getStudentId())) {
-				createList.add(upload);
-			} else {    
-				updateList.add(upload);
-			}
-		}
-		if(createList.size() > 0)
-			studentManagement.createStudentAccommodations(createList);
-		if(updateList.size() > 0)
-			studentManagement.updateAccommodation(updateList);
+		studentManagement.updateAccommodation(updateStdRecordCacheImpl);
 		
 	}
 	
-	private  void updateStudentDemographicData(List<UploadStudent> finalStudentList, Map<Integer, HashMap<Integer, ArrayList<StudentDemographicValue>>> studentDemoMap) throws Exception
+	private  void updateStudentDemographicData(StudentUpdateRecordCacheImpl updateStdRecordCacheImpl) throws Exception
 	{
-		List<StudentDemographicData> insertStudentDemoList = new ArrayList<StudentDemographicData>();
 		StringBuilder studentIds =  new StringBuilder();
 		StringBuilder studentAndDemoIds = new StringBuilder();
 		boolean firstValue = true;
 		int counter = 0;
-		for(UploadStudent upload : finalStudentList){
+		List<String> keys = updateStdRecordCacheImpl.getKeys();
+   		for(String key : keys){
+   			UploadStudent upload = ((UploadStudent)updateStdRecordCacheImpl.getUpdatedStudent(key));
+
 			Integer studentId = upload.getManageStudent().getId();
-			StudentDemoGraphics[] studentDemographics = upload.getStudentDemographic();
+			/*StudentDemoGraphics[] studentDemographics = upload.getStudentDemographic();
 			
 			for (int i=0; studentDemographics!= null && i<studentDemographics.length; i++) {
 				StudentDemographicValue [] studentDemographicValues = studentDemographics[i].getStudentDemographicValues();
 				
-				//Not needed for LAUAD yet :: Souvik
-				/*if ("SINGLE".equals(studentDemographics[i].getValueCardinality())) {
-					boolean foundSelectedValue = false;
-					for (int j=0; studentDemographicValues!=null && j<studentDemographicValues.length; j++){ 
-						if (studentDemographicValues[j] != null && "true".equals(studentDemographicValues[j].getSelectedFlag())){ 
-							foundSelectedValue = true;
-							break;
-						}
-					}
-
-					if (foundSelectedValue){
-						if(!firstValue)
-							studentAndDemoIds.append(",");
-						String str = "("+studentId+","+studentDemographics[i].getId()+")";
-						studentAndDemoIds.append(str);
-					}
-					else {
-						boolean foundInvisibleValue = false;
-						StudentDemographicValue[] oldStudentDemographicValues = (studentDemoMap.get(studentId).get(studentDemographics[i]
-								.getCustomerDemographicId())).toArray(new StudentDemographicValue[studentDemoMap.get(studentId)
-										.get(studentDemographics[i].getCustomerDemographicId()).size()]);
-						
-						for (int j=0; oldStudentDemographicValues!=null && j<oldStudentDemographicValues.length; j++) 
-							if (oldStudentDemographicValues[j] != null && "true".equals(oldStudentDemographicValues[j].getSelectedFlag()) && "F".equals(oldStudentDemographicValues[j].getVisible())) 
-								foundInvisibleValue = true; 
-
-						if (!foundInvisibleValue){
-							if(!firstValue)
-								studentAndDemoIds.append(",");
-							String str = "("+studentId+","+studentDemographics[i].getId()+")";
-							studentAndDemoIds.append(str);
-						}
-					}                                              
-				}*/
 				for (int j=0; studentDemographicValues!=null && j<studentDemographicValues.length; j++) {
+					
 					if (studentDemographicValues[j] != null && "true".equals(studentDemographicValues[j].getSelectedFlag())) {
 						StudentDemographicData studentDemographicData = new StudentDemographicData();
 						studentDemographicData.setStudentId(studentId);
@@ -269,7 +156,7 @@ public class StudentManagementControl {
 						insertStudentDemoList.add(studentDemographicData);
 					}
 				}
-			}
+			}*/
 			if(firstValue){
 				firstValue = false;
 			}else{
@@ -286,9 +173,10 @@ public class StudentManagementControl {
 		
 		if(null != studentIds && studentIds.length() >0)
 			studentManagement.deleteVisibleStudentDemographicDataForStudent(studentIds.toString());
-		//if(null != studentAndDemoIds && studentAndDemoIds.length() >0)
-		//	studentManagement.deleteStudentDemographicDataForStudentAndCustomerDemographic(studentAndDemoIds.toString());
-		if(insertStudentDemoList.size() > 0)
-			studentManagement.createStudentDemographicDataDuringUpdate(insertStudentDemoList);
+		
+		if(updateStdRecordCacheImpl.getCacheSize() > 0)
+			studentManagement.createStudentDemographicDataDuringUpdate(updateStdRecordCacheImpl);
+
+		logger.info("updateStudentDemographicData() done executing");
 	}
 }

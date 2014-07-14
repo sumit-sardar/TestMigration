@@ -11,6 +11,7 @@ public class Configuration {
 	static String archivePath = "";
 	static String customerId = "";
 	static String errorPath = "";
+	static String clientPrivateKeyPath = "";
 	
 	static {
 		localFilePath = ExtractUtil.getDetail("oas.importdata.local.filepath");
@@ -22,6 +23,7 @@ public class Configuration {
 		archivePath = ExtractUtil.getDetail("oas.importdata.ftp.archivepath");
 		errorPath = ExtractUtil.getDetail("oas.importdata.ftp.errorpath");
 		customerId = ExtractUtil.getDetail("oas.customerId");
+		clientPrivateKeyPath = ExtractUtil.getDetail("oas.private.keyPath");
 	}
 
 	/**
@@ -42,6 +44,12 @@ public class Configuration {
 
 
 
+	public static String getClientPrivateKeyPath() {
+		return clientPrivateKeyPath;
+	}
+
+
+
 	/**
 	 * @return the ftpUser
 	 */
@@ -53,10 +61,10 @@ public class Configuration {
 
 	/**
 	 * @return the ftpPassword
-	 */
+	 *//*
 	public static String getFtpPassword() {
 		return ftpPassword;
-	}
+	}*/
 
 
 

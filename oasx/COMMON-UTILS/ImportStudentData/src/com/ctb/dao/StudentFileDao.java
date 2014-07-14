@@ -5,7 +5,7 @@ import com.ctb.bean.CustomerConfigurationValue;
 import com.ctb.bean.CustomerDemographicValue;
 import com.ctb.bean.Node;
 import com.ctb.bean.StudentDemoGraphics;
-import com.ctb.bean.StudentFileRow;
+import com.ctb.utils.cache.StudentDBCacheImpl;
 
 public interface StudentFileDao {
 	
@@ -23,7 +23,7 @@ public interface StudentFileDao {
 	
 	public Node[] getUserDataTemplate(Integer customerId) throws Exception;
 	
-	public StudentFileRow[] getExistStudentData(Integer customerId) throws Exception;
+	public void getExistStudentData(Integer customerId,StudentDBCacheImpl dbCache) throws Exception;
 	
 	public Node[] getTopNodeDetails(Integer customerId) throws Exception;
 	

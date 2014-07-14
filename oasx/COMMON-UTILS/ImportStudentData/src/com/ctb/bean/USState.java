@@ -1,6 +1,5 @@
 package com.ctb.bean; 
 
-import com.ctb.bean.CTBBean;
 
 /**
  * Data bean representing the partial contents of the OAS.statepr_code table 

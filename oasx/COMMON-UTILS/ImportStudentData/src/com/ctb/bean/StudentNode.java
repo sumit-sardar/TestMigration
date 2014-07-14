@@ -16,7 +16,7 @@ public class StudentNode extends Node
     public StudentNode () {
     }
     
-    public StudentNode (Node node) {
+    /*public StudentNode (Node node) {
         this.setActivationStatus(node.getActivationStatus());
         this.setCreatedBy(node.getCreatedBy());
         this.setCreatedDateTime(node.getCreatedDateTime());
@@ -42,7 +42,7 @@ public class StudentNode extends Node
         this.setParentOrgNodeId(node.getParentOrgNodeId());
         this.setParentOrgNodeName(node.getParentOrgNodeName());
         this.setLeafNodePath(node.getLeafNodePath());
-    }
+    }*/
     
 	/**
 	 * @return Returns the rosterCount.

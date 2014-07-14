@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,26 +14,26 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.ctb.bean.ManageStudent;
-import com.ctb.bean.OrgNodeStudent;
 import com.ctb.bean.OrganizationNode;
-import com.ctb.bean.Student;
 import com.ctb.bean.StudentAccommodations;
 import com.ctb.bean.StudentDemoGraphics;
-import com.ctb.bean.StudentDemographicData;
 import com.ctb.bean.StudentDemographicValue;
 import com.ctb.bean.UploadStudent;
 import com.ctb.utils.Constants;
 import com.ctb.utils.SQLUtil;
 import com.ctb.utils.StudentUtils;
+import com.ctb.utils.cache.StudentNewRecordCacheImpl;
+import com.ctb.utils.cache.StudentUpdateRecordCacheImpl;
 
 public class StudentManagementDAO implements IStudentManagementDAO {
 
 	private static Logger logger = Logger.getLogger(StudentManagementDAO.class.getName());
-	final int BATCH_SIZE = 998;
+	//final int BATCH_SIZE = 998;
+	final int BATCH_SIZE_LARGE = 4000;
 	
-	public void populateActualStudentUserName(List<UploadStudent> finalStudentList,
+	public void populateActualStudentUserName(StudentNewRecordCacheImpl newStdRecordCacheImpl,
 			String userNames, Integer newStudentCount) throws Exception {
-		
+		logger.info("executing populateActualStudentUserName()");
 		Set<String> newSet = new HashSet<String>();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -68,9 +67,13 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 			   		}
 				}
 			}
-			
-	   		for(UploadStudent uStud : finalStudentList){
-	   			uStud.getStudent().setUserName(StudentUtils.generateUniqueStudentUserName(newSet, uStud.getStudent()));
+			List<String> keys = newStdRecordCacheImpl.getKeys();
+	   		for(String key : keys){
+	   			if(newStdRecordCacheImpl.getNewStudent(key) != null){
+	   				UploadStudent uploadStudent = ((UploadStudent)newStdRecordCacheImpl.getNewStudent(key));
+	   				uploadStudent.getManageStudent().setLoginId(StudentUtils.generateUniqueStudentUserName(newSet, uploadStudent.getManageStudent()));
+	   				newStdRecordCacheImpl.addNewStudent(key, uploadStudent);
+	   			}
 	   		}	   	
 	   	}catch(Exception e){
 	   		logger.error("Exception in createDataFileTemp");
@@ -79,14 +82,18 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   	}
 	   	finally {
         	SQLUtil.closeDbObjects(conn, pstmt, rSet);
+        	logger.info("Username population completed");
         }
 		
 	}
 	
-	public List<UploadStudent> populateActualStudentIds(List<UploadStudent> finalStudentList, Integer newStudentCount , 
+	public void populateActualStudentIds(StudentNewRecordCacheImpl newStdRecordCacheImpl, Integer newStudentCount , 
 														Map<String,Integer> studentIdExtPinMap) throws Exception {
 		
-		Integer [] studentIds = new Integer[finalStudentList.size()];
+
+		logger.info("executing populateActualStudentIds");
+		Integer [] studentIds = null;//TODO 
+		ArrayList<Integer> stdIds = new ArrayList<Integer>();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 	   	ResultSet rSet = null;	   	
@@ -98,18 +105,25 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   		rSet = pstmt.executeQuery();
 	   		int count = 0;
 	   		while(rSet.next()){
-	   			studentIds[count] = rSet.getInt(1);
+	   			stdIds.add(rSet.getInt(1));
 	   			count++;
 	   		}
+	   		
+	   		studentIds = stdIds.toArray(new Integer[stdIds.size()]);
 	   		count = 0;
-	   		for(UploadStudent uStud : finalStudentList){
-	   			Student student = uStud.getStudent();
-	   			student.setStudentId(studentIds[count]);
-	   			uStud.getStudentAccommodations().setStudentId(student.getStudentId());
-	   			uStud.getManageStudent().setId(student.getStudentId());
-	   			studentIdExtPinMap.put(student.getExtPin1().trim(), student.getStudentId());
-	   			count++;
-	   		}
+	   		List<String> keys = newStdRecordCacheImpl.getKeys();
+	   		for(String key : keys){
+	   			if(newStdRecordCacheImpl.getNewStudent(key) != null){
+	   				Integer studentId = studentIds[count];
+	   				UploadStudent uploadStudent = ((UploadStudent)newStdRecordCacheImpl.getNewStudent(key));
+	   				uploadStudent.getManageStudent().setId(studentId);
+	   				uploadStudent.getStudentAccommodations().setStudentId(studentId);
+	   				studentIdExtPinMap.put(uploadStudent.getManageStudent().getStudentIdNumber().trim(), studentId);
+	   				newStdRecordCacheImpl.addNewStudent(key, uploadStudent);
+	   				count++;
+	   			}
+	   			
+	   		}	
 	   		
 	   	}catch(Exception e){
 	   		logger.error("Exception in populateActualStudentIds");
@@ -118,59 +132,45 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   	}
 	   	finally {
         	SQLUtil.closeDbObjects(conn, pstmt, rSet);
+        	logger.info("Student Ids population completed");
         	
         }
-	   	return finalStudentList;
+	   
 		
 	}
 
-	public void insertStudentDetails(List<UploadStudent> finalStudentList) throws Exception {
-		
+	public void insertStudentDetails(StudentNewRecordCacheImpl newStdRecordCacheImpl) throws Exception {
+
+		logger.info("executing insertStudentDetails()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 	   	int count = 0;
-		String insertQuery = " insert into  student ( STUDENT_ID, USER_NAME, PASSWORD, FIRST_NAME, MIDDLE_NAME, PREFERRED_NAME, LAST_NAME, BIRTHDATE, ETHNICITY, GENDER, EMAIL, GRADE, EXT_PIN1, EXT_ELM_ID, EXT_PIN2, EXT_PIN3, CREATED_DATE_TIME, ACTIVE_SESSION, ACTIVATION_STATUS, POTENTIAL_DUPLICATED_STUDENT, CREATED_BY , EXT_SCHOOL_ID, PREFIX, SUFFIX,  CUSTOMER_ID, UDF, UDF_1, UDF_2, TEST_PURPOSE, OUT_OF_SCHOOL) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+		String insertQuery = " insert into student (STUDENT_ID, USER_NAME, FIRST_NAME, MIDDLE_NAME,   LAST_NAME, BIRTHDATE,   GENDER, GRADE, EXT_PIN1, EXT_PIN2, CREATED_DATE_TIME, ACTIVATION_STATUS, CREATED_BY, CUSTOMER_ID ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, ?, ?, ? )";
 		try{
 			conn = SQLUtil.getConnection();
-			//conn.setAutoCommit(false);
 			pstmt  = conn.prepareStatement(insertQuery);
-			for(UploadStudent uploadStudent : finalStudentList){
-					Student std = uploadStudent.getStudent();
-					pstmt.setInt(1, std.getStudentId());
-					pstmt.setString(2,std.getUserName());
-					pstmt.setString(3,std.getPassword());
-					pstmt.setString(4,std.getFirstName());
-					pstmt.setString(5,std.getMiddleName());
-					pstmt.setString(6,std.getPreferredName());
-					pstmt.setString(7,std.getLastName());
-					pstmt.setDate(8, new java.sql.Date(std.getBirthdate().getTime()));
-					pstmt.setString(9,std.getEthnicity());
-					pstmt.setString(10,std.getGender());
-					pstmt.setString(11,std.getEmail());
-					pstmt.setString(12,std.getGrade());
-					pstmt.setString(13,std.getExtPin1());
-					pstmt.setString(14,std.getExtElmId());
-					pstmt.setString(15,std.getExtPin2());
-					pstmt.setString(16,std.getExtPin3());
-					pstmt.setDate(17,new java.sql.Date(System.currentTimeMillis()));
-					pstmt.setString(18,std.getActiveSession());
-					pstmt.setString(19,std.getActivationStatus());
-					pstmt.setString(20,std.getPotentialDuplicatedStudent());
-					pstmt.setInt(21,Constants.USER_ID);				
-					pstmt.setString(22,std.getExtSchoolId());
-					pstmt.setString(23,std.getPrefix());
-					pstmt.setString(24,std.getSuffix());					
-					pstmt.setInt(25,std.getCustomerId());					
-					pstmt.setString(26,std.getUdf());
-					pstmt.setString(27,std.getUdf1());
-					pstmt.setString(28,std.getUdf2());
-					pstmt.setString(29,std.getTestPurpose());
-					pstmt.setString(30,std.getOutOfSchool());				
-					
+			List<String> keys = newStdRecordCacheImpl.getKeys();
+	   		for(String key : keys){
+	   			UploadStudent uploadStudent = ((UploadStudent)newStdRecordCacheImpl.getNewStudent(key));
+	   				ManageStudent std = uploadStudent.getManageStudent();
+	   				pstmt.setInt(1, std.getId());
+					pstmt.setString(2,std.getLoginId());
+					pstmt.setString(3,std.getFirstName());
+					pstmt.setString(4,std.getMiddleName());
+					pstmt.setString(5,std.getLastName());
+					pstmt.setDate(6, new java.sql.Date(std.getBirthDate().getTime()));
+					pstmt.setString(7,std.getGender());
+					pstmt.setString(8,std.getGrade());
+					pstmt.setString(9,std.getStudentIdNumber());
+					pstmt.setString(10,std.getStudentIdNumber2());
+					pstmt.setString(11,"AC");
+					pstmt.setInt(12,Constants.USER_ID);				
+					pstmt.setInt(13,std.getCustomerId());					
 					pstmt.addBatch();
 					count++;
-					if(count % BATCH_SIZE == 0){
+					if(count % BATCH_SIZE_LARGE == 0){
 						pstmt.executeBatch();
+						logger.info("Student Inserted count->"+count);
 					}
 			}
 			pstmt.executeBatch();
@@ -182,14 +182,17 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   		throw e;
 	   	}
 	   	finally {	   		
-        	SQLUtil.closeDbObjects(conn, pstmt, null);        	
+        	SQLUtil.closeDbObjects(conn, pstmt, null);
+
+    		logger.info("done executing insertStudentDetails()");
         }
 		
 	}
 
-	public void createStudentAccommodations(List<UploadStudent> finalStudentList)
+	public void createStudentAccommodations(StudentNewRecordCacheImpl newStdRecordCacheImpl)
 			throws Exception {
-		
+
+		logger.info(" executing createStudentAccommodations()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 	   	int count = 0;
@@ -197,9 +200,10 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 		try{
 			conn = SQLUtil.getConnection();
 			pstmt  = conn.prepareStatement(insertQuery);
-			Iterator<UploadStudent> it = finalStudentList.iterator();
-			while(it.hasNext()){
-					UploadStudent uploadStudent = it.next();
+			List<String> keys = newStdRecordCacheImpl.getKeys();
+	   		for(String key : keys){
+	   			UploadStudent uploadStudent = ((UploadStudent)newStdRecordCacheImpl.getNewStudent(key));
+	   				
 					StudentAccommodations std = uploadStudent.getStudentAccommodations();
 					pstmt.setInt(1, std.getStudentId());
 					pstmt.setString(2, std.getScreenMagnifier());
@@ -223,8 +227,9 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 				
 					pstmt.addBatch();
 					count++;
-					if(count % BATCH_SIZE == 0){
+					if(count % BATCH_SIZE_LARGE == 0){
 						pstmt.executeBatch();
+						logger.info("Student_accommodation Inserted count->"+count);
 					}
 			}
 			pstmt.executeBatch();
@@ -235,11 +240,14 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   	}
 	   	finally {
         	SQLUtil.closeDbObjects(conn, pstmt, null);
+
+			logger.info("done executing createStudentAccommodations()");
         }
 	}
 
-	public void createStudentDemographicData(List<UploadStudent> finalStudentList) throws Exception {
-		
+	public void createStudentDemographicData(StudentNewRecordCacheImpl newStdRecordCacheImpl) throws Exception {
+
+		logger.info(" executing createStudentDemographicData");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 	   	int count = 0;
@@ -247,13 +255,15 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 		try{
 			conn = SQLUtil.getConnection();
 			pstmt  = conn.prepareStatement(insertQuery);
-			for(UploadStudent uploadStudent : finalStudentList){
-					Student st = uploadStudent.getStudent();
+			List<String> keys = newStdRecordCacheImpl.getKeys();
+	   		for(String key : keys){
+	   			UploadStudent uploadStudent = ((UploadStudent)newStdRecordCacheImpl.getNewStudent(key));
+	   				ManageStudent st = uploadStudent.getManageStudent();				
 					StudentDemoGraphics[] studentDemoGraphics = uploadStudent.getStudentDemographic();
 					for(StudentDemoGraphics std:studentDemoGraphics){
 						StudentDemographicValue [] studentDemographicValues = std.getStudentDemographicValues();
 						for(StudentDemographicValue sdv:studentDemographicValues){
-							pstmt.setInt(1, st.getStudentId());
+							pstmt.setInt(1, st.getId());
 							pstmt.setInt(2, std.getId());
 							pstmt.setString(3, sdv.getValueName());
 							pstmt.setString(4,sdv.getValueCode());
@@ -261,8 +271,9 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 							
 							pstmt.addBatch();
 							count++;
-							if(count % BATCH_SIZE == 0){
+							if(count % BATCH_SIZE_LARGE == 0){
 								pstmt.executeBatch();
+								logger.info("Student_demographic_data Inserted count->"+count);
 							}
 						}
 			   }
@@ -275,12 +286,14 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   	}
 	   	finally {
 	   		SQLUtil.closeDbObjects(conn, pstmt, null);
+			logger.info(" done executing createStudentDemographicData");
         }
 	}
 
-	public void createOrgnodeStudent(List<UploadStudent> finalStudentList)
+	public void createOrgnodeStudent(StudentNewRecordCacheImpl newStdRecordCacheImpl)
 			throws Exception {
-		
+
+		logger.info("executing createOrgnodeStudent()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 	   	int count = 0;
@@ -288,21 +301,24 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 		try{
 			conn = SQLUtil.getConnection();
 			pstmt  = conn.prepareStatement(insertQuery);
-			for(UploadStudent uploadStudent : finalStudentList){
-					ManageStudent ms = uploadStudent.getManageStudent();
+			List<String> keys = newStdRecordCacheImpl.getKeys();
+	   		for(String key : keys){
+	   			UploadStudent uploadStudent = ((UploadStudent)newStdRecordCacheImpl.getNewStudent(key));
+	   				ManageStudent ms = uploadStudent.getManageStudent();
 					OrganizationNode [] organizationNodes = ms.getOrganizationNodes();
 					
 					for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) {
 						pstmt.setInt(1, ms.getId());
 						pstmt.setInt(2, organizationNodes[i].getOrgNodeId());
 						pstmt.setInt(3, Constants.USER_ID);
-						pstmt.setInt(4, uploadStudent.getStudent().getCustomerId());
+						pstmt.setInt(4, ms.getCustomerId());
 						pstmt.setString(5, "AC");
 						
 						pstmt.addBatch();
 						count++;
-						if(count % BATCH_SIZE == 0){
+						if(count % BATCH_SIZE_LARGE == 0){
 							pstmt.executeBatch();
+							logger.info("Org_node_student Inserted count->"+count);
 						}
 					}
 			}
@@ -314,81 +330,42 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   	}
 	   	finally {
 	   		SQLUtil.closeDbObjects(conn, pstmt, null);
+
+			logger.info("done executing createOrgnodeStudent()");
         }
 	}
 	
-	public void populateStudentOrgNodes(String inClause, Map<Integer, ArrayList<OrganizationNode>> studentOrgMap, Integer customerId) throws Exception {
 
+	public void updateStudent(StudentUpdateRecordCacheImpl updateStdRecordCacheImpl, Map<String,Integer> studentIdExtPinMap ) throws Exception {
+		logger.info("executing updateStudent");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String query = "select distinct stu.student_id as studentId, node.org_node_id as orgNodeId, node.customer_id as customerId, node.org_node_category_id as orgNodeCategoryId, node.org_node_name as orgNodeName, node.ext_qed_pin as extQedPin, node.ext_elm_id as extElmId, node.ext_org_node_type as extOrgNodeType, node.org_node_description as orgNodeDescription, node.created_by as createdBy, node.created_date_time as createdDateTime, node.updated_by as updatedBy, node.updated_date_time as updatedDateTime, node.activation_status as activationStatus,     node.parent_state as parentState, node.parent_region as parentRegion, node.parent_county as parentCounty, node.parent_district as parentDistrict, node.org_node_code as orgNodeCode, getOrghierarchy(node.org_node_id) as leafNodePath, (select decode(count(1), 0, 'false', 'true') from test_roster where student_id = stu.student_id and org_node_id = node.org_node_id) as hasRoster from org_node_student ons, student stu, org_node node, org_node_category onc where ons.student_id = stu.student_id and stu.student_id IN ("+inClause+") and ons.org_node_id = node.org_node_id and ons.activation_status = 'AC' and onc.org_node_category_id = node.org_node_category_id AND node.customer_id = "+customerId+" order by stu.student_id, node.org_node_name asc";
-		ResultSet rs = null;
-		
-		Integer studentId = null;
-		try{
-			conn = SQLUtil.getConnection();
-			pstmt  = conn.prepareStatement(query);
-			pstmt.setFetchSize(20);
-			rs = pstmt.executeQuery();
-			while(rs.next()){
-				studentId = rs.getInt("studentId");
-				OrganizationNode newOrg = new OrganizationNode();
-				newOrg.setOrgNodeId(rs.getInt("orgNodeId"));
-				newOrg.setCustomerId(rs.getInt("customerId"));
-				newOrg.setOrgNodeCategoryId(rs.getInt("orgNodeCategoryId"));
-				newOrg.setOrgNodeName(rs.getString("orgNodeName"));
-				newOrg.setExtQedPin(rs.getString("extQedPin"));
-				newOrg.setExtElmId(rs.getString("extElmId"));
-				newOrg.setExtOrgNodeType(rs.getString("extOrgNodeType"));
-				newOrg.setOrgNodeDescription(rs.getString("orgNodeDescription"));
-				newOrg.setCreatedBy(rs.getInt("createdBy"));
-				newOrg.setCreatedDateTime(rs.getDate("createdDateTime"));
-				newOrg.setUpdatedBy(rs.getInt("updatedBy"));
-				newOrg.setUpdatedDateTime(rs.getDate("updatedDateTime"));
-				newOrg.setActivationStatus(rs.getString("activationStatus"));
-				newOrg.setParentState(rs.getString("parentState"));
-				newOrg.setParentRegion(rs.getString("parentRegion"));
-				newOrg.setParentCounty(rs.getString("parentCounty"));
-				newOrg.setParentDistrict(rs.getString("parentDistrict"));
-				newOrg.setOrgNodeCode(rs.getString("orgNodeCode"));
-				newOrg.setLeafNodePath(rs.getString("leafNodePath"));
-				newOrg.setHasRoster(rs.getString("hasRoster"));
-				if(!studentOrgMap.containsKey(studentId)){
-					ArrayList<OrganizationNode> orgList = new ArrayList<OrganizationNode>();
-					orgList.add(newOrg);
-					studentOrgMap.put(studentId, orgList);
-				}else{
-					studentOrgMap.get(studentId).add(newOrg);
-				}
-			}
-			
-		}catch(SQLException e){
-	   		logger.error("SQL Exception in populateStudentOrgNodes-- >"+ e.getErrorCode());
-	   		e.printStackTrace();
-	   	}catch(Exception e){
-	   		logger.error("Exception in populateStudentOrgNodes");
-	   		e.printStackTrace();
-	   	}
-	   	finally {
-        	SQLUtil.closeDbObjects(conn, pstmt, rs);
-        }
-	}
-
-	public void updateStudent(List<UploadStudent> finalStudentList,	Map<Integer, ArrayList<OrganizationNode>> studentOrgMap) throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		String query = "update student set  first_name = ?, middle_name = ?, last_name  = ?, gender  = ?, birthdate = ?, grade = ?, ext_pin1  = ?, ext_pin2 = ?, test_purpose = ?, updated_By = ?, updated_Date_Time = SYSDATE , out_of_school = ? where student_id = ?";
+		String query = "update student set  first_name = ?, middle_name = ?, last_name  = ?, gender  = ?, birthdate = ?, grade = ?, ext_pin1  = ?, ext_pin2 = ?,  updated_By = ?, updated_Date_Time = SYSDATE  where student_id = ?";
 		int counter = 0;
 		try{
 			conn = SQLUtil.getConnection();
 			pstmt  = conn.prepareStatement(query);
-			Iterator<UploadStudent> it = finalStudentList.iterator();
-			while(it.hasNext()){
-				//set student organization 
-				UploadStudent upload = it.next();
-				setOrganizationNodeForStudent(upload.getManageStudent(), studentOrgMap);
+			List<String> keys = updateStdRecordCacheImpl.getKeys();
+	   		for(String key : keys){
+	   			UploadStudent upload = ((UploadStudent)updateStdRecordCacheImpl.getUpdatedStudent(key));
+	   			ManageStudent mStud = upload.getManageStudent();
+	   			
+	   			Integer studentId = 0;
+				if (mStud.getId()==null){
+					/*
+					 * For same students in a single file.
+					 * */
+					studentId = studentIdExtPinMap.get(mStud.getStudentIdNumber().trim());
+					mStud.setId(studentId);
+					upload.getStudentAccommodations().setStudentId(studentId);
+					updateStdRecordCacheImpl.addUpdatedStudent(key, upload);
+					//upStd.getStudent().setStudentId(studentId);
+				}else{
+					studentId =mStud.getId();
+				}
+	   			
+				//setOrganizationNodeForStudent(mStud, studentOrgMap);
 				
-				ManageStudent mStud = upload.getManageStudent();
 				//pstmt.setString(1, mStud.getLoginId());
 				pstmt.setString(1, mStud.getFirstName());
 				pstmt.setString(2, mStud.getMiddleName());
@@ -398,14 +375,13 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 				pstmt.setString(6, mStud.getGrade());
 				pstmt.setString(7, mStud.getStudentIdNumber());
 				pstmt.setString(8, mStud.getStudentIdNumber2());
-				pstmt.setString(9, mStud.getTestPurpose());
-				pstmt.setInt(10, 1);
-				pstmt.setString(11, mStud.getOutOfSchool());
-				pstmt.setInt(12, mStud.getId());
+				pstmt.setInt(9, 1);
+				pstmt.setInt(10, studentId);
 				pstmt.addBatch();
 				counter++;
-				if(counter % BATCH_SIZE == 0){
+				if(counter % BATCH_SIZE_LARGE == 0){
 					pstmt.executeBatch();
+					logger.info("Student updated count->"+counter);
 				}
 			}
 			pstmt.executeBatch();
@@ -418,6 +394,7 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   	}
 	   	finally {
         	SQLUtil.closeDbObjects(conn, pstmt, null);
+        	logger.info("done executing updateStudent");
         }
 	}
 	
@@ -459,6 +436,7 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   	}
 	   	finally {
         	SQLUtil.closeDbObjects(conn, pstmt, rs);
+        	logger.info("Student accomidation population ended...");
         }
 		
 	}
@@ -520,57 +498,115 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	}
 	
 
-	public void updateAccommodation(List<UploadStudent> finalStudentList) throws Exception {
+	public void updateAccommodation(
+			StudentUpdateRecordCacheImpl updateStdRecordCacheImpl)
+			throws Exception {
+		logger.info("UpdateAccommodation Executing...");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		int count = 0;
-		String query = "update  student_accommodation  set SCREEN_MAGNIFIER=?, SCREEN_READER=?, CALCULATOR=?, TEST_PAUSE=?, UNTIMED_TEST=?, HIGHLIGHTER=?, QUESTION_BACKGROUND_COLOR=?, QUESTION_FONT_COLOR=?, QUESTION_FONT_SIZE=?, ANSWER_BACKGROUND_COLOR=?, ANSWER_FONT_COLOR=?, ANSWER_FONT_SIZE=?, MASKING_RULER = ?, MUSIC_FILE_ID =?, MAGNIFYING_GLASS = ?, EXTENDED_TIME = ?, MASKING_TOOL = ?, MICROPHONE_HEADPHONE = ? where STUDENT_ID = ?";
-		try{
+		String query = "MERGE INTO STUDENT_ACCOMMODATION D "
+				+ "USING ( SELECT sa.student_id FROM STUDENT sa WHERE sa.student_id = ? ) S "
+				+ "ON (D.student_id = S.student_id)" + "WHEN MATCHED THEN "
+				+ "UPDATE " + "SET D.SCREEN_MAGNIFIER   = ? ,"
+				+ "D.SCREEN_READER             = ?, "
+				+ "D.CALCULATOR                = ?, "
+				+ "D.TEST_PAUSE                = ?, "
+				+ "D.UNTIMED_TEST              = ?, "
+				+ "D.HIGHLIGHTER			   = ?, "
+				+ "D.QUESTION_BACKGROUND_COLOR = ?, "
+				+ "D.QUESTION_FONT_COLOR       = ?, "
+				+ "D.QUESTION_FONT_SIZE        = ?, "
+				+ "D.ANSWER_BACKGROUND_COLOR   = ?, "
+				+ "D.ANSWER_FONT_COLOR         = ?, "
+				+ "D.ANSWER_FONT_SIZE          = ?, "
+				+ "D.MASKING_RULER             = ?, "
+				+ "D.MUSIC_FILE_ID             = ?, "
+				+ "D.MAGNIFYING_GLASS          = ?, "
+				+ "D.EXTENDED_TIME             = ?, "
+				+ "D.MASKING_TOOL              = ?, "
+				+ "D.MICROPHONE_HEADPHONE      = ? " + " WHEN NOT MATCHED THEN "
+				+ "INSERT " + "(D.student_id, " + "D.SCREEN_MAGNIFIER, "
+				+ "D.SCREEN_READER, " + "D.CALCULATOR, " + "D.TEST_PAUSE, "
+				+ "D.UNTIMED_TEST, " + "D.HIGHLIGHTER, " +"D.QUESTION_BACKGROUND_COLOR, "
+				+ "D.QUESTION_FONT_COLOR, " + "D.QUESTION_FONT_SIZE, "
+				+ "D.ANSWER_BACKGROUND_COLOR, " + "D.ANSWER_FONT_COLOR, "
+				+ "D.ANSWER_FONT_SIZE, "
+				+ "D.MASKING_RULER, "  +  "D.MUSIC_FILE_ID, " + "D.MAGNIFYING_GLASS, "
+				+ "D.EXTENDED_TIME, " + "D.MASKING_TOOL, "
+				+ "D.MICROPHONE_HEADPHONE) " + "VALUES "
+				+ " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+		try {
 			conn = SQLUtil.getConnection();
-			pstmt  = conn.prepareStatement(query);
-			Iterator<UploadStudent> it = finalStudentList.iterator();
-			while(it.hasNext()){
-				UploadStudent uploadStudent = it.next();
-				StudentAccommodations std = uploadStudent.getStudentAccommodations();
-				pstmt.setString(1, std.getScreenMagnifier());
-				pstmt.setString(2, std.getScreenReader());
-				pstmt.setString(3, std.getCalculator());
-				pstmt.setString(4, std.getTestPause());
-				pstmt.setString(5, std.getUntimedTest());
-				pstmt.setString(6, std.getHighlighter());
-				pstmt.setString(7, std.getQuestionBackgroundColor());
-				pstmt.setString(8, std.getQuestionFontColor());
-				pstmt.setString(9, std.getQuestionFontSize());
-				pstmt.setString(10, std.getAnswerBackgroundColor());
-				pstmt.setString(11, std.getAnswerFontColor());
-				pstmt.setString(12, std.getAnswerFontSize());
-				pstmt.setString(13, std.getMaskingRuler());
-				pstmt.setString(14, std.getMusicFile());
-				pstmt.setString(15, std.getMagnifyingGlass());
-				pstmt.setString(16, std.getExtendedTime());
-				pstmt.setString(17, std.getMaskingTool());
-				pstmt.setString(18, std.getMicrophoneHeadphone());	
-				pstmt.setInt(19, std.getStudentId());
-			
+			pstmt = conn.prepareStatement(query);
+			List<String> keys = updateStdRecordCacheImpl.getKeys();
+			for (String key : keys) {
+				UploadStudent uploadStudent = ((UploadStudent) updateStdRecordCacheImpl
+						.getUpdatedStudent(key));
+				StudentAccommodations std = uploadStudent
+						.getStudentAccommodations();
+				
+				pstmt.setInt(1, std.getStudentId());
+				pstmt.setString(2, std.getScreenMagnifier());
+				pstmt.setString(3, std.getScreenReader());
+				pstmt.setString(4, std.getCalculator());
+				pstmt.setString(5, std.getTestPause());
+				pstmt.setString(6, std.getUntimedTest());
+				pstmt.setString(7, std.getHighlighter());
+				pstmt.setString(8, std.getQuestionBackgroundColor());
+				pstmt.setString(9, std.getQuestionFontColor());
+				pstmt.setString(10, std.getQuestionFontSize());
+				pstmt.setString(11, std.getAnswerBackgroundColor());
+				pstmt.setString(12, std.getAnswerFontColor());
+				pstmt.setString(13, std.getAnswerFontSize());
+				pstmt.setString(14, std.getMaskingRuler());
+				pstmt.setString(15, std.getMusicFile());
+				pstmt.setString(16, std.getMagnifyingGlass());
+				pstmt.setString(17, std.getExtendedTime());
+				pstmt.setString(18, std.getMaskingTool());
+				pstmt.setString(19, std.getMicrophoneHeadphone());
+
+				pstmt.setInt(20, std.getStudentId());
+				pstmt.setString(21, std.getScreenMagnifier());
+				pstmt.setString(22, std.getScreenReader());
+				pstmt.setString(23, std.getCalculator());
+				pstmt.setString(24, std.getTestPause());
+				pstmt.setString(25, std.getUntimedTest());
+				pstmt.setString(26, std.getHighlighter());
+				pstmt.setString(27, std.getQuestionBackgroundColor());
+				pstmt.setString(28, std.getQuestionFontColor());
+				pstmt.setString(29, std.getQuestionFontSize());
+				pstmt.setString(30, std.getAnswerBackgroundColor());
+				pstmt.setString(31, std.getAnswerFontColor());
+				pstmt.setString(32, std.getAnswerFontSize());
+				pstmt.setString(33, std.getMaskingRuler());
+				pstmt.setString(34, std.getMusicFile());
+				pstmt.setString(35, std.getMagnifyingGlass());
+				pstmt.setString(36, std.getExtendedTime());
+				pstmt.setString(37, std.getMaskingTool());
+				pstmt.setString(38, std.getMicrophoneHeadphone());
+				
 				pstmt.addBatch();
 				count++;
-				if(count % BATCH_SIZE == 0){
+				if (count % BATCH_SIZE_LARGE == 0) {
 					pstmt.executeBatch();
+					logger.info("Update Accommodation count ->" + count);
 				}
 			}
 			pstmt.executeBatch();
-			
-		}catch(SQLException e){
-	   		logger.error("SQL Exception in updateAccommodation-- >"+ e.getErrorCode());
-	   		e.printStackTrace();
-	   	}catch(Exception e){
-	   		logger.error("Exception in updateAccommodation");
-	   		e.printStackTrace();
-	   	}
-	   	finally {
-        	SQLUtil.closeDbObjects(conn, pstmt, null);
-        }
-		
+
+		} catch (SQLException e) {
+			logger.error("SQL Exception in updateAccommodation-- >"
+					+ e.getErrorCode());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("Exception in updateAccommodation");
+			e.printStackTrace();
+		} finally {
+			SQLUtil.closeDbObjects(conn, pstmt, null);
+			logger.info("UpdateAccommodation Complete...");
+		}
+
 	}
 	
 	public void setRosterUpdateFlag(String studentIds) throws SQLException {
@@ -591,89 +627,71 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   	}
 	   	finally {
         	SQLUtil.closeDbObjects(conn, pstmt, null);
+        	logger.info("Roster Update Flag update completed...");
         }
 
 		
 		
 	}
 	
-	public void createStudentDemographicDataDuringUpdate(List<StudentDemographicData> insertStudentDemoList) throws Exception {
-		int counter = 0;
+	//public void createStudentDemographicDataDuringUpdate(List<StudentDemographicData> insertStudentDemoList) throws Exception {
+	public void createStudentDemographicDataDuringUpdate(StudentUpdateRecordCacheImpl updateStdRecordCacheImpl) throws Exception {
+		logger.info("Demographic Inserted during update executing ");
+		int count = 0;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		String query = "insert into student_demographic_data (student_demographic_data_id, student_id, customer_demographic_id, value_name, value, created_by, created_date_time ) values ( SEQ_STUDENT_DEMOGRAPHIC_ID.nextval , ?, ?,  ?,  ?,  ?,  SYSDATE )";
 		try{
 			conn = SQLUtil.getConnection();
 			pstmt  = conn.prepareStatement(query);
-			Iterator<StudentDemographicData> it =  insertStudentDemoList.iterator();
-			while(it.hasNext()){
-				StudentDemographicData studDemoData = it.next();
-				pstmt.setInt(1, studDemoData.getStudentId());
-				pstmt.setInt(2, studDemoData.getCustomerDemographicId());
-				pstmt.setString(3, studDemoData.getValueName());
-				pstmt.setString(4, studDemoData.getValue());
-				pstmt.setInt(5, 1);
-				
-				pstmt.addBatch();
-				counter++;
-				if(counter % BATCH_SIZE == 0){
-					pstmt.executeBatch();
-				}
+			List<String> keys = updateStdRecordCacheImpl.getKeys();
+	   		for(String key : keys){
+	   			UploadStudent uploadStudent = ((UploadStudent)updateStdRecordCacheImpl.getUpdatedStudent(key));
+	   				ManageStudent st = uploadStudent.getManageStudent();				
+					StudentDemoGraphics[] studentDemoGraphics = uploadStudent.getStudentDemographic();
+					for(StudentDemoGraphics std:studentDemoGraphics){
+						StudentDemographicValue [] studentDemographicValues = std.getStudentDemographicValues();
+						for(StudentDemographicValue sdv:studentDemographicValues){
+							pstmt.setInt(1, st.getId());
+							pstmt.setInt(2, std.getId());
+							pstmt.setString(3, sdv.getValueName());
+							pstmt.setString(4,sdv.getValueCode());
+							pstmt.setInt(5, Constants.USER_ID);
+							pstmt.addBatch();
+							count++;
+							if(count % BATCH_SIZE_LARGE == 0){
+								pstmt.executeBatch();
+								logger.info("Demographic Inserted during update : --> "+count);
+							}
+						}
+			   }
 			}
 			pstmt.executeBatch();
-		}catch(SQLException e){
-	   		logger.error("SQL Exception in createStudentDemographicDataDuringUpdate-- >"+ e.getErrorCode());
-	   		e.printStackTrace();
-	   	}catch(Exception e){
+			
+		}catch(Exception e){
 	   		logger.error("Exception in createStudentDemographicDataDuringUpdate");
 	   		e.printStackTrace();
+	   		throw e;
 	   	}
 	   	finally {
-        	SQLUtil.closeDbObjects(conn, pstmt, null);
-	   	}		
-	}
-
-	public void deleteStudentDemographicDataForStudentAndCustomerDemographic(String studentAndDemoIds) throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		String query = "delete from student_demographic_data where (student_id, customer_demographic_id) IN (";
-		try{
-			conn = SQLUtil.getConnection();
-			if(!studentAndDemoIds.contains("#")){
-				query += studentAndDemoIds+")";
-				pstmt  = conn.prepareStatement(query);
-				pstmt.execute();
-			}else{
-				String [] splitedstr = studentAndDemoIds.split("#");
-				for(int indx=0; indx<splitedstr.length;indx++){
-					if(splitedstr[indx] == null)
-						continue;
-					String splitquery = query + splitedstr[indx].toString()+")";
-			   		pstmt  = conn.prepareStatement(splitquery);
-					pstmt.execute();
-					SQLUtil.closeDbObjects(null, pstmt, null);
-				}
-			}
-		}catch(SQLException e){
-	   		logger.error("SQL Exception in deleteStudentDemographicDataForStudentAndCustomerDemographic-- >"+ e.getErrorCode());
-	   		e.printStackTrace();
-	   	}catch(Exception e){
-	   		logger.error("Exception in deleteStudentDemographicDataForStudentAndCustomerDemographic");
-	   		e.printStackTrace();
-	   	}
-	   	finally {
-        	SQLUtil.closeDbObjects(conn, pstmt, null);
+	   		SQLUtil.closeDbObjects(conn, pstmt, null);
+	   		logger.info("Demographic Inserted during update completed ");
         }
 	}
 
+
+	
+	
+	
 	public void deleteVisibleStudentDemographicDataForStudent(String studentIds) throws Exception {
+		logger.info("Demographic Update : Deletion exceuting ");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String query = "delete  from  student_demographic_data  where student_demographic_data_id in (  select sdd.student_demographic_data_id from student_demographic_data sdd, customer_demographic cd, customer_demographic_value cdv  where sdd.customer_demographic_id = cd.customer_demographic_id  and cd.customer_demographic_id = cdv.customer_demographic_id  and cd.visible = 'T' and cdv.visible = 'T'  and sdd.student_id in ( ";
+		String query = "delete  from  student_demographic_data  where student_id in ( ";
 		try{
 			conn = SQLUtil.getConnection();
 			if(!studentIds.contains("#")){
-				query += studentIds + "))";
+				query += studentIds + ")";
 				pstmt  = conn.prepareStatement(query);
 				pstmt.execute();
 			}else{
@@ -681,7 +699,7 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 				for(int indx=0; indx<splitedstr.length;indx++){
 					if(splitedstr[indx] == null)
 						continue;
-					String splitQuery = query + splitedstr[indx].toString()+"))";
+					String splitQuery = query + splitedstr[indx].toString()+")";
 					pstmt  = conn.prepareStatement(splitQuery);
 					pstmt.execute();
 					SQLUtil.closeDbObjects(null, pstmt, null);
@@ -696,32 +714,42 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 	   	}
 	   	finally {
         	SQLUtil.closeDbObjects(conn, pstmt, null);
+        	logger.info("Done Demographic Update : Deletion exceuting ");
         }
 	}
 	
-	public void createOrgnodeStudentDuringUpdate( List<OrgNodeStudent> newOrgStudentList) throws Exception {
+	public void createOrgnodeStudentDuringUpdate( StudentUpdateRecordCacheImpl updateStdRecordCacheImpl) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		int count = 0;
-		String query = "insert into  org_node_student ( student_id, org_node_id, created_date_time, created_by, customer_id,  activation_status) values ( ?, ?, SYSDATE , ?, ?, ? )";
+		String query = " Merge into org_node_student ons using (select ?  as Student_id, ?  as Org_node_id from dual) s on (ons.student_id = s.Student_id and ons.org_node_id = s.org_node_id) when matched then update set activation_status = 'AC' , updated_date_time = sysdate , updated_by = 1 when not matched then insert (student_id, org_node_id, created_date_time, created_by, customer_id, activation_status) values ( ? , ? , sysdate , 1 , ? , 'AC' )";
 		try{
 			conn = SQLUtil.getConnection();
 			pstmt  = conn.prepareStatement(query);
-			Iterator<OrgNodeStudent> it = newOrgStudentList.iterator();
-			while(it.hasNext()) {
-				OrgNodeStudent ons = it.next();
-				pstmt.setInt(1, ons.getStudentId());
-				pstmt.setInt(2, ons.getOrgNodeId());
-				pstmt.setInt(3, Constants.USER_ID);
-				pstmt.setInt(4, ons.getCustomerId());
-				pstmt.setString(5, "AC");
-				
-				pstmt.addBatch();
-				count++;
-				if(count % BATCH_SIZE == 0){
-					pstmt.executeBatch();
+			
+			List<String> keys = updateStdRecordCacheImpl.getKeys();
+	   		for(String key : keys){
+	   			UploadStudent updateStudent = ((UploadStudent)updateStdRecordCacheImpl.getUpdatedStudent(key));
+	   			
+				Integer studentId = updateStudent.getManageStudent().getId();
+				OrganizationNode [] organizationNodes = updateStudent.getManageStudent().getOrganizationNodes();
+				for(OrganizationNode org:organizationNodes){
+					Integer orgNodeId = org.getOrgNodeId();
+					pstmt.setInt(1, studentId);
+					pstmt.setInt(2, orgNodeId);
+					pstmt.setInt(3, studentId);
+					pstmt.setInt(4, orgNodeId);
+					pstmt.setInt(5, updateStudent.getManageStudent().getCustomerId());
+					pstmt.addBatch();
+					
+					count++;
+					if(count % BATCH_SIZE_LARGE == 0){
+						pstmt.executeBatch();
+						//logger.info("Org_node_Student Inserted/Updated : --> "+count);
+					}
 				}
-			}
+	   		}
+			
 			pstmt.executeBatch();
 		}catch(SQLException e){
 	   		logger.error("SQL Exception in createOrgnodeStudentDuringUpdate-- >"+ e.getErrorCode());
@@ -734,20 +762,6 @@ public class StudentManagementDAO implements IStudentManagementDAO {
         	SQLUtil.closeDbObjects(conn, pstmt, null);
         }
 		
-	}
-
-	private void setOrganizationNodeForStudent(ManageStudent manageStudent, Map<Integer, ArrayList<OrganizationNode>> studentOrgMap) {
-		OrganizationNode[] studentOrgNodes = studentOrgMap.get(
-				manageStudent.getId()).toArray(new OrganizationNode[studentOrgMap.get(manageStudent.getId()).size()]);
-		if ( !isOrganizationPresent(manageStudent.getOrganizationNodes()[0].getOrgNodeId(), studentOrgNodes) ) {
-			int size = studentOrgNodes.length;
-			OrganizationNode []updateNodes = new OrganizationNode[size + 1];
-			for (int i = 0; i < studentOrgNodes.length; i++) {
-				updateNodes[i] = studentOrgNodes[i];
-			}
-			updateNodes[size] = manageStudent.getOrganizationNodes()[0];
-			manageStudent.setOrganizationNodes(updateNodes);
-		}
 	}
 
 	private static boolean isOrganizationPresent (Integer orgNodeId, OrganizationNode []organizationNode) {

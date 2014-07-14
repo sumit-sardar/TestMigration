@@ -2,8 +2,6 @@ package com.ctb.bean;
 
 import java.util.Date;
 
-import com.ctb.bean.CTBBean;
-
 /**
  * TestSession.java
  * @author Tata Consultency Services

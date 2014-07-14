@@ -1,16 +1,19 @@
 package com.ctb.utils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,16 +24,9 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 
 import com.ctb.bean.CustomerConfig;
 import com.ctb.bean.CustomerConfiguration;
@@ -41,13 +37,11 @@ import com.ctb.bean.ManageStudent;
 import com.ctb.bean.Node;
 import com.ctb.bean.OrgNodeCategory;
 import com.ctb.bean.OrganizationNode;
-import com.ctb.bean.Student;
 import com.ctb.bean.StudentAccommodations;
 import com.ctb.bean.StudentDemoGraphics;
 import com.ctb.bean.StudentDemographicValue;
 import com.ctb.bean.StudentFileRow;
 import com.ctb.bean.UploadStudent;
-import com.ctb.bean.UserNode;
 import com.ctb.control.OrganizationManagementControl;
 import com.ctb.control.StudentManagementControl;
 import com.ctb.dao.StudentFileDao;
@@ -56,6 +50,9 @@ import com.ctb.dao.UploadFileDao;
 import com.ctb.dao.UploadFileDaoImpl;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.FileNotUploadedException;
+import com.ctb.utils.cache.StudentDBCacheImpl;
+import com.ctb.utils.cache.StudentNewRecordCacheImpl;
+import com.ctb.utils.cache.StudentUpdateRecordCacheImpl;
 
 
 public class UploadStudentFile {
@@ -65,13 +62,13 @@ public class UploadStudentFile {
 	private InputStream uploadedStream;
 	private Date uploadDt;
 	private int noOfUserColumn;
-	private HashMap<String, StudentFileRow> visibleStudent = new HashMap<String, StudentFileRow>();
+	StudentDBCacheImpl dbCacheImpl = new StudentDBCacheImpl();
+	//private HashMap<String, StudentFileRow> visibleStudent = new HashMap<String, StudentFileRow>();
 	private CustomerConfigurationValue customerConfigurationValue;
 	private CustomerConfigurationValue[] customerConfigurationValues;
 	private int failedRecordCount;
 	private int uploadRecordCount = 0;
 	public DataFileAudit dataFileAudit = new DataFileAudit();;
-	public UserNode[] usernode = null;
 	public OrgNodeCategory orgNodeCategory[] = null;
 	private StudentFileRow[] studentFileRowHeader;
 	public String[] grades = null;
@@ -117,10 +114,15 @@ public class UploadStudentFile {
 	private OrganizationManagementControl organizationManagement = new OrganizationManagementControl();
 	private StudentManagementControl studentManagement = new StudentManagementControl();
 	private static Logger logger = Logger.getLogger(UploadStudentFile.class.getName());
-	private static List<UploadStudent> finalStudentList = new ArrayList<UploadStudent>();
+	
+	//new cache impl 
+	StudentNewRecordCacheImpl newStdRecordCacheImpl = new StudentNewRecordCacheImpl();
+	StudentUpdateRecordCacheImpl updateStdRecordCacheImpl = new StudentUpdateRecordCacheImpl();
+	
+	//private static List<UploadStudent> finalStudentList = new ArrayList<UploadStudent>(); // all insert students
 	private static Map<String,Integer> studentIdExtPinMap = new HashMap<String, Integer>(); 
-	private static List<UploadStudent> finalUpdateStudentList = new ArrayList<UploadStudent>();
-	private static Set<String> studentUserNames = new HashSet<String>();
+	//private static List<UploadStudent> finalUpdateStudentList = new ArrayList<UploadStudent>(); //all updatable students
+	private static Set<String> studentUserNames = new HashSet<String>(); // all student user names
 	
 	
 	public UploadStudentFile(Integer customerId, File inFile,
@@ -154,13 +156,13 @@ public class UploadStudentFile {
 			this.studentId2MinLength = valueForStudentId2[2];
 			this.isStudentId2Numeric = valueForStudentId2[3];
 		}
-		System.out.println("Init Process Start Time:" + new Date(System.currentTimeMillis()));
+		logger.info("Init Process Start Time:" + new Date(System.currentTimeMillis()));
 		init();
-		System.out.println("Init Process End Time:" + new Date(System.currentTimeMillis()));
+		logger.info("Init Process End Time:" + new Date(System.currentTimeMillis()));
 	}
 
 	public void startProcessing() throws Exception {
-		System.out.println("Data Validation Start Time:" + new Date(System.currentTimeMillis()));
+		logger.info("Data Validation Start Time:" + new Date(System.currentTimeMillis()));
 		studentDao = new StudentFileDaoImpl();
 		HashMap<Integer, ArrayList<String>> requiredMap = new HashMap<Integer, ArrayList<String>>();
 		HashMap<Integer,ArrayList<String>> maxLengthMap = new HashMap<Integer,ArrayList<String>>();
@@ -181,12 +183,11 @@ public class UploadStudentFile {
 		int loginUserPosition = 0;
 
 		try {
-			StudentFileRow[] studentFileRow = studentDao
-					.getExistStudentData(this.customerId);
-			for (int i = 0; i < studentFileRow.length; i++) {
-				this.visibleStudent.put(studentFileRow[i].getKey(),
-						studentFileRow[i]);
-			}
+			studentDao.getExistStudentData(this.customerId,dbCacheImpl);
+//			for (int i = 0; i < studentFileRow.length; i++) {
+//				this.visibleStudent.put(studentFileRow[i].getKey(),
+//						studentFileRow[i]);
+//			}
 			
 			CSVReader csv = new CSVReader(new BufferedReader(new FileReader(this.inFile)), ',');
 			int rowIndex = 0;
@@ -194,7 +195,7 @@ public class UploadStudentFile {
 			String[]  rowHeader = new String[0] ;
 			String[]  row ;
 			while ((row = csv.readNext()) != null) {
-				//System.out.println("rowIndex " + rowIndex );
+				//logger.info("rowIndex " + rowIndex );
 				if (isFirstRow) {
 					rowHeader = new String[row.length];
 					rowHeader = row;
@@ -350,25 +351,23 @@ public class UploadStudentFile {
 				rowIndex ++;
 				
 			}// while loop end of total row processing
-
+			csv.close();
 			if (requiredMap.size() > 0 || minLengthMap.size() > 0
 					|| maxLengthMap.size() > 0 || invalidCharMap.size() > 0
 					|| logicalErrorMap.size() > 0
 					|| hierarchyErrorMap.size() > 0
 					|| leafNodeErrorMap.size() > 0) {
-				System.out.println("Error Excel Start Time:" + new Date(System.currentTimeMillis()));
+				logger.info("Error Excel Start Time:" + new Date(System.currentTimeMillis()));
 				
-				System.out.println("Excel not generated for the time being. But error records are present.");
-				
-				/*errorExcelCreation(requiredMap, maxLengthMap, invalidCharMap,
+				errorExcelCreation(requiredMap, maxLengthMap, invalidCharMap,
 						logicalErrorMap, hierarchyErrorMap, leafNodeErrorMap,
-						minLengthMap);*/
+						minLengthMap);
 				
-				System.out.println("Error Excel End Time:" + new Date(System.currentTimeMillis()));
+				logger.info("Error Excel End Time:" + new Date(System.currentTimeMillis()));
 			}
-			System.out.println(" Data validation Complete.. Data Insertion Process in Progress...");
+			logger.info(" Data validation Complete.. Data Insertion Process in Progress...");
 			
-			System.out.println("Data Validation End Time:" + new Date(System.currentTimeMillis()));
+			logger.info("Data Validation End Time:" + new Date(System.currentTimeMillis()));
 			
 			createOrganizationAndStudent(requiredMap, minLengthMap,
 					maxLengthMap, invalidCharMap, logicalErrorMap,
@@ -379,14 +378,12 @@ public class UploadStudentFile {
 			/**
 			 * Archiving Process 
 			 * */	
-			System.out.println("ArchiveProcessedFiles Start Time:" + new Date(System.currentTimeMillis()));
+			logger.info("ArchiveProcessedFiles Start Time:" + new Date(System.currentTimeMillis()));
 			FtpSftpUtil.archiveProcessedFiles(FtpSftpUtil.getSFTPSession(), Configuration.getFtpFilePath(), Configuration.getArchivePath(), inFile.getName());
-			System.out.println("ArchiveProcessedFiles End Time:" + new Date(System.currentTimeMillis()));
-			System.out.println("Student Upload Process Completed Time " + new Date(System.currentTimeMillis()));
+			logger.info("ArchiveProcessedFiles End Time:" + new Date(System.currentTimeMillis()));
+			logger.info("Student Upload Process Completed Time " + new Date(System.currentTimeMillis()));
 
 		} catch (Exception ex) {
-			System.out
-					.println("UploadStudentFile Error.. startProcessing() Block.");
 			logger.error("UploadStudentFile Error.. startProcessing() Block...");
 			ex.printStackTrace();
 			throw ex;
@@ -400,7 +397,7 @@ public class UploadStudentFile {
 			HashMap<Integer,String> blankRowMap, boolean isMatchUploadOrgIds,
 			Node[] loginUserNodes, boolean isMatchMdrNo) throws Exception {
 		
-		System.out.println("CreateOrganizationAndStudent Start Time:" + new Date(System.currentTimeMillis()));
+		logger.info("CreateOrganizationAndStudent Map Population Start Time:" + new Date(System.currentTimeMillis()));
 		int loginUserOrgPosition = 0;
 		Node organization = null;
 		Integer orgNodeId = null;
@@ -440,7 +437,7 @@ public class UploadStudentFile {
 						|| hierarchyErrorMap.containsKey(new Integer(rowIndex))
 						|| leafNodeErrorMap.containsKey(new Integer(rowIndex)) || blankRowMap
 						.containsKey(new Integer(rowIndex)))) {
-					//System.out.println("Insertion will happen for" + rowIndex);
+					//logger.info("Insertion will happen for" + rowIndex);
 
 					// OrganizationCreation or Existence check process
 					loginUserOrgPosition = getLoginUserOrgPosition(row,
@@ -461,7 +458,6 @@ public class UploadStudentFile {
 							+ orgPosFact) {
 						String OrgCellName = row[ii];
 						String OrgCellId =  row[ii + 1];
-						String orgCellHeaderName = rowHeader[ii];
 						String orgCode = getCellValue(OrgCellId);
 						String orgName = getCellValue(OrgCellName);
 						String OrgCellHeaderName = rowHeader[ii];
@@ -732,22 +728,39 @@ public class UploadStudentFile {
 					// populate finalStudent List
 					createStudent(studentDataMap, orgHeaderLastPosition,
 							orgDetail, studentDemoMap, demolist);
+					studentDemoMap = null;
+					demolist = null;
 					uploadRecordCount++;
 				}
 				isBlankRow = true;
 				rowIndex++;
 			}
 			
-			if(finalStudentList.size() > 0){
-				System.out.println("ExecuteStudentCreation Start Time:" + new Date(System.currentTimeMillis()));
-				this.studentManagement.executeStudentCreation(UploadStudentFile.finalStudentList, UploadStudentFile.studentUserNames ,UploadStudentFile.studentIdExtPinMap);
-				System.out.println("ExecuteStudentCreation End Time:" + new Date(System.currentTimeMillis()));
+			requiredMap = null;
+			minLengthMap = null;
+			maxLengthMap = null;
+			logicalErrorMap = null;
+			invalidCharMap = null;
+			leafNodeErrorMap = null;
+			hierarchyErrorMap = null;
+			System.gc();			
+			csv.close();
+			logger.info("CreateOrganizationAndStudent Map Population End Time:" + new Date(System.currentTimeMillis()));
+			
+			if(newStdRecordCacheImpl.getCacheSize() > 0){
+				logger.info("Students to be Inserted::--> " +newStdRecordCacheImpl.getCacheSize());
+				logger.info("ExecuteStudentCreation Start Time:" + new Date(System.currentTimeMillis()));
+				this.studentManagement.executeStudentCreation(newStdRecordCacheImpl, UploadStudentFile.studentUserNames ,UploadStudentFile.studentIdExtPinMap);
+				logger.info("ExecuteStudentCreation End Time:" + new Date(System.currentTimeMillis()));
 			}
 			
-			if(finalUpdateStudentList.size() > 0){
-				System.out.println("ExecuteStudentUpdate Start Time:" + new Date(System.currentTimeMillis()));
-				this.studentManagement.executeStudentUpdate(UploadStudentFile.finalUpdateStudentList, this.customerId ,UploadStudentFile.studentIdExtPinMap);
-				System.out.println("ExecuteStudentUpdate End Time:" + new Date(System.currentTimeMillis()));
+			newStdRecordCacheImpl.clearCacheContents();
+			newStdRecordCacheImpl = null;
+			if(updateStdRecordCacheImpl.getCacheSize() > 0){
+				logger.info("Students to be Updated::--> " + updateStdRecordCacheImpl.getCacheSize());
+				logger.info("ExecuteStudentUpdate Start Time:" + new Date(System.currentTimeMillis()));
+				this.studentManagement.executeStudentUpdate(updateStdRecordCacheImpl,this.customerId ,UploadStudentFile.studentIdExtPinMap);
+				logger.info("ExecuteStudentUpdate End Time:" + new Date(System.currentTimeMillis()));
 			}
 			
 			
@@ -761,7 +774,6 @@ public class UploadStudentFile {
 
 			this.dataFileAudit.setUploadFileRecordCount(new Integer(uploadRecordCount));
 			dao.upDateAuditTable(this.dataFileAudit);
-			System.out.println("CreateOrganizationAndStudent End Time:" + new Date(System.currentTimeMillis()));
 	
 		} catch (SQLException se) {
 			se.printStackTrace();
@@ -797,8 +809,13 @@ public class UploadStudentFile {
 			 throw dataNotFoundException;
 
 		}
+		finally{
+			logger.info("Import process is completed, exiting!");
+		}
 
 	}
+	
+	
 
 	
 	/*
@@ -832,8 +849,6 @@ public class UploadStudentFile {
 
 
 		boolean isNewStudent = true;
-		boolean matchWithOtherCriteria = false; 
-
 		// Set into student Demographic
 		StudentDemoGraphics[] studentDemographic = this.getStudentDemographicData(studentDemoMap,demolist);
 		//Accommodation 
@@ -850,52 +865,14 @@ public class UploadStudentFile {
 		studentOrgNode[0] = organizationNode;
 
 		try {
-
-			StudentFileRow[] studentFileRow = (StudentFileRow[])(new ArrayList(this.visibleStudent.values())).
-			toArray(new StudentFileRow[0]);
-			if (checkExternalStudent_id) {
-				if (manageStudent.getStudentIdNumber()!= null && !"".equals(manageStudent.getStudentIdNumber())) {
-					for ( int i = 0 ; i < studentFileRow.length ; i++ ) {
-						if ( studentFileRow[i].getExtPin1() != null && !"".equals(studentFileRow[i].getExtPin1())) {
-							if ( studentFileRow[i].getExtPin1().equalsIgnoreCase(manageStudent.getStudentIdNumber()) ){
-								//  isNewStudentExtId = false; 
-								matchWithOtherCriteria = false;
-								isNewStudent = false;    
-								manageStudent.setLoginId(studentFileRow[i].getUserName());
-								manageStudent.setId(studentFileRow[i].getStudentId());
-
-								break;
-							}
-						}
-
-					}
-				} else {
-					matchWithOtherCriteria = true;
-				}
-
-				if ( matchWithOtherCriteria && manageStudent.getStudentIdNumber() != null && !"".equals(manageStudent.getStudentIdNumber())) {
-					matchWithOtherCriteria = false;
-					isNewStudent = true;
-				}
-				
-				if ( matchWithOtherCriteria ) {
-					/*StudentFileRow studentFile = isStudentExists(manageStudent,studentFileRow);*/
-					StudentFileRow studentFile = isStudentExists(manageStudent);
-					if ( studentFile != null ) {
-						isNewStudent = false;
-						manageStudent.setLoginId(studentFile.getUserName());
-						manageStudent.setId(studentFile.getStudentId());
-					}
-				}
-			}
-			else {
-				/*StudentFileRow studentFile = isStudentExists(manageStudent,studentFileRow);*/
-				StudentFileRow studentFile = isStudentExists(manageStudent);
-				if ( studentFile != null ) {
-					isNewStudent = false;
-					manageStudent.setLoginId(studentFile.getUserName());
-					manageStudent.setId(studentFile.getStudentId());
-				}
+			
+			StudentFileRow studentFile = isStudentExists(manageStudent);
+			
+			if ( studentFile != null ) {
+				isNewStudent = false;
+				manageStudent.setLoginId(studentFile.getUserName());
+				manageStudent.setId(studentFile.getStudentId());
+				manageStudent.setCustomerId(studentFile.getCustomerId());
 			}
 
 			if (isNewStudent) { // Create new Student
@@ -920,11 +897,7 @@ public class UploadStudentFile {
 	private void  updateStudent (ManageStudent manageStudent,StudentAccommodations studentAccommodations,StudentDemoGraphics[] studentDemographic) throws Exception {
 
 		studentAccommodations.setStudentId(manageStudent.getId());
-		StudentFileRow studentFileRow = new StudentFileRow();
-		copyStudentDetail (studentFileRow, manageStudent, studentAccommodations); 
-		//this.visibleStudent.put(studentFileRow.getExtPin1().trim(), studentFileRow);
-		
-		this.finalUpdateStudentList.add(new UploadStudent(manageStudent, studentAccommodations, studentDemographic, null));
+		updateStdRecordCacheImpl.addUpdatedStudent(manageStudent.getStudentIdNumber().trim(), new UploadStudent(manageStudent, studentAccommodations, studentDemographic));
 	}
 	
 	/**
@@ -1312,7 +1285,7 @@ public class UploadStudentFile {
 		//This block will be executed if there is "Hispanic or Latino" in place of Ethnicity column and Sub-Ethnicity column is blank.
 		//Then we again traverse to insert "Hispanic or Latino" value in Ethnicity demographic.
 		if((subEthnicityNotPresent || (count == 1))){
-			System.out.println("** Ethnicity demographic check.. ReEntry in loop as Sub-Etnicity not present **");
+			//logger.info("** Ethnicity demographic check.. ReEntry in loop as Sub-Etnicity not present **");
 			for ( int i= 0 ; i < 1 ; i++ ){
 				StudentDemoGraphics studentDemographic = new StudentDemoGraphics();
 	
@@ -1374,14 +1347,17 @@ public class UploadStudentFile {
 	 *  Check whether student exists or not. If exists then return student id
 	 */
 	private StudentFileRow isStudentExists( ManageStudent student) {
-		if (this.visibleStudent.size() > 0) {
-			String newFileKey = (student.getStudentIdNumber()!= null)? student.getStudentIdNumber().trim() : generateKey(student) ;
-			if(this.visibleStudent.containsKey(newFileKey)){
-				StudentFileRow studentFileRow = this.visibleStudent.get(newFileKey);
-				return studentFileRow;
-			}
-		}
-		return null;
+		String newFileKey = (student.getStudentIdNumber()!= null)? student.getStudentIdNumber().trim() : generateKey(student) ;
+		return dbCacheImpl.getStudentFileRow(newFileKey);
+		
+//		if (this.visibleStudent.size() > 0) {
+//			String newFileKey = (student.getStudentIdNumber()!= null)? student.getStudentIdNumber().trim() : generateKey(student) ;
+//			if(this.visibleStudent.containsKey(newFileKey)){
+//				StudentFileRow studentFileRow = this.visibleStudent.get(newFileKey);
+//				return studentFileRow;
+//			}
+//		}
+//		return null;
 	}
 	
 	private String generateKey(ManageStudent student) {
@@ -1406,37 +1382,25 @@ public class UploadStudentFile {
 	/**
 	 *  Update student,update student accommodation and demographic details
 	 */
-	private void createNewStudent(ManageStudent manageStudent,StudentAccommodations studentAccommodations,StudentDemoGraphics[] studentDemographic,Node[] studentNode) throws CTBBusinessException {
+	private void createNewStudent(ManageStudent manageStudent,StudentAccommodations studentAccommodations,
+										StudentDemoGraphics[] studentDemographic,Node[] studentNode) throws CTBBusinessException {
 
 		
-		Student student = createStudentUpload(manageStudent, customerId);
+		createStudentUpload(manageStudent, customerId);
 		StudentFileRow studentFileRow = new StudentFileRow();
-		copyStudentDetail (studentFileRow, student, studentAccommodations);
-		this.visibleStudent.put(student.getExtPin1().trim(), studentFileRow);
+		copyStudentDetail (studentFileRow, manageStudent, studentAccommodations);
+		dbCacheImpl.addStudentFileRow(manageStudent.getStudentIdNumber().trim(), studentFileRow);
+		//this.visibleStudent.put(manageStudent.getStudentIdNumber().trim(), studentFileRow);
 		
-		
-		finalStudentList.add(new UploadStudent(manageStudent, studentAccommodations, studentDemographic, student));
+		newStdRecordCacheImpl.addNewStudent(manageStudent.getStudentIdNumber().trim(), new UploadStudent(manageStudent, studentAccommodations, studentDemographic));
+		//UploadStudentFile.finalStudentList.add(new UploadStudent(manageStudent, studentAccommodations, studentDemographic));
 	}
 	
-	private Student createStudentUpload(ManageStudent manageStudent,
+	private void createStudentUpload(ManageStudent manageStudent,
 			Integer customerId2) {
-			Student student = new Student();
-			student.setActivationStatus("AC");
-			student.setFirstName(manageStudent.getFirstName());
-			student.setMiddleName(manageStudent.getMiddleName());
-			student.setLastName(manageStudent.getLastName());
-			student.setBirthdate(manageStudent.getBirthDate());
-			student.setGender(manageStudent.getGender());
-			student.setGrade(manageStudent.getGrade());
-
-			student.setExtPin1(manageStudent.getStudentIdNumber());
-			student.setExtPin2(manageStudent.getStudentIdNumber2());
-			student.setCreatedBy(new Integer(1));
-			student.setCreatedDateTime(new Date());
-			student.setCustomerId(customerId);
-			String studentUserName =  StudentUtils.generateUniqueStudentUserName(this.studentUserNames,student);
-			student.setUserName(studentUserName);
-			return student;
+		String studentUserName =  StudentUtils.generateUniqueStudentUserName(this.studentUserNames,manageStudent);
+		manageStudent.setLoginId(studentUserName);
+		manageStudent.setCustomerId(customerId2);
 	}
 
 	/*
@@ -1459,20 +1423,20 @@ public class UploadStudentFile {
 	private void copyStudentDetail (StudentFileRow studentFileRow, ManageStudent manageStudent, 
 			StudentAccommodations studentAccommodations) {
 
-		studentFileRow.setFirstName(manageStudent.getFirstName());
+		/*studentFileRow.setFirstName(manageStudent.getFirstName());
 		studentFileRow.setLastName(manageStudent.getLastName());
 		studentFileRow.setMiddleName(manageStudent.getMiddleName());
 		studentFileRow.setGender(manageStudent.getGender());
 		studentFileRow.setBirthdate(manageStudent.getBirthDate());
-		studentFileRow.setGrade(manageStudent.getGrade());
+		studentFileRow.setGrade(manageStudent.getGrade());*/
 		studentFileRow.setOrganizationNodes(manageStudent.getOrganizationNodes());
 		studentFileRow.setExtPin1(manageStudent.getStudentIdNumber());
-		studentFileRow.setExtPin2(manageStudent.getStudentIdNumber2());
+		/*studentFileRow.setExtPin2(manageStudent.getStudentIdNumber2());*/
 		studentFileRow.setStudentId(manageStudent.getId());
 		studentFileRow.setUserName(manageStudent.getLoginId());
 
 		//Accomodation
-		studentFileRow.setScreenReader(studentAccommodations.getScreenReader());
+		/*studentFileRow.setScreenReader(studentAccommodations.getScreenReader());
 		studentFileRow.setCalculator(studentAccommodations.getCalculator());
 		studentFileRow.setTestPause(studentAccommodations.getTestPause());
 		studentFileRow.setUntimedTest(studentAccommodations.getUntimedTest());
@@ -1481,7 +1445,7 @@ public class UploadStudentFile {
 		studentFileRow.setQuestionFontColor(studentAccommodations.getQuestionFontColor());
 		studentFileRow.setAnswerBackgroundColor(studentAccommodations.getAnswerBackgroundColor());
 		studentFileRow.setAnswerFontColor(studentAccommodations.getAnswerFontColor());
-		studentFileRow.setAnswerFontSize(studentAccommodations.getAnswerFontSize());
+		studentFileRow.setAnswerFontSize(studentAccommodations.getAnswerFontSize());*/
 
 
 	}
@@ -1722,7 +1686,7 @@ public class UploadStudentFile {
 	 * Copy StudentDetails and Accomodations in to StudentFileRow Object for create
 	 */ 
 
-	private void copyStudentDetail (StudentFileRow studentFileRow, Student student, 
+	/*private void copyStudentDetail (StudentFileRow studentFileRow, Student student, 
 			StudentAccommodations studentAccommodations) {
 
 		studentFileRow.setFirstName(student.getFirstName());
@@ -1743,20 +1707,8 @@ public class UploadStudentFile {
 		studentFileRow.setExtPin2(student.getExtPin2());
 		studentFileRow.setStudentId(student.getStudentId());
 
-		//Accomodation
-		/*   studentFileRow.setScreenReader(studentAccommodations.getScreenReader());
-        studentFileRow.setCalculator(studentAccommodations.getCalculator());
-        studentFileRow.setTestPause(studentAccommodations.getTestPause());
-        studentFileRow.setUntimedTest(studentAccommodations.getUntimedTest());
-        studentFileRow.setHighlighter(studentAccommodations.getHighlighter());
-        studentFileRow.setQuestionBackgroundColor(studentAccommodations.getQuestionBackgroundColor());
-        studentFileRow.setQuestionFontColor(studentAccommodations.getQuestionFontColor());
-        studentFileRow.setAnswerBackgroundColor(studentAccommodations.getAnswerBackgroundColor());
-        studentFileRow.setAnswerFontColor(studentAccommodations.getAnswerFontColor());
-        studentFileRow.setAnswerFontSize(studentAccommodations.getAnswerFontSize());
-		 */  
 
-	}
+	}*/
 	
 	/**
 	 * Getting value of checkbox field as T/F
@@ -1865,7 +1817,6 @@ public class UploadStudentFile {
 			this.dataFileAudit = dao.getUploadFile(this.uploadFileId);
 			orgPosFact = 3;
 		} catch (Exception e) {
-			System.out.println("UploadStudentFile Error.. Init() Block.");
 			logger.error("UploadStudentFile Error.. Init() Block...");
 			e.printStackTrace();
 		}
@@ -2092,8 +2043,6 @@ public class UploadStudentFile {
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 			}
-			//TODO Block need to check
-			//newMDRList.add(strCellMdr);
 		}
 		return true;
 	}
@@ -2280,9 +2229,6 @@ public class UploadStudentFile {
 	private String getCellValue(String cell) {
 		return  (null == cell)?"":cell.trim() ;
 	}
-	private String getCellValue(HSSFCell cell) {
-		return  "";
-	}
 
 	private void getEachRowStudentDetail(int rowPosition, String[] row,
 			String[] rowHeader, HashMap<Integer, ArrayList<String>> requiredMap,
@@ -2371,30 +2317,29 @@ public class UploadStudentFile {
 		for (int i = start; i < totalCells; i++) {
 			String cellHeader = rowHeader[i];
 			String cell = row[i];
-			strCell = getCellValue(cell);			
+			strCell = getCellValue(cell);
 
-			if (cellHeader.equalsIgnoreCase(
-					this.ethnicityLabel)) {
+			if (cellHeader.equalsIgnoreCase(this.ethnicityLabel)) {
 				if (!strCell.trim().equals("")) {
 					isEthnicityPresent = true;
 					if (strCell.equalsIgnoreCase("HISPANIC OR LATINO")) {
 						isSubEthnicityRequired = true;
 					}
 				}
-			}
-			if (cellHeader.equalsIgnoreCase(
-					this.subEthnicityLabel)) {
+			} else if (cellHeader.equalsIgnoreCase(this.subEthnicityLabel)) {
 				if (isSubEthnicityRequired && strCell.trim().equals("")) {
-					//TODO
+					// TODO
 				}
 				if (!isSubEthnicityRequired && !strCell.trim().equals("")) {
-					logicalErrorList.add(Constants.ETHNICITY_LABEL);					
+					logicalErrorList.add(Constants.ETHNICITY_LABEL);
 				}
 				if (!isEthnicityPresent && !strCell.trim().equals("")) {
 					logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
 				}
+				break;
 			}
 		}// end Demographic checking for logical error
+		
 		if (logicalErrorList.size() == 0) {
 			return false;
 		} else {
@@ -2831,7 +2776,8 @@ public class UploadStudentFile {
 	}
 
 	private boolean isStudentIdUnique(String value) {
-		 if(this.visibleStudent.containsKey(value))
+		
+		 if(dbCacheImpl.getStudentFileRow(value) != null)
 			 return false;
 		 else 
 			 return true;
@@ -3413,292 +3359,196 @@ public class UploadStudentFile {
 	 * 
 	 * */
 
-	private void errorExcelCreation(HashMap requiredMap, HashMap maxLengthMap,
-			HashMap invalidCharMap, HashMap logicalErrorMap,
-			HashMap hierarchyErrorMap, HashMap leafNodeErrorMap,
-			HashMap minLengthMap) throws Exception{
+	private void errorExcelCreation(Map<Integer, ArrayList<String>> requiredMap, Map<Integer, ArrayList<String>> maxLengthMap,
+			Map<Integer, ArrayList<String>> invalidCharMap, Map<Integer, ArrayList<String>> logicalErrorMap,
+			Map<Integer, ArrayList<String>> hierarchyErrorMap, Map<Integer, String> leafNodeErrorMap,
+			Map<Integer, ArrayList<String>> minLengthMap) throws Exception{
 
-		// POI details Initialize
-		POIFSFileSystem pfs = null;
-		HSSFSheet sheet = null;
 		int errorCount = 0;
 		byte[] errorData = null;
-		boolean isBlankRow = true;
-		String strUploadCell = "";
-		String rowHeaderCellValue = "";
 
 		dao = new UploadFileDaoImpl();
+		
+		Date today = Calendar.getInstance().getTime(); 
+		String errorDate = new SimpleDateFormat("MM.dd.yyyy_HHmmss").format(today);
+		
+		String errorFileName = Configuration.getLocalFilePath() + Constants.FILE_SEPARATOR
+		+ this.inFile.getName().split("\\.")[0]+ "_"+errorDate + ".errors";
+		
+		BufferedWriter bWriter =  new BufferedWriter(new FileWriter(errorFileName, true), ',');
+		CSVWriter csvOutput = new CSVWriter(bWriter);
+		CSVReader csvReader = new CSVReader(new BufferedReader(new FileReader(this.inFile)), ',');
 
 		try {
-			// Error Excel file create Object Initialization
-			HSSFWorkbook ewb = new HSSFWorkbook();
-			HSSFSheet esheet = ewb.createSheet("ErrorSheet");
-			HSSFRow erowHeader = esheet.createRow(0);
-			HSSFCellStyle style = null;
-
-			HSSFCellStyle requiredStyle = ewb.createCellStyle();
-			HSSFCellStyle invalidStyle = ewb.createCellStyle();
-			HSSFCellStyle maxlengthStyle = ewb.createCellStyle();
-			HSSFCellStyle logicalErrorStyle = ewb.createCellStyle();
-			HSSFCellStyle minlengthStyle = ewb.createCellStyle();
-
-			// set required field color
-			requiredStyle.setFillForegroundColor(HSSFColor.SKY_BLUE.index);
-			requiredStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-			requiredStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("@"));
-
-			// set invalid field color
-			invalidStyle.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);
-			invalidStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-			invalidStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("@"));
-
-			// set minlength field color
-			minlengthStyle.setFillForegroundColor(HSSFColor.ROSE.index);
-			minlengthStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-			minlengthStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("@"));
-
-			// set maxlength field color
-			maxlengthStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
-			maxlengthStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-			maxlengthStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("@"));
-
-			// set logical field color
-			logicalErrorStyle
-					.setFillForegroundColor(HSSFColor.LIGHT_ORANGE.index);
-			logicalErrorStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-			logicalErrorStyle.setDataFormat(HSSFDataFormat
-					.getBuiltinFormat("@"));
-
-			// Upload Excel read object initialize
-			pfs = new POIFSFileSystem(new FileInputStream(this.inFile));
-			HSSFWorkbook wb = new HSSFWorkbook(pfs);
-			sheet = wb.getSheetAt(0);
-			int totalRows = 0;
-
-			if (sheet != null) {
-				totalRows = sheet.getPhysicalNumberOfRows();
-			}
-
-			HSSFRow rowHeader = sheet.getRow(0);
-			// Excel Header Creation
-			for (int i = 0; i < rowHeader.getPhysicalNumberOfCells(); i++) {
-				HSSFCell cell = erowHeader.createCell((short) i);
-				style = cell.getCellStyle();
-				style.setDataFormat(HSSFDataFormat.getBuiltinFormat("@"));
-				esheet.setDefaultColumnStyle((short) i, style);
-				cell.setCellValue(getCellValue(rowHeader.getCell((short) i)));
-			}
-			// Excel Body creation
-			for (int i = 1; i < totalRows; i++) {
-				HSSFRow uploadRow = sheet.getRow(i);
-				if (uploadRow == null) {
-					totalRows++;
-					continue;
+			String[] rowData;
+			String[] rowHeaderData = new String[0];
+			boolean isFileHeader = true;
+			ArrayList<String> rowDataList;
+			int rowNumber = 0;
+			int totalCells = 0;
+			while ((rowData = csvReader.readNext()) != null) {
+				
+				totalCells = rowData.length;
+				if (isFileHeader) {
+					rowDataList = new ArrayList<String>(Arrays.asList(rowData));
+					rowHeaderData = new String[totalCells];
+					rowHeaderData = rowData;
+					rowDataList.add(Constants.ERROR_FIELD_NAME);
+					rowDataList.add(Constants.ERROR_FIELD_DESCRIPTION);
+					csvOutput.writeNext(rowDataList.toArray(new String[rowDataList
+						                           						.size()]));
 				} else {
-					int totalCells = rowHeader.getPhysicalNumberOfCells();
-					// retrive each cell value for user
-					for (int k = 0; k < totalCells; k++) {
-						// HSSFCell cellHeader = rowHeader.getCell((short)k);
-						HSSFCell cell = uploadRow.getCell((short) k);
-						if (cell != null
-								&& (!getCellValue(cell).trim().equals("") && !(cell
-										.getCellType() == 3))) {
-							isBlankRow = false;
-						}
+					if ((requiredMap.containsKey(new Integer(rowNumber))
+							|| invalidCharMap.containsKey(new Integer(rowNumber))
+							|| minLengthMap.containsKey(new Integer(rowNumber))
+							|| maxLengthMap.containsKey(new Integer(rowNumber))
+							|| logicalErrorMap.containsKey(new Integer(rowNumber))
+							|| hierarchyErrorMap.containsKey(new Integer(rowNumber)) 
+							|| leafNodeErrorMap.containsKey(new Integer(rowNumber)))) {
+						
+						rowDataList = new ArrayList<String>(Arrays.asList(rowData));
+						errorCount++;
+						
+						for (int cellPosition = 0; cellPosition < totalCells; cellPosition++) {
+
+							/**
+							 * checking for required field
+							 * */
+							if (requiredMap.size() > 0) {
+								if (requiredMap.containsKey(new Integer(
+										rowNumber))) {
+									ArrayList<String> requiredList = requiredMap
+											.get(new Integer(rowNumber));
+									if (requiredList
+											.contains(rowHeaderData[cellPosition])) {
+										rowDataList
+												.add(rowHeaderData[cellPosition]);
+										rowDataList
+												.add(Constants.REQUIRED_FIELD_ERROR);
+										break;
+									}
+								}
+							}
+
+							/**
+							 * checking for invalid field
+							 * */
+							if (invalidCharMap.size() > 0) {
+								if (invalidCharMap.containsKey(new Integer(
+										rowNumber))) {
+									ArrayList<String> invalidCharList = invalidCharMap
+											.get(new Integer(rowNumber));
+									if (invalidCharList
+											.contains(rowHeaderData[cellPosition])) {
+										rowDataList
+												.add(rowHeaderData[cellPosition]);
+										rowDataList.add(Constants.INVALID_FIELD_ERROR);
+										break;
+									}
+								}
+							}
+
+							/**
+							 * checking for minimum length
+							 * */
+							if (minLengthMap.size() > 0) {
+								if (minLengthMap.containsKey(new Integer(
+										rowNumber))) {
+									ArrayList<String> minLengthList = minLengthMap
+											.get(new Integer(rowNumber));
+									if (minLengthList
+											.contains(rowHeaderData[cellPosition])) {
+										rowDataList
+												.add(rowHeaderData[cellPosition]);
+										rowDataList.add(Constants.MINIMUM_FIELD_ERROR);
+										break;
+									}
+								}
+							}
+
+							/**
+							 * checking for maximum length field
+							 * */
+							if (maxLengthMap.size() > 0) {
+								if (maxLengthMap.containsKey(new Integer(
+										rowNumber))) {
+									ArrayList<String> maxLengthList = maxLengthMap
+											.get(new Integer(rowNumber));
+									if (maxLengthList
+											.contains(rowHeaderData[cellPosition])) {
+										rowDataList
+												.add(rowHeaderData[cellPosition]);
+										rowDataList.add(Constants.MAXIMUM_FIELD_ERROR);
+										break;
+									}
+								}
+							}
+
+							/**
+							 * checking for logical error
+							 * */
+							if (logicalErrorMap.size() > 0) {
+								if (logicalErrorMap.containsKey(new Integer(
+										rowNumber))) {
+									ArrayList<String> logicalErrorList = logicalErrorMap
+											.get(new Integer(rowNumber));
+									if (logicalErrorList
+											.contains(rowHeaderData[cellPosition])) {
+										rowDataList
+												.add(rowHeaderData[cellPosition]);
+										rowDataList.add(Constants.LOGICAL_FIELD_ERROR);
+										break;
+									}
+								}
+							}
+
+						}// for block
+						
+						csvOutput.writeNext(rowDataList.toArray(new String[rowDataList
+							                           						.size()]));
 					}
-					if (isBlankRow) {
-						continue;
-					}
-				}
-				if ((requiredMap.containsKey(new Integer(i))
-						|| invalidCharMap.containsKey(new Integer(i))
-						|| minLengthMap.containsKey(new Integer(i))
-						|| maxLengthMap.containsKey(new Integer(i))
-						|| logicalErrorMap.containsKey(new Integer(i))
-						|| hierarchyErrorMap.containsKey(new Integer(i)) || leafNodeErrorMap
-						.containsKey(new Integer(i)))) {
+					
+				}// else block
 
-					errorCount++;
-
-					HSSFRow errorRow = esheet.createRow((short) errorCount);
-					for (int j = 0; j < rowHeader.getPhysicalNumberOfCells(); j++) {
-
-						HSSFCell errorCell = errorRow.createCell((short) j);
-						HSSFCell uploadCell = uploadRow.getCell((short) j);
-
-						strUploadCell = getCellValue(uploadCell);
-						rowHeaderCellValue = getCellValue(rowHeader
-								.getCell((short) j));
-
-						// checking for required field
-						if (requiredMap.size() > 0) {
-							if (requiredMap.containsKey(new Integer(i))) {
-								ArrayList requiredList = (ArrayList) requiredMap
-										.get(new Integer(i));
-								if (requiredList.contains(rowHeaderCellValue)) {
-									if (!strUploadCell.equals("")) {
-										errorCell.setCellValue(strUploadCell);
-										errorCell.setCellStyle(requiredStyle);
-
-									} else {
-										errorCell.setCellStyle(requiredStyle);
-									}
-								}
-							}
-						}
-
-						// checking for invalid field
-						if (invalidCharMap.size() > 0) {
-							if (invalidCharMap.containsKey(new Integer(i))) {
-								ArrayList invalidCharList = (ArrayList) invalidCharMap
-										.get(new Integer(i));
-								if (invalidCharList
-										.contains(rowHeaderCellValue)) {
-									if (!strUploadCell.equals("")) {
-										errorCell.setCellValue(strUploadCell);
-										errorCell.setCellStyle(invalidStyle);
-									} else {
-										errorCell.setCellStyle(invalidStyle);
-									}
-								}
-							}
-						}
-						// checking for minlength field
-						if (minLengthMap.size() > 0) {
-							if (minLengthMap.containsKey(new Integer(i))) {
-								ArrayList minlengthList = (ArrayList) minLengthMap
-										.get(new Integer(i));
-								if (minlengthList.contains(rowHeaderCellValue)) {
-									if (!strUploadCell.equals("")) {
-										errorCell.setCellValue(strUploadCell);
-										errorCell.setCellStyle(minlengthStyle);
-									} else {
-										errorCell.setCellStyle(minlengthStyle);
-									}
-								}
-							}
-						}
-						// checking for maxlength field
-						if (maxLengthMap.size() > 0) {
-							if (maxLengthMap.containsKey(new Integer(i))) {
-								ArrayList maxlengthList = (ArrayList) maxLengthMap
-										.get(new Integer(i));
-								if (maxlengthList.contains(rowHeaderCellValue)) {
-									if (!strUploadCell.equals("")) {
-										errorCell.setCellValue(strUploadCell);
-										errorCell.setCellStyle(maxlengthStyle);
-									} else {
-										errorCell.setCellStyle(maxlengthStyle);
-									}
-								}
-							}
-						}
-
-						// checking for logical error field
-						if (logicalErrorMap.size() > 0) {
-							if (logicalErrorMap.containsKey(new Integer(i))) {
-								ArrayList logicalErrorList = (ArrayList) logicalErrorMap
-										.get(new Integer(i));
-								if (logicalErrorList
-										.contains(rowHeaderCellValue)) {
-									if (!strUploadCell.equals("")) {
-										errorCell.setCellValue(strUploadCell);
-										errorCell
-												.setCellStyle(logicalErrorStyle);
-									} else {
-										errorCell
-												.setCellStyle(logicalErrorStyle);
-									}
-								}
-							}
-						}
-
-						// checking for logical error field
-						if (hierarchyErrorMap.size() > 0) {
-							if (hierarchyErrorMap.containsKey(new Integer(i))) {
-								ArrayList commonPathErrorList = (ArrayList) hierarchyErrorMap
-										.get(new Integer(i));
-								if (commonPathErrorList
-										.contains(rowHeaderCellValue)) {
-									if (!strUploadCell.equals("")) {
-										errorCell.setCellValue(strUploadCell);
-										errorCell
-												.setCellStyle(logicalErrorStyle);
-									} else {
-										errorCell
-												.setCellStyle(logicalErrorStyle);
-									}
-								}
-							}
-						}
-
-						// checking leafNode Validation
-
-						if (leafNodeErrorMap.size() > 0) {
-							if (leafNodeErrorMap.containsKey(new Integer(i))) {
-								String errorLeafNode = (String) leafNodeErrorMap
-										.get(new Integer(i));
-								if (errorLeafNode.equals(rowHeaderCellValue)) {
-									if (!strUploadCell.equals("")) {
-										errorCell.setCellValue(strUploadCell);
-										errorCell
-												.setCellStyle(logicalErrorStyle);
-									} else {
-										errorCell
-												.setCellStyle(logicalErrorStyle);
-									}
-								}
-							}
-						}
-						if (!strUploadCell.equals("")) {
-							errorCell.setCellValue(strUploadCell);
-						}
-					}
-				}
-				isBlankRow = true;
+				
+				isFileHeader = false;
+				rowNumber++;
 			}
-			String uploadFileName = this.dataFileAudit.getUploadFileName();
-			uploadFileName = uploadFileName.substring(0,
-					uploadFileName.length() - 4);
 
-			// Write to excel file
-			String errorFileName = Configuration.getLocalFilePath() + Constants.FILE_SEPARATOR
-					+ uploadFileName + "_" + "Error" + ".xls";
-			FileOutputStream mfileOut = new FileOutputStream(errorFileName);
-			ewb.write(mfileOut);
-			mfileOut.close();
+			bWriter.close();
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			InputStream in = new FileInputStream(errorFileName);
-			boolean moreData = true;
-			while (moreData) {
-				byte[] buffer = new byte[1024];
-				int read = in.read(buffer);
-				moreData = read > 0;
-				if (moreData) {
-					baos.write(buffer, 0, read);
-				}
+			BufferedInputStream bin = new BufferedInputStream(in);
+			errorData = new byte[20000000];
+			byte[] readBuf = new byte[512 * 1024];
+			int readCnt = bin.read(readBuf);
+			while (0 < readCnt) {
+				baos.write(readBuf, 0, readCnt);
+				readCnt = bin.read(readBuf);
 			}
-
+			bin.close();
+			in.close();
 			errorData = baos.toByteArray();
+
 			dataFileAudit.setFaildRec(errorData);
 			dataFileAudit.setFailedRecordCount(new Integer(errorCount));
 			dataFileAudit.setUploadFileRecordCount(new Integer(0));
 			dao.upDateAuditTable(dataFileAudit);
-			mfileOut.close();
 			baos.flush();
 			baos.close();
-			
+
 			/**
 			 * Error File transfer to FTP Location
-			 * */	
-			//Session session = FtpSftpUtil.getSFTPSession();	
-			if(errorCount > 0){
-				new FtpSftpUtil().sendfilesSFTP(Configuration.getErrorPath() , errorFileName);
-				System.out.println("Error File is Created and Placed at specified Location..");
+			 * */
+			// Session session = FtpSftpUtil.getSFTPSession();
+			if (errorCount > 0) {
+				logger.info("Total error records present are : " + errorCount);
+				new FtpSftpUtil().sendfilesSFTP(Configuration.getErrorPath(),
+						errorFileName);
+				logger.info("Error File is Created and Placed at specified Location..");
 			}
-			
-			
+
 		} catch (Exception e) {
 			dataFileAudit.setFaildRec(errorData);
 			dataFileAudit.setStatus("FL");
@@ -3711,6 +3561,11 @@ public class UploadStudentFile {
 			}
 			e.printStackTrace();
 			throw e;
+		}
+		finally
+		{
+			csvOutput.close();
+			csvReader.close();
 		}
 
 	}

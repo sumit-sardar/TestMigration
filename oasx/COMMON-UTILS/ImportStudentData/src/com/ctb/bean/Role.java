@@ -1,7 +1,6 @@
 package com.ctb.bean; 
 
 
-import com.ctb.bean.CTBBean;
 import java.util.Date;
 
 /**

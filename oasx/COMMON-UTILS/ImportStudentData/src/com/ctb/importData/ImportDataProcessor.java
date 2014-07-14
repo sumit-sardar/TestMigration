@@ -1,4 +1,4 @@
-package com.ctb.importData;
+	package com.ctb.importData;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,32 +24,39 @@ import com.jcraft.jsch.Session;
 public class ImportDataProcessor {
 	
 	static Logger logger = Logger.getLogger(ImportDataProcessor.class.getName());
+	
+	/**
+	 * This location needs to be changed according to Properties file Path. Currently active path is pointing to DAGOBAH Location
+	 * **/
     static final String propertiesFilePathLocation = "/export/home/oasdev/operations/operation-tools/java/ImportDataFromEngradeToOAS/PropertiesFiles/";
-	//static String propertiesFilePathLocation = "C:\\Documents and Settings\\545946\\Desktop\\Sprint 75\\ImportDataFromEngradeToOAS\\";
-	static String sourceDir , targetDir ,archiveDir = "";
+	//static String propertiesFilePathLocation = "D:\\Sprint Data\\Sprint 75\\";
+	//static String propertiesFilePathLocation ="/local/apps/oas/ImportFromEngradeToOAS/PropertiesFile/";
+	
+    static String sourceDir , targetDir ,archiveDir = "";
 	static Integer customerId = new Integer(0);	
 	UploadMoveData uploadMoveData = null;
 
 	
 	public static void main(String[] args) {
-		System.out.println("StartTime:" + new Date(System.currentTimeMillis()));
+		logger.info("\n\n\n*************************** FRESH START **********************************");
+		logger.info("StartTime:" + new Date(System.currentTimeMillis()));
 		String envName = getPropFileFromCommandLine(args);
 		ExtractUtil.loadExternalPropetiesFile(envName, propertiesFilePathLocation); 
 		sourceDir = Configuration.getFtpFilePath();
 		targetDir = Configuration.getLocalFilePath();
 		archiveDir = Configuration.getArchivePath();
 		customerId = Integer.valueOf(Configuration.getCustomerId());
-		System.out.println("Import Process started..." + new Date(System.currentTimeMillis()));
-		logger.info("Import Process started..." + new Date(System.currentTimeMillis()));	
+		logger.info("Import Process started..." + new Date(System.currentTimeMillis()));
 		Session session = null;
 		try{
-			System.out.println("Temp Directory CleanUp Started..." + new Date(System.currentTimeMillis()));
+			logger.info("Temp Directory CleanUp Started..." + new Date(System.currentTimeMillis()));
 			deleteFiles(targetDir);
-			System.out.println("Temp Directory CleanUp Completed..." + new Date(System.currentTimeMillis()));
-			System.out.println(" DownloadFiles Start Time:" + new Date(System.currentTimeMillis()));
+			logger.info("Temp Directory CleanUp Completed..." + new Date(System.currentTimeMillis()));
+			logger.info(" DownloadFiles Start Time:" + new Date(System.currentTimeMillis()));
 			session = FtpSftpUtil.getSFTPSession();			
 			FtpSftpUtil.downloadFiles(session, sourceDir, targetDir);	
-			System.out.println("DownloadFiles End Time:" + new Date(System.currentTimeMillis()));
+			logger.info("DownloadFiles End Time:" + new Date(System.currentTimeMillis()));
+			
 			 /** Processing the files from Temp Location
 			 **/ 
 			ImportDataProcessor importProcessor = new ImportDataProcessor();
@@ -59,11 +66,10 @@ public class ImportDataProcessor {
 			 * 
 			*/
 			
-			System.out.println("Import Process Is in Progress..." + new Date(System.currentTimeMillis()));
-			logger.info("Import Process Is in Progress..." + new Date(System.currentTimeMillis()));				 
+			logger.info("Import Process Is Completed..." + new Date(System.currentTimeMillis()));				 
 		}catch(Exception e){
 			logger.info("Runtime Exception Occurred..",e);
-			System.out.println(e.getMessage());
+			logger.info(e.getMessage());
 		}
 	}
 	
@@ -71,8 +77,8 @@ public class ImportDataProcessor {
 		String envName = "";
 		String usage = "Usage:\n 	java -jar ImportStudentData.jar <properties file name>";
 		if (args.length < 1){
-			System.out.println("Cannot parse command line. No command specified.");
-			System.out.println(usage);
+			logger.info("Cannot parse command line. No command specified.");
+			logger.info(usage);
 			System.exit(1);
 		}
 		else{
@@ -94,32 +100,32 @@ public class ImportDataProcessor {
 		
 		int uploadDataFileId = 0;
 		if (listOfFiles != null && listOfFiles.length > 0) {
-			int lerngth =listOfFiles.length;
-			for (int j = 0; j < lerngth ; j++) {
+			int length =listOfFiles.length;
+			for (int j = 0; j < length ; j++) {
 				File inFile = listOfFiles[j];
-				System.out.println("File Process Started for-> "+ inFile.getName() + " \t Customer-id used : "	+ ImportDataProcessor.customerId);
 				logger.info("File Process Started for-> " + inFile.getName()+ " \t Customer-id used : "+ ImportDataProcessor.customerId);
 				
 				if (inFile.isFile()) {
-					System.out.println("ReadFileContent Start Time:" + new Date(System.currentTimeMillis()));
+					logger.info("ReadFileContent Start Time:" + new Date(System.currentTimeMillis()));
 					
 					uploadDataFileId = readFileContent(inFile).intValue();
 					if (uploadDataFileId != 0) {
 						addErrorDataFile(inFile, new Integer(uploadDataFileId));
-						System.out.println("ReadFileContent End Time:"+ new Date(System.currentTimeMillis()));
+						logger.info("ReadFileContent End Time:"+ new Date(System.currentTimeMillis()));
 						try {
 							if (null != uploadMoveData) {
 								UploadThread uploadThread = new UploadThread(customerId, inFile, new Integer(uploadDataFileId),	uploadMoveData);
-								new Thread(uploadThread).start();
+								Thread t = new Thread(uploadThread);
+								t.start();
+								t.join();
+								
 							}
 						} catch (Exception e) {
-							System.out.println("Thread invoking Error.. ");
-							logger.error("Thread invoking Error..");
+							logger.error("Thread invoking Error.. ");
 							throw e;
 						}
 					} else {
-						System.out.println("Upload Process Failed.. ");
-						logger.error("Upload Process Failed..");
+						logger.info("Upload Process Failed.. ");
 					}
 				}
 			}
@@ -144,24 +150,23 @@ public class ImportDataProcessor {
 		}
 	}
 	
+	//Method to check wheter file has '.csv' extension and not empty
 	private Integer readFileContent(File inFile){
 		UploadFormUtils  uploadFormUtils = new UploadFormUtils();
 		String strFileName = inFile.getName(); 
 		Integer uploadDataFileId = new Integer(0);
         if (!UploadFormUtils.verifyFileExtension(strFileName)){ 
         	logger.error("Upload File Extension must be .csv");
-        	System.out.println("Upload File Extension must be .csv");
             return new Integer(0);
          }        
         long filesize = (inFile.getTotalSpace());        
         if ( (filesize == 0) || (strFileName.length() == 0)){  
         	logger.error("Upload File Cannot be empty..");
-        	System.out.println("Upload File Cannot be empty..");
             return new Integer(0);       
         }            
         try {
             uploadDataFileId = uploadFormUtils.saveFileToDBTemp(inFile);
-            System.out.println("File Data saved in data_file_temp table..");
+            logger.info("File Data saved in data_file_temp table..");
             return uploadDataFileId;        
         } catch (Exception e) {        	
             e.printStackTrace();       
@@ -180,7 +185,7 @@ public class ImportDataProcessor {
 			Integer customerId = ImportDataProcessor.customerId;			
 			boolean isEngradeCustomer = uploadFormUtils.checkCustomerConfigurationEntries(customerId,"ENGRADE_Customer");			
 			if ( !isEngradeCustomer) {	
-				System.out.println("ENGRADE_Customer Configuration not present..");
+				logger.info("ENGRADE_Customer Configuration not present..");
 				throw  new CTBBusinessException("Uploaded.Failed") ;				
 			}	
 			OrgNodeCategory[] orgNodeCategory = uploadFormUtils.getOrgNodeCategories(customerId);

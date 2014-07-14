@@ -17,6 +17,7 @@ import com.ctb.bean.Node;
 import com.ctb.bean.StudentDemoGraphics;
 import com.ctb.bean.StudentFileRow;
 import com.ctb.utils.SQLUtil;
+import com.ctb.utils.cache.StudentDBCacheImpl;
 
 public class StudentFileDaoImpl implements StudentFileDao {
 
@@ -293,13 +294,13 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		return nodeList.toArray(new Node[nodeList.size()]);
 	}
 
-	public StudentFileRow[] getExistStudentData(Integer customerId)
+	public void getExistStudentData(Integer customerId,StudentDBCacheImpl dbCache)
 			throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rSet = null;
-		ArrayList<StudentFileRow> studentFileRowList = new ArrayList<StudentFileRow>();
-		String queryString = " select distinct stu.student_id  as studentId, stu.user_Name   as userName, stu.first_Name  as firstName, stu.middle_Name as middleName, stu.last_Name   as lastName, stu.birthdate   as birthdate, stu.gender      as gender, stu.grade       as grade, stu.ext_Elm_Id  as extElmId, stu.ext_Pin1    as extPin1, stu.ext_Pin2    as extPin2 from student stu , org_node_student ons , org_node org where stu.activation_status = 'AC' and stu.customer_id = org.customer_id and org.org_node_id = ons.org_node_id and ons.student_id = stu.student_id and org.customer_id = ? and org.activation_status = 'AC' and ons.activation_status = 'AC'  ";
+		//ArrayList<StudentFileRow> studentFileRowList = new ArrayList<StudentFileRow>();
+		String queryString = " select distinct stu.student_id  as studentId, stu.user_Name   as userName , stu.ext_Pin1    as extPin1 , stu.ext_Pin2   as extPin2 from student stu , org_node_student ons , org_node org where stu.activation_status = 'AC' and stu.customer_id = org.customer_id and org.org_node_id = ons.org_node_id and ons.student_id = stu.student_id and org.customer_id = ? and org.activation_status = 'AC' and ons.activation_status = 'AC'  ";
 
 		try {
 			conn = SQLUtil.getConnection();
@@ -311,17 +312,13 @@ public class StudentFileDaoImpl implements StudentFileDao {
 
 				studentFileRow.setStudentId(rSet.getInt("studentId"));
 				studentFileRow.setUserName(rSet.getString("userName"));
-				studentFileRow.setFirstName(rSet.getString("firstName"));
-				studentFileRow.setMiddleName(rSet.getString("middleName"));
-				studentFileRow.setLastName(rSet.getString("lastName"));
-				studentFileRow.setBirthdate(rSet.getDate("birthdate"));
-				studentFileRow.setGender(rSet.getString("gender"));
-				studentFileRow.setGrade(rSet.getString("grade"));
-				studentFileRow.setExtElmId(rSet.getString("extElmId"));
 				studentFileRow.setExtPin1(rSet.getString("extPin1"));
 				studentFileRow.setExtPin2(rSet.getString("extPin2"));
-				studentFileRow.setKey((studentFileRow.getExtPin1()!= null )? studentFileRow.getExtPin1().trim() : generateKey(studentFileRow) );
-				studentFileRowList.add(studentFileRow);
+				studentFileRow.setCustomerId(customerId);
+				/*studentFileRow.setKey((studentFileRow.getExtPin1()!= null )? studentFileRow.getExtPin1().trim() : generateKey(studentFileRow) );*/
+				studentFileRow.setKey(studentFileRow.getExtPin1());
+				//studentFileRowList.add(studentFileRow);
+				dbCache.addStudentFileRow(studentFileRow.getKey(), studentFileRow);
 			}
 		} catch (SQLException e) {
 			logger.error("SQL Exception in getCustomerConfigurationForAccommodation-- >"
@@ -333,11 +330,11 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
-		return studentFileRowList.toArray(new StudentFileRow[studentFileRowList
-				.size()]);
+		//return studentFileRowList.toArray(new StudentFileRow[studentFileRowList
+			//	.size()]);
 	}
 
-	private String generateKey(StudentFileRow studentFileRow) {
+	/*private String generateKey(StudentFileRow studentFileRow) {
 
 		String middleName = "";
 		if(null!=studentFileRow.getMiddleName())
@@ -355,7 +352,7 @@ public class StudentFileDaoImpl implements StudentFileDao {
 			datefromDB = sdf.format(dbDate);
 		}
 		return key + datefromDB;
-	}
+	}*/
 
 	public Node[] getTopNodeDetails(Integer customerId) throws Exception {
 		Connection conn = null;
@@ -375,19 +372,7 @@ public class StudentFileDaoImpl implements StudentFileDao {
 				node.setCustomerId(rSet.getInt("customerid"));
 				node.setOrgNodeCategoryId(rSet.getInt("orgnodecategoryid"));
 				node.setOrgNodeName(rSet.getString("orgnodename"));
-				node.setExtQedPin(rSet.getString("extqedpin"));
-				node.setExtElmId(rSet.getString("extelmid"));
-				node.setExtOrgNodeType(rSet.getString("extorgnodetype"));
-				node.setOrgNodeDescription(rSet.getString("orgnodedescription"));
-				node.setCreatedBy(rSet.getInt("createdby"));
-				node.setCreatedDateTime(rSet.getDate("createddatetime"));
-				node.setUpdatedBy(rSet.getInt("updatedby"));
-				node.setUpdatedDateTime(rSet.getDate("updateddatetime"));
 				node.setActivationStatus(rSet.getString("activationstatus"));
-				node.setDataImportHistoryId(rSet.getInt("dataimporthistoryid"));
-				node.setParentState(rSet.getString("parentstate"));
-				node.setParentRegion(rSet.getString("parentregion"));
-				node.setParentCounty(rSet.getString("parentcounty"));
 				node.setParentDistrict(rSet.getString("parentdistrict"));
 				node.setOrgNodeCode(rSet.getString("orgnodecode"));
 				node.setMdrNumber(rSet.getString("mdrnumber"));

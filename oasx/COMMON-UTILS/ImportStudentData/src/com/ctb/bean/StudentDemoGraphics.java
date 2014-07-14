@@ -3,7 +3,7 @@ package com.ctb.bean;
 import java.util.Date;
 import java.util.List;
 
-public class StudentDemoGraphics {
+public class StudentDemoGraphics extends CTBBean  {
 	static final long serialVersionUID = 1L;	
     private Integer customerDemographicId;
     private Integer customerId;

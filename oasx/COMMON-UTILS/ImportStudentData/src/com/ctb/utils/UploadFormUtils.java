@@ -11,12 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-
 import au.com.bytecode.opencsv.CSVReader;
 
 import com.ctb.bean.CustomerConfig;
@@ -105,9 +99,10 @@ public class UploadFormUtils {
 									OrgNodeCategory[] orgNodeCategory) throws Exception{	    
        isStudentIDConfigurableCustomer(customerId);
        String fileType = "";
+       CSVReader csv =null;
        StudentFileRow [] studentFileRow = new StudentFileRow[1];
        try {                              
-			CSVReader csv = new CSVReader(new FileReader(file), ',');
+			csv = new CSVReader(new FileReader(file), ',');
 			List<String> orgNodeListFromTemplate = new ArrayList<String>();
 			List<String> headerList = new ArrayList<String>();
 			List<String> orgNodeList = new ArrayList<String>();
@@ -194,6 +189,8 @@ public class UploadFormUtils {
                 }
                 
             }
+			
+		
        } catch (IOException e) {
             FileNotUploadedException fileNotUploadedException = 
                                         new FileNotUploadedException
@@ -206,7 +203,12 @@ public class UploadFormUtils {
                                                 ("FileHeader.Failed");
             fileHeaderException.setStackTrace(e.getStackTrace());
             throw fileHeaderException;
-       } 
+       }
+       finally
+       {
+
+   		csv.close();
+       }
        uploadMoveData.setNoOfUserColumn(noOfUserColumn);
        uploadMoveData.setValueForStudentId(valueForStudentId);
        uploadMoveData.setValueForStudentId2(valueForStudentId2);
@@ -246,12 +248,12 @@ public class UploadFormUtils {
 		tempStudentFileRow.setOrganizationNodes(node);
 		tempStudentFileRow.setStudentDemoGraphics(StudentDemoGraphics);
 		StudentHeader studentHeader = new StudentHeader();
-		tempStudentFileRow.setFirstName(studentHeader.getFirstName());
+		/*tempStudentFileRow.setFirstName(studentHeader.getFirstName());
 		tempStudentFileRow.setMiddleName(studentHeader.getMiddleName());
 		tempStudentFileRow.setLastName(studentHeader.getLastName());
 		tempStudentFileRow.setHeaderDateOfBirth(
 		studentHeader.getHeaderDateOfBirthDate());
-		tempStudentFileRow.setGrade(studentHeader.getGrade());
+		tempStudentFileRow.setGrade(studentHeader.getGrade());*/
 		//System.out.println("isStudentIdConfigurable"+"::"+isStudentIdConfigurable);
 		if(isStudentIdConfigurable){
 			tempStudentFileRow.setExtPin1(this.valueForStudentId[0]);
@@ -266,7 +268,7 @@ public class UploadFormUtils {
 		else{
 			tempStudentFileRow.setExtPin2(studentHeader.getStudentId2());
 		}
-		tempStudentFileRow.setGender(studentHeader.getGender());
+		/*tempStudentFileRow.setGender(studentHeader.getGender());
 		tempStudentFileRow.setScreenReader(studentHeader.getScreenReader());
 		tempStudentFileRow.setCalculator(studentHeader.getCalculator());
 		tempStudentFileRow.setTestPause(studentHeader.getTestPause());
@@ -277,7 +279,7 @@ public class UploadFormUtils {
 		tempStudentFileRow.setQuestionFontSize(studentHeader.getQuestionFontSize());		
 		tempStudentFileRow.setAnswerBackgroundColor(studentHeader.getAnswerBackgroundColor());		
 		tempStudentFileRow.setAnswerFontColor(studentHeader.getAnswerFontColor());		
-		tempStudentFileRow.setAnswerFontSize(studentHeader.getAnswereFontSize());	
+		tempStudentFileRow.setAnswerFontSize(studentHeader.getAnswereFontSize());*/	
 		studentFileRow[0] = tempStudentFileRow;
 	}
 

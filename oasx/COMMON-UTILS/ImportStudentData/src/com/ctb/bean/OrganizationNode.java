@@ -8,13 +8,13 @@ public class OrganizationNode extends Node
     private Integer studentCount;
     private String bottomLevelNodeFlag;
     private Integer numberOfLevels;
-    private String hasRoster;
+    //private String hasRoster;
     
     public OrganizationNode() {
         super();
     }
     
-    public OrganizationNode (StudentNode node) {
+  /*  public OrganizationNode (StudentNode node) {
         this.setActivationStatus(node.getActivationStatus());
         this.setCreatedBy(node.getCreatedBy());
         this.setCreatedDateTime(node.getCreatedDateTime());
@@ -38,10 +38,10 @@ public class OrganizationNode extends Node
         this.setOrgNodeCategoryName(node.getOrgNodeCategoryName());
         this.setStudentCount(node.getStudentCount());
         this.setLeafNodePath(node.getLeafNodePath());
-    }
+    }*/
     
     
-    public OrganizationNode (UserNode node) {
+   /* public OrganizationNode (UserNode node) {
         this.setActivationStatus(node.getActivationStatus());
         this.setCreatedBy(node.getCreatedBy());
         this.setCreatedDateTime(node.getCreatedDateTime());
@@ -67,7 +67,7 @@ public class OrganizationNode extends Node
         this.setParentOrgNodeId(node.getParentOrgNodeId());
         this.setParentOrgNodeName(node.getParentOrgNodeName());
         this.setLeafNodePath(node.getLeafNodePath());
-    }
+    }*/
     
 	/**
 	 * @return Returns the studentCount.
@@ -110,19 +110,19 @@ public class OrganizationNode extends Node
 		this.numberOfLevels = numberOfLevels;
 	}
 
-	/**
+/*	*//**
 	 * @return the hasRoster
-	 */
+	 *//*
 	public String getHasRoster() {
 		return hasRoster;
 	}
 
-	/**
+	*//**
 	 * @param hasRoster the hasRoster to set
-	 */
+	 *//*
 	public void setHasRoster(String hasRoster) {
 		this.hasRoster = hasRoster;
-	}
+	}*/
 	
 	
 } 

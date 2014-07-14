@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
-import com.ctb.bean.Student;
+import com.ctb.bean.ManageStudent;
 
 public class StudentUtils {
 
@@ -18,9 +18,9 @@ static final long serialVersionUID = 1L;
 	 */
 
 
-	public static String generateUniqueStudentUserName(Set<String> newSet, Student student){
+	public static String generateUniqueStudentUserName(Set<String> newSet, ManageStudent student){
 	
-		String userName = student.getUserName();
+		String userName = student.getLoginId();
 		if(null == userName){
 			userName = StudentUtils.generateBasicStudentUsername(student, "");
 		}
@@ -35,7 +35,7 @@ static final long serialVersionUID = 1L;
 	
 	} 
 
-    private static String generateBasicStudentUsername(Student student, String suffix)
+    private static String generateBasicStudentUsername(ManageStudent student, String suffix)
     {
         String newUserName = null;
     	String firstName = convertForUserName( student.getFirstName() );
@@ -49,9 +49,9 @@ static final long serialVersionUID = 1L;
                 middleName.substring(0,1):"";
         //GACRCT2010CR007 - changed to concatenate 4 digit sequence number when provide student  date of birth is null.
         String seqNumber = "" ;
-        if(student.getBirthdate() != null) {
+        if(student.getBirthDate() != null) {
         	
-        	Date birthdate = student.getBirthdate();
+        	Date birthdate = student.getBirthDate();
         	String dobDay = 
                 (new SimpleDateFormat( "d")).format( birthdate );
         	String dobMonth = 

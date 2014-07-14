@@ -1,22 +1,21 @@
 package com.ctb.bean;
 
-public class UploadStudent {
-
+public class UploadStudent extends CTBBean{
+	 static final long serialVersionUID = 1L;
 	private ManageStudent manageStudent;
 	private StudentAccommodations studentAccommodations;
 	private StudentDemoGraphics[] studentDemographic;
-	private Student student;
-//	private boolean isNewStudent = false;
+	
 	
 	
 	public UploadStudent(ManageStudent manageStudent,
 			StudentAccommodations studentAccommodations,
-			StudentDemoGraphics[] studentDemographic, Student student) {
+			StudentDemoGraphics[] studentDemographic) {
 		super();
 		this.manageStudent = manageStudent;
 		this.studentAccommodations = studentAccommodations;
 		this.studentDemographic = studentDemographic;
-		this.student = student;
+		
 		
 	}
 
@@ -36,14 +35,4 @@ public class UploadStudent {
 	}
 
 
-	public Student getStudent() {
-		return student;
-	}
-
-
-//	public boolean isNewStudent() {
-//		return isNewStudent;
-//	}
-//	
-	
 }

@@ -1,11 +1,10 @@
 package com.ctb.bean; 
 
-import com.ctb.bean.CTBBean;
 
 /**
  * Data bean representing the contents of the OAS.STUDENT_ACCOMMODATIONS table
  * 
- * @author Tata Consultency Services
+ * @author Tata Consultancy Services
  */
 public class StudentAccommodations extends CTBBean
 { 
@@ -24,7 +23,6 @@ public class StudentAccommodations extends CTBBean
     private String answerBackgroundColor;
     private String answerFontColor;
     private String answerFontSize;
-    private String colorFontAccommodation;
     private String colorFont;//bulk accommodation new field
     private String highlighter;
     private String maskingRuler;//Added for masking
@@ -102,9 +100,6 @@ public class StudentAccommodations extends CTBBean
             this.getQuestionFontSize() != null ? "T" : "F";
     }
     
-    public void setColorFontAccommodation(String colorFontAccommodation) {
-        this.colorFontAccommodation = colorFontAccommodation;
-    }
   
 	/**
 	 * @return Returns the answerBackgroundColor.

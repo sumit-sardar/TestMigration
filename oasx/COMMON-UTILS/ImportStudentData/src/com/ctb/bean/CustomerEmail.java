@@ -1,6 +1,5 @@
 package com.ctb.bean; 
 
-import com.ctb.bean.CTBBean;
 import java.sql.Clob;
 import java.util.Date;
 

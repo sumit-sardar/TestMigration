@@ -25,7 +25,7 @@ public class UploadThread implements Runnable{
 	
 	public void run(){
 		try{
-			System.out.println("Actual Process Start Time for file :"+ this.inFile.getName() + "-->" + new Date(System.currentTimeMillis()));
+			logger.info("Actual Process Start Time for file :"+ this.inFile.getName() + "-->" + new Date(System.currentTimeMillis()));
 			
 			UploadStudentFile studentUpload = new UploadStudentFile(customerId ,inFile,uploadFileId ,this.uploadMoveData.getOrgNodeCategory() , this.uploadMoveData.getStudentFileRowHeader(),
 					this.uploadMoveData.getNoOfUserColumn(),this.uploadMoveData.getValueForStudentId() , this.uploadMoveData.getValueForStudentId2(),
@@ -34,7 +34,7 @@ public class UploadThread implements Runnable{
 			studentUpload.startProcessing();
 		}catch(Exception e){
 			logger.error("Exception in run() of UploadThread.. Thread Error.");
-			System.out.println("Exception in run() of UploadThread.. Thread Error.. ");
+			System.exit(1);
 		}
 		
 	}
