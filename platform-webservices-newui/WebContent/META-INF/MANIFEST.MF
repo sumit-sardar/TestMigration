@@ -1,2 +1,17 @@
 Manifest-Version: 1.0
+Class-Path: dep-weblib-webutils.jar 
+ dep-testadmin-ctrl.jar 
+ dep-weblib-taglib.jar 
+ dep-usermgmt-ctrl.jar 
+ dep-base-ctrl.jar 
+ dep-orgmgmt-ctrl.jar 
+ dep-studentmgmt-ctrl.jar 
+ dep-licensing-ctrl.jar 
+ APP-INF/lib/commons-collections-3.2.1.jar 
+ APP-INF/lib/jaxen-1.1.1.jar 
+ APP-INF/lib/poi-3.1-FINAL-20080629.jar 
+ APP-INF/lib/poi-contrib-3.1-FINAL-20080629.jar 
+ APP-INF/lib/poi-scratchpad-3.1-FINAL-20080629.jar 
+ APP-INF/lib/saxpath.jar 
+ APP-INF/lib/weblogic-jdbc-control.jar
 
