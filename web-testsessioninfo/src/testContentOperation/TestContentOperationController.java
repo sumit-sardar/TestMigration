@@ -915,6 +915,7 @@ public class TestContentOperationController extends PageFlowController {
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
     	boolean hasBlockUserManagement = false;
+    	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
     	
 		//**[IAA] Proctor users should not see PRISM reports
@@ -1002,6 +1003,10 @@ public class TestContentOperationController extends PageFlowController {
             		cc.getDefaultValue().equals("T")) {
         		hasBlockUserManagement = Boolean.TRUE;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Hide_User_Profile") && 
+            		cc.getDefaultValue().equals("T")) {
+				hasSSOHideUserProfile = Boolean.TRUE;
+            }
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Block_User_Modifications") && 
             		cc.getDefaultValue().equals("T")) {
 				hasSSOBlockUserModifications = Boolean.TRUE;
@@ -1046,6 +1051,7 @@ public class TestContentOperationController extends PageFlowController {
 		//Done for 3to8 customer to block user module
 		this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
      	//Done for Engrade customer to block admin users from adding/editing/deleting users
+     	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
 	}

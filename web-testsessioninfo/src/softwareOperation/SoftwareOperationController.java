@@ -930,6 +930,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
     	boolean hasBlockUserManagement = false;
+    	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
     	boolean isWVCustomer = false;
     	
@@ -1045,6 +1046,10 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            		cc.getDefaultValue().equals("T")) {
 	        		hasBlockUserManagement = Boolean.TRUE;
 				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Hide_User_Profile") && 
+	            		cc.getDefaultValue().equals("T")) {
+					hasSSOHideUserProfile = Boolean.TRUE;
+	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Block_User_Modifications") && 
 	            		cc.getDefaultValue().equals("T")) {
 					hasSSOBlockUserModifications = Boolean.TRUE;
@@ -1114,6 +1119,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
      	//Done for 3to8 customer to block user module
      	this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
      	//Done for Engrade customer to block admin users from adding/editing/deleting users
+     	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
     }

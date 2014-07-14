@@ -47,9 +47,9 @@
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
 					<% 
 					Boolean hasBlockUserManagement=(Boolean)session.getAttribute("hasBlockUserManagement");
-					Boolean hasSSOBlockUserModifications=(Boolean)session.getAttribute("hasSSOBlockUserModifications");
+					Boolean hasSSOHideUserProfile=(Boolean)session.getAttribute("hasSSOHideUserProfile");
 					if((hasBlockUserManagement==null) || (hasBlockUserManagement!=null && hasBlockUserManagement==false) || ((session.getAttribute("is3to8Selected") != null) && !is3to8Selected)) {
-					if ((hasSSOBlockUserModifications==null) || (hasSSOBlockUserModifications!=null && hasSSOBlockUserModifications==false)){
+					if ((hasSSOHideUserProfile==null) || (hasSSOHideUserProfile!=null && hasSSOHideUserProfile==false)){
 					%>
 						<a href="#" onClick="viewMyProfile();"><b>My Profile</b></a>&nbsp;&nbsp;
 						<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
