@@ -640,7 +640,7 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 		int count = 0;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String query = "insert into student_demographic_data (student_demographic_data_id, student_id, customer_demographic_id, value_name, value, created_by, created_date_time ) values ( SEQ_STUDENT_DEMOGRAPHIC_ID.nextval , ?, ?,  ?,  ?,  ?,  SYSDATE )";
+		String query = "insert into student_demographic_data (student_demographic_data_id, student_id, customer_demographic_id, value_name, value, created_by, created_date_time , updated_by , updated_date_time  ) values ( SEQ_STUDENT_DEMOGRAPHIC_ID.nextval , ?, ?,  ?,  ?,  ?,  SYSDATE , ? , SYSDATE)";
 		try{
 			conn = SQLUtil.getConnection();
 			pstmt  = conn.prepareStatement(query);
@@ -657,6 +657,7 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 							pstmt.setString(3, sdv.getValueName());
 							pstmt.setString(4,sdv.getValueCode());
 							pstmt.setInt(5, Constants.USER_ID);
+							pstmt.setInt(6, Constants.USER_ID);
 							pstmt.addBatch();
 							count++;
 							if(count % BATCH_SIZE_LARGE == 0){
