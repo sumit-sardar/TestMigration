@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -76,7 +75,7 @@ public class UploadStudentFile {
 	private String hideAccommodations;
 	private CustomerConfiguration[] customerConfigurations = null;
 	private int noOfDemographicList = 0;
-	public HashMap<String, ArrayList<String>> demoMap = new HashMap<String, ArrayList<String>>();
+	public HashMap<String, Map<String,String>> demoMap = new HashMap<String, Map<String,String>>();
 	public HashMap<String, Integer> demoGraphicMap = new HashMap<String, Integer>();
 	private ArrayList<String> colorList = new ArrayList<String>();
 	private HashMap<String, ArrayList<String>> colorCombinationMap = new HashMap<String, ArrayList<String>>();
@@ -1197,16 +1196,14 @@ public class UploadStudentFile {
 		StudentDemographicValue studentDemographicValue = null;
 		
 		Integer ethnicityDemoId = new Integer(0);
-		String ethnicityLabelName = null;
 		Boolean subEthnicityToBePresent = false; 
-		Boolean subEthnicityNotPresent = false ;
+		Integer  hispanicLatinoPresent = new Integer(0);
+		
 		int index = 0;
-		int count = 0;
 		
 		for ( int i= 0 ; i < demoList.size() ; i++ ) {
 
 			StudentDemoGraphics studentDemographic = new StudentDemoGraphics();
-			count = count + 1;
 			if ( demoGraphicMap.containsKey(demoList.get(i)) )  {
 
 				String demoName = (String)demoList.get(i) ;
@@ -1222,15 +1219,16 @@ public class UploadStudentFile {
 					while(stStr.hasMoreTokens()){
 
 						String demoVal = stStr.nextToken().trim();
-						String demoValue = getDbDemographicValue(demoName ,demoVal);
+						String demoValue = getDbDemographicValue(demoName ,demoVal);						
 						studentDemographicValue = new StudentDemographicValue();
-						studentDemographicValue.setValueName(demoValue);
+						studentDemographicValue.setValueName(demoValue.equalsIgnoreCase("") ? "" :demoValue.split("~~")[0]);
+						studentDemographicValue.setValueCode(demoValue.equalsIgnoreCase("") ? "" :demoValue.split("~~")[1]);
 						studentDemographicValue.setVisible("T");
 						studentDemographicValue.setSelectedFlag("true");
 						studentDemographicValues[j++] = studentDemographicValue;
 						studentDemographic.setId(demoGraphicId);
 						studentDemographic.setStudentDemographicValues(studentDemographicValues);
-						StudentDemoGraphics[index]= studentDemographic;// index introduced on 3rd sep,2013..#75217 , #75292 MQC Defect addressing 
+						StudentDemoGraphics[index]= studentDemographic;
 					}
 				} else {
 					
@@ -1239,36 +1237,25 @@ public class UploadStudentFile {
 							// If the demographic : ethnicity selected is "HISPANIC OR LATINO" for Laslink 
 							// then the subEthnicity value is to be saved.
 							ethnicityDemoId = demoGraphicId ;
-							ethnicityLabelName = demoLabelName;
 							subEthnicityToBePresent = true;	
+							hispanicLatinoPresent = 1;
 							continue;
 						}
 					}
-					if (!subEthnicityToBePresent && demoName.equalsIgnoreCase("SUB_ETHNICITY")){
-						//If the demographic : ethnicity is not present but sub-ethnicity is present then skip the sub-ethnicity value.
-						//This is handled already in logical error section , This is a second check. Extra caution.
-						StudentDemoGraphics = Arrays.copyOf(StudentDemoGraphics, (studentDemoMap.size()-1)); 
-						continue;
-					}
-					
 					if (demoName.equalsIgnoreCase("SUB_ETHNICITY")&& subEthnicityToBePresent ){
 						// If the demographic : sub-ethnicity is expected and present then insert this sub-ethnicity value with respect
 						// to ethnicity demographicId. >> Same behaviour as UI. 
 						demoGraphicId = ethnicityDemoId ;
 						subEthnicityToBePresent = false;
-						StudentDemoGraphics = Arrays.copyOf(StudentDemoGraphics, (studentDemoMap.size()-1));						
-					}
-					if (!demoName.equalsIgnoreCase("ETHNICITY") &&  subEthnicityToBePresent){
-						// If control enters this loop that indicates that sub-ethnicity value was expected but it has come as Blank.
-						// Because if sub-ethnicity was present then "subEthnicityToBePresent" variable would have turnedinto false.:> See previous block
-						// Hence we will keep track that sub-ethnicity is not present with "subEthnicityNotPresent" variable.
-						subEthnicityToBePresent = false; 
-						subEthnicityNotPresent = true ;						
+						hispanicLatinoPresent = 2;
+						StudentDemoGraphics = Arrays.copyOf(StudentDemoGraphics, (studentDemoMap.size()-1));	
+						
 					}
 					
 					studentDemographicValue = new StudentDemographicValue();
 					demoLabelName = getDbDemographicValue(demoName ,demoLabelName); 
-					studentDemographicValue.setValueName(demoLabelName);
+					studentDemographicValue.setValueName(demoLabelName.equalsIgnoreCase("") ? "" :demoLabelName.split("~~")[0]);
+					studentDemographicValue.setValueCode(demoLabelName.equalsIgnoreCase("") ? "" :demoLabelName.split("~~")[1]);
 					studentDemographicValue.setVisible("T");
 					studentDemographicValue.setSelectedFlag("true");
 					studentDemographicValues = new StudentDemographicValue[1];     
@@ -1276,65 +1263,42 @@ public class UploadStudentFile {
 					studentDemographic.setId(demoGraphicId);
 					studentDemographic.setStudentDemographicValues(studentDemographicValues);
 					studentDemographic.setId(demoGraphicId);
-					StudentDemoGraphics[index]= studentDemographic;// index introduced on 3rd sep,2013..#75217 , #75292 MQC Defect addressing					
+					StudentDemoGraphics[index]= studentDemographic;					
 				}
 			}
-			index = index + 1; // index introduced on 3rd sep,2013..#75217 , #75292 MQC Defect addressing
+			index = index + 1;
 		}
 		
-		//This block will be executed if there is "Hispanic or Latino" in place of Ethnicity column and Sub-Ethnicity column is blank.
-		//Then we again traverse to insert "Hispanic or Latino" value in Ethnicity demographic.
-		if((subEthnicityNotPresent || (count == 1))){
-			//logger.info("** Ethnicity demographic check.. ReEntry in loop as Sub-Etnicity not present **");
-			for ( int i= 0 ; i < 1 ; i++ ){
+		/**
+		 * This block will be executed if there is "Hispanic or Latino" in place of Ethnicity column and Sub-Ethnicity column is blank.
+		 * The value of hispanicLatinoPresent will be changed to 2 if Sub-Ethnicity is present.
+		 * Then we again traverse to insert "Hispanic or Latino" value in Ethnicity demographic.		
+		*/
+		if(hispanicLatinoPresent == 1){
+			for ( int i= 0 ; i <  demoList.size() ; i++ ){
 				StudentDemoGraphics studentDemographic = new StudentDemoGraphics();
-	
 				if ( demoGraphicMap.containsKey(demoList.get(i)) )  {
-	
 					String demoName = (String)demoList.get(i) ;
 					Integer demoGraphicId = (Integer)demoGraphicMap.get(demoName);
 					String demoLabelName = (String) studentDemoMap.get(demoName);
-					String demoCardinality = (String) demoCardinalityMap.get(demoName);
-	
-					if(demoCardinality.equals(Constants.MULTIPLE_DEMOGRAPHIC)){
-						StringTokenizer stStr = new StringTokenizer(demoLabelName,
-								Constants.DEMOGRAPHIC_VALUSE_SEPARATOR);
-						int j=0;
-						studentDemographicValues 
-						= new StudentDemographicValue[stStr.countTokens()]; 
-						while(stStr.hasMoreTokens()){
-	
-							String demoVal = stStr.nextToken().trim();
-							String demoValue = getDbDemographicValue(demoName ,demoVal);
-	
-							studentDemographicValue = new StudentDemographicValue();
-							studentDemographicValue.setValueName(demoValue);
-							studentDemographicValue.setVisible("T");
-							studentDemographicValue.setSelectedFlag("true");
-	
-							studentDemographicValues[j++] = studentDemographicValue;
-							studentDemographic.setId(demoGraphicId);
-							studentDemographic.setStudentDemographicValues(studentDemographicValues);
-							StudentDemoGraphics[index]= studentDemographic;
-	
-						}	
-					} 
-					else{
-						if (demoName.equalsIgnoreCase("ETHNICITY")  && demoLabelName.equalsIgnoreCase("HISPANIC OR LATINO")){							
-							//Extra caution here to see if the column is "Ethnicity" and value is "HISPANIC OR LATINO"..Then only insert the value>> Same as UI.
-							studentDemographicValue = new StudentDemographicValue();
-							demoLabelName = getDbDemographicValue(demoName ,demoLabelName); 
-							studentDemographicValue.setValueName(demoLabelName);
-							studentDemographicValue.setVisible("T");
-							studentDemographicValue.setSelectedFlag("true");
-							studentDemographicValues = new StudentDemographicValue[1];     
-							studentDemographicValues[0] = studentDemographicValue;
-							studentDemographic.setId(demoGraphicId);
-							studentDemographic.setStudentDemographicValues(studentDemographicValues);
-							studentDemographic.setId(demoGraphicId);
-							StudentDemoGraphics[index]= studentDemographic;	
-						}
+					
+					if (demoName.equalsIgnoreCase("ETHNICITY")  && demoLabelName.equalsIgnoreCase("HISPANIC OR LATINO")){							
+						studentDemographicValue = new StudentDemographicValue();
+						demoLabelName = getDbDemographicValue(demoName ,demoLabelName); 
+						studentDemographicValue.setValueName(demoLabelName.equalsIgnoreCase("") ? "" :demoLabelName.split("~~")[0]);
+						studentDemographicValue.setValueCode(demoLabelName.equalsIgnoreCase("") ? "" :demoLabelName.split("~~")[1]);
+						studentDemographicValue.setVisible("T");
+						studentDemographicValue.setSelectedFlag("true");
+						studentDemographicValues = new StudentDemographicValue[1];     
+						studentDemographicValues[0] = studentDemographicValue;
+						studentDemographic.setId(demoGraphicId);
+						studentDemographic.setStudentDemographicValues(studentDemographicValues);
+						studentDemographic.setId(demoGraphicId);
+						StudentDemoGraphics[index]= studentDemographic;	
+						
+						break;
 					}
+					
 				}						
 			}
 		}
@@ -1669,14 +1633,17 @@ public class UploadStudentFile {
 	private String getDbDemographicValue(String fieldName, String value){
 		if((value != null && !"".equals(value.trim())) ){
 			fieldName = fieldName.trim().toUpperCase();
-			ArrayList valueList = (ArrayList) demoMap.get(fieldName);
-			if ( valueList.size()>0 ) {
-				for(int i = 0 ; i < valueList.size() ; i ++) {
+			Map valueMap = (HashMap) demoMap.get(fieldName);
+			if ( valueMap.size()>0 ) {
+				if(valueMap.containsKey(value)){
+					return value+"~~"+valueMap.get(value);
+				}
+				/*for(int i = 0 ; i < valueList.size() ; i ++) {
 					String dbValue = (String) valueList.get(i);
 					if( dbValue.equalsIgnoreCase(value) ){
 						return dbValue; 
 					}
-				}
+				}*/
 			}
 		}
 		return "";
@@ -1823,7 +1790,7 @@ public class UploadStudentFile {
 	}
 
 	private void getValidDemographicValue(Integer customerId,
-			HashMap<String, ArrayList<String>> demoMap) {
+			HashMap<String, Map<String,String>> demoMap) {
 		try {
 			StudentDemoGraphics[] studentDemoGraphics = studentUploadUtils
 					.getStudentDemoGraphics(customerId);
@@ -1837,14 +1804,17 @@ public class UploadStudentFile {
 							.getValueCardinality();
 					CustomerDemographicValue[] customerDemographicValue = studentUploadUtils
 							.getCustomerDemographicValue(customerDemographicId);
-					ArrayList<String> demographicValueList = new ArrayList<String>();
+					//ArrayList<String> demographicValueList = new ArrayList<String>();
+					Map<String,String> demographicValueMap = new HashMap<String, String>();
+					
 					for (int k = 0; k < customerDemographicValue.length; k++) {
-						String msDemographicValue = customerDemographicValue[k]
+						/*String msDemographicValue = customerDemographicValue[k]
 								.getValueName();
-						demographicValueList.add(msDemographicValue);
+						demographicValueList.add(msDemographicValue);*/
+						demographicValueMap.put(customerDemographicValue[k].getValueName(), customerDemographicValue[k].getValueCode());
 					}
 					demoMap.put(customerDemoName.toUpperCase(),
-							demographicValueList);
+							demographicValueMap);
 					demoGraphicMap.put(customerDemoName, customerDemographicId);
 					demoCardinalityMap.put(customerDemoName,
 							customerDemoCardinality);
@@ -3334,11 +3304,11 @@ public class UploadStudentFile {
 
 		fieldName = fieldName.trim().toUpperCase();
 
-		ArrayList valueList = (ArrayList) demoMap.get(fieldName);
+		Map valueMap = (HashMap) demoMap.get(fieldName);
 
-		if (valueList.size() > 0) {
+		if (valueMap.size() > 0) {
 
-			for (int i = 0; i < valueList.size(); i++) {
+			/*for (int i = 0; i < valueList.size(); i++) {
 
 				String dbValue = (String) valueList.get(i);
 
@@ -3347,7 +3317,10 @@ public class UploadStudentFile {
 					return true;
 				}
 
-			}
+			}*/
+			
+			if(valueMap.containsKey(value))
+				return true;
 
 		}
 
@@ -3355,29 +3328,38 @@ public class UploadStudentFile {
 	}
 
 	/***
-	 * 
+	 * This part is executed for Error Excel Creation
 	 * 
 	 * */
 
 	private void errorExcelCreation(Map<Integer, ArrayList<String>> requiredMap, Map<Integer, ArrayList<String>> maxLengthMap,
 			Map<Integer, ArrayList<String>> invalidCharMap, Map<Integer, ArrayList<String>> logicalErrorMap,
 			Map<Integer, ArrayList<String>> hierarchyErrorMap, Map<Integer, String> leafNodeErrorMap,
-			Map<Integer, ArrayList<String>> minLengthMap) throws Exception{
+			Map<Integer, ArrayList<String>> minLengthMap) throws Exception {
 
 		int errorCount = 0;
 		byte[] errorData = null;
 
 		dao = new UploadFileDaoImpl();
-		
-		Date today = Calendar.getInstance().getTime(); 
-		String errorDate = new SimpleDateFormat("MM.dd.yyyy_HHmmss").format(today);
-		
-		String errorFileName = Configuration.getLocalFilePath() + Constants.FILE_SEPARATOR
-		+ this.inFile.getName().split("\\.")[0]+ "_"+errorDate + ".errors";
-		
-		BufferedWriter bWriter =  new BufferedWriter(new FileWriter(errorFileName, true), ',');
+
+		/*
+		 * Date today = Calendar.getInstance().getTime(); String errorDate = new
+		 * SimpleDateFormat("MM.dd.yyyy_HHmmss").format(today);
+		 * 
+		 * 
+		 * String errorFileName = Configuration.getLocalFilePath() +
+		 * Constants.FILE_SEPARATOR + this.inFile.getName().split("\\.")[0]+
+		 * "_"+errorDate + ".errors";
+		 */
+
+		String errorFileName = Configuration.getLocalFilePath()
+				+ Constants.FILE_SEPARATOR + this.inFile.getName().substring(0,this.inFile.getName().lastIndexOf(".") ) + ".errors";
+
+		BufferedWriter bWriter = new BufferedWriter(new FileWriter(
+				errorFileName, true), ',');
 		CSVWriter csvOutput = new CSVWriter(bWriter);
-		CSVReader csvReader = new CSVReader(new BufferedReader(new FileReader(this.inFile)), ',');
+		CSVReader csvReader = new CSVReader(new BufferedReader(new FileReader(
+				this.inFile)), ',');
 
 		try {
 			String[] rowData;
@@ -3387,28 +3369,32 @@ public class UploadStudentFile {
 			int rowNumber = 0;
 			int totalCells = 0;
 			while ((rowData = csvReader.readNext()) != null) {
-				
+
 				totalCells = rowData.length;
 				if (isFileHeader) {
 					rowDataList = new ArrayList<String>(Arrays.asList(rowData));
 					rowHeaderData = new String[totalCells];
 					rowHeaderData = rowData;
-					rowDataList.add(Constants.ERROR_FIELD_NAME);
+					// rowDataList.add(Constants.ERROR_FIELD_NAME);
 					rowDataList.add(Constants.ERROR_FIELD_DESCRIPTION);
-					csvOutput.writeNext(rowDataList.toArray(new String[rowDataList
-						                           						.size()]));
+					csvOutput.writeNext(rowDataList
+							.toArray(new String[rowDataList.size()]));
 				} else {
 					if ((requiredMap.containsKey(new Integer(rowNumber))
-							|| invalidCharMap.containsKey(new Integer(rowNumber))
+							|| invalidCharMap
+									.containsKey(new Integer(rowNumber))
 							|| minLengthMap.containsKey(new Integer(rowNumber))
 							|| maxLengthMap.containsKey(new Integer(rowNumber))
-							|| logicalErrorMap.containsKey(new Integer(rowNumber))
-							|| hierarchyErrorMap.containsKey(new Integer(rowNumber)) 
-							|| leafNodeErrorMap.containsKey(new Integer(rowNumber)))) {
-						
-						rowDataList = new ArrayList<String>(Arrays.asList(rowData));
+							|| logicalErrorMap.containsKey(new Integer(
+									rowNumber))
+							|| hierarchyErrorMap.containsKey(new Integer(
+									rowNumber)) || leafNodeErrorMap
+								.containsKey(new Integer(rowNumber)))) {
+
+						rowDataList = new ArrayList<String>(
+								Arrays.asList(rowData));
 						errorCount++;
-						
+
 						for (int cellPosition = 0; cellPosition < totalCells; cellPosition++) {
 
 							/**
@@ -3421,10 +3407,14 @@ public class UploadStudentFile {
 											.get(new Integer(rowNumber));
 									if (requiredList
 											.contains(rowHeaderData[cellPosition])) {
+										/*
+										 * rowDataList
+										 * .add(rowHeaderData[cellPosition]);
+										 */
 										rowDataList
-												.add(rowHeaderData[cellPosition]);
-										rowDataList
-												.add(Constants.REQUIRED_FIELD_ERROR);
+												.add(Constants.REQUIRED_FIELD_ERROR
+														+ " - "
+														+ rowHeaderData[cellPosition]);
 										break;
 									}
 								}
@@ -3440,9 +3430,14 @@ public class UploadStudentFile {
 											.get(new Integer(rowNumber));
 									if (invalidCharList
 											.contains(rowHeaderData[cellPosition])) {
+										/*
+										 * rowDataList
+										 * .add(rowHeaderData[cellPosition]);
+										 */
 										rowDataList
-												.add(rowHeaderData[cellPosition]);
-										rowDataList.add(Constants.INVALID_FIELD_ERROR);
+												.add(Constants.INVALID_FIELD_ERROR
+														+ " - "
+														+ rowHeaderData[cellPosition]);
 										break;
 									}
 								}
@@ -3458,9 +3453,14 @@ public class UploadStudentFile {
 											.get(new Integer(rowNumber));
 									if (minLengthList
 											.contains(rowHeaderData[cellPosition])) {
+										/*
+										 * rowDataList
+										 * .add(rowHeaderData[cellPosition]);
+										 */
 										rowDataList
-												.add(rowHeaderData[cellPosition]);
-										rowDataList.add(Constants.MINIMUM_FIELD_ERROR);
+												.add(Constants.MINIMUM_FIELD_ERROR
+														+ " - "
+														+ rowHeaderData[cellPosition]);
 										break;
 									}
 								}
@@ -3476,9 +3476,14 @@ public class UploadStudentFile {
 											.get(new Integer(rowNumber));
 									if (maxLengthList
 											.contains(rowHeaderData[cellPosition])) {
+										/*
+										 * rowDataList
+										 * .add(rowHeaderData[cellPosition]);
+										 */
 										rowDataList
-												.add(rowHeaderData[cellPosition]);
-										rowDataList.add(Constants.MAXIMUM_FIELD_ERROR);
+												.add(Constants.MAXIMUM_FIELD_ERROR
+														+ " - "
+														+ rowHeaderData[cellPosition]);
 										break;
 									}
 								}
@@ -3494,23 +3499,27 @@ public class UploadStudentFile {
 											.get(new Integer(rowNumber));
 									if (logicalErrorList
 											.contains(rowHeaderData[cellPosition])) {
+										/*
+										 * rowDataList
+										 * .add(rowHeaderData[cellPosition]);
+										 */
 										rowDataList
-												.add(rowHeaderData[cellPosition]);
-										rowDataList.add(Constants.LOGICAL_FIELD_ERROR);
+												.add(Constants.LOGICAL_FIELD_ERROR
+														+ " - "
+														+ rowHeaderData[cellPosition]);
 										break;
 									}
 								}
 							}
 
 						}// for block
-						
-						csvOutput.writeNext(rowDataList.toArray(new String[rowDataList
-							                           						.size()]));
+
+						csvOutput.writeNext(rowDataList
+								.toArray(new String[rowDataList.size()]));
 					}
-					
+
 				}// else block
 
-				
 				isFileHeader = false;
 				rowNumber++;
 			}
@@ -3561,9 +3570,7 @@ public class UploadStudentFile {
 			}
 			e.printStackTrace();
 			throw e;
-		}
-		finally
-		{
+		} finally {
 			csvOutput.close();
 			csvReader.close();
 		}
