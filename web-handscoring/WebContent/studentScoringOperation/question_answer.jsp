@@ -193,7 +193,7 @@ function stopAudio(){
 									</TR>
 									<TR>
 										<td class="transparent" style="width: 50%; padding-left: 5px;vertical-align: top;" id="dialogIdDiv"><textarea id="crText" width="70%"
-											cols="50" rows="20" readonly="readonly"></textarea>
+											cols="50" rows="20" readonly="readonly" style="resize: none;" ></textarea>
 										<div id="iframeDiv"><iframe id="iframeAudio" src="about:blank" height="70" width="200" frameborder="0"
 											scrolling="no"> </iframe></div>
 										</td>
