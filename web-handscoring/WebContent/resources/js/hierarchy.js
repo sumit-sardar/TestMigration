@@ -381,6 +381,7 @@ function closePopUp(dailogId){
 		parentDivId = '';
 		
 		var subIframe = $('#rubricIframe','#rubricInformation');
+		var x = $('#rubricIframe','#rubricInformation').attr('src');
 		if(subIframe != undefined) {
 			var iFrameObj = subIframe.contents();
 			if(iFrameObj != undefined) {
@@ -388,6 +389,8 @@ function closePopUp(dailogId){
 				iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
 			}
 		}
+		$('#rubricIframe','#rubricInformation').attr('src','');
+		$('#rubricIframe','#rubricInformation').attr('src',x);
 		selectedRowObjectScoring = {};
 	}
 	
@@ -415,6 +418,7 @@ function closePopUp(dailogId){
 		parentDivId = '';
 		
 		var subIframe = $('#rubricIframe', '#rubricInfo');
+		var x = $('#rubricIframe', '#rubricInfo').attr('src')
 		if(subIframe != undefined) {
 			var iFrameObj = subIframe.contents();
 			if(iFrameObj != undefined) {
@@ -422,6 +426,8 @@ function closePopUp(dailogId){
 				iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
 			}
 		}
+		$('#rubricIframe', '#rubricInfo').attr('src','');
+		$('#rubricIframe', '#rubricInfo').attr('src',x);
 		//selectedRowObjectScoring = {};
 	}
 	if (dailogId == 'studentScoringId') {
@@ -1954,12 +1960,12 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 						pointStatus[0] = score;
 						pointStatus[1] = status;
 						}else{
-							rowElement = $('#'+selectedRowObjectScoring.testRosterId+',#itemStudentListGridSBI');
+							rowElement = $('#itemStudentListGridSBI').find('#'+selectedRowObjectScoring.testRosterId);
 							rowElement = rowElement[0];
 							
 							if(rowElement){
-								score = rowElement.lastChild.previousSibling.innerHTML;
-								status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.innerHTML;
+								score = rowElement.lastChild.innerHTML;
+								status = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
 								score = trim(score);
 								status = trim(status);
 								pointStatus[0] = score;
@@ -2151,8 +2157,9 @@ function viewRubric (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 var questionNumber = itemNumber;
-								 data1 = data.questionAnswer;								 
-								 populateTableNew();	
+								 data1 = data.questionAnswer;		
+								 setTimeout("populateTableNew()", 500);						 
+								 //populateTableNew();	
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 								$.unblockUI();  
