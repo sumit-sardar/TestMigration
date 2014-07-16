@@ -3520,6 +3520,21 @@ public class ScheduleTestImpl implements ScheduleTest
                 
                 int subtestOrder = 0;  
                 
+                Integer [] itemSetIds ;
+                TestElement [] allSubtest;
+                String[] locatorSubTest;
+                Integer locatorSubTestId;
+                TestProduct tp = product.getProductForTestAdmin(testAdminId);
+                String productType = tp.getProductType().trim();
+                if(productType.equals("TB") || productType.equals("TL") || productType.equals("TA")){//checks isTabeOrTabeAdaptiveProduct
+                	allSubtest = itemSet.getTestElementsForSession(testAdminId);
+                    locatorSubTest = getSelectedLoctorTest(allSubtest);
+                    locatorSubTestId = getLoctorTestId(allSubtest);
+                }else{
+                	locatorSubTest= null;
+                	locatorSubTestId= null;
+                }
+                
                 for(int i=0;studentManifests != null && i<studentManifests.length;i++) {
                     StudentManifest studentManifest = studentManifests[i];
                     if(studentManifest != null) {
@@ -3527,26 +3542,49 @@ public class ScheduleTestImpl implements ScheduleTest
                         String tdform =  studentManifest.getItemSetForm();
                         if(tdform == null || tdform.length()==0 || tdform.trim().length()==0)
                                 tdform = "%";
-                        Integer [] itemSetIds = siss.getItemSetIdsForFormForParent(parentItemsetId,tdform);
-                        for(int j=0;j<itemSetIds.length;j++){
-                                StudentSessionStatus sss = new StudentSessionStatus();
-                                sss.setItemSetId(itemSetIds[j]);
-                                sss.setCompletionStatus("SC");
-                                sss.setItemSetOrder(new Integer(subtestOrder));
-                                sss.setStartDateTime(null);
-                                sss.setCompletionDateTime(null);
-                                sss.setValidationStatus("VA");
-                                sss.setTimeExpired("F");
-                                sss.setValidationUpdatedBy(userId);
-                                sss.setValidationUpdatedDateTime(new Date());
-                                sss.setValidationUpdatedNote("");
-                                //for defect #-  65787
-                                //rosters.getConnection().setAutoCommit(false);
-                                rosters.createNewStudentItemSetStatusForRoster(customerId, sss,rosterId);
-                                subtestOrder++;
+                        if(locatorSubTest!= null && locatorSubTestId!= null && locatorSubTestId.equals(parentItemsetId)){
+                        	String[] locatorSubtestName = siss.getItemSetNameForFormForParent(parentItemsetId,tdform);
+                        	Integer [] itemSetId = siss.getItemSetIdsForFormForParent(parentItemsetId,tdform);
+                        	itemSetIds = getLocatorItemSetIds(locatorSubTest,locatorSubtestName,itemSetId);
+                        	for(int j=0;itemSetIds != null && j<itemSetIds.length;j++){
+                            	if(itemSetIds[j]!= null){
+                    				StudentSessionStatus sss = new StudentSessionStatus();
+                    				sss.setItemSetId(itemSetIds[j]);
+                    				sss.setCompletionStatus("SC");
+                    				sss.setItemSetOrder(new Integer(subtestOrder));
+                    				sss.setStartDateTime(null);
+                    				sss.setCompletionDateTime(null);
+                    				sss.setValidationStatus("VA");
+                    				sss.setTimeExpired("F");
+                    				sss.setValidationUpdatedBy(userId);
+                    				sss.setValidationUpdatedDateTime(new Date());
+                    				sss.setValidationUpdatedNote("");
+                    				rosters.createNewStudentItemSetStatusForRoster(customerId, sss,rosterId);
+                    				subtestOrder++;
+                            	}
                             }
+                        }else{
+                        	itemSetIds = siss.getItemSetIdsForFormForParent(parentItemsetId,tdform);
+                        	for(int j=0;itemSetIds != null && j<itemSetIds.length;j++){
+                     			StudentSessionStatus sss = new StudentSessionStatus();
+                     			sss.setItemSetId(itemSetIds[j]);
+                     			sss.setCompletionStatus("SC");
+                     			sss.setItemSetOrder(new Integer(subtestOrder));
+                     			sss.setStartDateTime(null);
+                     			sss.setCompletionDateTime(null);
+                     			sss.setValidationStatus("VA");
+                     			sss.setTimeExpired("F");
+                     			sss.setValidationUpdatedBy(userId);
+                     			sss.setValidationUpdatedDateTime(new Date());
+                     			sss.setValidationUpdatedNote("");
+                     			//for defect #-  65787
+                     			//rosters.getConnection().setAutoCommit(false);
+                     			rosters.createNewStudentItemSetStatusForRoster(customerId, sss,rosterId);
+                     			subtestOrder++;
+                             }
                         }
                     }
+                }
              }
             //license update 
             /*
@@ -3576,7 +3614,61 @@ public class ScheduleTestImpl implements ScheduleTest
             }
             throw ctbe;
         }
-     } 
+     }
+     
+     public String[] getSelectedLoctorTest(TestElement[] allSubtest){
+    	 String[] selectedLocatorSubtest = new String[allSubtest.length];
+    	 int count = 0;
+    	 for (int i=0 ; i<allSubtest.length ; i++) {
+             TestElement te = allSubtest[i];
+             if (te != null) {
+                 if (te.getIslocatorChecked()!= null && te.getIslocatorChecked().equals("T")) {
+                	 selectedLocatorSubtest[count] = te.getItemSetName().replace("TABE", "").trim();
+                	 count++;
+                 }
+             }
+         }
+    	 if(count == 0){
+    		 selectedLocatorSubtest = null;
+    	 }
+    	 return selectedLocatorSubtest;
+     }
+     
+     public Integer getLoctorTestId(TestElement[] allSubtest){
+    	 Integer locatorSubtestId = null ;
+    	 for (int i=0 ; i<allSubtest.length ; i++) {
+             TestElement te = allSubtest[i];
+             if (te != null) {
+                 if (te.getItemSetName().toUpperCase().contains("LOCATOR")) {
+                	 locatorSubtestId = te.getItemSetId();
+                	 break;
+                 }
+             }
+         }
+    	 return locatorSubtestId;
+     }
+     
+     public Integer[] getLocatorItemSetIds(String[] locatorSubTest,String[] locatorSubtestName,Integer[] itemSetIds){
+    	 Integer[] locatorItemSetIds = new Integer[locatorSubtestName.length];
+    	 int count = 0;
+    	 for(int i=0;i<locatorSubTest.length;i++){
+    		 if(locatorSubTest[i]!= null){
+    			 String locatorSubTestName = locatorSubTest[i];
+        		 String locatorTest = locatorSubTestName.toUpperCase();
+        		 for(int j=0;j<locatorSubtestName.length;j++){
+            		 if(locatorSubtestName[j].toUpperCase().contains(locatorTest)){//Note: subtest name and item set id are fetched in same order
+            			 locatorItemSetIds[count] = itemSetIds[j];
+            			 count++;
+            		 }
+            		 
+            	 }
+    		 }
+    	 }if(count == 0){
+    		 locatorItemSetIds = null;
+    	 }
+    	 return locatorItemSetIds;
+     }
+     
  
     /**
      * Adjusts the manifest as specified for a roster element/student 

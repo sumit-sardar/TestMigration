@@ -371,6 +371,27 @@ public interface StudentItemSetStatus extends JdbcControl
     @JdbcControl.SQL(statement = "select  \tiset.ITEM_SET_ID as itemSetId  from  \titem_set iset, \t\t\titem_set_parent isp where  \t\t\tiset.item_set_id = isp.item_set_id  and isp.parent_item_set_id = {parentItemSetId}  and iset.item_set_form like {form}  order by  iset.item_set_form,  isp.item_set_sort_order",
                      arrayMaxLength = 100000)
     Integer [] getItemSetIdsForFormForParent(Integer parentItemSetId, String form) throws SQLException;
+ 
+    /**
+     * @jc:sql statement::
+     * select 
+     *         	iset.ITEM_SET_NAME as itemSetName   
+     * from 
+     *         	item_set iset,
+     *			item_set_parent isp
+     * where  
+     *			iset.item_set_id = isp.item_set_id
+     *          and isp.parent_item_set_id = {parentItemSetId}
+     *          and iset.item_set_form like {form}
+     *  order by
+     *          iset.item_set_form,
+     *          isp.item_set_sort_order::
+     * 			array-max-length="all"
+     */
+    @JdbcControl.SQL(statement = "select  \tiset.item_set_name as itemSetName  from  \titem_set iset, \t\t\titem_set_parent isp where  \t\t\tiset.item_set_id = isp.item_set_id  and isp.parent_item_set_id = {parentItemSetId}  and iset.item_set_form like {form}  order by  iset.item_set_form,  isp.item_set_sort_order",
+                     arrayMaxLength = 100000)
+    String [] getItemSetNameForFormForParent(Integer parentItemSetId, String form) throws SQLException;
+
    
    
     /**
