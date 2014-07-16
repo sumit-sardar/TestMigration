@@ -80,12 +80,14 @@
 <c:if test = "${! isAddAdministrator}">
     <c:if test="${ isAddUser }">                
         <netui:button type="submit" value="Cancel" action="beginFindUser"/>
+        <input type="hidden" name="addUserOperation" id="addUserOperation" value="true" />
     </c:if>  
 </c:if>
 <c:if test = "${isAddAdministrator}">
     <netui:button type="submit" value="Cancel" action="cancelCurrentAction"/>
 </c:if>
 <c:if test="${ isEditUser }">
+	<input type="hidden" name="editUserOperation" id="editUserOperation" value="true" />
     <netui:button type="submit" value="Delete" action="beginDeleteUser" onClick="return verifyDeleteUser();"/>                   
     <netui:button type="submit" value="Cancel" action="cancelCurrentAction"/>
 </c:if>    

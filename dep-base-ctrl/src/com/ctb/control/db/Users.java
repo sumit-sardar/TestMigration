@@ -393,7 +393,7 @@ public interface Users extends JdbcControl
      */
 
 
-    @JdbcControl.SQL(statement = "insert into  users ( \t\tuser_id, \t\tuser_name, \t\tpassword, \t\tfirst_name, \t\tmiddle_name, \t\tlast_name, \t\temail, \t\tpassword_expiration_date, \t\treset_password, \t\taddress_id, \t\tactive_session, \t\ttime_zone, \t\tcreated_date_time,  \tcreated_by, \t\tupdated_date_time, \t  updated_by, \t\tlast_login_date_time, \t\tpreferred_name, \t\tactivation_status, \t\tdisplay_user_name, \t\tdisplay_new_message, \t\text_pin1 \t\t) values ( \t\tseq_user_id.nextval, \t\t{user.userName}, \t\t{user.password}, \t\t{user.firstName}, \t\t{user.middleName}, \t\t{user.lastName}, \t\t{user.email}, \t\t{user.passwordExpirationDate}, \t\t{user.resetPassword}, \t\t{user.addressId}, \t\t{user.activeSession}, \t\t{user.timeZone}, \t\t{user.CreatedDateTime}, \t\t{user.createdBy},  {user.updatedDateTime}, \t\t{user.updatedBy},  {user.lastLoginDateTime}, \t\t{user.preferredName},  {user.activationStatus}, \t\t{user.displayUserName}, \t\t{user.displayNewMessage}, \t\t{user.extPin1} \t\t)")
+    @JdbcControl.SQL(statement = "insert into  users ( \t\tuser_id, \t\tuser_name, \t\tpassword, \t\tfirst_name, \t\tmiddle_name, \t\tlast_name, \t\temail, \t\tpassword_expiration_date, \t\treset_password, \t\taddress_id, \t\tactive_session, \t\ttime_zone, \t\tcreated_date_time,  \tcreated_by, \t\tupdated_date_time, \t  updated_by, \t\tlast_login_date_time, \t\tpreferred_name, \t\tactivation_status, \t\tdisplay_user_name, \t\tdisplay_new_message, \t\text_pin1, \t\text_school_id \t\t) values ( \t\tseq_user_id.nextval, \t\t{user.userName}, \t\t{user.password}, \t\t{user.firstName}, \t\t{user.middleName}, \t\t{user.lastName}, \t\t{user.email}, \t\t{user.passwordExpirationDate}, \t\t{user.resetPassword}, \t\t{user.addressId}, \t\t{user.activeSession}, \t\t{user.timeZone}, \t\t{user.CreatedDateTime}, \t\t{user.createdBy},  {user.updatedDateTime}, \t\t{user.updatedBy},  {user.lastLoginDateTime}, \t\t{user.preferredName},  {user.activationStatus}, \t\t{user.displayUserName}, \t\t{user.displayNewMessage}, \t\t{user.extPin1} , \t\t{user.extSchoolId} \t\t)")
     void createUser(User user) throws SQLException;
 
 
@@ -420,7 +420,7 @@ public interface Users extends JdbcControl
      * 	updated_Date_Time = {user.updatedDateTime}
      * where user_id = {user.userId}::
      */
-    @JdbcControl.SQL(statement = "update users set first_name = {user.firstName}, \tmiddle_name = {user.middleName}, \tlast_name = {user.lastName}, \temail = {user.email}, \text_pin1 = {user.extPin1}, \ttime_zone = {user.timeZone}, \taddress_id = {user.addressId}, \tupdated_By = {user.updatedBy}, \tupdated_Date_Time = {user.updatedDateTime} where user_id = {user.userId}")
+    @JdbcControl.SQL(statement = "update users set first_name = {user.firstName}, \tmiddle_name = {user.middleName}, \tlast_name = {user.lastName}, \temail = {user.email}, \text_pin1 = {user.extPin1}, \text_school_id = {user.extSchoolId}, \ttime_zone = {user.timeZone}, \taddress_id = {user.addressId}, \tupdated_By = {user.updatedBy}, \tupdated_Date_Time = {user.updatedDateTime} where user_id = {user.userId}")
     void updateUser(User user) throws SQLException;
 
     /**
@@ -930,4 +930,35 @@ public interface Users extends JdbcControl
     
     @JdbcControl.SQL(statement = "SELECT DECODE(COUNT(1),0,0,1) FROM CUSTOMER_CONFIGURATION WHERE CUSTOMER_CONFIGURATION_NAME = 'WV_Customer' AND CUSTOMER_ID = {customerId}")
     int isWVCustomer(Integer customerId) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     *	SELECT CC.CUSTOMER_CONFIGURATION_ID as id,
+     *		   CC.CUSTOMER_CONFIGURATION_NAME as customerConfigurationName,
+     *		   CC.CUSTOMER_ID as customerId,
+     * 		   CC.EDITABLE as editable,
+     *  	   CC.DEFAULT_VALUE as defaultValue,
+     * 	 	   CC.CREATED_BY as createdBy
+  	 *	FROM CUSTOMER_CONFIGURATION cc, org_node ONO
+ 	 *	WHERE CC.CUSTOMER_CONFIGURATION_NAME = 'EXT_SCHOOL_ID_Configurable'
+     *		AND CC.CUSTOMER_ID = ONO.CUSTOMER_ID
+   	 *		AND ONO.ORG_NODE_ID = {orgNodeId}
+     */
+    @JdbcControl.SQL(statement = "SELECT CC.CUSTOMER_CONFIGURATION_ID as id, CC.CUSTOMER_CONFIGURATION_NAME as customerConfigurationName, CC.CUSTOMER_ID as customerId, CC.EDITABLE as editable, CC.DEFAULT_VALUE as defaultValue, CC.CREATED_BY as createdBy FROM CUSTOMER_CONFIGURATION cc, org_node ONO WHERE CC.CUSTOMER_CONFIGURATION_NAME = {customerConfigurationName} AND CC.CUSTOMER_ID = ONO.CUSTOMER_ID AND ONO.ORG_NODE_ID = {orgNodeId}") 
+    CustomerConfiguration getCustomerConfigurationsValueByOrgNodeId(String customerConfigurationName, Integer orgNodeId) throws SQLException;
+    
+   	@JdbcControl.SQL(statement = "SELECT CUSTOMER_CONFIGURATION_ID as id, CUSTOMER_CONFIGURATION_NAME as customerConfigurationName, CUSTOMER_ID as customerId, EDITABLE as editable, DEFAULT_VALUE as defaultValue, CREATED_BY as createdBy FROM CUSTOMER_CONFIGURATION WHERE CUSTOMER_CONFIGURATION_NAME = {customerConfigurationName} AND CUSTOMER_ID = (select distinct ono.customer_id from users u, user_role ur, org_node ono where u.user_id = ur.user_id and ur.org_node_id = ono.org_node_id and u.user_name = {selectedUserName})") 
+    CustomerConfiguration getCustomerConfigurationsValue(String customerConfigurationName, String selectedUserName) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     *  select ro.role_name
+  	 *	 from users u, user_role ur, role ro
+ 	 *	where u.user_id = ur.user_id
+     *   and ur.role_id = ro.role_id
+     *   and u.user_id = {userId}::
+     */
+    @JdbcControl.SQL(statement = "select ro.role_name from users u, user_role ur, role ro where u.user_id = ur.user_id and ur.role_id = ro.role_id and u.user_id = {userId}")
+    String getUsersRoleNameByUserId(Integer userId) throws SQLException;
+    int checkUniquenessOfExtSchoolId(String extSchoolId, Integer customerId) throws SQLException;
 }

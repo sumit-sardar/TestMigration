@@ -7,6 +7,7 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
+//import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.Node;
@@ -41,6 +42,7 @@ import dto.PasswordInformation;
 import dto.PathNode;
 import dto.UserProfileInformation;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +55,7 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.apache.struts.action.ActionErrors;
@@ -194,6 +197,8 @@ public class ManageUserController extends PageFlowController
     // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
+	private boolean isUsrAcctMgr = false;
+	private boolean hasExtSchoolIdConfigurable = false;
     
     
     /**
@@ -324,7 +329,7 @@ public class ManageUserController extends PageFlowController
         String actionElement = form.getActionElement();
             
         form.resetValuesForAction(actionElement, ACTION_FIND_USER);
-                
+        this.getSession().removeAttribute("hasExtSchoolIdConfigurable");      
         if (currentAction.equals(ACTION_VIEW_USER) || currentAction.equals(ACTION_EDIT_USER) || currentAction.equals(ACTION_DELETE_USER) || currentAction.equals(ACTION_CHANGE_PASSWORD))
         {
                     
@@ -1116,7 +1121,10 @@ public class ManageUserController extends PageFlowController
     protected Forward editUser(ManageUserForm form)
     {      
         handleAddEdit(form);
-
+        if(null != getSession().getAttribute("isUsrAcctMgr") && Boolean.parseBoolean(getSession().getAttribute("isUsrAcctMgr").toString()))  {
+	        this.hasExtSchoolIdConfigurable = customerHasGivenCustomerConfigurationByUserName("EXT_SCHOOL_ID_Configurable", form.getSelectedUserName());
+	        this.getSession().setAttribute("hasExtSchoolIdConfigurable", hasExtSchoolIdConfigurable);
+        }
         this.getRequest().setAttribute("isEditUser", Boolean.TRUE);
         
         this.pageTitle = buildPageTitle(ACTION_EDIT_USER, form);
@@ -1710,6 +1718,7 @@ public class ManageUserController extends PageFlowController
     	//System.out.println("View User");
 		saveToken(this.getRequest());		 //Changes for F5
         UserProfileInformation userProfile = null;
+        this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
         try
         {
             userProfile = setUserProfileToForm(form); 
@@ -1738,6 +1747,11 @@ public class ManageUserController extends PageFlowController
         this.pageTitle = buildPageTitle(ACTION_VIEW_USER, form); 
         
         setFormInfoOnRequest(form);
+        
+        if(null != getSession().getAttribute("isUsrAcctMgr") && Boolean.parseBoolean(getSession().getAttribute("isUsrAcctMgr").toString()))  {
+	        boolean hasExtSchoolIdConfigurable = customerHasGivenCustomerConfigurationByUserName("EXT_SCHOOL_ID_Configurable", form.getSelectedUserName());
+	        this.getRequest().setAttribute("hasExtSchoolIdConfigurable", hasExtSchoolIdConfigurable);
+        }
         
         return new Forward("success", form);                                                                                                                                                                                                    
     }
@@ -2041,6 +2055,8 @@ public class ManageUserController extends PageFlowController
     	customerHasResetTestSessions();
     	customerHasScoring();//For hand scoring changes
     	isTopLevelUser();
+    	this.isUsrAcctMgr = isUserAccountManager();
+    	this.getSession().setAttribute("isUsrAcctMgr", isUsrAcctMgr);
         this.orgNodePath = new ArrayList();
         this.currentOrgNodesInPathList = new HashMap();
         this.currentOrgNodeIds = new Integer[0];
@@ -3255,5 +3271,110 @@ public class ManageUserController extends PageFlowController
         return new Boolean(hasScoringConfigurable);
     }
 	
+	
+	/**
+	 * This method checks whether customer is configured with given Customer Configuration.
+	 * @return Return boolean 
+	 */
+	private boolean customerHasGivenCustomerConfigurationByUserName(String customerConfigurationName, String selectedUserName) {
+		//Integer customerId = this.user.getCustomer().getCustomerId();
+		boolean hasGivenCustomerConfiguration = false;
+		try {
+			CustomerConfiguration customerConfigurations = users.getCustomerConfigurationsValue(customerConfigurationName, selectedUserName);
+			if(null != customerConfigurations) {
+				if(customerConfigurationName.equalsIgnoreCase(customerConfigurations.getCustomerConfigurationName()) && 
+						"T".equals(customerConfigurations.getDefaultValue())) {
+					hasGivenCustomerConfiguration = true;
+				}
+			}
+		}
+		catch(SQLException se) {
+			se.printStackTrace();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return hasGivenCustomerConfiguration;
+	}
+	
+	
+	/**
+	 * This method checks whether the logged is user is an Account Manager.
+	 * @return Return boolean 
+	 */
+	private boolean isUserAccountManager() {
+		Integer userId = this.user.getUserId();
+		boolean isUsrAcctMgr = false;
+		try {
+			String userRoleName = users.getUsersRoleNameByUserId(userId);
+			if(null != userRoleName && "ACCOUNT MANAGER".equalsIgnoreCase(userRoleName)) {
+				isUsrAcctMgr = true;
+			}
+		}
+		catch(SQLException se) {
+			se.printStackTrace();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return isUsrAcctMgr;
+	}
 
+   @Jpf.Action()
+   protected Forward checkHasCustomerExternalSchoolIdConfigurable()
+   {      
+        HttpServletResponse resp=getResponse();
+        OutputStream stream = null;
+		Integer orgNodeId = null;
+		this.hasExtSchoolIdConfigurable = false;
+		this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
+        if(null != getRequest().getParameter("selectedNodesOrgNodeId")) {
+        	orgNodeId = Integer.parseInt(getRequest().getParameter("selectedNodesOrgNodeId"));
+        }
+        try {
+        	if(null != orgNodeId) {
+				CustomerConfiguration customerConfigurations = users.getCustomerConfigurationsValueByOrgNodeId("EXT_SCHOOL_ID_Configurable", orgNodeId);
+				if(null != customerConfigurations) {
+					if("EXT_SCHOOL_ID_Configurable".equalsIgnoreCase(customerConfigurations.getCustomerConfigurationName()) && 
+							"T".equals(customerConfigurations.getDefaultValue())) {
+						this.hasExtSchoolIdConfigurable = true;
+					}
+				}
+        	}
+        	String response= String.valueOf(this.hasExtSchoolIdConfigurable);
+        	resp.setContentType("application/text");
+        	stream = resp.getOutputStream();
+        	stream.write(response.getBytes());
+        	resp.flushBuffer();
+        	getSession().setAttribute("hasExtSchoolIdConfigurable", this.hasExtSchoolIdConfigurable);
+		}
+		catch(SQLException se) {
+			se.printStackTrace();
+		}
+		catch(IOException se) {
+			se.printStackTrace();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally{
+			if(stream!=null) {
+				try{
+					stream.close();
+				}catch(Exception e) {
+					resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					e.printStackTrace();
+				}
+			}
+		}
+    	return null;
+    }
+  
+	  @Jpf.Action()
+	  protected Forward removeSessionVariable() {
+		  if ( null != this.getSession().getAttribute("hasExtSchoolIdConfigurable") ) {
+			  this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
+		  }
+		  return null;
+	  }
 }

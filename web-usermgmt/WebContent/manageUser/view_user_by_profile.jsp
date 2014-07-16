@@ -8,6 +8,15 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
+<%  
+	String isUsrAcctMgr = null;
+	String hasExtSchoolIdConfigurable = null;
+	if( null!= session.getAttribute("isUsrAcctMgr") && null != request.getAttribute("hasExtSchoolIdConfigurable")) {
+		isUsrAcctMgr = (String)session.getAttribute("isUsrAcctMgr").toString();
+		hasExtSchoolIdConfigurable = (String)request.getAttribute("hasExtSchoolIdConfigurable").toString();
+	}
+%>
+
 <table class="simple">
     <tr class="transparent">
 
@@ -71,7 +80,13 @@
         <td class="transparent" width="100" nowrap><netui:content value="External User Id:"/></td>
         <td class="transparent"><netui:label value="${userProfileData.extPin1}"/></td>
     </tr>
-    
+    <%-- LAUSD Story for External School Id --%>
+    <c:if test="${ null != isUsrAcctMgr && isUsrAcctMgr == 'true' && null != hasExtSchoolIdConfigurable && hasExtSchoolIdConfigurable == 'true' }">
+	    <tr class="transparent">
+	        <td class="transparent" width="110" nowrap><netui:content value="External School ID:"/></td>
+	        <td class="transparent"><netui:label value="${userProfileData.extSchoolId}"/></td>
+	    </tr>
+    </c:if>
 </table>
 </td>
 

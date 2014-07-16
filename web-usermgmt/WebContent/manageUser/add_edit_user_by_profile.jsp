@@ -15,6 +15,14 @@
     List selectedOrgNodes = (List)request.getAttribute("selectedOrgNodes"); 
     List orgNodesForSelector = (List)request.getAttribute("orgNodesForSelector");             
     String userAgent = request.getHeader("User-Agent");
+    String isUsrAcctMgr = null;
+    String hasExtSchoolIdConfigurable = null;
+    if( null!= session.getAttribute("isUsrAcctMgr")) {
+	    isUsrAcctMgr = session.getAttribute("isUsrAcctMgr").toString();
+    }
+    if( null!= isUsrAcctMgr && null!= session.getAttribute("hasExtSchoolIdConfigurable") ){
+    	hasExtSchoolIdConfigurable = session.getAttribute("hasExtSchoolIdConfigurable").toString();
+    }
 %>
 
 
@@ -77,7 +85,15 @@
         <td class="transparent">
             <netui:textBox tagId="userExternalId" dataSource="actionForm.userProfile.extPin1" maxlength="20" style="width:200px"/>
         </td>
-    </tr> 
+    </tr>
+    <!--ext student id is added for LAUSD-->
+	<tr class="transparent" id="extSchoolIdTR" <%if(null != isUsrAcctMgr && "true".equals(isUsrAcctMgr) 
+		&& null != hasExtSchoolIdConfigurable && "true".equals(hasExtSchoolIdConfigurable)) { %> style="display:table-row" <%}else{ %>style="display:none" <%} %>>
+        <td class="transparent alignRight" nowrap width="110"><netui:content value="External School<br/>ID:"/></td>
+        <td class="transparent">
+            <netui:textBox tagId="extSchoolId" dataSource="actionForm.userProfile.extSchoolId" maxlength="32" style="width:200px"/>
+        </td>
+	</tr>
     <tr class="transparent">
         <td class="transparent-top alignRight" width="110"><span class="asterisk">*</span>&nbsp;<netui:content value="Organization:"/></td>
         <td class="transparent-top">        

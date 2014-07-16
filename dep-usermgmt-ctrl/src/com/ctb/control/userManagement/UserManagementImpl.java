@@ -984,6 +984,9 @@ public class UserManagementImpl implements UserManagement
             
         }
         
+        if(user.getExtSchoolId() != null) {
+        	user.setExtSchoolId(user.getExtSchoolId().trim());
+        }
         try {
             
             validator.validateUser(loginUserName, user.getUserName(), "UserManagementImpl.updateUser");
@@ -1542,6 +1545,9 @@ public class UserManagementImpl implements UserManagement
             
         }
         //Added for Dex application
+        if(user.getExtSchoolId() != null) {
+        	user.setExtSchoolId(user.getExtSchoolId().trim());
+        }
         boolean isDex =false;
         String dexEncryptedPass = "";
         

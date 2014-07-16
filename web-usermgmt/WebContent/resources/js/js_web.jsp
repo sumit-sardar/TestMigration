@@ -43,14 +43,31 @@ function handleEnterKey(elementId, value) {
 function verifyDeleteUser(){
     var ret = confirm("Click 'OK' to delete this user's profile from your organization.");    
     if (ret == true) {
-        setElementValue('currentAction', 'deleteUser');    
+        setElementValue('currentAction', 'deleteUser');
         return true;
     }
     return false;    
 }
 
 function verifyExitAddUser(){
-    return confirm("Click 'OK' to quit editing user's information. Any changes you've made will be lost.");
+    var ret = confirm("Click 'OK' to quit editing user's information. Any changes you've made will be lost.");
+    if (ret == true) {
+        <%if( null!= session.getAttribute("hasExtSchoolIdConfigurable") ){%>
+	    	jQuery.ajax({
+              	  async : false,
+                  url : 'removeSessionVariable.do',
+                  type : 'POST',
+                  success : function(data, textStatus, XMLHttpRequest) {
+                  	  console.log("Variable Deleted");
+				  },
+                  error : function(XMLHttpRequest, textStatus, errorThrown) {
+                      console.log("Exception Occurred" + textStatus);
+                }
+	         });
+    	<%}%>
+        return true;
+    }
+    return false; 
 }
 
 
@@ -74,6 +91,53 @@ function isBrowerTypeMac()
 
 function updateOrgNodeSelection(element)
 {
+    var isUsrAcctMgr;
+    var isAddUser = null; 
+    var isEditUser = null;
+	var postDataObject = {};
+	if(undefined != document.getElementById("addUserOperation"))
+		isAddUser = document.getElementById("addUserOperation").value;
+	if(undefined != document.getElementById("editUserOperation"))
+    	isEditUser = document.getElementById("editUserOperation").value;
+	
+	<%if( null!= session.getAttribute("isUsrAcctMgr")) {%>
+	    isUsrAcctMgr = <%=session.getAttribute("isUsrAcctMgr").toString()%>;
+	<%}%>
+	if(isUsrAcctMgr == true && null != isAddUser && isAddUser == 'true' && (null == isEditUser || isEditUser != 'true')) {
+           if (element.checked) {
+           postDataObject.selectedNodesOrgNodeId = element.value;
+               jQuery.ajax({
+               	   async : false,
+                   url : 'checkHasCustomerExternalSchoolIdConfigurable.do',
+                   type : 'POST',
+                   dataType : 'text',
+                   data : postDataObject,
+                   success : function(data, textStatus, XMLHttpRequest) {
+                   		if(data != undefined && data != null) {
+							var x = data.replace(/\s+/, "");
+	                    	if(x == 'true') {
+	                    		if (document.getElementById("extSchoolIdTR") != undefined)
+	                    			document.getElementById("extSchoolIdTR").style.display = "table-row";
+	                    	}
+	                    	else if(x == 'false') {
+	                    		document.getElementById("extSchoolIdTR").style.display = "none";
+	                    		document.getElementById("extSchoolId").value = "";
+	                    	}
+                   		}
+					},
+	                error : function(XMLHttpRequest, textStatus, errorThrown) {
+	                    alert( "Request failed: " + textStatus );
+	                }
+               });
+           }
+           if (!element.checked) {
+             	if (document.getElementById("extSchoolIdTR") != undefined) {
+             		document.getElementById("extSchoolIdTR").style.display = "none";
+             		document.getElementById("extSchoolId").value = "";
+             	}
+           }
+	}	
+    
     var showType = "block";    
     if (isBrowerTypeFirefox()) {
         showType = "table-row";

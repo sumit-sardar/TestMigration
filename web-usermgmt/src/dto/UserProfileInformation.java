@@ -40,6 +40,7 @@ public class UserProfileInformation extends SanitizedFormField
      * ext_pin1 is added for DEX CR
      */
     private String extPin1 = "";
+    private String extSchoolId = "";
     
     /**
      * default constructor
@@ -70,6 +71,7 @@ public class UserProfileInformation extends SanitizedFormField
         this.actionPermission = user.getEditable();
         this.userContact = new UserContactInformation(user.getAddressId(), user.getAddress());
         this.userPassword = new PasswordInformation();
+        this.extSchoolId = user.getExtSchoolId(); // Ext_School_Id is added for LAUSD Customer
         if (user.getPasswordHintQuestionId() != null) {
             this.userPassword.setHintQuestionId(
                     user.getPasswordHintQuestionId().toString());
@@ -122,6 +124,7 @@ public class UserProfileInformation extends SanitizedFormField
         role.setRoleName(this.role);
         copied.setRole(role);
         copied.setExtPin1(this.extPin1); //ext_pin1 is added for DEX CR
+        copied.setExtSchoolId(this.extSchoolId); // LAUSD Story of External School Id
         if (!"".equals(this.roleId)) {
             role.setRoleId(Integer.valueOf(this.roleId));
             copied.getRole().setRoleId(Integer.valueOf(this.roleId));
@@ -414,6 +417,20 @@ public class UserProfileInformation extends SanitizedFormField
 		this.userPassword = userPassword;
 	}
 
+	/**
+	 * @return the extSchoolId
+	 */
+	public String getExtSchoolId() {
+		return extSchoolId;
+	}
+	
+	/**
+	 * @param extSchoolId the extSchoolId to set
+	 */
+	public void setExtSchoolId(String extSchoolId) {
+		this.extSchoolId = extSchoolId;
+	}
+	
 	/**
 	 * @return Returns the getOrgNodeNamesString.
 	 */
