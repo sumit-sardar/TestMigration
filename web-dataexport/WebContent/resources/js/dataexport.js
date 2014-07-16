@@ -1190,6 +1190,7 @@ function processScore(element){
 		parentDivId = '';
 		
 		var subIframe = $('#rubricIframe','#rubricInformation');
+		var xsrc = $('#rubricIframe','#rubricInformation').attr('src');
 		if(subIframe != undefined) {
 			var iFrameObj = subIframe.contents();
 			if(iFrameObj != undefined) {
@@ -1197,6 +1198,8 @@ function processScore(element){
 				iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
 			}
 		}
+		$('#rubricIframe','#rubricInformation').attr('src','');
+		$('#rubricIframe','#rubricInformation').attr('src',xsrc);
 		selectedRowObjectScoring = {};
 	}
 	
@@ -1224,6 +1227,7 @@ function processScore(element){
 		parentDivId = '';
 		
 		var subIframe = $('#rubricIframe', '#rubricInfo');
+		var xsrc = $('#rubricIframe', '#rubricInfo').attr('src')
 		if(subIframe != undefined) {
 			var iFrameObj = subIframe.contents();
 			if(iFrameObj != undefined) {
@@ -1231,6 +1235,8 @@ function processScore(element){
 				iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
 			}
 		}
+		$('#rubricIframe', '#rubricInfo').attr('src','');
+		$('#rubricIframe', '#rubricInfo').attr('src',xsrc);
 		//selectedRowObjectScoring = {};
 	}
 	
@@ -1286,7 +1292,7 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 								 var questionNumber = itemNumber;
 								 data1 = data.questionAnswer;
 								 
-								 populateTableNew();
+								 setTimeout("populateTableNew()", 500);						 
 									// $.unblockUI(); 
 								 //$("#rubricDialogID").dialog("open");		
 							},
