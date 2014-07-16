@@ -1,5 +1,6 @@
 package sessionOperation;
 
+import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
@@ -17,6 +18,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
+import javax.xml.bind.DatatypeConverter;
 
 import com.ctb.bean.testAdmin.Role;
 import com.ctb.bean.testAdmin.User;
@@ -49,18 +51,18 @@ public class LTIValidation {
 
 			boolean exists = rs.next();
 			if (exists) {
-				skey = rs.getString("secret_key");
+				skey = rs.getString("secret_key")+"&";
 			}
 			rs.close();
 			secretKeyStmt.close();
 			con.close();
 
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		return skey;
@@ -77,25 +79,27 @@ public class LTIValidation {
 			// ignore if key is null or key == "oauth_signature"
 			if (key == null || key.equals(OAUTH_SIGNATURE))
 				continue;
-			if (key.startsWith(OAUTH_PREFIX)) {
+			
 				String[] values = param.getValue();
 				if (values == null || values.length <= 0) {
 					oauthMap.put(key, null);
 				} else {
 					String value = values[0];
-					oauthMap.put(key, value);
+					oauthMap.put(URLEncoder.encode(key), URLEncoder.encode(value).replace("+","%20"));
 				}
-			}
+			
 		}
-		StringBuilder baseString = new StringBuilder("POST&");
+		StringBuilder baseString = new StringBuilder();
+		baseString.append("POST&"+URLEncoder.encode("https://oastest.ctb.com/SessionWeb/LTIAuthentication")+"&");
 		for (Map.Entry<String, String> oauthParam : oauthMap.entrySet()) {
-			baseString.append(oauthParam.getKey() + "=" + oauthParam.getValue()
-					+ "&");
+			baseString.append(URLEncoder.encode(oauthParam.getKey() + "=" + oauthParam.getValue()
+					+ "&"));
 		}
 		if (oauthMap.size() > 0 && baseString.length() > 1) {
 			String signString = baseString
-					.substring(0, baseString.length() - 1);
+					.substring(0, baseString.length() - 3);//remove last %26
 			try {
+				System.out.println("sign String"+signString);
 				String oauthSignature = calculateRFC2104HMAC(signString,
 						secretKey);
 				System.out.println("Calculated OAuth signature..."
@@ -134,13 +138,17 @@ public class LTIValidation {
 	}
 
 	private String toHexString(byte[] bytes) {
-		Formatter formatter = new Formatter();
+		
+		/*
+		 * Formatter formatter = new Formatter();
 
 		for (byte b : bytes) {
 			formatter.format("%02x", b);
 		}
 
 		return formatter.toString();
+		*/
+		return  DatatypeConverter.printBase64Binary(bytes);
 	}
 
 	
