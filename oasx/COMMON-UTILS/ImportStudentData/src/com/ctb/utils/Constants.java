@@ -2,6 +2,13 @@ package com.ctb.utils;
 
 import java.io.File;
 
+/**
+ * This Class is used to store all Constants used throughout the Program
+ * 
+ * @author TCS
+ * 
+ */
+
 public class Constants {
 
 	public static final boolean SUCCESS = true;
@@ -37,14 +44,14 @@ public class Constants {
 	public static final String ACOMOD_SCREEN_READER = "Screen_Reader";
 	public static final String ACOMOD_CALCULATOR = "Calculator";
 	public static final String ACOMOD_TEST_PAUSE = "Test_Pause";
-	public static final String ACOMOD_UNTIMED_TEST="Untimed_Test";
+	public static final String ACOMOD_UNTIMED_TEST = "Untimed_Test";
 	public static final String ACOMOD_HIGHLIGHTER = "Highlighter";
 	public final static String STANDARD_FONT_SIZE = "1";
 	public final static String LARGER_FONT_SIZE = "1.5";
 	public static final String ACTIVATION_STATUS_ACTIVE = "AC";
 	public static final String ROLE_NAME_ACCOUNT_MANAGER = "ACCOUNT MANAGER";
 	public static final String FILE_SEPARATOR = File.separator;
-	
+
 	// color List
 	public static final String WHITE = "WHITE";
 	public static final String BLACK = "BLACK";
@@ -106,13 +113,13 @@ public class Constants {
 
 	public static final String DEMOGRAPHIC_VALUSE_SEPARATOR = ";";
 	public static final String MULTIPLE_DEMOGRAPHIC = "MULTIPLE";
-	
+
 	public static final int USER_ID = 1;
-	
-	//Error File Names
+
+	// Error File Names
 	public static final String ERROR_FIELD_NAME = "ERRONEOUS COLUMN_NAME";
 	public static final String ERROR_FIELD_DESCRIPTION = "ERROR_CODE";
-	
+
 	public static final String REQUIRED_FIELD_ERROR = "Required Field Missing";
 	public static final String LOGICAL_FIELD_ERROR = "Logical Error";
 	public static final String MINIMUM_FIELD_ERROR = "Minimum Length Error";

@@ -7,6 +7,11 @@ import com.ctb.bean.Node;
 import com.ctb.bean.StudentDemoGraphics;
 import com.ctb.utils.cache.StudentDBCacheImpl;
 
+/**
+ * 
+ * @author TCS
+ *
+ */
 public interface StudentFileDao {
 	
 	public CustomerConfigurationValue [] getCustomerConfigurationValuesForGrades(int customerId) throws Exception;

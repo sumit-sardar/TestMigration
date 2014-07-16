@@ -7,6 +7,11 @@ import com.ctb.bean.DataFileTemp;
 import com.ctb.bean.OrgNodeCategory;
 import com.ctb.bean.StudentDemoGraphics;
 
+/**
+ * Interface related to UploadFile operations
+ * @author TCS
+ *
+ */
 public interface UploadFileDao {	
 	public Integer getNextPKForTempFile() throws Exception;
 	

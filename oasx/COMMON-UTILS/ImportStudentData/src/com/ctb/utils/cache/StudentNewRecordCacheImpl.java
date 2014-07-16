@@ -9,60 +9,83 @@ import net.sf.ehcache.Element;
 
 import com.ctb.bean.UploadStudent;
 
-
-
+/**
+ * This Class is Used for Caching Implementation of Student File Records to be
+ * inserted in DataBase
+ */
 public class StudentNewRecordCacheImpl {
 
 	private static final CacheManager cacheManager;
 
-	static
-	{
+	static {
 
-		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-		InputStream resourceAsStream = contextClassLoader.getResourceAsStream("CacheConfiguration.xml");
+		ClassLoader contextClassLoader = Thread.currentThread()
+				.getContextClassLoader();
+		InputStream resourceAsStream = contextClassLoader
+				.getResourceAsStream("CacheConfiguration.xml");
 		cacheManager = CacheManager.create(resourceAsStream);
 	}
 
-
 	private Ehcache newStudentCache;
 
-	public StudentNewRecordCacheImpl()
-	{       
+	/**
+	 * No Argument Constructor
+	 */
+	public StudentNewRecordCacheImpl() {
 		newStudentCache = cacheManager.getEhcache("insertStudentCache");
 	}
 
-	public long getCacheSize(){
+	/**
+	 * Returns the cache size
+	 * 
+	 * @return - long Cache Size
+	 */
+	public long getCacheSize() {
 		return newStudentCache.getSize();
 	}
 
-	public long getSizeOnDisk(){
-		return newStudentCache.calculateOnDiskSize();
-	}
-
-	public void addNewStudent(String key, UploadStudent student)
-	{        
-		Element element = new Element(key, student);         
+	/**
+	 * Puts the student in the Cache with Extpin1 as key
+	 * 
+	 * @param key
+	 *            - Extpin1 of Student
+	 * @param student
+	 *            - UploadStudent Object
+	 */
+	public void addNewStudent(String key, UploadStudent student) {
+		Element element = new Element(key, student);
 
 		newStudentCache.put(element);
 	}
 
-	public void syncCache(){
-		newStudentCache.flush();
-	}
-	
-	public void clearCacheContents(){
+	/**
+	 * Clear Cache Contents
+	 */
+	public void clearCacheContents() {
 		newStudentCache.removeAll();
 	}
-	
-	public List getKeys(){
-		return newStudentCache.getKeys();
+
+	/**
+	 * Returns the List of Keys of the Cache
+	 * 
+	 * @return the keys of the Cache
+	 */
+	@SuppressWarnings("rawtypes")
+	public List getKeys() {
+		return (List) newStudentCache.getKeys();
 	}
 
-	public UploadStudent getNewStudent(String key)
-	{       
+	/**
+	 * Returns UploadStudent Object based on the ExtPin1 Key
+	 * 
+	 * @param key
+	 *            - ExtPin1
+	 * @return UploadStudent Object
+	 */
+	@SuppressWarnings("deprecation")
+	public UploadStudent getNewStudent(String key) {
 		Element element = newStudentCache.get(key);
-		if (element != null)
-		{
+		if (element != null) {
 
 			return (UploadStudent) element.getValue();
 		}

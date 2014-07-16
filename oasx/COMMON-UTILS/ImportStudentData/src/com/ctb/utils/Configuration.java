@@ -1,5 +1,11 @@
 package com.ctb.utils;
 
+/**
+ * This Class is used to Load the values from the Loaded Properties File
+ * 
+ * @author TCS
+ * 
+ */
 public class Configuration {
 
 	static String localFilePath = "";
@@ -12,7 +18,7 @@ public class Configuration {
 	static String customerId = "";
 	static String errorPath = "";
 	static String clientPrivateKeyPath = "";
-	
+
 	static {
 		localFilePath = ExtractUtil.getDetail("oas.importdata.local.filepath");
 		ftpHost = ExtractUtil.getDetail("oas.importdata.ftpHost");
@@ -33,8 +39,6 @@ public class Configuration {
 		return localFilePath;
 	}
 
-
-
 	/**
 	 * @return the ftpHost
 	 */
@@ -42,13 +46,9 @@ public class Configuration {
 		return ftpHost;
 	}
 
-
-
 	public static String getClientPrivateKeyPath() {
 		return clientPrivateKeyPath;
 	}
-
-
 
 	/**
 	 * @return the ftpUser
@@ -57,16 +57,12 @@ public class Configuration {
 		return ftpUser;
 	}
 
-
-
 	/**
 	 * @return the ftpPassword
-	 *//*
-	public static String getFtpPassword() {
-		return ftpPassword;
-	}*/
-
-
+	 */
+	/*
+	 * public static String getFtpPassword() { return ftpPassword; }
+	 */
 
 	/**
 	 * @return the ftpFilePath
@@ -75,16 +71,12 @@ public class Configuration {
 		return ftpFilePath;
 	}
 
-
-
 	/**
 	 * @return the ftpPort
 	 */
 	public static String getFtpPort() {
 		return ftpPort;
 	}
-
-
 
 	/**
 	 * @return the archivePath
@@ -93,16 +85,12 @@ public class Configuration {
 		return archivePath;
 	}
 
-
-
 	/**
 	 * @return the customerId
 	 */
 	public static String getCustomerId() {
 		return customerId;
 	}
-
-
 
 	/**
 	 * @return the errorPath
@@ -111,7 +99,4 @@ public class Configuration {
 		return errorPath;
 	}
 
-	
-	
-	
 }

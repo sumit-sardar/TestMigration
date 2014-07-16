@@ -9,53 +9,80 @@ import net.sf.ehcache.Element;
 
 import com.ctb.bean.UploadStudent;
 
-
-
+/**
+ * This Class is used for implementing Cache for Update Students records
+ */
 public class StudentUpdateRecordCacheImpl {
 
 	private static final CacheManager cacheManager;
 
-	static
-	{
+	static {
 
-		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-		InputStream resourceAsStream = contextClassLoader.getResourceAsStream("CacheConfiguration.xml");
+		ClassLoader contextClassLoader = Thread.currentThread()
+				.getContextClassLoader();
+		InputStream resourceAsStream = contextClassLoader
+				.getResourceAsStream("CacheConfiguration.xml");
 		cacheManager = CacheManager.create(resourceAsStream);
 	}
 
-
 	private Ehcache updateStudentCache;
 
-	public StudentUpdateRecordCacheImpl()
-	{       
+	/**
+	 * No Argument Constructor
+	 */
+	public StudentUpdateRecordCacheImpl() {
 		updateStudentCache = cacheManager.getEhcache("updateStudentCache");
 	}
 
-	public long getCacheSize(){
+	/**
+	 * Returns the size of the Cache
+	 * 
+	 * @return size of the current cache
+	 */
+	public long getCacheSize() {
 		return updateStudentCache.getSize();
 	}
-	
-		
-	public void addUpdatedStudent(String key, UploadStudent student)
-	{        
-		Element element = new Element(key, student);         
+
+	/**
+	 * Puts the Student in the Cache
+	 * 
+	 * @param key
+	 *            : ExtPin1 of the Student
+	 * @param student
+	 *            : UploadStudent Object
+	 */
+	public void addUpdatedStudent(String key, UploadStudent student) {
+		Element element = new Element(key, student);
 
 		updateStudentCache.put(element);
 	}
 
-	public UploadStudent getUpdatedStudent(String key)
-	{       
+	/**
+	 * Gets the UploadStudent object for the said key
+	 * 
+	 * @param key
+	 *            : ExtPin1 of the student
+	 * @return : UploadStudent Object for the said key
+	 */
+	@SuppressWarnings("deprecation")
+	public UploadStudent getUpdatedStudent(String key) {
 		Element element = updateStudentCache.get(key);
-		if (element != null)
-		{
+		if (element != null) {
 
 			return (UploadStudent) element.getValue();
 		}
 
 		return null;
 	}
-	public List getKeys(){
-		return updateStudentCache.getKeys();
+
+	/**
+	 * Returns the List of Keys of the Cache
+	 * 
+	 * @return the keys of the Cache
+	 */
+	@SuppressWarnings("rawtypes")
+	public List getKeys() {
+		return (List) updateStudentCache.getKeys();
 	}
 
 }

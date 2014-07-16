@@ -1,5 +1,10 @@
 package com.ctb.exception;
 
+/**
+ * Customized Exception Class 
+ * @author TCS
+ *
+ */
 public class CTBBusinessException extends Exception{ 
     static final long serialVersionUID = 1L;    
     private String message;    

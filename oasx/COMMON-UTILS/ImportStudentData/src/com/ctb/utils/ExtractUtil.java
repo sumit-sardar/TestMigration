@@ -16,49 +16,61 @@ import org.apache.log4j.Logger;
  * @author TCS
  * 
  */
-	public class ExtractUtil extends ResourceBundle {
+public class ExtractUtil extends ResourceBundle {
 
-		private static ResourceBundle rb;
-		private static Logger logger = Logger.getLogger(ExtractUtil.class.getName());
-		
-		public static void loadPropetiesFile(String fileName){
-			rb = ResourceBundle.getBundle(fileName);
-		}
-		
-		
-		public static void loadExternalPropetiesFile(String baseName, String externalPropertiesFilePAth){
-			File file = new File(externalPropertiesFilePAth);
-			ClassLoader loader = null;
-			try{				
-				URL[] urls = {file.toURI().toURL()};
-				loader = new URLClassLoader(urls);
-			}catch (MalformedURLException e) {
-				// TODO: handle exception
-				logger.error("Properties File Loading Error. System exiting..");
-				e.printStackTrace(); 
-				System.exit(1);
-			}
-			rb = ResourceBundle.getBundle(baseName, Locale.getDefault(), loader);
-			logger.info("Properties File Successfully Loaded of Environment :: "+ baseName);
-		}
-		
-		public static String getDetail(String key){
-			return rb.getString(key);			
-		}
-				
-		
+	private static ResourceBundle rb;
+	private static Logger logger = Logger
+			.getLogger(ExtractUtil.class.getName());
 
-		public Enumeration getKeys() {
-			// TODO Auto-generated method stub
-			return rb.getKeys();
-		}
-
-
-
-		protected Object handleGetObject(String key) {
-			// TODO Auto-generated method stub
-			return null;
-		}			
-
+	public static void loadPropetiesFile(String fileName) {
+		rb = ResourceBundle.getBundle(fileName);
 	}
 
+	/**
+	 * Loads the properties file from the path specified.
+	 * 
+	 * @param baseName
+	 *            - Properties File Name
+	 * @param externalPropertiesFilePAth
+	 *            - Properties File Path
+	 */
+	public static void loadExternalPropetiesFile(String baseName,
+			String externalPropertiesFilePAth) {
+		File file = new File(externalPropertiesFilePAth);
+		ClassLoader loader = null;
+		try {
+			URL[] urls = { file.toURI().toURL() };
+			loader = new URLClassLoader(urls);
+		} catch (MalformedURLException e) {
+			// TODO: handle exception
+			logger.error("Properties File Loading Error. System exiting..");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		rb = ResourceBundle.getBundle(baseName, Locale.getDefault(), loader);
+		logger.info("Properties File Successfully Loaded of Environment :: "
+				+ baseName);
+	}
+
+	/**
+	 * Returns the Value mapped to the key
+	 * 
+	 * @param key
+	 *            - Key of Properties File
+	 * @return Value of the Key
+	 */
+	public static String getDetail(String key) {
+		return rb.getString(key);
+	}
+
+	@Override
+	public Enumeration<String> getKeys() {
+		return rb.getKeys();
+	}
+
+	@Override
+	protected Object handleGetObject(String key) {
+		return null;
+	}
+
+}

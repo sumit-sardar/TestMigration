@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -25,16 +24,19 @@ import com.jcraft.jsch.SftpException;
  * This class provides FTP/SFTP utility functions.
  * 
  * @author TCS
- * 
  */
+@SuppressWarnings("rawtypes")
 public class FtpSftpUtil {
 
 	static Logger logger = Logger.getLogger(FtpSftpUtil.class.getName());
 
 	/**
-	 * @param args
+	 * Returns the Session connected through Public-Private Key mechanism of the
+	 * required FTP Host mentioned in the Properties File
+	 * 
+	 * @return Session
+	 * @throws Exception
 	 */
-
 	public static Session getSFTPSession() throws Exception {
 
 		try {
@@ -45,7 +47,9 @@ public class FtpSftpUtil {
 			 */
 			jsch.addIdentity(Configuration.getClientPrivateKeyPath(),
 					"engrade-auth");
-			session = jsch.getSession(Configuration.getFtpUser(),Configuration.getFtpHost(),  Integer.parseInt(Configuration.getFtpPort()));
+			session = jsch.getSession(Configuration.getFtpUser(),
+					Configuration.getFtpHost(),
+					Integer.parseInt(Configuration.getFtpPort()));
 			session.setConfig("StrictHostKeyChecking", "no");
 			session.connect();
 			return session;
@@ -57,7 +61,11 @@ public class FtpSftpUtil {
 		}
 	}
 
-
+	/**
+	 * Disconnects the Session
+	 * 
+	 * @param session
+	 */
 	public static void closeSFTPClient(Session session) {
 		try {
 			session.disconnect();
@@ -66,7 +74,14 @@ public class FtpSftpUtil {
 		}
 	}
 
-	/* Consolidated :: */
+	/**
+	 * 
+	 * @param destinationPath
+	 *            - The Location where the files are to be placed
+	 * @param sourceFile
+	 *            - The Location from where the files are to be picked up
+	 * @throws Exception
+	 */
 	public void sendfilesSFTP(String destinationPath, String sourceFile)
 			throws Exception {
 
@@ -80,12 +95,10 @@ public class FtpSftpUtil {
 			sftpChannel = (ChannelSftp) channel;
 
 			String destination = destinationPath;
-			// sftpChannel.cd(destinationPath);
 			sftpChannel.put(sourceFile, destination);
 
 		} catch (SftpException e) {
-			System.err.println("Exception : " + e.getMessage());
-			e.printStackTrace();
+			logger.info("Exception : " + e.getMessage());
 		} finally {
 			if (sftpChannel != null) {
 				sftpChannel.exit();
@@ -97,6 +110,14 @@ public class FtpSftpUtil {
 
 	}
 
+	/**
+	 * Downloads file from sourceDir to targetDir using Session
+	 * 
+	 * @param session
+	 * @param sourceDir
+	 * @param targetDir
+	 * @throws Exception
+	 */
 	public static void downloadFiles(Session session, String sourceDir,
 			String targetDir) throws Exception {
 		System.out.println("Download Start Time: "
@@ -119,13 +140,10 @@ public class FtpSftpUtil {
 							.println("More than 1 files are present. System will exit.");
 					throw new Exception();
 				}
-				// System.out.println("Start Time: "+new
-				// Date(System.currentTimeMillis()));
 				for (Iterator iterator = fileList.iterator(); iterator
 						.hasNext();) {
 					ChannelSftp.LsEntry entry = (ChannelSftp.LsEntry) iterator
 							.next();
-					// System.out.println("File: "+entry.getFilename());
 					try {
 						inStream = sftpChannel.get(entry.getFilename());
 						File filename = new File(targetDir);
@@ -135,7 +153,7 @@ public class FtpSftpUtil {
 								+ File.separator + entry.getFilename()));
 
 						if (inStream == null) {
-							System.out.println("Could not retrieve file...."
+							logger.info("Could not retrieve file...."
 									+ entry.getFilename());
 							continue;
 						}
@@ -145,38 +163,36 @@ public class FtpSftpUtil {
 						while ((read = inStream.read(bytes)) != -1) {
 							outStream.write(bytes, 0, read);
 						}
-						System.out.println("File ->" + entry.getFilename()
+						logger.info("File ->" + entry.getFilename()
 								+ " downloaded successfully...");
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						System.out.println("File ->" + entry.getFilename()
+						logger.info("File ->" + entry.getFilename()
 								+ " download failed...");
-						e.printStackTrace();
+						e.getMessage();
 						throw e;
 					} finally {
 						if (inStream != null) {
 							try {
 								inStream.close();
 							} catch (IOException e) {
-								e.printStackTrace();
+								e.getMessage();
 							}
 						}
 						if (outStream != null) {
 							try {
-								// outputStream.flush();
 								outStream.close();
 							} catch (IOException e) {
-								e.printStackTrace();
+								e.getMessage();
 							}
 
 						}
 					}
 				}
 			} else {
-				System.out.println("******No Files Present:**** "
+				logger.info("******No Files Present:**** "
 						+ new Date(System.currentTimeMillis()));
 			}
-			System.out.println("Download End Time: "
+			logger.info("Download End Time: "
 					+ new Date(System.currentTimeMillis()));
 			logger.info("Download End Time: "
 					+ new Date(System.currentTimeMillis()));
@@ -199,6 +215,15 @@ public class FtpSftpUtil {
 		}
 	}
 
+	/**
+	 * Archives file from sourceDir to targetDir using session
+	 * 
+	 * @param session
+	 * @param sourceDir
+	 * @param targetDir
+	 * @param fileName
+	 * @throws Exception
+	 */
 	public static void archiveProcessedFiles(Session session, String sourceDir,
 			String targetDir, String fileName) throws Exception {
 		ChannelSftp sftpChannel = null;
@@ -215,59 +240,17 @@ public class FtpSftpUtil {
 			sftpChannel.mkdir(targetDir + archiveDate);
 			sftpChannel.rename(sourceDir + fileName, targetDir + archiveDate
 					+ "/" + fileName);
-			System.out
-					.println("File -> \"" + fileName
-							+ "\": archived successfully to " + targetDir
-							+ archiveDate);
+			logger.info("File -> \"" + fileName
+					+ "\": archived successfully to " + targetDir + archiveDate);
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.getMessage();
 			throw e;
 		} finally {
 			if (sftpChannel != null) {
 				try {
 					sftpChannel.exit();
 				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-			if (session != null) {
-				session.disconnect();
-			}
-		}
-	}
-
-	public static void accessSftpFolder(Session session, String sourceDir) {
-		ChannelSftp sftpChannel = null;
-		try {
-			Channel channel = session.openChannel("sftp");
-			channel.connect();
-			sftpChannel = (ChannelSftp) channel;
-			sftpChannel.cd(sourceDir);
-			Vector fileList = sftpChannel.ls("*.xml");
-			for (Iterator iterator = fileList.iterator(); iterator.hasNext();) {
-				ChannelSftp.LsEntry entry = (ChannelSftp.LsEntry) iterator
-						.next();
-				// sftpChannel.get(entry.getFilename(), destinationPath +
-				// entry.getFileName());
-				System.out.println("File: " + entry.getFilename());
-				InputStream is = sftpChannel.get(entry.getFilename());
-				System.out.println("Start Time: "
-						+ new Date(System.currentTimeMillis()));
-				// parseXMLFile(is);
-				System.out.println("End Time: "
-						+ new Date(System.currentTimeMillis()));
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		} finally {
-			if (sftpChannel != null) {
-				try {
-					sftpChannel.exit();
-				} catch (Exception e) {
-					e.printStackTrace();
+					e.getMessage();
 				}
 
 			}

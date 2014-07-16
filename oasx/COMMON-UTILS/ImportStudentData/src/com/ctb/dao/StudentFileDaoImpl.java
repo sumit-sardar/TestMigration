@@ -4,9 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.apache.log4j.Logger;
 
@@ -19,11 +17,23 @@ import com.ctb.bean.StudentFileRow;
 import com.ctb.utils.SQLUtil;
 import com.ctb.utils.cache.StudentDBCacheImpl;
 
+/**
+ * Implementation class for StudentFileDao Interface
+ * @author TCS
+ */
 public class StudentFileDaoImpl implements StudentFileDao {
 
 	private static Logger logger = Logger.getLogger(StudentFileDaoImpl.class
 			.getName());
 
+	/**
+	 * Returns CustomerConfigurationValues for GRADE customerConfiguration of a
+	 * Particular Customer
+	 * 
+	 * @param customerId
+	 * @return CustomerConfigurationValue
+	 * @throws Exception
+	 */
 	public CustomerConfigurationValue[] getCustomerConfigurationValuesForGrades(
 			int customerId) throws Exception {
 		Connection conn = null;
@@ -50,10 +60,9 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} catch (SQLException e) {
 			logger.error("SQL Exception in getCustomerConfigurationValuesForGrades-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Exception in getCustomerConfigurationValuesForGrades");
-			e.printStackTrace();
+			logger.error("Exception in getCustomerConfigurationValuesForGrades"
+					+ e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
@@ -63,6 +72,13 @@ public class StudentFileDaoImpl implements StudentFileDao {
 						.size()]);
 	}
 
+	/**
+	 * Used for Collecting the Set of StudentDemoGraphics for a Customer
+	 * 
+	 * @param customerId
+	 * @return StudentDemoGraphics[]
+	 * @throws Exception
+	 */
 	public StudentDemoGraphics[] getStudentDemoGraphics(Integer customerId)
 			throws Exception {
 		Connection conn = null;
@@ -95,10 +111,8 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} catch (SQLException e) {
 			logger.error("SQL Exception in getStudentDemoGraphics-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Exception in getStudentDemoGraphics");
-			e.printStackTrace();
+			logger.error("Exception in getStudentDemoGraphics" + e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
@@ -107,6 +121,14 @@ public class StudentFileDaoImpl implements StudentFileDao {
 				.toArray(new StudentDemoGraphics[studentDemographicsList.size()]);
 	}
 
+	/**
+	 * This method will return the CustomerDemographicValue for a particular
+	 * CustomerDemographicId
+	 * 
+	 * @param customerDemographicId
+	 * @return CustomerDemographicValue[]
+	 * @throws Exception
+	 */
 	public CustomerDemographicValue[] getCustomerDemographicValue(
 			Integer customerDemographicId) throws Exception {
 
@@ -138,10 +160,9 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} catch (SQLException e) {
 			logger.error("SQL Exception in getCustomerDemographicValue-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Exception in getCustomerDemographicValue");
-			e.printStackTrace();
+			logger.error("Exception in getCustomerDemographicValue"
+					+ e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
@@ -152,6 +173,14 @@ public class StudentFileDaoImpl implements StudentFileDao {
 
 	}
 
+	/**
+	 * This method will return the CustomerConfiguration of particular set of
+	 * Accommodation for a customer.
+	 * 
+	 * @param customerId
+	 * @return CustomerConfig[]
+	 * @throws Exception
+	 */
 	public CustomerConfig[] getCustomerConfigurationForAccommodation(
 			Integer customerId) throws Exception {
 
@@ -181,10 +210,9 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} catch (SQLException e) {
 			logger.error("SQL Exception in getCustomerConfigurationForAccommodation-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Exception in getCustomerConfigurationForAccommodation");
-			e.printStackTrace();
+			logger.error("Exception in getCustomerConfigurationForAccommodation"
+					+ e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
@@ -194,6 +222,15 @@ public class StudentFileDaoImpl implements StudentFileDao {
 
 	}
 
+	/**
+	 * This method will check if a particular customerConfiguration is present
+	 * or not for a customer
+	 * 
+	 * @param customerId
+	 * @param customerConfigurationName
+	 * @return boolean
+	 * @throws Exception
+	 */
 	public boolean checkCustomerConfigurationEntries(Integer customerId,
 			String customerConfigurationName) throws Exception {
 
@@ -214,16 +251,24 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} catch (SQLException e) {
 			logger.error("SQL Exception in checkCustomerConfigurationEntries-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Exception in checkCustomerConfigurationEntries");
-			e.printStackTrace();
+			logger.error("Exception in checkCustomerConfigurationEntries"
+					+ e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
 		return exist;
 	}
 
+	/**
+	 * This method will return the default value of a customerConfiguration for
+	 * a customer
+	 * 
+	 * @param customerId
+	 * @param customerConfigurationName
+	 * @return String
+	 * @throws Exception
+	 */
 	public String checkCustomerConfiguration(Integer customerId,
 			String customerConfigurationName) throws Exception {
 
@@ -244,16 +289,22 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} catch (SQLException e) {
 			logger.error("SQL Exception in checkCustomerConfiguration-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Exception in checkCustomerConfiguration");
-			e.printStackTrace();
+			logger.error("Exception in checkCustomerConfiguration --> "
+					+ e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
 		return ccDefaultValue;
 	}
 
+	/**
+	 * This method will return the set of Node data for a customer.
+	 * 
+	 * @param customerId
+	 * @return Node[]
+	 * @throws Exception
+	 */
 	public Node[] getUserDataTemplate(Integer customerId) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -282,24 +333,29 @@ public class StudentFileDaoImpl implements StudentFileDao {
 				nodeList.add(node);
 			}
 		} catch (SQLException e) {
-			logger.error("SQL Exception in getCustomerConfigurationForAccommodation-- >"
+			logger.error("SQL Exception in getUserDataTemplate-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
+			logger.error("Exception in getUserDataTemplate" + e.getMessage());
 		} catch (Exception e) {
-			logger.error("Exception in getCustomerConfigurationForAccommodation");
-			e.printStackTrace();
+			logger.error("Exception in getUserDataTemplate" + e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
 		return nodeList.toArray(new Node[nodeList.size()]);
 	}
 
-	public void getExistStudentData(Integer customerId,StudentDBCacheImpl dbCache)
-			throws Exception {
+	/**
+	 * This method populates Cache with all existing student data in Database
+	 * 
+	 * @param customerId
+	 * @param dbCache
+	 * @throws Exception
+	 */
+	public void getExistStudentData(Integer customerId,
+			StudentDBCacheImpl dbCache) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rSet = null;
-		//ArrayList<StudentFileRow> studentFileRowList = new ArrayList<StudentFileRow>();
 		String queryString = " select distinct stu.student_id  as studentId, stu.user_Name   as userName , stu.ext_Pin1    as extPin1 , stu.ext_Pin2   as extPin2 from student stu , org_node_student ons , org_node org where stu.activation_status = 'AC' and stu.customer_id = org.customer_id and org.org_node_id = ons.org_node_id and ons.student_id = stu.student_id and org.customer_id = ? and org.activation_status = 'AC' and ons.activation_status = 'AC'  ";
 
 		try {
@@ -315,45 +371,30 @@ public class StudentFileDaoImpl implements StudentFileDao {
 				studentFileRow.setExtPin1(rSet.getString("extPin1"));
 				studentFileRow.setExtPin2(rSet.getString("extPin2"));
 				studentFileRow.setCustomerId(customerId);
-				/*studentFileRow.setKey((studentFileRow.getExtPin1()!= null )? studentFileRow.getExtPin1().trim() : generateKey(studentFileRow) );*/
 				studentFileRow.setKey(studentFileRow.getExtPin1());
-				//studentFileRowList.add(studentFileRow);
-				dbCache.addStudentFileRow(studentFileRow.getKey(), studentFileRow);
+				dbCache.addStudentFileRow(studentFileRow.getKey(),
+						studentFileRow);
 			}
 		} catch (SQLException e) {
 			logger.error("SQL Exception in getCustomerConfigurationForAccommodation-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
+			logger.error("Exception in getCustomerConfigurationForAccommodation "
+					+ e.getMessage());
 		} catch (Exception e) {
-			logger.error("Exception in getCustomerConfigurationForAccommodation");
-			e.printStackTrace();
+			logger.error("Exception in getCustomerConfigurationForAccommodation "
+					+ e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
-		//return studentFileRowList.toArray(new StudentFileRow[studentFileRowList
-			//	.size()]);
 	}
 
-	/*private String generateKey(StudentFileRow studentFileRow) {
-
-		String middleName = "";
-		if(null!=studentFileRow.getMiddleName())
-			middleName = studentFileRow.getMiddleName().toUpperCase();
-		String key = studentFileRow.getFirstName().toUpperCase()
-				+ middleName
-				+ studentFileRow.getLastName().toUpperCase()
-				+ studentFileRow.getGender();
-
-		String datefromDB = "";
-		Date dbDate = studentFileRow.getBirthdate();
-		if (dbDate != null && !dbDate.equals("")) {
-			// Update Student
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-			datefromDB = sdf.format(dbDate);
-		}
-		return key + datefromDB;
-	}*/
-
+	/**
+	 * This method returns the TopNode Details for a customer
+	 * 
+	 * @param customerId
+	 * @return Node[]
+	 * @throws Exception
+	 */
 	public Node[] getTopNodeDetails(Integer customerId) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -384,16 +425,21 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} catch (SQLException e) {
 			logger.error("SQL Exception in getTopNodeDetails-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Exception in getTopNodeDetails");
-			e.printStackTrace();
+			logger.error("Exception in getTopNodeDetails" + e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
 		return nodeList.toArray(new Node[nodeList.size()]);
 	}
 
+	/**
+	 * This method checks if the mdrNumber is Unique or not
+	 * 
+	 * @param selectedMdrNumber
+	 * @return String
+	 * @throws Exception
+	 */
 	public String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber)
 			throws Exception {
 		Connection conn = null;
@@ -412,16 +458,25 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} catch (SQLException e) {
 			logger.error("SQL Exception in checkUniqueMdrNumberForOrgNodes-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
+			logger.error("Exception in checkUniqueMdrNumberForOrgNodes"
+					+ e.getMessage());
 		} catch (Exception e) {
-			logger.error("Exception in checkUniqueMdrNumberForOrgNodes");
-			e.printStackTrace();
+			logger.error("Exception in checkUniqueMdrNumberForOrgNodes"
+					+ e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
 		return uniqueNumber;
 	}
 
+	/**
+	 * This method checks if the StudentId is unique or not for a Customer.
+	 * 
+	 * @param studentId
+	 * @param customerId
+	 * @return String
+	 * @throws Exception
+	 */
 	public String checkUniqueStudentId(String studentId, Integer customerId)
 			throws Exception {
 		Connection conn = null;
@@ -441,10 +496,9 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		} catch (SQLException e) {
 			logger.error("SQL Exception in checkUniqueStudentId-- >"
 					+ e.getErrorCode());
-			e.printStackTrace();
+			logger.error("Exception in checkUniqueStudentId" + e.getMessage());
 		} catch (Exception e) {
-			logger.error("Exception in checkUniqueStudentId");
-			e.printStackTrace();
+			logger.error("Exception in checkUniqueStudentId" + e.getMessage());
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}

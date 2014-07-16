@@ -8,46 +8,66 @@ import net.sf.ehcache.Element;
 
 import com.ctb.bean.StudentFileRow;
 
-
-
+/**
+ * This Class is used for implementing Cache for Students records present in
+ * Database for a particular Customer
+ */
 public class StudentDBCacheImpl {
 
 	private static final CacheManager cacheManager;
 
-	static
-	{
+	static {
 
-		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-		InputStream resourceAsStream = contextClassLoader.getResourceAsStream("CacheConfiguration.xml");
+		ClassLoader contextClassLoader = Thread.currentThread()
+				.getContextClassLoader();
+		InputStream resourceAsStream = contextClassLoader
+				.getResourceAsStream("CacheConfiguration.xml");
 		cacheManager = CacheManager.create(resourceAsStream);
 	}
 
-
 	private Ehcache studentCache;
 
-	public StudentDBCacheImpl()
-	{       
+	/**
+	 * No Argument Constructor
+	 */
+	public StudentDBCacheImpl() {
 		studentCache = cacheManager.getEhcache("studentFileRows");
 	}
 
-	public long getCacheSize(){
+	/**
+	 * Returns the cache size
+	 * 
+	 * @return - long Cache Size
+	 */
+	public long getCacheSize() {
 		return studentCache.getSize();
 	}
-	public long getSizeOnDisk(){
-		return studentCache.calculateOnDiskSize();
-	}
-	public void addStudentFileRow(String key, StudentFileRow student)
-	{        
-		Element element = new Element(key, student);         
+
+	/**
+	 * Puts the StudentFileRow record in Cache and maps it with the ExtPin1 key
+	 * 
+	 * @param key
+	 *            - ExtPin1 of Student
+	 * @param student
+	 *            - StudentFileRow Object
+	 */
+	public void addStudentFileRow(String key, StudentFileRow student) {
+		Element element = new Element(key, student);
 
 		studentCache.put(element);
 	}
 
-	public StudentFileRow getStudentFileRow(String key)
-	{       
+	/**
+	 * Returns the StudentFileRow object based upon the ExtPin1 key
+	 * 
+	 * @param key
+	 *            - ExtPin1 of Student
+	 * @return StudentFileRow
+	 */
+	@SuppressWarnings("deprecation")
+	public StudentFileRow getStudentFileRow(String key) {
 		Element element = studentCache.get(key);
-		if (element != null)
-		{
+		if (element != null) {
 
 			return (StudentFileRow) element.getValue();
 		}

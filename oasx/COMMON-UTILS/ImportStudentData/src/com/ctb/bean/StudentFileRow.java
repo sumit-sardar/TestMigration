@@ -1,7 +1,10 @@
 package com.ctb.bean;
 
-import java.util.Date;
-
+/**
+ * Data bean representing the Student-data fetched from Database
+ * @author TCS
+ *
+ */
 public class StudentFileRow extends CTBBean {
 	static final long serialVersionUID = 1L;
 	private String key;
@@ -9,25 +12,10 @@ public class StudentFileRow extends CTBBean {
 	private String userName;
 	private Integer customerId;
 	private Node[] organizationNodes;
-
-	/*
-	 * private String firstName; private String middleName; private String
-	 * lastName; private Date birthdate; private String headerDateOfBirth;
-	 * private String gender; private String grade; private String extElmId;
-	 */
 	private String extPin1;
 	private String extPin2;
 	private StudentDemoGraphics []studentDemoGraphics;
 
-	/*
-	 * private String extPin2; private String screenReader; private String
-	 * calculator; private String testPause; private String untimedTest; private
-	 * String questionBackgroundColor; private String questionFontColor; private
-	 * String questionFontSize; private String answerBackgroundColor; private
-	 * String answerFontColor; private String answerFontSize; private String
-	 * highlighter; private Integer customerId; private Node[]
-	 * organizationNodes; private StudentDemoGraphics []studentDemoGraphics;
-	 */
 	public String getKey() {
 		return key;
 	}

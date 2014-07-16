@@ -2,9 +2,9 @@ package com.ctb.bean;
 
 
 /**
- * Data bean representing the contents of the OAS.STUDENT_ACCOMMODATIONS table
+ * Data bean representing the contents of the STUDENT_ACCOMMODATIONS table
  * 
- * @author Tata Consultancy Services
+ * @author TCS
  */
 public class StudentAccommodations extends CTBBean
 { 
@@ -23,15 +23,15 @@ public class StudentAccommodations extends CTBBean
     private String answerBackgroundColor;
     private String answerFontColor;
     private String answerFontSize;
-    private String colorFont;//bulk accommodation new field
+    private String colorFont;
     private String highlighter;
-    private String maskingRuler;//Added for masking
-    private String auditoryCalming;//Added for auditory calming
-    private String musicFile;//Added for auditory calming
-    private String magnifyingGlass;//Added for magnifier
-    private String extendedTime; // Added for student pacing
-    private String maskingTool; // Added for masking answers
-    private String microphoneHeadphone; // Added for Microphone and Headphone
+    private String maskingRuler;
+    private String auditoryCalming;
+    private String musicFile;
+    private String magnifyingGlass;
+    private String extendedTime;
+    private String maskingTool; 
+    private String microphoneHeadphone; 
     private Double extendedTimeFactor;
     
     
@@ -61,7 +61,6 @@ public class StudentAccommodations extends CTBBean
 	public void setExtendedTime(String extendedTime) {
 		this.extendedTime = extendedTime;
 	}
-	// End changes for student pacing
 	
 	/**
 	 * @return Returns the orgNodeId.
