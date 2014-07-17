@@ -31,7 +31,16 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 	private static final String LTI_USER_ID = "LTI_UserID";
 	private static final String LTI_USER_NAME = "LTI_UserName";
 	private static final String LTI_ROLE_NAME = "LTI_RoleName";
-	
+
+	// error codes
+	private static final String ERROR_UNKNOWN_CUSTOMER = "unknown_customer";
+	private static final String ERROR_UNKNOWN_USER = "unknown_user";// user id
+																	// is
+																	// invalid
+	private static final String ERROR_LTI_ERROR = "lti_error";// signature is
+																// invalid
+	private static final String ERROR_USER_DISABLED = "";
+
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -61,31 +70,47 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
+		LTIValidation validation = new LTIValidation();
+		String errorURL = request.getParameter("lti_return_url");
+		
 		String customerID = request.getParameter("oauth_consumer_key");
 		if (customerID == null || customerID.isEmpty()) {
 			System.out.println("Customer ID cannot blank");
-			request.setAttribute("message","Consumer key cannot be blank");
-			gotoErrorPage(request,response);
+			
+			if(errorURL == null || errorURL.isEmpty())
+			{
+					errorURL = "/LTIError.jsp";	
+			}
+			gotoErrorPage(request,response,errorURL,ERROR_UNKNOWN_CUSTOMER,"Consumer key cannot be blank");
 			return;
+		}
+		//retrieve the URL from database if not sent as a parameter
+		if(errorURL == null || errorURL.isEmpty())
+		{
+			errorURL = validation.getErrorURL(customerID);
+			if(errorURL==null || errorURL.isEmpty()){
+				errorURL = "/LTIError.jsp";// error page link was not provided
+											// by the provider as well as in the
+											// database.
+			}
 		}
 		String userID = request.getParameter("user_id");
 		if (userID == null || userID.isEmpty()) {
 			System.out.println("User ID cannot be blank");
-			request.setAttribute("message","Consumer key cannot be blank");
-			gotoErrorPage(request,response);
+			gotoErrorPage(request,response,errorURL,ERROR_UNKNOWN_USER,"User ID cannot be blank");
 			
 			return;
 		}
-		LTIValidation validation = new LTIValidation();
+		
 		String secretKey = validation.getSecretKey(customerID);
 		if(secretKey == null || secretKey.isEmpty())
 		{
 			System.out.println("Secret key not defined for customer "+customerID);
-			request.setAttribute("message","Secret key not defined for customer "+customerID);
-			gotoErrorPage(request,response);
+			gotoErrorPage(request,response,errorURL,ERROR_LTI_ERROR,"Secret key not defined for "+customerID);
 			
 			return;
 		}
+		
 		if (validation.validateRequest(request,secretKey )) {
 			
 			if (validation.validateCustomer(customerID)) {
@@ -95,11 +120,12 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 					System.out.println("User ID does not exist - user id:" + userID
 							+ " customer id:" + customerID);
 					request.setAttribute("message","User ID does not exist");
-					gotoErrorPage(request,response);
+					
+					gotoErrorPage(request,response,errorURL,ERROR_UNKNOWN_USER,"User ID does not exist");
 					return;
 				}
 				else
-				{//the user is valid
+				{// the user is valid
 					validation.updateLogInTime(user.getUserId());
 					System.out.println("LTI Authentication Successful."+user.getUserId()+","+user.getUserName()+
 							","+user.getRole().getRoleName());
@@ -117,70 +143,65 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 						e.printStackTrace();
 					}
 					response.sendRedirect("sessionOperation/begin.do");
-					//response.setHeader("Location","SessionOperationController/gotoCurrentUI.do");
+					// response.setHeader("Location","SessionOperationController/gotoCurrentUI.do");
 					
 				}
 			}
 			else
 			{
 				System.out.println("Customer ID is invalid");
-				//response.getWriter().write("Customer ID cannot blank");
-				request.setAttribute("message","Consumer key is not valid");
-				gotoErrorPage(request,response);
+				
+				gotoErrorPage(request,response,errorURL,ERROR_UNKNOWN_CUSTOMER,"Customer ID is invalid");
 				return;
 			}
 		} else {
 			System.out.println("Signature not valid");
 			request.setAttribute("message","Signature is invalid");
-			gotoErrorPage(request,response);
+			gotoErrorPage(request,response,errorURL,ERROR_LTI_ERROR,"Signature is invalid");
 			
 		}
 	}
-	private void gotoErrorPage(HttpServletRequest request, HttpServletResponse response)
-	{
+
+	private void gotoErrorPage(HttpServletRequest request,
+			HttpServletResponse response, String errorURL, String errorCode,
+			String errorMsg) {
 		try {
-			RequestDispatcher rd = getServletContext().getRequestDispatcher("/LTIError.jsp");
-			if(rd==null)
-			{
+			request.setAttribute("message",errorCode+":"+ errorMsg);
+			RequestDispatcher rd = getServletContext().getRequestDispatcher(errorURL);
+			if (rd == null) {
 				System.out.println("************Page URL is wrong");
-			}
-			else
-			{
-				rd.forward(request,response);
+			} else {
+				rd.forward(request, response);
 			}
 		} catch (ServletException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 	}
-	private class LTICallbackHandler implements CallbackHandler
-	{
+
+	private class LTICallbackHandler implements CallbackHandler {
 
 		@Override
 		public void handle(Callback[] callbacks) throws IOException,
 				UnsupportedCallbackException {
-			if(callbacks!=null){
-				for(int i=0;i<callbacks.length;i++)
-				{
-					System.out.println("call back class..."+callbacks[i].getClass().getName());
-					if(callbacks[i] instanceof NameCallback)
-					{
-						NameCallback nc = (NameCallback)callbacks[i];
+			if (callbacks != null) {
+				for (int i = 0; i < callbacks.length; i++) {
+					// System.out.println("call back
+					// class..."+callbacks[i].getClass().getName());
+					if (callbacks[i] instanceof NameCallback) {
+						NameCallback nc = (NameCallback) callbacks[i];
 						nc.setName("tai_tasc");
-					}
-					else
-					if(callbacks[i] instanceof PasswordCallback)
-					{
-						PasswordCallback pc = (PasswordCallback)callbacks[i];
+					} else if (callbacks[i] instanceof PasswordCallback) {
+						PasswordCallback pc = (PasswordCallback) callbacks[i];
 						pc.setPassword("welcome1".toCharArray());
 					}
 				}
 			}
-			
+
 		}
-		
+
 	}
 }
