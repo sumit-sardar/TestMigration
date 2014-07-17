@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Formatter;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -23,13 +22,26 @@ import javax.xml.bind.DatatypeConverter;
 import com.ctb.bean.testAdmin.Role;
 import com.ctb.bean.testAdmin.User;
 
+/**
+ * @author d-arockiaraj_Duraira
+ *
+ */
+/**
+ * @author d-arockiaraj_Duraira
+ *
+ */
 public class LTIValidation {
 
-	private static final String OAUTH_PREFIX = "oauth_";
+	//private static final String OAUTH_PREFIX = "oauth_";
 	private static final String OAUTH_SIGNATURE = "oauth_signature";
 	private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 	private static final String DATASOURCE_NAME = "oasDataSource";
 
+	
+	/**
+	 * @param customerID - customer ID of the user
+	 * @return the secret key for the customer ID
+	 */
 	public String getSecretKey(String customerID)
 	{
 		String skey = null;
@@ -43,7 +55,7 @@ public class LTIValidation {
 
 			Connection con = ds.getConnection();
 			PreparedStatement secretKeyStmt = con
-					.prepareStatement("SELECT secret_key FROM ENGRADE_CUSTOMER_KEY WHERE CUSTOMER_ID = ? ");
+					.prepareStatement("SELECT secret_key FROM SSO_CUSTOMER_INFO WHERE CUSTOMER_ID = ? ");
 
 			// Query for a secret key by the customer id
 			secretKeyStmt.setString(1, customerID);
@@ -52,6 +64,48 @@ public class LTIValidation {
 			boolean exists = rs.next();
 			if (exists) {
 				skey = rs.getString("secret_key")+"&";
+			}
+			rs.close();
+			secretKeyStmt.close();
+			con.close();
+
+		} catch (NamingException e) {
+			
+			e.printStackTrace();
+
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		return skey;
+	}
+	
+	/**
+	 * @param customerID - customer ID of the user
+	 * @return the error URL of engrade
+	 */
+	public String getErrorURL(String customerID)
+	{
+		String skey = null;
+		InitialContext ctx;
+		try {
+			ctx = new InitialContext();
+
+			DataSource ds = null;
+
+			ds = (DataSource) ctx.lookup(DATASOURCE_NAME);
+
+			Connection con = ds.getConnection();
+			PreparedStatement secretKeyStmt = con
+					.prepareStatement("SELECT ERROR_RETURN_URL FROM SSO_CUSTOMER_INFO WHERE CUSTOMER_ID = ? ");
+
+			// Query for a secret key by the customer id
+			secretKeyStmt.setString(1, customerID);
+			ResultSet rs = secretKeyStmt.executeQuery();
+
+			boolean exists = rs.next();
+			if (exists) {
+				skey = rs.getString("ERROR_RETURN_URL");
 			}
 			rs.close();
 			secretKeyStmt.close();
@@ -180,11 +234,11 @@ public class LTIValidation {
 			}
 
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		return result;
