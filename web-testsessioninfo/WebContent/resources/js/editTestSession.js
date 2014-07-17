@@ -353,7 +353,7 @@
 		var editEndDateValue = $("#endDate").val();
 		$("#editEndDate").val(editEndDateValue);
 		
-		if(isCopySession && data.savedTestDetails.testSession.productId && (data.savedTestDetails.testSession.productType != "TS")){
+		if(isCopySession && data.savedTestDetails.testSession.productId == 4201 && (data.savedTestDetails.testSession.productType != "TS")){
 			var tempDate =  $('#startDate').datepicker('getDate');
 			if (tempDate) {
             	tempDate.setDate(tempDate.getDate() + 1);
