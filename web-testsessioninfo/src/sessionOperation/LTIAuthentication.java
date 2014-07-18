@@ -142,6 +142,8 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					//**[IAA]: OAS-457 LAS 2014 - LAUSD - SSO - Hide LogOut menu
+					sess.setAttribute("isSSO_LTIUser",LTI_TRUE);
 					response.sendRedirect("sessionOperation/begin.do");
 					// response.setHeader("Location","SessionOperationController/gotoCurrentUI.do");
 					
