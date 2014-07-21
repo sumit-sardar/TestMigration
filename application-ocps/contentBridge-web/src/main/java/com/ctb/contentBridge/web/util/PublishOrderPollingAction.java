@@ -39,7 +39,8 @@ public class PublishOrderPollingAction implements Runnable {
 
         
       logger.info("Start");
-		String sPropFilePath = System.getProperty("PROPERTIES_FILE_PATH");
+		 String sPropFilePath = System.getProperty("PROPERTIES_FILE_PATH");
+         //String sPropFilePath  = "D://OCPS_Local_File//SystemConfig.properties";
 		System.out.println("PropFilePath:	" + sPropFilePath);
 		
          File configFile=new File(sPropFilePath);
@@ -68,19 +69,22 @@ public class PublishOrderPollingAction implements Runnable {
 						System.out.println("Processing job starts:	"+ vJobBean.getJobPk());
 						vContentBridgeService.updateJobStatus(configuration,
 								vJobBean.getJobPk(), "In Progress", "");
+						//System.out.println("After DB Update IN Progress");
 						commandLine = new CommandLine();
 						commandLine.setCommand(vJobBean.getCommand());
 						commandLine.setParameters(vJobBean.getParameters());
 						
 						ContentImportModule vContentImportModule = new ContentImportModule();
+					//	System.out.println("Before Report");
 						 report = vContentImportModule.begin(commandLine);
-
+                      //  System.out.println("\nAfter Getting Report >> "+report);
 						String jobStatus = "Error";
 						String errMsg = "";
 						String subject = "";
 						String subjectBig = "OCS Job ";
 						 String msgText = "";
 						if (report != null) {
+							
 							if (report.isSuccess()) {
 								jobStatus = "Success";
 								msgText = report.toString();
@@ -94,6 +98,7 @@ public class PublishOrderPollingAction implements Runnable {
 								msgText = errMsg;
 							}
 						} else {
+							//System.out.println("\n report is null ..."+report);
 							jobStatus = "Error";
 							errMsg = "Error has occurred in publish process.";
 							msgText = errMsg;
@@ -117,6 +122,7 @@ public class PublishOrderPollingAction implements Runnable {
 								vJobBean.getJobPk(), jobStatus, errMsg);
 						System.out.println("Processing job ends:	"+ vJobBean.getJobPk());
 						logger.info("Message for Mail : "+msgText);
+						//Comment this while running in local..
 						emailGateway.sendEmail(subject,msgText);
 						
 					}
