@@ -88,7 +88,7 @@ public interface UploadDataFile extends JdbcControl
      *      order by cat.category_level, parent.parent_org_node_id::
      */
     @JdbcControl.SQL(statement = "select distinct  parent.parent_org_node_id as parentorgNodeId,  descendant_node.org_node_id as orgNodeId,  descendant_node.customer_id as customerId,  descendant_node.org_node_category_id as orgNodeCategoryId,  descendant_node.org_node_name as orgNodeName,  descendant_node.activation_status as activationStatus,  descendant_node.org_node_code as orgNodeCode,  cat.category_name as orgNodeCategoryName,  cat.category_level as categoryLevel , nvl(descendant_node.org_node_mdr_number,' ')    as mdrNumber from  org_node node,  org_node_category cat,  org_node_ancestor descendants,  org_node descendant_node,  user_role uor,  users,  user_role tur,  org_node_parent parent,  users tu where  cat.org_node_category_id = descendant_node.org_node_category_id  and node.org_node_id = tur.org_node_id  and tur.user_id = tu.user_id  and tu.user_name = {userName}  and node.org_node_id = descendants.ancestor_org_node_id  and descendants.org_node_id = descendant_node.org_node_id  and parent.org_node_id = descendant_node.org_node_id  and descendant_node.activation_status = 'AC'  and uor.org_node_id (+) = descendant_node.org_node_id  and users.user_id (+) = uor.user_id  order by cat.category_level, parent.parent_org_node_id",
-    		arrayMaxLength = 100000)
+    		arrayMaxLength = 0, fetchSize=1000)
     Node[] getUserDataTemplate(String userName) throws SQLException;
 
     /**
@@ -133,7 +133,7 @@ public interface UploadDataFile extends JdbcControl
      * connect by prior node.org_node_id = parent.parent_org_node_id::
      */
     @JdbcControl.SQL(statement = "select parent.parent_org_node_id as parentOrgNodeId,  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,  node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,  node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode,  cat.category_name as orgNodeCategoryName, node.org_node_mdr_number as mdrNumber  from  org_node_parent parent ,org_node node, org_node_category cat  where node.customer_id = {customerId} and node.org_node_id = parent.org_node_id  and node.activation_status = 'AC' and cat.activation_status = 'AC' and node.org_node_category_id = cat.org_node_category_id start with parent .org_node_id in \t(select org.org_node_id  from org_node org, org_node_parent op  where org.customer_id = {customerId} and org.activation_status = 'AC'  and op.org_node_id = org.org_node_id and op.parent_org_node_id = 2) connect by prior node.org_node_id = parent.parent_org_node_id",
-    		arrayMaxLength = 100000)
+    		arrayMaxLength = 0, fetchSize=1000)
     Node[] getOrgPathFromCustomerToLoginUser(Integer customerId) throws SQLException;
     
     /**
@@ -197,7 +197,7 @@ public interface UploadDataFile extends JdbcControl
      *                                    where user_name = {userName})))
      *  order by u.user_name::
      */
-    @JdbcControl.SQL(arrayMaxLength = 100000,
+    @JdbcControl.SQL(arrayMaxLength = 0, fetchSize=1000,
                      statement = "select u.user_id  as userId,  u.user_name  as userName,  u.first_name  as firstName,  u.middle_name  as middleName,  u.last_name  as lastName,  concat(concat(u.last_name, ', '),  concat(u.first_name, concat(' ', u.MIDDLE_NAME))) as displayUserName,  u.email  as email,  INITCAP(r.role_name)  as roleName,  r.role_id  as roleId,  u.ext_pin1  as extPin1,  u.ext_pin2  as extPin2,  u.address_id  as addressId,  node.org_node_id  as orgNodeId,  t.time_zone_desc  as timeZoneDese  from users u, user_role ur, role r, org_node node, time_zone_code t  where u.user_id = ur.user_id  and ur.org_node_id = node.org_node_id  and ur.role_id = r.role_id  and u.time_zone = t.time_zone  and node.activation_status = 'AC'  and u.activation_status = 'AC'  and ur.activation_status = 'AC'  and ur.org_node_id in  (select distinct ona.org_node_id  from org_node_ancestor ona  where ona.ancestor_org_node_id in  (select org_node_id  from user_role  where user_id = (select user_id  from users  where user_name = {userName})))  order by u.user_name")
     UserFileRow[] getUserData(String userName) throws SQLException;
 
@@ -285,7 +285,7 @@ public interface UploadDataFile extends JdbcControl
      *          where user_id =
      *                (select user_id from users where user_name = {userName}))::
      */
-    @JdbcControl.SQL(arrayMaxLength = 100000,
+    @JdbcControl.SQL(arrayMaxLength = 0, fetchSize=1000,
                      statement = "select distinct  stu.student_id  as studentId,  stu.user_Name  as userName,  stu.password  as password,  stu.first_Name  as firstName,  stu.middle_Name  as middleName,  stu.last_Name  as lastName,  concat(concat(stu.last_name, ', '),  concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as displayStudentName,  \t  stu.preferred_Name  as preferredName,  stu.prefix  as prefix,  stu.suffix  as suffix,  stu.birthdate  as birthdate,  stu.gender  as gender,  stu.ethnicity  as ethnicity,  stu.email  as email,  stu.grade  as grade,  stu.ext_Elm_Id  as extElmId,  stu.ext_Pin1  as extPin1,  stu.ext_Pin2  as extPin2,  stu.ext_Pin3  as extPin3,  stu.ext_School_Id  as extSchoolId,  stu.active_Session  as activeSession,  stu.potential_Duplicated_Student as potentialDuplicatedStudent,  stu.created_By  as createdBy,  stu.created_Date_Time  as createdDateTime,  stu.updated_By  as updatedBy,  stu.updated_Date_Time  as updatedDateTime,  stu.activation_Status  as activationStatus,  stu.data_import_history_id  as dataImportHistoryId,  stu.grade  as studentGrade,  accom.SCREEN_MAGNIFIER  as screenMagnifier,  accom.SCREEN_READER  as screenReader,  accom.CALCULATOR  as calculator,  accom.TEST_PAUSE  as testPause,  accom.UNTIMED_TEST  as untimedTest,  accom.HIGHLIGHTER  as highlighter,  accom.QUESTION_BACKGROUND_COLOR  as questionBackgroundColor,  accom.QUESTION_FONT_COLOR  as questionFontColor,  accom.QUESTION_FONT_SIZE  as questionFontSize,  accom.ANSWER_BACKGROUND_COLOR  as answerBackgroundColor,  accom.ANSWER_FONT_COLOR  as answerFontColor,  accom.ANSWER_FONT_SIZE  as answerFontSize,  accom.highlighter  as highlighter,  ons.org_node_id  as orgNodeId,  stucon.contact_name  as contactName,  stucon.street_line1  as address1,  stucon.street_line2  as address2,  stucon.street_line3  as address3,  stucon.city  as city,  st.statepr_desc  as state,  stucon.zipcode  as zip,  stucon.primary_phone  as primaryPhone,  stucon.secondary_phone  as secondaryPhone,  stucon.fax  as faxNumber  from org_node_student  ons,  student  stu,  org_node_ancestor  ona,  student_accommodation accom,  student_contact  stucon,  statepr_code  st,  country_code  cc  where accom.student_id(+) = stu.student_id  and stucon.student_id(+) = stu.student_id  and stucon.statepr = st.statepr(+)  and stucon.country = cc.country(+)  and ons.student_id = stu.student_id  and stu.activation_status = 'AC'  and ons.activation_status = 'AC'  and ons.org_node_id = ona.org_node_id  and ona.ancestor_org_node_id in  (select org_node_id  from user_role  where user_id =  (select user_id from users where user_name = {userName}))")
     StudentFileRow[] getStudentData(String userName) throws SQLException;
 
@@ -948,7 +948,7 @@ public interface UploadDataFile extends JdbcControl
      * array-max-length="all"
      */
     @JdbcControl.SQL(statement = "select  stu.student_id as studentId,  stu.user_Name as userName,  stu.password as password,  stu.first_Name as firstName,  stu.middle_Name as middleName,  stu.last_Name as lastName,  stu.preferred_Name as preferredName,  stu.prefix as prefix,  stu.suffix as suffix,  stu.birthdate as birthdate,  stu.gender as gender,  stu.ethnicity as ethnicity,  stu.email as email,  stu.grade as grade,  stu.ext_Elm_Id as extElmId,  stu.ext_Pin1 as extPin1,  stu.ext_Pin2 as extPin2,  stu.ext_Pin3 as extPin3,  stu.ext_School_Id as extSchoolId,  stu.active_Session as activeSession,  stu.potential_Duplicated_Student as potentialDuplicatedStudent,  stu.created_By as createdBy,  stu.created_Date_Time as createdDateTime,  stu.updated_By as updatedBy,  stu.updated_Date_Time as updatedDateTime,  stu.activation_Status as activationStatus,  stu.data_import_history_id as dataImportHistoryId from  org_node_student ons,  student stu where  ons.student_id = stu.student_id  and ons.org_node_id = {orgNodeId}  and ons.activation_status = 'AC'  and stu.activation_status = 'AC'",
-                     arrayMaxLength = 100000)
+                     arrayMaxLength = 0, fetchSize=1000)
     Student [] getStudentsForLeafOrgNode(Integer orgNodeId) throws SQLException;
     
 
@@ -1002,7 +1002,7 @@ public interface UploadDataFile extends JdbcControl
      * array-max-length="all"               
      */
     @JdbcControl.SQL(statement = " select distinct  stu.student_id  as studentId,  stu.user_Name  as userName,  stu.first_Name  as firstName,  stu.middle_Name  as middleName,  stu.last_Name  as lastName,  stu.birthdate  as birthdate,  stu.gender  as gender,  stu.grade  as grade,  stu.ext_Elm_Id  as extElmId,  stu.ext_Pin1  as extPin1,  stu.ext_Pin2  as extPin2  from org_node_student  ons,  student  stu,  org_node_ancestor  ona  where ons.student_id = stu.student_id and stu.activation_status = 'AC' and ons.activation_status = 'AC' and ons.org_node_id = ona.org_node_id  and ona.ancestor_org_node_id in  (select org_node_id  from user_role  where user_id =  (select user_id from users where user_name = {userName}))",
-                     arrayMaxLength = 100000)
+                     arrayMaxLength = 0, fetchSize=1000)
     StudentFileRow[] getExistStudentData(String userName) throws SQLException;
     
     /**
