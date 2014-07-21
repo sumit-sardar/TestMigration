@@ -143,7 +143,7 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 						e.printStackTrace();
 					}
 					//**[IAA]: OAS-457 LAS 2014 - LAUSD - SSO - Hide LogOut menu
-					sess.setAttribute("isSSO_LTIUser",LTI_TRUE);
+					sess.setAttribute("isSSO_LTIUser",new Boolean(Boolean.TRUE));
 					response.sendRedirect("sessionOperation/begin.do");
 					// response.setHeader("Location","SessionOperationController/gotoCurrentUI.do");
 					
