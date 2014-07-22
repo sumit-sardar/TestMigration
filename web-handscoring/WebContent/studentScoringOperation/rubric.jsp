@@ -31,7 +31,7 @@
 			<div id="rubricInfo" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important; height: 400px !important;"><!-- changes for defect #66994 -->
 				<TABLE>
 					<TR>
-						<div id='outerdiv' style="width:750px;height:380px; overflow-x: hidden;"><iframe id="rubricIframe"
+						<div id='outerdiv' style="width:750px;height:380px; overflow-x: hidden;"><iframe id="rubricIframe" class="rubricIframePage"
 							src="<%=request.getContextPath() %>/studentScoringOperation/rubricNew.jsp"
 							style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 99%; height: 98%;"
 							frameborder="1" scrollable="yes"></iframe></div>

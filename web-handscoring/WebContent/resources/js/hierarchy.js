@@ -1762,7 +1762,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 		var subIframe;
 		if(parentDivId != null && parentDivId != '') {
 			if (parentDivId == "answerDetail") {
-				subIframe = $('#rubricIframe','#rubricInfo');
+				subIframe = $('#rubricInfo .rubricIframePage');
 			}
 		}
 		else {
@@ -2121,6 +2121,9 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 function showAnswerPopup(id,itemSetOrder,itemType,testRosterId,itemSetId){
 
 		 	clearMessage();
+		 	parentDivId = $("#answerDetail").attr('id');
+		 	viewRubric(id,itemSetOrder, itemType, testRosterId, itemSetId);
+		 	
 			$("#answerDetail").dialog({  
 				title:$("#rubricPopupTitle").val() + itemSetOrder,  
 				resizable:false,
@@ -2130,10 +2133,8 @@ function showAnswerPopup(id,itemSetOrder,itemType,testRosterId,itemSetId){
 				closeOnEscape: false,
 				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 			});	
-			parentDivId = $("#answerDetail").attr('id');
 			
 			//alert("parentDivId -> " + parentDivId);
-		 	viewRubric(id,itemSetOrder, itemType, testRosterId, itemSetId);
 }
 
 function viewRubric (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
@@ -2158,8 +2159,8 @@ function viewRubric (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 var questionNumber = itemNumber;
 								 data1 = data.questionAnswer;		
-								 setTimeout("populateTableNew()", 500);						 
-								 //populateTableNew();	
+								 //setTimeout("populateTableNew()", 500);						 
+								 populateTableNew();
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 								$.unblockUI();  
