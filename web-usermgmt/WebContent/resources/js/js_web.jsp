@@ -116,25 +116,47 @@ function updateOrgNodeSelection(element)
                    		if(data != undefined && data != null) {
 							var x = data.replace(/\s+/, "");
 	                    	if(x == 'true') {
-	                    		if (document.getElementById("extSchoolIdTR") != undefined)
+	                    		if (document.getElementById("extSchoolIdTR") != undefined) {
 	                    			document.getElementById("extSchoolIdTR").style.display = "table-row";
+	                    		}
 	                    	}
-	                    	else if(x == 'false') {
+	                    	else {
 	                    		document.getElementById("extSchoolIdTR").style.display = "none";
 	                    		document.getElementById("extSchoolId").value = "";
 	                    	}
                    		}
 					},
 	                error : function(XMLHttpRequest, textStatus, errorThrown) {
-	                    alert( "Request failed: " + textStatus );
+	                    console.log("Request failed: " + textStatus);
 	                }
                });
            }
            if (!element.checked) {
-             	if (document.getElementById("extSchoolIdTR") != undefined) {
-             		document.getElementById("extSchoolIdTR").style.display = "none";
-             		document.getElementById("extSchoolId").value = "";
-             	}
+           postDataObject.selectedNodesOrgNodeId = element.value;
+           		jQuery.ajax({
+               	   async : false,
+                   url : 'uncheckHasCustomerExternalSchoolIdConfigurable.do',
+                   type : 'POST',
+                   dataType : 'text',
+                   data : postDataObject,
+                   success : function(data, textStatus, XMLHttpRequest) {
+                   		if(data != undefined && data != null) {
+							var x = data.replace(/\s+/, "");
+	                    	if(x == 'true') {
+	                    		if (document.getElementById("extSchoolIdTR") != undefined) {
+	                    			document.getElementById("extSchoolIdTR").style.display = "table-row";
+	                    		}
+	                    	}
+	                    	else {
+	                    		document.getElementById("extSchoolIdTR").style.display = "none";
+	                    		document.getElementById("extSchoolId").value = "";
+	                    	}
+                   		}
+					},
+	                error : function(XMLHttpRequest, textStatus, errorThrown) {
+	                    console.log("Request failed: " + textStatus);
+	                }
+                });
            }
 	}	
     

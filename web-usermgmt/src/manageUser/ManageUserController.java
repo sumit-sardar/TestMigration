@@ -199,6 +199,7 @@ public class ManageUserController extends PageFlowController
 	private boolean islaslinkCustomer = false;
 	private boolean isUsrAcctMgr = false;
 	private boolean hasExtSchoolIdConfigurable = false;
+	private int noOfLausdOrgNodeChecked = 0;
     
     
     /**
@@ -329,6 +330,8 @@ public class ManageUserController extends PageFlowController
         String actionElement = form.getActionElement();
             
         form.resetValuesForAction(actionElement, ACTION_FIND_USER);
+        this.noOfLausdOrgNodeChecked = 0;
+        this.hasExtSchoolIdConfigurable = false;
         this.getSession().removeAttribute("hasExtSchoolIdConfigurable");      
         if (currentAction.equals(ACTION_VIEW_USER) || currentAction.equals(ACTION_EDIT_USER) || currentAction.equals(ACTION_DELETE_USER) || currentAction.equals(ACTION_CHANGE_PASSWORD))
         {
@@ -1718,6 +1721,8 @@ public class ManageUserController extends PageFlowController
     	//System.out.println("View User");
 		saveToken(this.getRequest());		 //Changes for F5
         UserProfileInformation userProfile = null;
+        this.hasExtSchoolIdConfigurable = false;
+        this.noOfLausdOrgNodeChecked = 0;
         this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
         try
         {
@@ -3323,11 +3328,13 @@ public class ManageUserController extends PageFlowController
    @Jpf.Action()
    protected Forward checkHasCustomerExternalSchoolIdConfigurable()
    {      
-        HttpServletResponse resp=getResponse();
+        HttpServletResponse resp = getResponse();
+        resp.setContentType("application/text");
         OutputStream stream = null;
 		Integer orgNodeId = null;
-		this.hasExtSchoolIdConfigurable = false;
-		this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
+		if( this.noOfLausdOrgNodeChecked == 0 ) {
+			this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
+		}
         if(null != getRequest().getParameter("selectedNodesOrgNodeId")) {
         	orgNodeId = Integer.parseInt(getRequest().getParameter("selectedNodesOrgNodeId"));
         }
@@ -3337,16 +3344,17 @@ public class ManageUserController extends PageFlowController
 				if(null != customerConfigurations) {
 					if("EXT_SCHOOL_ID_Configurable".equalsIgnoreCase(customerConfigurations.getCustomerConfigurationName()) && 
 							"T".equals(customerConfigurations.getDefaultValue())) {
-						this.hasExtSchoolIdConfigurable = true;
-					}
+						this.noOfLausdOrgNodeChecked++;
+					}	
+				}
+				if(this.noOfLausdOrgNodeChecked > 0) {
+					this.hasExtSchoolIdConfigurable = true;
+					this.getSession().setAttribute("hasExtSchoolIdConfigurable", this.hasExtSchoolIdConfigurable);
+		        	String response = String.valueOf(this.hasExtSchoolIdConfigurable);
+		        	stream = resp.getOutputStream();
+		        	stream.write(response.getBytes());
 				}
         	}
-        	String response= String.valueOf(this.hasExtSchoolIdConfigurable);
-        	resp.setContentType("application/text");
-        	stream = resp.getOutputStream();
-        	stream.write(response.getBytes());
-        	resp.flushBuffer();
-        	getSession().setAttribute("hasExtSchoolIdConfigurable", this.hasExtSchoolIdConfigurable);
 		}
 		catch(SQLException se) {
 			se.printStackTrace();
@@ -3361,6 +3369,7 @@ public class ManageUserController extends PageFlowController
 			if(stream!=null) {
 				try{
 					stream.close();
+					resp.flushBuffer();
 				}catch(Exception e) {
 					resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					e.printStackTrace();
@@ -3372,9 +3381,64 @@ public class ManageUserController extends PageFlowController
   
 	  @Jpf.Action()
 	  protected Forward removeSessionVariable() {
+		  this.hasExtSchoolIdConfigurable = false;
+		  this.noOfLausdOrgNodeChecked = 0;
 		  if ( null != this.getSession().getAttribute("hasExtSchoolIdConfigurable") ) {
 			  this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
 		  }
+		  return null;
+	  }
+	  
+	  @Jpf.Action()
+	  protected Forward uncheckHasCustomerExternalSchoolIdConfigurable() {
+		  HttpServletResponse resp = getResponse();
+		  resp.setContentType("application/text");
+	      OutputStream stream = null;
+		  Integer orgNodeId = null;
+		  if(null != getRequest().getParameter("selectedNodesOrgNodeId")) {
+	        	orgNodeId = Integer.parseInt(getRequest().getParameter("selectedNodesOrgNodeId"));
+	      }
+		  try {
+	        	if(null != orgNodeId) {
+					CustomerConfiguration customerConfigurations = users.getCustomerConfigurationsValueByOrgNodeId("EXT_SCHOOL_ID_Configurable", orgNodeId);
+					if(null != customerConfigurations) {
+						if("EXT_SCHOOL_ID_Configurable".equalsIgnoreCase(customerConfigurations.getCustomerConfigurationName()) && 
+								"T".equals(customerConfigurations.getDefaultValue())) {
+							this.noOfLausdOrgNodeChecked--;
+						}
+					}
+					if(this.noOfLausdOrgNodeChecked > 0) {
+						this.hasExtSchoolIdConfigurable = true;
+		        		String response = String.valueOf(this.hasExtSchoolIdConfigurable);
+			        	stream = resp.getOutputStream();
+			        	stream.write(response.getBytes());
+					}
+					else {
+						this.hasExtSchoolIdConfigurable = false;
+						this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
+					}
+	        	}
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			catch(IOException se) {
+				se.printStackTrace();
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+			finally{
+				if(stream!=null) {
+					try{
+						stream.close();
+						resp.flushBuffer();
+					}catch(Exception e) {
+						resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						e.printStackTrace();
+					}
+				}
+			}
 		  return null;
 	  }
 }
