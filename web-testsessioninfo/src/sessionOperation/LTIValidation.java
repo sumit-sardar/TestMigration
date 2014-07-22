@@ -247,7 +247,7 @@ public class LTIValidation {
 	public User validateUser(String customerID, String userID) {
 		User ltiUser = null;
 		Role ltiRole = null;
-
+		Connection con = null;
 		InitialContext ctx;
 		try {
 			ctx = new InitialContext();
@@ -256,10 +256,11 @@ public class LTIValidation {
 
 			ds = (DataSource) ctx.lookup(DATASOURCE_NAME);
 
-			Connection con = ds.getConnection();
+			con = ds.getConnection();
 			PreparedStatement userStmt = con
-					.prepareStatement("select u.user_id as userid, u.user_name as username  from user_role ur, org_node org , "
-							+ "users u where ur.org_node_id = org.org_node_id and  ur.user_id = u.user_id and u.activation_status = 'AC' and  "
+					.prepareStatement("select u.user_id as userid, u.user_name as username, u.password as password, u.activation_status as status"+
+							"  from user_role ur, org_node org ,users u "
+							+ " where ur.org_node_id = org.org_node_id and  ur.user_id = u.user_id and  "
 							+ "org.customer_id = ? and u.ext_school_id =  ? ");
 
 			// Query for a customer by the customer id
@@ -274,6 +275,8 @@ public class LTIValidation {
 				ltiUser = new User();
 				ltiUser.setUserId(userRS.getInt("userid"));
 				ltiUser.setUserName(userRS.getString("username"));
+				ltiUser.setPassword(userRS.getString("password"));
+				ltiUser.setActivationStatus(userRS.getString("status"));
 			}
 			userRS.close();
 			userStmt.close();
@@ -307,12 +310,20 @@ public class LTIValidation {
 
 		} catch (SQLException e) {
 
+			if(con!=null){
+				try {
+					con.close();
+				} catch (SQLException e1) {
+					ltiUser = null;
+					e1.printStackTrace();
+				}
+			}
 			e.printStackTrace();
 		}
 		return ltiUser;
 	}
 
-	public void updateLogInTime(Integer userID) {
+	public void updateUser(Integer userID) {
 
 		try {
 			DataSource ds = null;
@@ -326,7 +337,8 @@ public class LTIValidation {
 
 			con.setAutoCommit(false);
 			PreparedStatement updStmt = con
-					.prepareStatement("UPDATE Users set last_login_date_time = sysdate where user_id = ?");
+					.prepareStatement("UPDATE Users set last_login_date_time = sysdate, reset_password ='F' ,"+
+										"password_expiration_date = to_date('2050/01/01','yyyy/mm/dd')  where user_id = ?");
 
 			updStmt.setInt(1, userID.intValue());
 			int rowCount = updStmt.executeUpdate();
