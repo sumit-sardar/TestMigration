@@ -278,7 +278,15 @@ public class UploadStudentFile {
 							requiredMap
 									.put(new Integer(rowIndex), requiredList);
 							break;
-						} else if (!isValidMDR(rowIndex, isMatchUploadOrgIds,
+						} else if (strCellName.equals("")
+								&& !strCellMdr.equals("")) {
+							ArrayList<String> requiredList = new ArrayList<String>();
+							requiredList.add(strCellHeaderName);
+							requiredMap
+									.put(new Integer(rowIndex), requiredList);
+							break;
+						}
+						else if (!isValidMDR(rowIndex, isMatchUploadOrgIds,
 								strCellId, parentOrgId, categoryId,
 								requiredMap, invalidCharMap, logicalErrorMap,
 								newMDRList, strCellMdr, strCellName,
