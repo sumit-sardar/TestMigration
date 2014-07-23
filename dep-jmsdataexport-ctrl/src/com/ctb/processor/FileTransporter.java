@@ -1,6 +1,8 @@
 package com.ctb.processor;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
@@ -17,6 +19,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 
 /**
  * @author TCS This class provides interface to transfer file via FTP and SFTP
@@ -137,6 +140,8 @@ public class FileTransporter {
 		JSch jsch = new JSch();
 		Session session = null;
 		ChannelSftp sftpChannel = null;
+		String localFileName = null;
+		String sourceCompressedFileWithPath = null;
 		Properties properties = new Properties();
 		properties.put("StrictHostKeyChecking", "no");
 		//properties.put("compression.s2c", "zlib@openssh.com,zlib,none");
@@ -145,14 +150,14 @@ public class FileTransporter {
 		 properties.put("compression.s2c", "none");
 		 properties.put("compression.c2s", "none");
 
-		String destinationPathDataFile = Configuration.getFtpDataFilepath();
-		String destinationPathOrderFile = Configuration.getFtpOrderFilepath();
-		String destinationPath;
+		final String destinationPathDataFile = Configuration.getFtpDataFilepath();
+		final String destinationPathOrderFile = Configuration.getFtpOrderFilepath();
+		String destinationPath = null;
 		String ftpHost = Configuration.getFtphost();
 		String ftpUser = Configuration.getFtpuser();
 		String ftpPass = Configuration.getFtppassword();
 		int ftpPort = Configuration.getFtpFilePort();
-		Integer i =0;
+		Integer fileCounter = 0;
 		System.out.println("Connecting to server:"+ftpHost);
 		try {
 			session = jsch.getSession(ftpUser, ftpHost, ftpPort);
@@ -168,12 +173,12 @@ public class FileTransporter {
 				System.out.println("File transfer started for file "
 						+ getfileName(sourceFileWithPath));
 				sourceFileWithPath = sourceFileWithPath.replaceAll("%20", " ");
-				String sourceCompressedFileWithPath = sourceFileWithPath
-						+ ".gz";
-				String filename = getfileName(sourceCompressedFileWithPath);
+				sourceCompressedFileWithPath = sourceFileWithPath
+				+ ".gz";
+				localFileName = getfileName(sourceCompressedFileWithPath);
 				CompressUtil.gzipFile(sourceFileWithPath,
 						sourceCompressedFileWithPath);
-				if ( i > 0){
+				if ( fileCounter > 0){
 					destinationPath = destinationPathOrderFile;
 				} 
 				else{
@@ -181,25 +186,13 @@ public class FileTransporter {
 				}
 				
 				String destinationFileWithPath = destinationPath
-						+ File.separator + filename;
+				+ File.separator + localFileName;
 				destinationFileWithPath = destinationFileWithPath.replaceAll(
 						"%20", " ");
 				sftpChannel.cd(destinationPath);
-				sftpChannel.put(sourceCompressedFileWithPath, filename);
-				for (Object o : sftpChannel.ls(destinationPath)) {
-					String val = String.valueOf(o);
-					if (val.endsWith(filename)) {
-						new File(sourceCompressedFileWithPath)
-								.renameTo(new File(sourceCompressedFileWithPath
-										+ ".transferred"));
-						if (new File(sourceFileWithPath).exists())
-							new File(sourceFileWithPath).delete();
-					}
+				transferFile(sftpChannel,sourceCompressedFileWithPath, localFileName, sourceFileWithPath, destinationPath);
 
-				}
-				System.out.println("File transfer is completed for file "
-						+ getfileName(sourceFileWithPath));
-				i++;
+				fileCounter++;
 			}
 
 		} catch (JSchException e) {
@@ -228,6 +221,49 @@ public class FileTransporter {
 
 	}
 
+	private void transferFile(final ChannelSftp sftpChannel,final String sourceCompressedFileWithPath,final String localFileName,
+			final String sourceFileWithPath,final String destinationPath)
+	throws FileNotFoundException, SftpException{
+
+		final FileInputStream inputStream = new FileInputStream(new File(sourceCompressedFileWithPath));
+		sftpChannel.put(inputStream , localFileName,
+				new SftpProgressMonitor(){
+
+			@Override
+			public boolean count(long arg0) {
+				System.out.println("Transferred so far " + arg0 + " bytes");
+
+				return true;
+			}
+
+			@Override
+			public void end() {
+				System.out.println("SFTP transfer completed for file " + sourceFileWithPath);
+				try {
+					//close inputstream
+					inputStream.close();
+
+					new File(sourceCompressedFileWithPath)
+						.renameTo(new File(sourceCompressedFileWithPath+".transferred"));
+					if (new File(sourceFileWithPath).exists())
+						new File(sourceFileWithPath).delete();
+				} catch (Exception e) {
+					e.printStackTrace();
+
+				}
+
+
+			}
+
+			@Override
+			public void init(int arg0, String arg1, String arg2,
+					long arg3) {
+				System.out.println("FTP stranfer started for SRC " + arg1 + " to destination " + arg2);
+
+			}
+
+		});
+	}
 	private String getfileName(String srcfilePath) {
 		String file = srcfilePath;
 		int pos = srcfilePath.lastIndexOf(File.separator);
@@ -300,14 +336,16 @@ public class FileTransporter {
 		JSch jsch = new JSch();
 		Session session = null;
 		ChannelSftp sftpChannel = null;
+		String localFileName = null;
+		String sourceCompressedFileWithPath = null;
 		Properties properties = new Properties();
 		properties.put("StrictHostKeyChecking", "no");
-		 properties.put("compression.s2c", "none");
-		 properties.put("compression.c2s", "none");
+		properties.put("compression.s2c", "none");
+		properties.put("compression.c2s", "none");
 
-		String destinationPathDataFile = Configuration.getFtpDataFilepathLAUSD();
-		String destinationPathOrderFile = Configuration.getFtpOrderFilepathLAUSD();
-		String destinationPath;
+		final String destinationPathDataFile = Configuration.getFtpDataFilepathLAUSD();
+		final String destinationPathOrderFile = Configuration.getFtpOrderFilepathLAUSD();
+		String destinationPath = null;
 		String ftpHost = Configuration.getFtphostLAUSD();
 		String ftpUser = Configuration.getFtpuserLAUSD();
 		String ftpPass = Configuration.getFtppasswordLAUSD();
@@ -328,9 +366,9 @@ public class FileTransporter {
 				System.out.println("File transfer started for file "
 						+ getfileName(sourceFileWithPath));
 				sourceFileWithPath = sourceFileWithPath.replaceAll("%20", " ");
-				String sourceCompressedFileWithPath = sourceFileWithPath
-						+ ".gz";
-				String filename = getfileName(sourceCompressedFileWithPath);
+				sourceCompressedFileWithPath = sourceFileWithPath
+				+ ".gz";
+				localFileName = getfileName(sourceCompressedFileWithPath);
 				CompressUtil.gzipFile(sourceFileWithPath,
 						sourceCompressedFileWithPath);
 				if ( i > 0){
@@ -341,22 +379,12 @@ public class FileTransporter {
 				}
 				
 				String destinationFileWithPath = destinationPath
-						+ File.separator + filename;
+				+ File.separator + localFileName;
 				destinationFileWithPath = destinationFileWithPath.replaceAll(
 						"%20", " ");
 				sftpChannel.cd(destinationPath);
-				sftpChannel.put(sourceCompressedFileWithPath, filename);
-				for (Object o : sftpChannel.ls(destinationPath)) {
-					String val = String.valueOf(o);
-					if (val.endsWith(filename)) {
-						new File(sourceCompressedFileWithPath)
-								.renameTo(new File(sourceCompressedFileWithPath
-										+ ".transferred"));
-						if (new File(sourceFileWithPath).exists())
-							new File(sourceFileWithPath).delete();
-					}
-
-				}
+				sftpChannel.put(sourceCompressedFileWithPath, localFileName);
+				transferFile(sftpChannel, sourceCompressedFileWithPath, localFileName, sourceFileWithPath, destinationPath);
 				System.out.println("File transfer is completed for file "
 						+ getfileName(sourceFileWithPath));
 				i++;
