@@ -27,21 +27,22 @@ alert("test");
 </head>
 <body><h1>LTI authentication test client</h1><br/>
 <h2>Only  consumer key, user id and signature can be modified.</h2>
-<form action="<%=application.getInitParameter("OAS-URL") %>" name="ltiLaunchForm" id="ltiLaunchForm" method="post" encType="application/x-www-form-urlencoded" name="ltiLaunchForm" id="ltiLaunchForm" method="post" encType="application/x-www-form-urlencoded">
+<!-- 
+<form action="<%=application.getInitParameter("OAS-URL") %>"  method="post" encType="application/x-www-form-urlencoded" name="ltiLaunchForm" id="ltiLaunchForm" method="post" encType="application/x-www-form-urlencoded">
 <table><tr><td>OAuth Version</td><td>
 <input type="text" name="oauth_version" value="1.0" readonly="readonly"/></td>
 </tr><tr>
 <td>OAuth once</td><td>
-<input type="text" name="oauth_nonce" value="c8350c0e47782d16d2fa48b2090c1d8f" readonly="readonly"/></td>
+<input type="text" name="oauth_nonce" value="b530f608fa26f83579cb0586df44d240" /></td>
 </tr><tr>
 <td>oauth_timestamp</td><td>
-<input type="text" name="oauth_timestamp" value="1251600739" readonly="readonly"/></td>
+<input type="text" name="oauth_timestamp" value="1405119940" /></td>
 </tr><tr>
 <td><b>oauth consumer key*</b></td><td>
 <input type="text" name="oauth_consumer_key" value="14719" /></td></tr>
 <tr>
 <td><b>user id*</b></td><td>
-<input type="text" name="user_id" value="221483"/></td>
+<input type="text" name="user_id" value="10000000005946107"/></td>
 </tr><tr>
 <td>Roles</td><td>
 <input type="text" name="roles" value="Instructor" readonly="readonly"/></td></tr><tr>
@@ -57,11 +58,57 @@ alert("test");
 <input type="text" name="oauth_callback" value="about:blank" readonly="readonly"/></td></tr><tr>
 <td>
 OAuth Signature</td><td>
-<input type="text" name="oauth_signature" id="oauth_signature" value="21807ea2ff90a12f65f2238d0373a47292ab2092" /></td></tr><tr>
+<input type="text" name="oauth_signature" value="21807ea2ff90a12f65f2238d0373a47292ab2092" /></td></tr><tr>
 <td><button onclick="javascript:signRequest()" type="button">Calculate signature</button></td>
 <td  align="center">
 <button >Authenticate</button></td></tr>
 </table>
+</form>
+ -->
+<form id="ltiLaunchForm" method="post" action="<%=application.getInitParameter("OAS-URL") %>" >
+<table>
+<tr><td>User id</td><td>
+<textarea  name="user_id" >10000000005946109</textarea></td></tr>
+<tr><td>Roles</td><td>
+<textarea  name="roles" >Instructor</textarea></td></tr>
+<tr><td>Lis Person Name</td><td>
+<textarea  name="lis_person_name_full" >LASLinks Teacher 1</textarea></td></tr>
+<tr><td>OAuth Consumer Key</td><td>
+<textarea  name="oauth_consumer_key" >14719</textarea></td></tr>
+<tr><td>Lti Message Type</td><td>
+<textarea  name="lti_message_type" readonly="readonly">basic-lti-launch-request</textarea></td></tr>
+<tr><td>Lti Version</td><td>
+<textarea name="lti_version" >LTI-1p0</textarea></td></tr>
+<tr><td>Custom app sessionid</td><td>
+<textarea  name="custom_appsesid" >9000000000000163683cFvidhyn8fKT4rfrn6O71Lu1D3K5Ug1104ea7b1b7d758</textarea></td></tr>
+<tr><td>Resource link id</td><td>
+<textarea  name="resource_link_id" >5000007027887</textarea></td></tr>
+<tr><td>Lis Person Contact Email primary</td><td>
+<textarea  name="lis_person_contact_email_primary" >demo@engrade.com</textarea></td></tr>
+<tr><td>Custom School ID</td><td>
+<textarea  name="custom_schoolid" >10000000005946103</textarea></td></tr>
+<tr><td>Customer District ID</td><td>
+<textarea  name="custom_districtid" >10000000005946101</textarea></td></tr>
+<tr><td>Context title</td><td>
+<textarea  name="context_title" >7th Grade Math (demo)</textarea></td></tr>
+<tr><td>Context ID</td><td>
+<textarea  name="context_id" >5000007027887</textarea></td></tr>
+<tr><td>Context Label</td><td>
+<textarea  name="context_label" >7th Grade Math (demo)</textarea></td></tr>
+<tr><td>OAuth Callback</td><td>
+<textarea  name="oauth_callback" >about:blank</textarea></td></tr>
+<tr><td>OAuth Version</td><td>
+<textarea  name="oauth_version" >1.0</textarea></td></tr>
+<tr><td>OAuth Nonce</td><td>
+<textarea  name="oauth_nonce" >88fd64654ad9a44a32e2d86be97b9e78</textarea></td></tr>
+<tr><td>OAuth Timestamp</td><td>
+<textarea name="oauth_timestamp" >1405458214</textarea></td></tr>
+<tr><td>OAuth Signature Method</td><td>
+<textarea  name="oauth_signature_method" readonly="readonly">HMAC-SHA1</textarea></td></tr>
+<tr><td>OAuth Signature</td><td>
+<textarea  name="oauth_signature" id="oauth_signature" >vn+gvmKH2B0bOCdPRp9uySrajVk=</textarea></td></tr>
+<tr><td><button onclick="javascript:signRequest()" type="button">Calculate signature</button></td><td>
+<input id="fakesubmitbutton" type="submit" /></td></tr>
 </form>
 </body>
 </html>
