@@ -6,6 +6,8 @@ import java.util.Formatter;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+
 
 
 /**
@@ -25,13 +27,15 @@ public class HmacSha1Signature {
 	private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
 	private static String toHexString(byte[] bytes) {
-		Formatter formatter = new Formatter();
+		/*Formatter formatter = new Formatter();
 		
 		for (byte b : bytes) {
 			formatter.format("%02x", b);
 		}
 
 		return formatter.toString();
+		*/
+		return  DatatypeConverter.printBase64Binary(bytes);
 	}
 
 	public static String calculateRFC2104HMAC(String data, String key)
@@ -43,7 +47,7 @@ public class HmacSha1Signature {
 		return toHexString(mac.doFinal(data.getBytes()));
 	}
 
-	public static void main(String[] args) throws Exception {
+	public  void test() throws Exception {
 		String hmac = calculateRFC2104HMAC("data", "key");
 
 		System.out.println(hmac);
