@@ -31,11 +31,21 @@
 					<% } %>
 					&nbsp;								
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
+					<% 
+						Boolean hasSSOHideUserProfile=(Boolean)session.getAttribute("hasSSOHideUserProfile");
+						if ((hasSSOHideUserProfile==null) || (hasSSOHideUserProfile!=null && hasSSOHideUserProfile==false)){
+					%>
 					<a href="#" onClick="viewMyProfile();"><b>My Profile</b></a>&nbsp;&nbsp;
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
+					<% } %>
                 	<a href="<netui-template:attribute name="helpLink"/>" onClick="return showHelpWindow(this.href);"><b>Help</b></a>&nbsp;&nbsp;
+					<% 
+						Boolean isSSO_LTIUser=(Boolean)session.getAttribute("isSSO_LTIUser");
+						if ((isSSO_LTIUser==null) || (isSSO_LTIUser!=null && isSSO_LTIUser==false)){
+					%>
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
 					<a href="#" onclick="gotoAction('logout.do');"><b>Logout</b></a>&nbsp;&nbsp;
+					<% } %>
 				</div>
 				</td>
 			</tr>

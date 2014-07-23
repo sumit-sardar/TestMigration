@@ -72,6 +72,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
+	private boolean isEngradeCustomer = false;
 	CustomerConfiguration[] customerConfigurations = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
 	private Integer [] testRosterListForLLEAB = null;
@@ -1350,6 +1351,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean laslinkCustomer = false;
     	boolean hasDataExportVisibilityConfig = false;
+    	boolean hasSSOHideUserProfile = false;
+    	boolean hasSSOBlockUserModifications = false;
     	Integer dataExportVisibilityLevel = 1;
 
 		if (customerConfigurations != null) {
@@ -1448,6 +1451,19 @@ public class ImmediateReportingOperationController extends PageFlowController {
 					dataExportVisibilityLevel = Integer.parseInt(cc.getDefaultValue());
 					continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Hide_User_Profile") && 
+	            		cc.getDefaultValue().equals("T")) {
+					hasSSOHideUserProfile = Boolean.TRUE;
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Block_User_Modifications") && 
+	            		cc.getDefaultValue().equals("T")) {
+					hasSSOBlockUserModifications = Boolean.TRUE;
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("ENGRADE_Customer") && 
+	            		cc.getDefaultValue().equals("T")) {
+	        		this.isEngradeCustomer = true;
+	        		continue;
+	            }
 			}
 
 		}
@@ -1489,6 +1505,10 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		this.getSession().setAttribute("showDataExportTab", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
+     	//Done for Engrade customer to block admin users from adding/editing/deleting users
+     	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
+     	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer)); 
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

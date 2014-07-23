@@ -86,6 +86,7 @@ public class DataExportOperationController extends PageFlowController {
 	public String pageMessage = null;
 	private Integer totalStudentCount = 0;
 	private boolean islaslinkCustomer = false;
+	private boolean isEngradeCustomer = false;
 	
 	private List<Integer> toBeExportedRosterListLLEAB = null;
 	private Integer totalExportedStudentCountLLEAB = null;
@@ -1448,6 +1449,8 @@ public Forward rescoreStudent() {
     	boolean hasUploadConfig = false;
     	boolean hasDownloadConfig = false;
     	boolean hasUploadDownloadConfig = false;
+    	boolean hasSSOHideUserProfile = false;
+    	boolean hasSSOBlockUserModifications = false;
     	
     	if( customerConfigs != null ) {
     	for (int i=0; i < customerConfigs.length; i++) {
@@ -1495,6 +1498,19 @@ public Forward rescoreStudent() {
 					&& cc.getDefaultValue().equals("T")) {
 				hasUploadDownloadConfig = true;
 				continue;
+            }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Hide_User_Profile") && 
+            		cc.getDefaultValue().equals("T")) {
+				hasSSOHideUserProfile = Boolean.TRUE;
+            }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("SSO_Block_User_Modifications") && 
+            		cc.getDefaultValue().equals("T")) {
+				hasSSOBlockUserModifications = Boolean.TRUE;
+            }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("ENGRADE_Customer") && 
+            		cc.getDefaultValue().equals("T")) {
+        		this.isEngradeCustomer = true;
+        		continue;
             }
 		}
     	getConfigStudentLabel(customerConfigs);
@@ -1545,6 +1561,10 @@ public Forward rescoreStudent() {
 		this.getSession().setAttribute("hasDataExportConfigured", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
+     	//Done for Engrade customer to block admin users from adding/editing/deleting users
+     	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
+     	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer)); 
 		
 	}
 	
