@@ -6,6 +6,7 @@ import java.net.URL;
 import java.rmi.MarshalException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -580,25 +581,37 @@ public class UploadOperationController extends PageFlowController {
         private String fullFilePath;
         private String instanceURL;
         private Integer uploadFileId;
+        private HttpSession session;
         
-        public UploadThread(String userName, String fullFilePath, Integer uploadDataFileId, String instanceURL) {
+        public UploadThread(String userName, String fullFilePath, Integer uploadDataFileId, String instanceURL, HttpSession session) {
             this.userName = userName;
             this.fullFilePath = fullFilePath;
             this.instanceURL = instanceURL;
             this.uploadFileId = uploadDataFileId;
+            this.session = session;
         }
         
         public void run() {
         	System.out.println("[iaa] t.1 run()");
-            invokeService(this.userName, this.fullFilePath, this.uploadFileId, this.instanceURL, 1);
+            invokeService(this.userName, this.fullFilePath, this.uploadFileId, this.instanceURL, 1,session);
             System.out.println("[iaa] t.2 run()");
         }
     }
     
-    private void invokeService(String userName, String fullFilePath, Integer uploadFileId, String instanceURL, int trycount) {
+    private void invokeService(String userName, String fullFilePath, Integer uploadFileId, String instanceURL, int trycount,HttpSession session) {
     	try {
+    		System.out.println("XXXXXXXXXXXXXXXXXXXXXXX Upload Thread XXXXXXXXXXXXXXXXXXX");
+            Enumeration<String> enumbjects = session.getAttributeNames();
+            while(enumbjects.hasMoreElements()){
+         	   String attrName = enumbjects.nextElement();
+         	   System.out.println("Attribuet Name :: " + attrName + " Attr Data :: " + session.getAttribute(attrName) 
+         			   + "Attribute Class :: " +  session.getAttribute(attrName).getClass().getName() );
+            }
+            System.out.println("XXXXXXXXXXXXXXXXXXXXXXX Upload Thread XXXXXXXXXXXXXXXXXXX");
+     
             System.out.println("***** Upload App: invoking process service: " + this.userName + " : " + saveFileName);
             String endpoint = instanceURL + "/platform-webservices-newui/UploadDownloadManagement";
+            explicitlyInitializeAllControls();
             uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
             System.out.println("***** Upload App: using service endpoint: " + endpoint);
             System.out.println("[iaa] uf.1 uploadDownloadManagementServiceControl.uploadFile()");
@@ -627,7 +640,7 @@ public class UploadOperationController extends PageFlowController {
         		System.out.println("Exception class :: " + e.getClass().getName());
 	            if(trycount < 5 && "getMethodName".equals(e.getStackTrace()[0].getMethodName())) {
 	            	System.out.println("***** Service invocation failed, trying again - " + trycount);
-	            	invokeService(userName, fullFilePath, uploadFileId, instanceURL, trycount++);
+	            	invokeService(userName, fullFilePath, uploadFileId, instanceURL, ++trycount,session);
 	            } else {
 	            	System.out.println("****************** start EXCEPTION in invokeService ***************** ");
 	            	System.out.println("getMethodName = " + e.getStackTrace()[0].getMethodName());
@@ -653,6 +666,15 @@ public class UploadOperationController extends PageFlowController {
         }
     }
     
+    private void explicitlyInitializeAllControls() throws IOException, ClassNotFoundException{
+    	ClassLoader cl = this.getClass().getClassLoader();
+    	if(this.uploadDownloadManagementServiceControl == null){
+    		this.uploadDownloadManagementServiceControl = (manageUpload.UploadDownloadManagementServiceControlBean) java.beans.Beans
+			.instantiate(cl,
+					"manageUpload.UploadDownloadManagementServiceControlBean");
+    	}
+    	 
+    }
     /**
      * writeFileContent
      * @param form
@@ -670,8 +692,16 @@ public class UploadOperationController extends PageFlowController {
             ResourceBundle rb = ResourceBundle.getBundle("security");
             String processURL = rb.getString("processURL");
             
-                                    
-            final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL);
+            HttpSession session = this.getRequest().getSession();
+            System.out.println("XXXXXXXXXXXXXXXXXXXXXXX Upload Operation Controller XXXXXXXXXXXXXXXXXXX");
+                   Enumeration<String> enumbjects = session.getAttributeNames();
+                   while(enumbjects.hasMoreElements()){
+                	   String attrName = enumbjects.nextElement();
+                	   System.out.println("Attribuet Name :: " + attrName + " Attr Data :: " + session.getAttribute(attrName) 
+                			   + "Attribute Class :: " +  session.getAttribute(attrName).getClass().getName() );
+                   }
+            System.out.println("XXXXXXXXXXXXXXXXXXXXXXX Upload Operation Controller XXXXXXXXXXXXXXXXXXX");
+            final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL,session);
             System.out.println("[iaa] b.d.1 uploadThread.start(). uploadThread.getId()="+uploadThread.getId());
             uploadThread.start();
             System.out.println("[iaa] b.d.2 uploadThread.start()");
@@ -1378,6 +1408,14 @@ public class UploadOperationController extends PageFlowController {
 	 }) 
 	 protected Forward services_uploadData()
 	 {	
+		 System.out.println("XXXXXXXXXXXXXXXXXXXXXXX Upload Service Call XXXXXXXXXXXXXXXXXXX");
+         Enumeration<String> enumbjects = getSession().getAttributeNames();
+         while(enumbjects.hasMoreElements()){
+      	   String attrName = enumbjects.nextElement();
+      	   System.out.println("Attribuet Name :: " + attrName + " - Attr Data :: " + getSession().getAttribute(attrName) 
+      			   + " - Attribute Class :: " +  getSession().getAttribute(attrName).getClass().getName() );
+         }
+         System.out.println("XXXXXXXXXXXXXXXXXXXXXXX Upload Service Call XXXXXXXXXXXXXXXXXXX");
 		if(getSession().getAttribute("is3to8Selected") == null)
 			this.is3to8Selected = (getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))? true: false; 
     	if(getSession().getAttribute("isEOISelected") == null)
