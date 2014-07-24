@@ -101,7 +101,7 @@ public class UploadOperationController extends PageFlowController {
     private String userName = null;
     public String strFileName = null;
     
-    public FormFile theFile;
+    public transient FormFile theFile;
     private Integer uploadDataFileId = new Integer(0);
     private String uploadMessage = null;
     
