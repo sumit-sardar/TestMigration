@@ -617,10 +617,13 @@ public class UploadOperationController extends PageFlowController {
             }
         }
         catch (Exception e) {
-//        	if(e  instanceof java.rmi.MarshalException ){
-//        		System.out.println("Marshal Exception Occured for file: -->"+ this.strFileName);
-//        		
-//        	}else{
+        	if(e  instanceof java.rmi.MarshalException ||
+        		e instanceof  java.io.NotSerializableException){
+        		System.out.println("Exception class :: " + e.getClass().getName());
+        		System.out.println("Marshal Exception Occured for file: -->"+ this.strFileName  + " cannot be resolved since Older " +
+        				"fileupload version is being used");
+        		
+        	}else{
         		System.out.println("Exception class :: " + e.getClass().getName());
 	            if(trycount < 5 && "getMethodName".equals(e.getStackTrace()[0].getMethodName())) {
 	            	System.out.println("***** Service invocation failed, trying again - " + trycount);
@@ -646,7 +649,7 @@ public class UploadOperationController extends PageFlowController {
 	            	System.out.println("****************** end EXCEPTION in invokeService ***************** " + e.fillInStackTrace());
 	            	throw new RuntimeException(e);
 	            }
-        	//}
+        	}
         }
     }
     
