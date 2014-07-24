@@ -17,6 +17,6 @@ public interface UploadDownloadManagementServiceControl extends ServiceControl
 
    /** This event set interface provides support for the onAsyncFailure event.
     */
-   @EventSet(unicast=true)
-   public interface Callback extends ServiceControl.Callback {};
+  /* @EventSet(unicast=false)
+   public interface Callback extends ServiceControl.Callback {};*/
 }
