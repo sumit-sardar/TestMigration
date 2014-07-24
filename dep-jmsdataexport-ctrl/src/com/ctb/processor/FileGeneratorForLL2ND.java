@@ -66,7 +66,7 @@ public class FileGeneratorForLL2ND {
 	private static String TEST_ROSTER_DETAILS_SQL = "SELECT DISTINCT SISS.VALIDATION_STATUS AS VALIDATIONSTATUS, SISS.ITEM_SET_ORDER AS ITEMSETORDER, SISS.EXEMPTIONS AS TESTEXEMPTIONS, SISS.ABSENT AS ABSENT, DECODE(ISS.ITEM_SET_NAME, 'HABLANDO', 'Speaking', 'ESCUCHANDO', 'Listening', 'LECTURA', 'Reading', 'ESCRITURA', 'Writing', ISS.ITEM_SET_NAME) AS ITEMSETNAME FROM STUDENT_ITEM_SET_STATUS SISS, TEST_ROSTER ROS, ITEM_SET ISS WHERE ISS.ITEM_SET_ID = SISS.ITEM_SET_ID AND SISS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID AND ROS.STUDENT_ID = ? AND ROS.TEST_ROSTER_ID = ? ORDER BY SISS.ITEM_SET_ORDER";
 	private static String SCORE_SKILL_AREA_OVERALL_SQL = "SELECT COMPFACT.SCALE_SCORE, COMPFACT.PROFICENCY_LEVEL, COMPFACT.NORMAL_CURVE_EQUIVALENT, COMPFACT.NATIONAL_PERCENTILE FROM LASLINK_COMPOSITE_FACT COMPFACT WHERE COMPFACT.STUDENTID = :STUDENTID AND COMPFACT.SESSIONID = :SESSIONID";
 	private static String SCORE_SKILL_AREA_SQL = "SELECT CAREADIM.NAME  AS NAME, CAREAFCT.SCALE_SCORE  AS SCALE_SCORE, CAREAFCT.PROFICENCY_LEVEL  AS PROFICENCY_LEVEL, CAREAFCT.POINTS_OBTAINED  AS POINTS_OBTAINED, CAREAFCT.PERCENT_OBTAINED  AS PERCENT_OBTAINED, CAREAFCT.NORMAL_CURVE_EQUIVALENT AS NORMAL_CURE_EUIVALENT, CAREAFCT.NATIONAL_PERCENTILE  AS NATIONAL_PERCENTILE, CAREAFCT.LEXILE AS LEXILE FROM LASLINK_CONTENT_AREA_FACT CAREAFCT, CONTENT_AREA_DIM CAREADIM WHERE CAREAFCT.CONTENT_AREAID = CAREADIM.CONTENT_AREAID AND CONTENT_AREA_TYPE = 'LL CONTENT AREA' AND CAREAFCT.STUDENTID = :STUDENTID AND CAREAFCT.SESSIONID = :SESSIONID";
-	private static String SUBSKILL_ITEM_AREA_INFOMATION = "SELECT TAD.PRODUCT_ID || ISET.ITEM_SET_ID SUBSKILL_ID, ISET.ITEM_SET_NAME, ISET1.ITEM_SET_NAME ITEMCATEGORY, TAD.PRODUCT_ID AS PRODUCTID FROM TEST_ADMIN TAD, PRODUCT, ITEM_SET_CATEGORY ICAT, ITEM_SET ISET, ITEM_SET ISET1, ITEM_SET_PARENT ISP WHERE TAD.TEST_ADMIN_ID = ? AND ICAT.ITEM_SET_CATEGORY_LEVEL = 4 AND TAD.PRODUCT_ID = PRODUCT.PRODUCT_ID AND PRODUCT.PARENT_PRODUCT_ID = ICAT.FRAMEWORK_PRODUCT_ID AND ISET.ITEM_SET_CATEGORY_ID = ICAT.ITEM_SET_CATEGORY_ID AND ISP.ITEM_SET_ID = ISET.ITEM_SET_ID AND ISET1.ITEM_SET_ID = ISP.PARENT_ITEM_SET_ID";
+	private static String SUBSKILL_ITEM_AREA_INFOMATION = "SELECT TAD.PRODUCT_ID || ISET.ITEM_SET_ID SUBSKILL_ID, ISET.ITEM_SET_NAME, ISET1.ITEM_SET_NAME ITEMCATEGORY, TAD.PRODUCT_ID AS PRODUCTID, TAD.PREFERRED_FORM AS TESTFORM FROM TEST_ADMIN TAD, PRODUCT, ITEM_SET_CATEGORY ICAT, ITEM_SET ISET, ITEM_SET ISET1, ITEM_SET_PARENT ISP WHERE TAD.TEST_ADMIN_ID = ? AND ICAT.ITEM_SET_CATEGORY_LEVEL = 4 AND TAD.PRODUCT_ID = PRODUCT.PRODUCT_ID AND PRODUCT.PARENT_PRODUCT_ID = ICAT.FRAMEWORK_PRODUCT_ID AND ISET.ITEM_SET_CATEGORY_ID = ICAT.ITEM_SET_CATEGORY_ID AND ISP.ITEM_SET_ID = ISET.ITEM_SET_ID AND ISET1.ITEM_SET_ID = ISP.PARENT_ITEM_SET_ID";
 	private static String ACADEMIC_SKILL_AREA_INFORMATION = "SELECT OBJECTIVE_ID, OBJECTIVE_NAME, SUBJECT FROM LASLINK_CD_OBJECTIVE";
 	private static String SUBSKILL_IRS_INFORMATION = "SELECT SEC_OBJID, SESSIONID, PERCENT_OBTAINED, POINTS_OBTAINED FROM LASLINK_SEC_OBJ_FACT WHERE STUDENTID = ? AND SESSIONID = ?";
 	private static String SUBTEST_INDICATOR = "SELECT CONL.SUBTEST_MODEL  FROM TEST_ROSTER              TR, TEST_ADMIN               TA, CUSTOMER_CONFIGURATION   CC, CUSTOMER_ORGNODE_LICENSE CONL, PRODUCT                  PROD WHERE TR.TEST_ROSTER_ID = ? AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND  TA.CUSTOMER_ID = CC.CUSTOMER_ID AND CC.CUSTOMER_CONFIGURATION_NAME = 'Allow_Subscription' AND CC.DEFAULT_VALUE = 'T' AND TA.PRODUCT_ID = PROD.PRODUCT_ID AND CONL.CUSTOMER_ID = CC.CUSTOMER_ID AND CONL.ORG_NODE_ID = TR.ORG_NODE_ID"; // AND CONL.PRODUCT_ID = PROD.PARENT_PRODUCT_ID//Fix for defect#75718::Commenting out this condition as parent-product-id is different for Las A/B and Las C/EspB..Date:10Oct,2013
@@ -1639,7 +1639,7 @@ public class FileGeneratorForLL2ND {
 		String subSkillCategoryName;
 		HashMap<String, String> pointsObtained = new HashMap<String, String>();
 		HashMap<String, String> percentObtained = new HashMap<String, String>();
-
+		String testForm = null; 
 		try {
 			ps2 = oascon.prepareStatement(SUBSKILL_ITEM_AREA_INFOMATION);
 			ps2.setInt(1, roster.getTestAdminId());
@@ -1648,6 +1648,9 @@ public class FileGeneratorForLL2ND {
 				subSkillAreaScoreInfo.put(rs2.getString(1), rs2.getString(2));
 				subSkillAreaItemCategory.put(rs2.getString(2), rs2.getString(3));
 				createAcademicScore(oascon,subSkillAreaScoreInfo,subSkillAreaItemCategory, rs2.getString(4));
+				if(testForm == null && "Español B".equalsIgnoreCase(rs2.getString(5))){
+					testForm = "T";
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1687,7 +1690,12 @@ public class FileGeneratorForLL2ND {
 					}
 				} else if (subSkillName.contains("Mathematics / Science / Technical Subjects") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 					if("Speaking".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidSpeaking){
-						subPercCorrect.setSpeakingMathematicsScienceTechnical(percentObtained.get(x).toString());
+						if(Integer.parseInt(pointsObtained.get(x).toString()) < 3 && "K".equalsIgnoreCase(roster.getStudent().getGrade().toString())
+								&& ("T".equals(testForm))){
+							subPercCorrect.setSpeakingMathematicsScienceTechnical("XXXXX");
+						}else{
+							subPercCorrect.setSpeakingMathematicsScienceTechnical(percentObtained.get(x).toString());
+						}
 					}else if("Listening".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidListeing){
 						subPercCorrect.setListeningMathematicsScienceTechnical(percentObtained.get(x).toString());
 					}else if("Reading".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidReading){
@@ -1766,7 +1774,12 @@ public class FileGeneratorForLL2ND {
 					}
 				} else if (subSkillName.contains("Mathematics / Science / Technical Subjects") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 					if("Speaking".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidSpeaking){
-						subNumCorrect.setSpeakingMathematicsScienceTechnical(pointsObtained.get(x).toString());
+						if(Integer.parseInt(pointsObtained.get(x).toString()) < 3 && "K".equalsIgnoreCase(roster.getStudent().getGrade().toString())
+								&& ("T".equals(testForm))){
+							subNumCorrect.setSpeakingMathematicsScienceTechnical("XXX");
+						}else{
+							subNumCorrect.setSpeakingMathematicsScienceTechnical(pointsObtained.get(x).toString());
+						}
 					}else if("Listening".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidListeing){
 						subNumCorrect.setListeningMathematicsScienceTechnical(pointsObtained.get(x).toString());
 					}else if("Reading".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidReading){
