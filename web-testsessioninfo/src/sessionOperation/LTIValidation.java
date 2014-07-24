@@ -209,6 +209,7 @@ public class LTIValidation {
 	// validate customerID(in LTI it referred as consumer)
 	public boolean validateCustomer(String customerID) {
 		boolean result = false;
+		Connection con = null;
 		InitialContext ctx;
 		try {
 			ctx = new InitialContext();
@@ -217,7 +218,7 @@ public class LTIValidation {
 
 			ds = (DataSource) ctx.lookup(DATASOURCE_NAME);
 
-			Connection con = ds.getConnection();
+			con = ds.getConnection();
 			PreparedStatement customerStmt = con
 					.prepareStatement("SELECT CUSTOMER_NAME FROM CUSTOMER WHERE CUSTOMER_ID = ? AND activation_status = 'AC' ");
 
@@ -240,6 +241,15 @@ public class LTIValidation {
 		} catch (SQLException e) {
 			
 			e.printStackTrace();
+			if(con!=null){
+				try {
+					con.close();
+				} catch (SQLException e1) {
+					result = false;
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 		}
 		return result;
 	}
