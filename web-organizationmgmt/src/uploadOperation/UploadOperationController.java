@@ -3,6 +3,7 @@ package uploadOperation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.rmi.MarshalException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -603,7 +604,8 @@ public class UploadOperationController extends PageFlowController {
             System.out.println("[iaa] uf.1 uploadDownloadManagementServiceControl.uploadFile()");
             uploadDownloadManagementServiceControl.uploadFile(this.userName, fullFilePath, uploadFileId);
             System.out.println("[iaa] uf.2 uploadDownloadManagementServiceControl.uploadFile()");
-        } catch (com.ctb.webservices.CTBBusinessException e) {
+        } 
+    	catch (com.ctb.webservices.CTBBusinessException e) {
         	System.out.println("[iaa] uf.x CTBBusinessException. "+e.toString());
             DataFileAudit dataFileAudit = new DataFileAudit();
             dataFileAudit.setStatus("FL");
@@ -613,7 +615,12 @@ public class UploadOperationController extends PageFlowController {
             	System.out.println("[iaa] uf.x2 Exception. "+se.toString());
                 se.printStackTrace();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
+        	if(e.getClass().isInstance(new MarshalException(""))){
+        		System.out.println("Marshal Exception Occured for file: -->"+ this.strFileName);
+        		throw new RuntimeException(e);
+        	}
             if(trycount < 5 && "getMethodName".equals(e.getStackTrace()[0].getMethodName())) {
             	System.out.println("***** Service invocation failed, trying again - " + trycount);
             	invokeService(userName, fullFilePath, uploadFileId, instanceURL, trycount++);
