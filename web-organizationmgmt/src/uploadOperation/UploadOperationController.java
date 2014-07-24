@@ -621,6 +621,7 @@ public class UploadOperationController extends PageFlowController {
 //        		System.out.println("Marshal Exception Occured for file: -->"+ this.strFileName);
 //        		
 //        	}else{
+        		System.out.println("Exception class :: " + e.getClass().getName());
 	            if(trycount < 5 && "getMethodName".equals(e.getStackTrace()[0].getMethodName())) {
 	            	System.out.println("***** Service invocation failed, trying again - " + trycount);
 	            	invokeService(userName, fullFilePath, uploadFileId, instanceURL, trycount++);
