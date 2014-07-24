@@ -10,6 +10,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -151,6 +152,11 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 						}
 						// **[IAA]: OAS-457 LAS 2014 - LAUSD - SSO - Hide LogOut
 						// menu
+				     	Cookie cookie = new Cookie("isSSO_LTIUser", "true");
+				     	//cookie.setMaxAge(24*60*60);//24hrs
+				     	cookie.setPath("/");
+				     	cookie.setSecure(true);
+						response.addCookie(cookie);
 						sess.setAttribute("isSSO_LTIUser", new Boolean(
 								Boolean.TRUE));
 						response.sendRedirect("sessionOperation/begin.do");

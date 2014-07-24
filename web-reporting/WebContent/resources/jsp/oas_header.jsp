@@ -33,7 +33,13 @@
 					<% } %>
                 	<a href="<netui-template:attribute name="helpLink"/>" onClick="return showHelpWindow(this.href);"><b>Help</b></a>&nbsp;&nbsp;
 					<% 
-						Boolean isSSO_LTIUser=(Boolean)session.getAttribute("isSSO_LTIUser");
+						Boolean isSSO_LTIUser=null;//(Boolean)session.getAttribute("isSSO_LTIUser");
+						Cookie[] cookies = request.getCookies();
+						for(Cookie cookie : cookies){
+						    if("isSSO_LTIUser".equals(cookie.getName())){
+						    	isSSO_LTIUser = cookie.getValue().compareToIgnoreCase("true")==0?true:false;
+						    }
+						}
 						if ((isSSO_LTIUser==null) || (isSSO_LTIUser!=null && isSSO_LTIUser==false)){
 					%>
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;

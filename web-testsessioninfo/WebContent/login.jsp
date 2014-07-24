@@ -28,7 +28,14 @@
 	            request.setAttribute("message", message);
 	            response.sendRedirect("/SessionWeb/logout2.jsp?timeout=true");
 	        }
-
+	        //** Remove Cookie set for LTI users
+	        if ((c != null) && c.getName().equals("isSSO_LTIUser")) {
+                Cookie r = new Cookie(c.getName(), null);
+                r.setMaxAge(0);
+                r.setPath("/");
+                response.addCookie(r);
+                cookies[i] = null;
+	        }
 	    }  
     }
 %>
