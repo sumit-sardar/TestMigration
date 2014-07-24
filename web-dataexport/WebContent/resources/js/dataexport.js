@@ -1345,6 +1345,7 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 											 								 								 
 											 	for(var i=0;i<data1.rubricData.entry.length;i++) {									
 													var description = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricDescription);
+													description=description.replace(/\n/g,'<br/>');
 													iFrameObj.find("#rubricTable tr:last").
 														after('<tr><td><center><small>'+
 															data1.rubricData.entry[i].score+
@@ -1352,7 +1353,9 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 			
 													if(data1.rubricData.entry[i].rubricExplanation){
 														var explanation = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricExplanation);
+														explanation=explanation.replace(/\n/g,'<br/>');
 														var response = handleSpecialCharactersNewUI(data1.rubricData.entry[i].sampleResponse);
+														response=response.replace(/\n/g,'<br/>');
 														iFrameObj.find("#exemplarsTable tr:last").
 															after('<tr><td><center><small>'+
 																data1.rubricData.entry[i].score+
