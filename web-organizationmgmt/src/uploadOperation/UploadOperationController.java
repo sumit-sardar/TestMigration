@@ -617,34 +617,35 @@ public class UploadOperationController extends PageFlowController {
             }
         }
         catch (Exception e) {
-        	if(e.getClass().isInstance(new MarshalException(""))){
-        		System.out.println("Marshal Exception Occured for file: -->"+ this.strFileName);
-        		throw new RuntimeException(e);
-        	}
-            if(trycount < 5 && "getMethodName".equals(e.getStackTrace()[0].getMethodName())) {
-            	System.out.println("***** Service invocation failed, trying again - " + trycount);
-            	invokeService(userName, fullFilePath, uploadFileId, instanceURL, trycount++);
-            } else {
-            	System.out.println("****************** start EXCEPTION in invokeService ***************** ");
-            	System.out.println("getMethodName = " + e.getStackTrace()[0].getMethodName());
-            	System.out.println(e.getMessage());
-            	System.out.println("[iaa] uf.x3 Exception. "+e.toString());
-                if (!"getConversationPhase".equals(e.getStackTrace()[0].getMethodName()) && (e.getMessage() != null) &&	
-                								  (e.getClass().isInstance(new JMSException(""))) && (trycount >= 5)) {
-                	System.out.println("Set status to error");
-	                DataFileAudit dataFileAudit = new DataFileAudit();
-	                dataFileAudit.setStatus("FL");
-	                try{
-	                    uploadDownloadManagement.updateAuditFileStatus(uploadFileId);
-	                } catch (Exception se) {
-	                    se.printStackTrace();
-	                }
-                }                
-                System.out.println("[iaa] uf.x4 Exception. "+e.toString());
-            	e.printStackTrace();
-            	System.out.println("****************** end EXCEPTION in invokeService ***************** " + e.fillInStackTrace());
-            	throw new RuntimeException(e);
-            }
+//        	if(e  instanceof java.rmi.MarshalException ){
+//        		System.out.println("Marshal Exception Occured for file: -->"+ this.strFileName);
+//        		
+//        	}else{
+	            if(trycount < 5 && "getMethodName".equals(e.getStackTrace()[0].getMethodName())) {
+	            	System.out.println("***** Service invocation failed, trying again - " + trycount);
+	            	invokeService(userName, fullFilePath, uploadFileId, instanceURL, trycount++);
+	            } else {
+	            	System.out.println("****************** start EXCEPTION in invokeService ***************** ");
+	            	System.out.println("getMethodName = " + e.getStackTrace()[0].getMethodName());
+	            	System.out.println(e.getMessage());
+	            	System.out.println("[iaa] uf.x3 Exception. "+e.toString());
+	                if (!"getConversationPhase".equals(e.getStackTrace()[0].getMethodName()) && (e.getMessage() != null) &&	
+	                								  (e.getClass().isInstance(new JMSException(""))) && (trycount >= 5)) {
+	                	System.out.println("Set status to error");
+		                DataFileAudit dataFileAudit = new DataFileAudit();
+		                dataFileAudit.setStatus("FL");
+		                try{
+		                    uploadDownloadManagement.updateAuditFileStatus(uploadFileId);
+		                } catch (Exception se) {
+		                    se.printStackTrace();
+		                }
+	                }                
+	                System.out.println("[iaa] uf.x4 Exception. "+e.toString());
+	            	e.printStackTrace();
+	            	System.out.println("****************** end EXCEPTION in invokeService ***************** " + e.fillInStackTrace());
+	            	throw new RuntimeException(e);
+	            }
+        	//}
         }
     }
     
