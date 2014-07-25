@@ -1292,9 +1292,7 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 								 var questionNumber = itemNumber;
 								 data1 = data.questionAnswer;
 								 
-								 setTimeout("populateTableNew()", 500);						 
-									// $.unblockUI(); 
-								 //$("#rubricDialogID").dialog("open");		
+								populateTableNew();
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 								$.unblockUI();  
@@ -1308,11 +1306,13 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 			
 	
 	}
-	function populateTableNew() {
+	
+	
+function populateTableNew() {
 		var subIframe;
 		if(parentDivId != null && parentDivId != '') {
 			if (parentDivId == "answerDetail") {
-				subIframe = $('#rubricIframe','#rubricInfo');
+				subIframe = $('#rubricInfo .rubricIframePage');
 			}
 		}
 		else {
@@ -1325,60 +1325,74 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 		var rowCountRubric = iFrameObj.find("#rubricTable tr").length;
 											
 		var rowCountExemplar = iFrameObj.find("#exemplarsTable tr").length;								
-		var cellCountExemplar = iFrameObj.find("#exemplarsTable tr td").length;		
+		var cellCountExemplar = iFrameObj.find("#exemplarsTable tr td").length;							
 																			
 		//Rows needs to be deleted, since dynamically new rows are added everytime
 		iFrameObj.find("#rubricTable tr:not(:first)").remove();
 		iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
 												
-											 if(cellCountExemplar == 1)	 {
-											 	iFrameObj.find("#rubricExemplarId").hide();
-											 	iFrameObj.find("#exemplarNoDataId").show();
-											 } else {
-											 	iFrameObj.find("#rubricExemplarId").show();
-											 	iFrameObj.find("#exemplarNoDataId").hide();
-											 }						 
-											 if(data1.rubricData.entry) {
-											 	//alert("...."+data1.rubricData.entry);		
-											 	iFrameObj.find("#rubricNoDataId").hide();
-											 	iFrameObj.find("#rubricTableId").show();	
-											 								 								 
-											 	for(var i=0;i<data1.rubricData.entry.length;i++) {									
-													var description = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricDescription);
-													description=description.replace(/\n/g,'<br/>');
-													iFrameObj.find("#rubricTable tr:last").
-														after('<tr><td><center><small>'+
-															data1.rubricData.entry[i].score+
-																'</small></center></td><td><small>'+description+'</small></td></tr>');
+		if(cellCountExemplar == 1)	 {
+			iFrameObj.find("#rubricExemplarId").hide();
+			iFrameObj.find("#exemplarNoDataId").show();
+		} else {
+			iFrameObj.find("#rubricExemplarId").show();
+			iFrameObj.find("#exemplarNoDataId").hide();
+		}	
+
+		if(data1.rubricData.entry) {
+			iFrameObj.find("#rubricNoDataId").hide();
+			iFrameObj.find("#rubricTableId").show();
 			
-													if(data1.rubricData.entry[i].rubricExplanation){
-														var explanation = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricExplanation);
-														explanation=explanation.replace(/\n/g,'<br/>');
-														var response = handleSpecialCharactersNewUI(data1.rubricData.entry[i].sampleResponse);
-														response=response.replace(/\n/g,'<br/>');
-														iFrameObj.find("#exemplarsTable tr:last").
-															after('<tr><td><center><small>'+
-																data1.rubricData.entry[i].score+
-																	'</small></center></td><td><small>'+
-																		response+
-																			'</small></td><td><small>'+
-																				explanation+
-																					'</small></td></tr>');																		
-													} else {
-														counter++;
-														if(counter==data1.rubricData.entry.length) {
-															iFrameObj.find("#exemplarNoDataId").show();
-															iFrameObj.find("#rubricExemplarId").hide();
-														}
-													}
-												}
-											} else {
-												iFrameObj.find("#exemplarNoDataId").show();
-												iFrameObj.find("#rubricNoDataId").show();
-												iFrameObj.find("#rubricExemplarId").hide();
-												iFrameObj.find("#rubricTableId").hide();									
-											}										
-								  		  isRubricPopulated = true;
+			if(iFrameObj.find('#rubricTableId').length==0)
+			{
+				//if nothing loaded it means the iframe's content is not loaded yet
+				//bind  this function to the iframe's load event
+				subIframe.bind('load',function(){
+				populateTableNew();	
+				subIframe.unbind('load'); //unbind once done
+				//$.unblockUI();
+				});
+				
+				//return to prevent the rest of the function from executing now
+				return;
+				
+			}
+			
+			
+																		 
+			for(var i=0;i<data1.rubricData.entry.length;i++) {									
+				var description = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricDescription);
+				iFrameObj.find("#rubricTable tr:last").
+					after('<tr><td><center><small>'+
+						data1.rubricData.entry[i].score+
+							'</small></center></td><td><small>'+description+'</small></td></tr>');
+
+				if(data1.rubricData.entry[i].rubricExplanation){
+					var explanation = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricExplanation);
+					var response = handleSpecialCharactersNewUI(data1.rubricData.entry[i].sampleResponse);
+					iFrameObj.find("#exemplarsTable tr:last").
+						after('<tr><td><center><small>'+
+							data1.rubricData.entry[i].score+
+								'</small></center></td><td><small>'+
+									response+
+										'</small></td><td><small>'+
+											explanation+
+												'</small></td></tr>');																		
+				} else {
+					counter++;
+					if(counter==data1.rubricData.entry.length) {
+						iFrameObj.find("#exemplarNoDataId").show();
+						iFrameObj.find("#rubricExemplarId").hide();
+					}
+				}
+			}
+		} else {
+			iFrameObj.find("#exemplarNoDataId").show();
+			iFrameObj.find("#rubricNoDataId").show();
+			iFrameObj.find("#rubricExemplarId").hide();
+			iFrameObj.find("#rubricTableId").hide();									
+		}
+								
 		$.unblockUI();
 	}
 	
