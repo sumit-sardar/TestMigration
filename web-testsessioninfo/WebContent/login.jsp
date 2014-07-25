@@ -16,6 +16,7 @@
 
     Cookie[] cookies = (Cookie[])request.getCookies();
     if (cookies != null && cookies.length > 0 ) {
+    	boolean LTIUser = false;
 	    for (int i=0 ; i<cookies.length ; i++) {
 	        Cookie c = cookies[i];
 	        if ((c != null) && c.getName().equals("_WL_AUTHCOOKIE_TAS_SESSIONID")) {
@@ -24,19 +25,35 @@
                 r.setPath("/");
                 response.addCookie(r);
                 cookies[i] = null;
-	            String message = rb.getString("sessionTimeout");
-	            request.setAttribute("message", message);
-	            response.sendRedirect("/SessionWeb/logout2.jsp?timeout=true");
+	            
 	        }
 	        //** Remove Cookie set for LTI users
 	        if ((c != null) && c.getName().equals("isSSO_LTIUser")) {
+	        	System.out.println("LTI cookie found..............");
+	        	LTIUser = true;
                 Cookie r = new Cookie(c.getName(), null);
                 r.setMaxAge(0);
                 r.setPath("/");
                 response.addCookie(r);
                 cookies[i] = null;
 	        }
-	    }  
+	        else
+	        {
+	        	System.out.println("LTI cookie NOT NOT NOT found..............");
+	        }
+	    }
+	    if(LTIUser)
+	    {
+	    	//request.setAttribute("message", "session_expired:Session timeout");
+            response.sendRedirect("/SessionWeb/LTIError.jsp?ERROR_CODE=session_expired");
+	    	//RequestDispatcher rd = getServletContext().getRequestDispatcher("/SessionWeb/LTIError.jsp");
+	    }
+	    else
+	    {
+	    	String message = rb.getString("sessionTimeout");
+            request.setAttribute("message", message);
+            response.sendRedirect("/SessionWeb/logout2.jsp?timeout=true");
+	    }
     }
 %>
 
