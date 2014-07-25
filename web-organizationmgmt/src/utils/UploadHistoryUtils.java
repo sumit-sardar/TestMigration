@@ -52,7 +52,7 @@ public class UploadHistoryUtils
                         auditFileHistory.setStatus(auditFile.getStatus());
                         auditFileHistory.setUploadFileName(auditFile.getUploadFileName());
                         
-                        if ( auditFile.getStatus().equals("IN") )  {
+                        if ( auditFile.getStatus().equals("IN") || auditFile.getStatus().equals("IP"))  {
                         
                             auditFileHistory.setUploadFileRecordCount("--"); 
                             auditFileHistory.setFailedRecordCount("--");

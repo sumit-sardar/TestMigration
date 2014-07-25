@@ -346,7 +346,7 @@ public class UploadStudent extends BatchProcessor.Process
 			HSSFRow rowHeader = sheet.getRow(0);
 			for ( int i = 1; i < totalRows; i++ ) {
 
-				System.out.println("    ***** Upload Control: Processing row " + i);
+				System.out.println("    ***** Upload Control: Processing row " + i  + "   for " + dataFileAudit.getDataFileAuditId());
 
 				HSSFRow row = sheet.getRow(i);
 				if (row == null) {
@@ -4760,7 +4760,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 			//travers the entire sheet to update the db for user insertion 
 			for ( int i = 1; i < totalRows; i++ ) {
 
-				System.out.println("    ***** Upload Control: 2nd loop: Processing row " + i);
+				System.out.println("    ***** Upload Control: 2nd loop: Processing row " + i +  "   for " + dataFileAudit.getDataFileAuditId());
 
 				HSSFRow bodyRow = sheet.getRow(i);
 

@@ -1185,6 +1185,14 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
         
        try {
            
+    	   /**
+    	    * Check if the same file is being Processed. If status is IP then don't process.
+    	    * */
+    	   boolean status =  checkFileProcessStatus(uploadDataFileId);
+    	   if(status){
+    		  return ;
+    	   }
+    	   
     	   System.out.println("[iaa] uf.a.1 inside uploadFile() before saveFileToDisk(). ");
            saveFileToDisk(serverFilePath, uploadDataFileId);
            System.out.println("[iaa] uf.a.2 inside uploadFile() after saveFileToDisk(). ");
@@ -1355,6 +1363,23 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
         
         } 
        	
+    }
+    
+    private boolean checkFileProcessStatus(Integer uploadFileId){
+    	try{
+    		String status = this.uploadDataFile.checkFileProcessingStatus(uploadFileId);
+    		if("IN".equalsIgnoreCase(status)){
+    			this.uploadDataFile.updateFileProcessingStatus(uploadFileId);
+    			return false;
+    		}
+    		else if("IP".equalsIgnoreCase(status) || "SC".equalsIgnoreCase(status) || "FL".equalsIgnoreCase(status)){
+    			return true;
+    		}
+    	}
+    	catch(SQLException e){
+    		System.out.println("SQLException in checkFileProcessStatus"+ e.getMessage());
+    	}
+    	return false;
     }
      
     /**

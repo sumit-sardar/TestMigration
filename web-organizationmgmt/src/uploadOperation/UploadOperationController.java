@@ -690,7 +690,7 @@ public class UploadOperationController extends PageFlowController {
             System.out.println("[iaa] b.c.2 uploadDownloadManagement.addErrorDataFile(). uploadDataFileId="+uploadDataFileId);
             
             ResourceBundle rb = ResourceBundle.getBundle("security");
-            String processURL = rb.getString("processURL");
+            String processURL = "http://" + getRequest().getLocalAddr() + ":" + getRequest().getLocalPort();//rb.getString("processURL");
             
             HttpSession session = this.getRequest().getSession();
             System.out.println("XXXXXXXXXXXXXXXXXXXXXXX Upload Operation Controller XXXXXXXXXXXXXXXXXXX");
@@ -702,9 +702,9 @@ public class UploadOperationController extends PageFlowController {
                    }
             System.out.println("XXXXXXXXXXXXXXXXXXXXXXX Upload Operation Controller XXXXXXXXXXXXXXXXXXX");
             final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL,session);
-            System.out.println("[iaa] b.d.1 uploadThread.start(). uploadThread.getId()="+uploadThread.getId());
+            System.out.println("[iaa] b.d.1 uploadThread.start(). uploadThread.getId()="+uploadThread.getId() + "***uploadDataFileId ***"+uploadDataFileId);
             uploadThread.start();
-            System.out.println("[iaa] b.d.2 uploadThread.start() : Process Completed");
+            System.out.println("[iaa] b.d.2 uploadThread.start()");
             
             /*PathFinderUtils.saveFileToDB(fullFilePath , 
                                          this.uploadDownloadManagement, 

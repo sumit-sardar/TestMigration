@@ -1043,6 +1043,15 @@ public interface UploadDataFile extends JdbcControl
      */
 	@JdbcControl.SQL(statement = "select cc.default_value from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name = {customerConfigurationName}")
 	String checkCustomerConfiguration(Integer customerId,String customerConfigurationName) throws SQLException;
+	
+	
+	@JdbcControl.SQL(statement = "SELECT DFA.STATUS AS STATUS  FROM DATA_FILE_AUDIT DFA  WHERE DFA.DATA_FILE_AUDIT_ID = {uploadFileId} ")
+	String checkFileProcessingStatus(Integer uploadFileId) throws SQLException;
+	
+	@JdbcControl.SQL(statement = "UPDATE DATA_FILE_AUDIT DFA SET DFA.STATUS = 'IP'  WHERE DFA.DATA_FILE_AUDIT_ID = {uploadFileId} ")
+	void updateFileProcessingStatus(Integer uploadFileId) throws SQLException;
+	
+	
     
 
 }

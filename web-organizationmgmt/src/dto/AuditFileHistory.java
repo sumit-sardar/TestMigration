@@ -78,7 +78,7 @@ public class AuditFileHistory implements java.io.Serializable {
 	 */
 	public String getStatus() {
 		
-		if ( this.status.equals("IN") ) {
+		if ( this.status.equals("IN") || this.status.equals("IP") ) {
 			
 			return "In Progress";
 			
