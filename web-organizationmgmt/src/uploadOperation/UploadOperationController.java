@@ -140,9 +140,6 @@ public class UploadOperationController extends PageFlowController {
 	@Control
 	private UploadDownloadManagementServiceControl uploadDownloadManagementServiceControl;
 
-	
-	@Control
-	private UploadDownloadManagementServiceControl uploadDownloadManagementServiceControl1;
 	 
     // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
