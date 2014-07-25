@@ -704,7 +704,7 @@ public class UploadOperationController extends PageFlowController {
             final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL,session);
             System.out.println("[iaa] b.d.1 uploadThread.start(). uploadThread.getId()="+uploadThread.getId());
             uploadThread.start();
-            System.out.println("[iaa] b.d.2 uploadThread.start()");
+            System.out.println("[iaa] b.d.2 uploadThread.start() : Process Completed");
             
             /*PathFinderUtils.saveFileToDB(fullFilePath , 
                                          this.uploadDownloadManagement, 

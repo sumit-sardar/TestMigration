@@ -17,9 +17,11 @@ public class UploadDownloadManagement {
 	public void uploadFile(java.lang.String userName,
 			java.lang.String serverFilePath, java.lang.Integer uploadDataFileId)
 			throws com.ctb.exception.CTBBusinessException {
+		System.out.println("*****------ uploadDownloadManagement.uploadFile(): Started --------********");
 		explicitlyInitializeAllControls();
 		uploadDownloadManagement.uploadFile(userName, serverFilePath,
 				uploadDataFileId);
+		System.out.println("*****------ uploadDownloadManagement.uploadFile(): Completed --------********");
 	}
 	
 	 public void explicitlyInitializeAllControls() throws CTBBusinessException{
