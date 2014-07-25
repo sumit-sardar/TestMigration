@@ -2597,7 +2597,10 @@ public class UploadDownloadFormUtils
             	// will show "Hispanic or Latino" as value under "Ethnicity" demo-header . The original demo value 
             	// will be shown under "Sub-ethnicity" header.
             	// Added on 3 Sep ,2013.. #75217,#75292
-            	if (demoGraphicData[i].getValueName().equalsIgnoreCase(demoEthnicityMap.get(demoGraphicData[i].getValueName().toLowerCase())) && demoHeader.equalsIgnoreCase("ETHNICITY") && isLaslink){
+            	String valueName = demoGraphicData[i].getValueName();
+            	if (valueName == null) valueName = "";
+            	
+            	if (valueName.equalsIgnoreCase(demoEthnicityMap.get(valueName.toLowerCase())) && demoHeader.equalsIgnoreCase("ETHNICITY") && isLaslink){
             		
             		return "Hispanic or Latino";
             	}
