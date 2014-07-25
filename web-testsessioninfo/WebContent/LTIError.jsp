@@ -1,62 +1,90 @@
-<%@ page import="java.io.*, java.util.* , com.ctb.util.PropertiesLoader "%>
+<%@ page import="java.io.*,java.util.*,com.ctb.util.PropertiesLoader"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
+<%@ taglib uri="label.tld" prefix="lb"%>
 <lb:bundle baseName="testsessionApplicationResource" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <%
-	
+	String LTIErrorURL = null;
+	Cookie[] cookies = (Cookie[]) request.getCookies();
+	if (cookies != null && cookies.length > 0) {
+		for (int i = 0; i < cookies.length; i++) {
+			Cookie c = cookies[i];
+			if (c != null) {
+				if (c.getName().equals("_WL_AUTHCOOKIE_TAS_SESSIONID") ||
+						c.getName().equals("isSSO_LTIUser") ||
+						c.getName().equals("LTI_ErrorURL")) {
+					if(c.getName().equals("LTI_ErrorURL"))
+					{
+						LTIErrorURL = c.getValue();
+					}
+					Cookie r = new Cookie(c.getName(), null);
+					r.setMaxAge(0);
+					r.setPath("/");
+					response.addCookie(r);
+					cookies[i] = null;
+				}
+				
+					
+				
+			}
+		}
+	}
+	String message = "";
+	String errorCode = (String) request.getParameter("ERROR_CODE");
+	if (errorCode == null) {
+		message = "No error code received";
+	} else {
 
-    String message = (String)request.getAttribute("message");
-    if (message == null) {
-       message = "No error message";
-    }
-    
-    Cookie[] cookies = (Cookie[])request.getCookies();
-    if (cookies != null && cookies.length > 0 ) {    
-        for (int i=0 ; i<cookies.length ; i++) {
-            Cookie c = cookies[i];
-            if (c != null) {
-				if ((c != null) && c.getName().equals("_WL_AUTHCOOKIE_TAS_SESSIONID")) {
-                    Cookie r = new Cookie(c.getName(), null);
-                    r.setMaxAge(0);
-                    r.setPath("/");
-                    response.addCookie(r);
-                    cookies[i] = null;
-                }
-            }
-        }
-    }
+		if (errorCode.equals("unknown_customer")) {
+			message = errorCode + ":Invalid customer id";
+		} else if (errorCode.equals("unknown_user")) {
+			message = errorCode + ":Invalide user id";
+		} else if (errorCode.equals("user_disabled")) {
+			message = errorCode + ":User disabled";
+		} else if (errorCode.equals("lti_error")) {
+			message = errorCode + ":Signature does not match";
+		} else if (errorCode.equals("session_expired")) {
+			message = errorCode + ":Session timed out";
+		} else {
+			message = errorCode + ":Unknown error code";
+		}
+	}
+	if(!(LTIErrorURL == null || LTIErrorURL.indexOf("LTIError.jsp")>=0))
+	{
+		if(LTIErrorURL.indexOf('?')<0) LTIErrorURL += '?';
+		response.sendRedirect(LTIErrorURL+"&ERROR_CODE="+errorCode);
+	}
 %>
 
 
 <html>
 
 <head>
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
 
-  	<title>User Logout</title>
-  	
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
-    
-	<link href="<%=request.getContextPath()%>/resources/css/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />
-	<link href="<%=request.getContextPath()%>/resources/css/main.css" rel="stylesheet" type="text/css" />
-	<link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" rel="stylesheet" type="text/css" />
-          
-	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.6.2.min.js"></script>
-  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.blockUI.min.js"></script>    
-  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script> 
-	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
-  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/main.js"></script>    
-  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>    
-  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>    
+<title>User Logout</title>
 
-  
-  	<script type="text/javascript">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
+
+<link href="<%=request.getContextPath()%>/resources/css/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />
+<link href="<%=request.getContextPath()%>/resources/css/main.css" rel="stylesheet" type="text/css" />
+<link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.blockUI.min.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/main.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>
+
+
+<script type="text/javascript">
         // Browser Back Button
         window.history.forward(1); // this works for IE standalone
         window.onbeforeunload = confirmBrowseAway; //the code from here down
@@ -68,8 +96,8 @@
             }
         }
         history.go(1);
-    </script>  
-    
+    </script>
+
 </head>
 
 <body leftmargin="0" topmargin="0">
@@ -77,163 +105,150 @@
 
 <!-- MAIN BODY -->
 
-<table  class="simpleBody">
- 
-	<tr>
-		<td align="center" valign="top" >
-			<table class="bodyLayout">
+<table class="simpleBody">
 
-				<!-- HEADER SECTION -->
-				<tr class="bodyLayout">
-					<td>
-					 
-						<table class="headerLayout" >
+	<tr>
+		<td align="center" valign="top">
+		<table class="bodyLayout">
+
+			<!-- HEADER SECTION -->
+			<tr class="bodyLayout">
+				<td>
+
+				<table class="headerLayout">
+					<tr>
+						<td align="left" width="70%"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+
+
+			<!-- BODY SECTION -->
+			<tr>
+				<td align="left" valign="top">
+
+				<div class="feature">
+
+				<div class="feature" style="background-color: #ffffff; border: 1px; padding: 5px;">
+
+				<form method="post" name="login" action="homepage.do">
+
+				<table class="simpleBlock">
+					<tr>
+						<td width="500" style="padding-left: 80px;"><!-- Begin content-->
+
+						<table class="simpleBlock" width="100%" cellpadding="5">
 							<tr>
-								<td align="left" width="70%"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+								<td colspan="2">
+								<h1><%=message%></h1>
+								<br />
+								<br />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2"></a></td>
 							</tr>
 						</table>
-					</td>
-				</tr>
+						<br>
+						<br>
+						<!--End content--></td>
+
+						<td width="50">&nbsp;</td>
+
+						<!--Begin privacy Statement-->
+						<td width="150" valign="top">
+						<table border="0" cellspacing="0" cellpadding="0" class="hierarchyTableHeader">
+							<tr>
+								<td colspan="3" valign="middle"><img src="<%=request.getContextPath()%>/resources/images/transparent.gif"
+									width="6" height="24" border="0">
+								<div class="roundedPrivacy"><lb:label key="login.privacy" /></div>
+								</td>
+							</tr>
+							<tr>
+								<td rowspan="3"><img src="<%=request.getContextPath()%>/resources/images/vertical_dotted_line.gif"
+									width="1" height="185" border="0"></td>
+								<td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24"
+									border="0"></td>
+								<td><br>
+								<lb:label key="login.privacy.anyInfo" /><br>
+								</td>
+							</tr>
+							<tr>
+								<td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24"
+									border="0"></td>
+								<td><a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html"
+									onclick="return openPrivacyPolicyWindow(this.href);"><lb:label key="login.privacy.readPolicy" /></a></td>
+							</tr>
+							<tr>
+								<td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24"
+									border="0"></td>
+								<td><a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html"
+									onClick="return openCOPPAWindow(this.href);"><lb:label key="login.privacy.copa1" /></a> <lb:label
+									key="login.privacy.copa2" /></td>
+							</tr>
+						</table>
+						<!--End privacy Statement--></td>
+					</tr>
 
 
-				<!-- BODY SECTION -->
-				<tr>
-				  	<td align="left" valign="top">
+					<tr>
+						<td align="left" valign="top" style="padding-left: 80px;">
+						<table class="simpleBlock" width="550">
+							<tr>
+								<td><img src="<%=request.getContextPath()%>/resources/images/horizontal_dotted_line.gif" width="525"
+									height="1" border="0"></td>
+							</tr>
 
-<div class="feature">
-
-  	<div class="feature" style="background-color: #ffffff; border:1px; padding: 5px;">
-
-<form method="post" name="login" action="homepage.do">
-      	
-<table class="simpleBlock">
-<tr>
-    <td width="500"  style="padding-left: 80px;">
-        <!-- Begin content-->
-        
-        <table class="simpleBlock" width="100%" cellpadding="5">
-            <tr>
-                <td colspan="2">
-	                <h1>
-	                	<%= message %>
-	                	
-	                </h1>
-                <br/><br/>                
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">                  
-                	<a href="#" onclick="submitPage();" class="rounded {transparent} button" tabindex="0"
-                	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
-                	onkeypress="return handleEnterKey(event, this);" >
-                	<lb:label key="login.logIn"/>
-                	</a>                	
-                </td>
-            </tr>
-            </table>
-        <br>
-        <br>
-        <!--End content-->
-    </td>
-
-    <td width="50">&nbsp;</td>
- 
-    <!--Begin privacy Statement-->
-    <td width="150" valign="top">
-        <table border="0" cellspacing="0" cellpadding="0" class="hierarchyTableHeader">
-        <tr>
-            <td colspan="3" valign="middle"><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0">
-           	<div class="roundedPrivacy">
-            	<lb:label key="login.privacy"/>
-            </div>
-            </td>
-        </tr>
-        <tr>
-            <td rowspan="3"><img src="<%=request.getContextPath()%>/resources/images/vertical_dotted_line.gif" width="1" height="185" border="0"></td>
-            <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-            <td><br><lb:label key="login.privacy.anyInfo"/><br></td>
-        </tr>
-        <tr>
-            <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-            <td><a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onclick="return openPrivacyPolicyWindow(this.href);" ><lb:label key="login.privacy.readPolicy"/></a></td>
-        </tr>
-        <tr>  
-            <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-            <td><a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="return openCOPPAWindow(this.href);"><lb:label key="login.privacy.copa1"/></a> <lb:label key="login.privacy.copa2"/> </td>
-        </tr>
-        </table>
-        <!--End privacy Statement-->
-    </td>
-</tr>
-
-
-<tr>
-<td align="left" valign="top" style="padding-left: 80px;">
-<table class="simpleBlock" width="550" >
-<tr>
-    <td>
-        <img src="<%=request.getContextPath()%>/resources/images/horizontal_dotted_line.gif" width="525" height="1" border="0">
-    </td>
-</tr>
- 
-<tr>
-    <td>
-        <span class="hierarchyTableHeader"><lb:label key="login.privacy.developedBy1"/> &copy; <%=PropertiesLoader.getDetail("login.privacy.developedBy2")%> 
-        </span>
-    </td>
-</tr>
-</table>
-</td>
-</tr>
-
-
-
-
-</table>
-<!--end main table-->
-
-</form>
-
-<br/><br/>
-	</div>
-</div>
-	
-
-
-					</td>
-				</tr>
-			
-
-
-				<!-- FOOTER SECTION -->
-				<tr>
-				  <td align="left" valign="top">
-				  
-					<table class="footerLayout">
-					  <tr>
-						<td class="footerLayout">
-						    <span>
-						        <lb:label key="common.footer1.message"/> &copy; <lb:label key="common.footer2.message"/>
-						    </span>
-						
-						    <span>
-						        <lb:label key="common.footer3.message"/> <a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;"><lb:label key="common.footer4.message"/></a>.
-						    </span>
-						
-						    <span>
-						        <lb:label key="common.footer5.message"/> <a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;"><lb:label key="common.footer6.message"/></a>.
-						    </span>
-						
-						    <span>
-						        <lb:label key="common.footer7.message"/> <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;"><lb:label key="common.footer8.message"/></a>.
-						    </span>
+							<tr>
+								<td><span class="hierarchyTableHeader"><lb:label key="login.privacy.developedBy1" /> &copy; <%=PropertiesLoader.getDetail("login.privacy.developedBy2")%>
+								</span></td>
+							</tr>
+						</table>
 						</td>
-					  </tr>
-					</table>
-				  </td>
-				</tr>
+					</tr>
 
-			</table>
+
+
+
+				</table>
+				<!--end main table-->
+
+				</form>
+
+				<br />
+				<br />
+				</div>
+				</div>
+
+
+
+				</td>
+			</tr>
+
+
+
+			<!-- FOOTER SECTION -->
+			<tr>
+				<td align="left" valign="top">
+
+				<table class="footerLayout">
+					<tr>
+						<td class="footerLayout"><span> <lb:label key="common.footer1.message" /> &copy; <lb:label
+							key="common.footer2.message" /> </span> <span> <lb:label key="common.footer3.message" /> <a
+							href="<%=request.getContextPath()%>/resources/html/terms_of_use.html"
+							onClick="showTermsOfUseWindow(this.href); return false;"><lb:label key="common.footer4.message" /></a>. </span> <span>
+						<lb:label key="common.footer5.message" /> <a
+							href="<%=request.getContextPath()%>/resources/html/privacy_policy.html"
+							onClick="showPrivacyPolicyWindow(this.href); return false;"><lb:label key="common.footer6.message" /></a>. </span> <span>
+						<lb:label key="common.footer7.message" /> <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html"
+							onClick="showCOPPAWindow(this.href); return false;"><lb:label key="common.footer8.message" /></a>. </span></td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+
+		</table>
 		</td>
 	</tr>
 

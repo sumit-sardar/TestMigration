@@ -40,7 +40,7 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 	// is
 	// invalid
 	private static final String ERROR_LTI_ERROR = "lti_error";// signature is
-	
+
 	private static final String USER_VALID_STATUS = "AC";
 
 	/*
@@ -135,34 +135,30 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 								+ user.getUserId() + "," + user.getUserName()
 								+ "," + user.getRole().getRoleName());
 						HttpSession sess = request.getSession(true);
-						sess.setAttribute(LTI_AUTH, LTI_TRUE);
-						sess.setAttribute(LTI_USER_ID, user.getUserId());
-						sess.setAttribute(LTI_USER_NAME, user.getUserName());
-						sess.setAttribute(LTI_ROLE_NAME, user.getRole()
-								.getRoleName());
-						sess.setAttribute("customerId", "");
-						sess.setAttribute("userName", user.getUserName());
+						
 						try {
 							ServletAuthentication.login(new LTICallbackHandler(
 									user.getUserName(), user.getPassword()),
 									request);
 						} catch (LoginException e) {
-							// TODO Auto-generated catch block
+							
 							e.printStackTrace();
 						}
 						// **[IAA]: OAS-457 LAS 2014 - LAUSD - SSO - Hide LogOut
 						// menu
-				     	Cookie cookie = new Cookie("isSSO_LTIUser", "true");
-				     	//cookie.setMaxAge(24*60*60);//24hrs
-				     	cookie.setPath("/");
-				     	cookie.setSecure(true);
+						Cookie cookie = new Cookie("isSSO_LTIUser", "true");
+						// cookie.setMaxAge(24*60*60);//24hrs
+						cookie.setPath("/");
+						// cookie.setSecure(true);
 						response.addCookie(cookie);
 						sess.setAttribute("isSSO_LTIUser", new Boolean(
 								Boolean.TRUE));
+						Cookie cookieErrorURL = new Cookie("LTI_ErrorURL",getErrorURL(errorURL));
+						cookie.setPath("/");
+						response.addCookie(cookieErrorURL);
+						
 						response.sendRedirect("sessionOperation/begin.do");
-					}
-					else
-					{
+					} else {
 						System.out.println("User is disabled");
 
 						gotoErrorPage(request, response, errorURL,
@@ -191,23 +187,46 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 			HttpServletResponse response, String errorURL, String errorCode,
 			String errorMsg) {
 		try {
-			request.setAttribute("message", errorCode + ":" + errorMsg);
-			RequestDispatcher rd = getServletContext().getRequestDispatcher(
-					errorURL);
-			if (rd == null) {
-				System.out.println("************Page URL is wrong");
+						
+			errorURL = getErrorURL(errorURL);
+			errorURL += "ERROR_CODE=" + errorCode;
+			/*String redirectURL = errorURL;
+			if ((errorURL == null) || errorURL.isEmpty()) {
+				errorURL = "/LTIError.jsp?ERROR_CODE=" + errorCode;
 			} else {
-				rd.forward(request, response);
-			}
-		} catch (ServletException e) {
+				if (errorURL.indexOf('?') >= 0) {
+					errorURL = errorURL + "&ERROR_CODE=" + errorCode;
+				} else {
+					errorURL = errorURL + "?ERROR_CODE=" + errorCode;
+				}
+			}*/
+			response.sendRedirect(errorURL);
 
-			e.printStackTrace();
 		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
 	}
-
+	private String getErrorURL(String errorURL)
+	{
+		String adjustedErrorURL = errorURL;
+		
+		if(errorURL==null || errorURL.isEmpty())
+		{
+			errorURL = "/LTIError.jsp?";
+		}
+		else
+		if(errorURL.indexOf('?')>=0)
+		{
+			errorURL +='&';
+		}
+		else
+		{
+			errorURL +='?';
+		}
+		
+		return adjustedErrorURL;
+	}
 	private class LTICallbackHandler implements CallbackHandler {
 
 		private String userName;
