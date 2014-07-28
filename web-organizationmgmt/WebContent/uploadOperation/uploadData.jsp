@@ -238,7 +238,6 @@ $(document).ready(function(){
 
 <%
 	String uploadMsg = (String)request.getAttribute("uploadMsg");
-	System.out.println(uploadMsg);
 %>
 <script type="text/javascript">
 	handleUploadMessages("<%= uploadMsg %>"); 

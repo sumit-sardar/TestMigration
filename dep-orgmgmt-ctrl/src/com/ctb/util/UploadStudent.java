@@ -344,6 +344,7 @@ public class UploadStudent extends BatchProcessor.Process
 			}
 			//retrive each row from uploaded excel sheet
 			HSSFRow rowHeader = sheet.getRow(0);
+			System.out.println("isTascCustomer : "+isTascCustomer);
 			for ( int i = 1; i < totalRows; i++ ) {
 
 				System.out.println("    ***** Upload Control: Processing row " + i  + "   for " + dataFileAudit.getDataFileAuditId());
@@ -385,7 +386,7 @@ public class UploadStudent extends BatchProcessor.Process
 				getEachRowStudentDetail(i,row,rowHeader,requiredMap,maxLengthMap,
 						invalidCharMap,logicalErrorMap,minLengthMap);
 				
-				System.out.println("isTascCustomer : "+isTascCustomer);
+				//System.out.println("isTascCustomer : "+isTascCustomer);
 				
 				if(isTascCustomer){
 					HSSFCell cellHeaderName = rowHeader.getCell(0);
@@ -1301,7 +1302,7 @@ public class UploadStudent extends BatchProcessor.Process
 			HSSFRow rowHeader, ArrayList logicalErrorList) {
 
 		int totalCells = rowHeader.getPhysicalNumberOfCells();  
-		System.out.println("***isLogicalError Call in New UI***");
+		//System.out.println("***isLogicalError Call in New UI***");
 		// retrive each cell value for user
 		String msBackGroundColor="";
 		String strCell = "";
