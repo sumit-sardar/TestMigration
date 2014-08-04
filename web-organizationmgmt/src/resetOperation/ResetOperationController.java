@@ -24,7 +24,6 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
-
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
@@ -1500,6 +1499,7 @@ public class ResetOperationController extends PageFlowController {
     	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
     	boolean isWVCustomer = false;
+    	boolean hasLicenseConfig = false;
     	
     	this.isLasLinkCustomer = laslinkCustomer;        
         this.getSession().setAttribute("showReportTab", 
@@ -1515,7 +1515,7 @@ public class ResetOperationController extends PageFlowController {
         
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         
-     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration() && adminUser);
+     //	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration() && adminUser);
 
 		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigs));
 		
@@ -1545,6 +1545,12 @@ public class ResetOperationController extends PageFlowController {
 				isGACustomer = true;
 				continue;
 			}
+			
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+            		cc.getDefaultValue().equals("T")	) {
+				hasLicenseConfig = true;
+				continue;
+            }
 			// For Upload Download
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload")
 					&& cc.getDefaultValue().equals("T")) {
@@ -1632,6 +1638,7 @@ public class ResetOperationController extends PageFlowController {
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
+     	this.getSession().setAttribute("hasLicenseConfigured",new Boolean(hasLicenseConfig && adminUser));
      	//Done for 3to8 customer to block user module
      	this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
      	//Done for Engrade customer to block admin users from adding/editing/deleting users
