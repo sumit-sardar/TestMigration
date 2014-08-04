@@ -837,6 +837,8 @@ public class SessionOperationController extends PageFlowController {
             		 if(this.isEOIUser && this.isMappedWith3_8User) {
             			 vo=new ScheduleTestVo();
             		 }
+            		 if(isLaslinkCustomer(this.customerConfigurations))
+            			 vo.setLaslinkCustomer(true);
             		vo.populate(userName, tps, itemSet, scheduleTest);
                  	vo.populateTopOrgnode(this.topNodesMap);
                  	vo.populateLevelOptions();
@@ -3018,6 +3020,7 @@ public class SessionOperationController extends PageFlowController {
 
 	private void initialize() {
 		getLoggedInUserPrincipal();
+		if(this.customerConfigurations == null)	getCustomerConfigurations();  
 		UserNodeData und = null;
 
 		try {

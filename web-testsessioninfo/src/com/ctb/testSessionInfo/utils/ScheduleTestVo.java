@@ -46,6 +46,7 @@ public class ScheduleTestVo implements Serializable{
 	Map<String,ArrayList> classHierarchyMap;
 	private boolean hasShowRosterAccomAndHierarchy = false;
 	private Integer testingWindowDefaultDays = null;
+	private boolean isLaslinkCustomer = false;
 	
 	
 	/**
@@ -272,7 +273,7 @@ public class ScheduleTestVo implements Serializable{
 		 return testList;
      }
 	 private boolean isLasLinkProduct(String productType) {
-	     	return "LL".equals(productType);
+	     	return ("LL".equals(productType) || isLaslinkCustomer);
 	     }
 
 	public void populate(String userName, TestProduct[] tps, ItemSet itemSet, ScheduleTest scheduleTest) throws SQLException, CTBBusinessException {
@@ -639,6 +640,10 @@ public class ScheduleTestVo implements Serializable{
 
 	public void setWVAdmin(boolean isWVAdmin) {
 		this.isWVAdmin = isWVAdmin;
+	}
+
+	public void setLaslinkCustomer(boolean isLaslinkCustomer) {
+		this.isLaslinkCustomer = isLaslinkCustomer;
 	}
 }
 
