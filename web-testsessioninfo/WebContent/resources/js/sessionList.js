@@ -6843,6 +6843,14 @@ function validNumber(str){
 				defualtEndDate.setTime(start.getTime()+ parseInt((parseInt(defaultDays)-1)*1000*60*60*24));
 			}
 			var newEndDate = ("0" + (defualtEndDate.getMonth() + 1)).slice(-2) + "/" + ("0" + defualtEndDate.getDate()).slice(-2) + "/" + ("0" + defualtEndDate.getFullYear()).slice(-2);
+			
+			var maxDate = $( "#endDate" ).datepicker("option","maxDate");
+			if(!!maxDate){
+				var maxEndDate = new Date(maxDate);
+				if (defualtEndDate.getTime() > maxEndDate.getTime()){
+					newEndDate = maxDate;
+				}
+			}
 			document.getElementById("endDate").value = newEndDate;
 		}
 	}

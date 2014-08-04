@@ -526,23 +526,27 @@ public class ScheduleTestVo implements Serializable{
 	        for(TestVO testVO : productBean.getTestSessionList()) {
 	        	if (testVO.getOverrideLoginStartDate() != null && !(DateUtils.isBeforeToday(testVO.getOverrideLoginStartDate(), timeZone ))) {
 	        		Date loginEndDate = (Date)testVO.getOverrideLoginStartDate().clone();
-	                loginEndDate.setDate(loginEndDate.getDate() + 1);
+					// loginEndDate.setDate(loginEndDate.getDate() + 1);
+	        		tomorrow = new Date(loginEndDate.getTime() + 24 * (defualtDay.intValue() - 1) * 60 * 60 * 1000);
 	                testVO.setStartDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginStartDate()));
-	                testVO.setEndDate(DateUtils.formatDateToDateString(loginEndDate));
+					// testVO.setEndDate(DateUtils.formatDateToDateString(loginEndDate));
+	                testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
 	        	
 	        	} else {
 	        		testVO.setStartDate(DateUtils.formatDateToDateString(today));
 	        		testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
 	        	}
 	        	
-	        	if(testVO.getOverrideLoginEndDate()!= null && !(DateUtils.isAfterToday(testVO.getOverrideLoginEndDate(), timeZone )) ) {
-	        		testVO.setStartDate(DateUtils.formatDateToDateString(today)); // setting today as start day
-	        		testVO.setEndDate(DateUtils.formatDateToDateString(today));    // setting today as end day
-	        		testVO.setMinLoginEndDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginEndDate()));
-	        		
-	        	} else if(testVO.getOverrideLoginEndDate()!= null ){
-	        		testVO.setMinLoginEndDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginEndDate()));
-	        	}
+	        	if((testVO.getOverrideLoginEndDate() == null) || (!DateUtils.isAfterToday(testVO.getOverrideLoginEndDate(), timeZone)) || 
+	        	          (!com.ctb.util.DateUtils.dateAfter(testVO.getOverrideLoginEndDate(), DateUtils.getDateFromDateString(testVO.getStartDate()))))
+	        	          continue;
+    	        if (com.ctb.util.DateUtils.dateAfter(testVO.getOverrideLoginEndDate(), tomorrow)) {
+    	          testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+    	          testVO.setMinLoginEndDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginEndDate()));
+    	        } else {
+    	          testVO.setEndDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginEndDate()));
+    	          testVO.setMinLoginEndDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginEndDate()));
+    	        }
 	        }
         }
 		
