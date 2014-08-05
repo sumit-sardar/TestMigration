@@ -697,7 +697,7 @@ public class DataExportOperationController extends PageFlowController {
 				Gson gson = new Gson();
 				String json = gson.toJson(vo);
 				System.out.println("Jason value"+ json );
-				resp.setContentType(CONTENT_TYPE_JSON);
+				//resp.setContentType(CONTENT_TYPE_JSON);
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
 				stream.write(json.getBytes("UTF-8"));
@@ -801,7 +801,7 @@ public class DataExportOperationController extends PageFlowController {
 			try {
 				Gson gson = new Gson();
 				String json = gson.toJson(vo);
-				System.out.println("Json value"+ json );
+				//System.out.println("Json value"+ json );
 				resp.setContentType(CONTENT_TYPE_JSON);
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
@@ -931,7 +931,7 @@ public class DataExportOperationController extends PageFlowController {
 		try {
 			jsonResponse = JsonUtils.getJson(qad, "questionAnswer",qad.getClass());
 
-			System.out.println("jsonresponse" + jsonResponse);
+			//System.out.println("jsonresponse" + jsonResponse);
 		   HttpServletResponse resp = this.getResponse();     
 		   resp.setContentType("application/json");
            resp.flushBuffer();
@@ -1164,7 +1164,7 @@ public Forward rescoreStudent() {
 		try {
 			Gson gson = new Gson();
 			String json = gson.toJson(vo);
-			System.out.println("Json value"+ json );
+			//System.out.println("Json value"+ json );
 			resp.setContentType(CONTENT_TYPE_JSON);
 			resp.flushBuffer();
 			stream = resp.getOutputStream();
@@ -1241,7 +1241,7 @@ public Forward rescoreStudent() {
 			Gson gson = new Gson();
 			base.setManageJobData(jobList);
 			json = gson.toJson(base);
-			System.out.println("json -> " + json);
+//			System.out.println("json -> " + json);
 			//return new Forward("success",json);
 			
 			try{
