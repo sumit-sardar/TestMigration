@@ -39,14 +39,16 @@
 		if (errorCode.equals("unknown_customer")) {
 			message = errorCode + ":Invalid customer id";
 		} else if (errorCode.equals("unknown_user")) {
-			message = errorCode + ":Invalide user id";
+			message = errorCode + ":Invalid user id";
 		} else if (errorCode.equals("user_disabled")) {
 			message = errorCode + ":User disabled";
 		} else if (errorCode.equals("lti_error")) {
 			message = errorCode + ":Signature does not match";
 		} else if (errorCode.equals("session_expired")) {
 			message = errorCode + ":Session timed out";
-		} else {
+		}else if (errorCode.equals("cookie_disabled")) {
+			message = errorCode + ":Third party cookies blocked";
+		}  else {
 			message = errorCode + ":Unknown error code";
 		}
 	}
