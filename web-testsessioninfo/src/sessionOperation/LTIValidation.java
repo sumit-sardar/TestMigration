@@ -28,22 +28,21 @@ import com.ctb.bean.testAdmin.User;
  */
 /**
  * @author d-arockiaraj_Duraira
- *
+ * 
  */
 public class LTIValidation {
 
-	//private static final String OAUTH_PREFIX = "oauth_";
+	// private static final String OAUTH_PREFIX = "oauth_";
 	private static final String OAUTH_SIGNATURE = "oauth_signature";
 	private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 	private static final String DATASOURCE_NAME = "oasDataSource";
 
-	
 	/**
-	 * @param customerID - customer ID of the user
+	 * @param customerID -
+	 *            customer ID of the user
 	 * @return the secret key for the customer ID
 	 */
-	public String getSecretKey(String customerID)
-	{
+	public String getSecretKey(String customerID) {
 		String skey = null;
 		InitialContext ctx;
 		try {
@@ -63,29 +62,34 @@ public class LTIValidation {
 
 			boolean exists = rs.next();
 			if (exists) {
-				skey = rs.getString("secret_key")+"&";
+				skey = rs.getString("secret_key");
+				if (skey == null || skey.isEmpty()) {
+					skey = null;
+				} else {
+					skey += "&";
+				}
 			}
 			rs.close();
 			secretKeyStmt.close();
 			con.close();
 
 		} catch (NamingException e) {
-			
+
 			e.printStackTrace();
 
 		} catch (SQLException e) {
-			
+
 			e.printStackTrace();
 		}
 		return skey;
 	}
-	
+
 	/**
-	 * @param customerID - customer ID of the user
+	 * @param customerID -
+	 *            customer ID of the user
 	 * @return the error URL of engrade
 	 */
-	public String getErrorURL(String customerID)
-	{
+	public String getErrorURL(String customerID) {
 		String skey = null;
 		InitialContext ctx;
 		try {
@@ -112,15 +116,16 @@ public class LTIValidation {
 			con.close();
 
 		} catch (NamingException e) {
-			
+
 			e.printStackTrace();
 
 		} catch (SQLException e) {
-			
+
 			e.printStackTrace();
 		}
 		return skey;
 	}
+
 	public boolean validateRequest(HttpServletRequest request, String secretKey) {
 		boolean result = false;
 
@@ -133,27 +138,32 @@ public class LTIValidation {
 			// ignore if key is null or key == "oauth_signature"
 			if (key == null || key.equals(OAUTH_SIGNATURE))
 				continue;
-			
-				String[] values = param.getValue();
-				if (values == null || values.length <= 0) {
-					oauthMap.put(key, null);
-				} else {
-					String value = values[0];
-					oauthMap.put(URLEncoder.encode(key), URLEncoder.encode(value).replace("+","%20"));
-				}
-			
+
+			String[] values = param.getValue();
+			if (values == null || values.length <= 0) {
+				oauthMap.put(key, null);
+			} else {
+				String value = values[0];
+				oauthMap.put(URLEncoder.encode(key), URLEncoder.encode(value)
+						.replace("+", "%20"));
+			}
+
 		}
 		StringBuilder baseString = new StringBuilder();
-		baseString.append("POST&"+URLEncoder.encode("https://oastest.ctb.com/SessionWeb/LTIAuthentication")+"&");
+		baseString
+				.append("POST&"
+						+ URLEncoder
+								.encode("https://oastest.ctb.com/SessionWeb/LTIAuthentication")
+						+ "&");
 		for (Map.Entry<String, String> oauthParam : oauthMap.entrySet()) {
-			baseString.append(URLEncoder.encode(oauthParam.getKey() + "=" + oauthParam.getValue()
-					+ "&"));
+			baseString.append(URLEncoder.encode(oauthParam.getKey() + "="
+					+ oauthParam.getValue() + "&"));
 		}
 		if (oauthMap.size() > 0 && baseString.length() > 1) {
 			String signString = baseString
-					.substring(0, baseString.length() - 3);//remove last %26
+					.substring(0, baseString.length() - 3);// remove last %26
 			try {
-				System.out.println("sign String"+signString);
+				System.out.println("sign String" + signString);
 				String oauthSignature = calculateRFC2104HMAC(signString,
 						secretKey);
 				System.out.println("Calculated OAuth signature..."
@@ -192,20 +202,17 @@ public class LTIValidation {
 	}
 
 	private String toHexString(byte[] bytes) {
-		
+
 		/*
 		 * Formatter formatter = new Formatter();
-
-		for (byte b : bytes) {
-			formatter.format("%02x", b);
-		}
-
-		return formatter.toString();
-		*/
-		return  DatatypeConverter.printBase64Binary(bytes);
+		 * 
+		 * for (byte b : bytes) { formatter.format("%02x", b); }
+		 * 
+		 * return formatter.toString();
+		 */
+		return DatatypeConverter.printBase64Binary(bytes);
 	}
 
-	
 	// validate customerID(in LTI it referred as consumer)
 	public boolean validateCustomer(String customerID) {
 		boolean result = false;
@@ -235,13 +242,13 @@ public class LTIValidation {
 			}
 
 		} catch (NamingException e) {
-			
+
 			e.printStackTrace();
 
 		} catch (SQLException e) {
-			
+
 			e.printStackTrace();
-			if(con!=null){
+			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException e1) {
@@ -268,8 +275,8 @@ public class LTIValidation {
 
 			con = ds.getConnection();
 			PreparedStatement userStmt = con
-					.prepareStatement("select u.user_id as userid, u.user_name as username, u.password as password, u.activation_status as status"+
-							"  from user_role ur, org_node org ,users u "
+					.prepareStatement("select u.user_id as userid, u.user_name as username, u.password as password, u.activation_status as status"
+							+ "  from user_role ur, org_node org ,users u "
 							+ " where ur.org_node_id = org.org_node_id and  ur.user_id = u.user_id and  "
 							+ "org.customer_id = ? and u.ext_school_id =  ? ");
 
@@ -320,7 +327,7 @@ public class LTIValidation {
 
 		} catch (SQLException e) {
 
-			if(con!=null){
+			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException e1) {
@@ -347,8 +354,8 @@ public class LTIValidation {
 
 			con.setAutoCommit(false);
 			PreparedStatement updStmt = con
-					.prepareStatement("UPDATE Users set last_login_date_time = sysdate, reset_password ='F' ,"+
-										"password_expiration_date = to_date('2050/01/01','yyyy/mm/dd')  where user_id = ?");
+					.prepareStatement("UPDATE Users set last_login_date_time = sysdate, reset_password ='F' ,"
+							+ "password_expiration_date = to_date('2050/01/01','yyyy/mm/dd')  where user_id = ?");
 
 			updStmt.setInt(1, userID.intValue());
 			int rowCount = updStmt.executeUpdate();
@@ -357,10 +364,10 @@ public class LTIValidation {
 			con.close();
 
 		} catch (SQLException e) {
-			
+
 			e.printStackTrace();
 		} catch (NamingException e) {
-			
+
 			e.printStackTrace();
 		}
 
