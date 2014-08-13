@@ -261,6 +261,15 @@
     	<servlet-class>
     	sessionOperation.LTIAuthentication</servlet-class>
     	</servlet>
+    <servlet>
+    	<description>
+    	</description>
+    	<display-name>
+    	LTICookieTest</display-name>
+    	<servlet-name>LTICookieTest</servlet-name>
+    	<servlet-class>
+    	sessionOperation.LTICookieTest</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>action</servlet-name>
         <url-pattern>*.jpf</url-pattern>
@@ -281,4 +290,8 @@
         <servlet-name>LTIAuthentication</servlet-name>
         <url-pattern>/LTIAuthentication</url-pattern>
     </servlet-mapping>
+ 	<servlet-mapping>
+ 		<servlet-name>LTICookieTest</servlet-name>
+ 		<url-pattern>/LTICookieTest</url-pattern>
+ 	</servlet-mapping>
 </web-app>
