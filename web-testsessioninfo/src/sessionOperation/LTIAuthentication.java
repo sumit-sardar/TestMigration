@@ -1,6 +1,7 @@
 package sessionOperation;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -147,17 +148,20 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 						// **[IAA]: OAS-457 LAS 2014 - LAUSD - SSO - Hide LogOut
 						// menu
 						Cookie cookie = new Cookie("isSSO_LTIUser", "true");
-						// cookie.setMaxAge(24*60*60);//24hrs
+						
 						cookie.setPath("/");
-						// cookie.setSecure(true);
+						cookie.setSecure(true);
 						response.addCookie(cookie);
 						sess.setAttribute("isSSO_LTIUser", new Boolean(
 								Boolean.TRUE));
-						Cookie cookieErrorURL = new Cookie("LTI_ErrorURL",getErrorURL(errorURL));
+						String finalErrorURL = getErrorURL(errorURL);
+						Cookie cookieErrorURL = new Cookie("LTI_ErrorURL",finalErrorURL);
 						cookie.setPath("/");
+						cookieErrorURL.setSecure(true);
 						response.addCookie(cookieErrorURL);
 						
-						response.sendRedirect("sessionOperation/begin.do");
+						response.sendRedirect("LTICookieTest?errorURL="+URLEncoder.encode(finalErrorURL,"UTF-8"));
+						
 					} else {
 						System.out.println("User is disabled");
 
@@ -190,16 +194,7 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 						
 			errorURL = getErrorURL(errorURL);
 			errorURL += "ERROR_CODE=" + errorCode;
-			/*String redirectURL = errorURL;
-			if ((errorURL == null) || errorURL.isEmpty()) {
-				errorURL = "/LTIError.jsp?ERROR_CODE=" + errorCode;
-			} else {
-				if (errorURL.indexOf('?') >= 0) {
-					errorURL = errorURL + "&ERROR_CODE=" + errorCode;
-				} else {
-					errorURL = errorURL + "?ERROR_CODE=" + errorCode;
-				}
-			}*/
+			
 			response.sendRedirect(errorURL);
 
 		} catch (IOException e) {
@@ -218,11 +213,11 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 		else
 		if(errorURL.indexOf('?')>=0)
 		{
-			errorURL +='&';
+			adjustedErrorURL +='&';
 		}
 		else
 		{
-			errorURL +='?';
+			adjustedErrorURL +='?';
 		}
 		
 		return adjustedErrorURL;
