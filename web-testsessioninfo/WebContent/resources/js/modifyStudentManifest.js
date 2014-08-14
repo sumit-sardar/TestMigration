@@ -690,7 +690,7 @@
 	                currentMessage += $("#scoreCalulatableMsg").val();
 	            }
 	        }
-		} else{
+		} /*else{
 			if ( ! mathSubtests_TABE_ADAPTIVE(tmpSelectedSubtestsMsm)) {
 	            currentMessage = $("#mathSubtestsMsg").val();
 	        }
@@ -703,7 +703,7 @@
 	                
 	            }
 	        }
-		}
+		}*/
 		
 		return currentMessage;
 	}
