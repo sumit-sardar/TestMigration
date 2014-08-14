@@ -156,7 +156,7 @@
 	        	 setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
 	        }
 	       
-	    } else if ( !isForStudentMsm ) {
+	    } /*else if ( !isForStudentMsm ) {
 	    	var currentMessage = "";
 	   		if ( ! mathSubtests_TABE_ADAPTIVE(subtests)) {
 	            currentMessage = $("#mathSubtestsMsg").val();
@@ -174,8 +174,8 @@
 	            setSubtestWarningMessage(currentMessage);
 	        } else {
 	            hideSubtestWarningMessage(currentMessage);
-	        }
-	    }
+	        }	        
+	    }*/
 	
 	 return isValid;
 	}
