@@ -1,4 +1,4 @@
-#Thu Aug 14 13:11:18 PDT 2014
+#Tue Nov 17 17:52:40 PST 2009
 eclipse.preferences.version=1
 informants/com.bea.workshop.controls.core.ControlExtension=com.bea.workshop.controls.core.informants.ControlExtensionInformant,com.bea.workshop.controls.core.informants.ControlExtensionValueAddInformant,
 informants/com.bea.workshop.controls.core.ControlImplementation=com.bea.workshop.controls.core.informants.ControlImplementationInformant,com.bea.workshop.controls.core.informants.ControlImplementationValueAddInformant,

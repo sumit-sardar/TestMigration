@@ -3,6 +3,11 @@
     <wls:weblogic-version>10.3</wls:weblogic-version>
     <wls:context-root>platform-webservices</wls:context-root>
     <wls:library-ref>
+        <wls:library-name>wls-commonslogging-bridge-war</wls:library-name>
+        <wls:specification-version>1.0</wls:specification-version>
+        <wls:exact-match>true</wls:exact-match>
+    </wls:library-ref>
+    <wls:library-ref>
         <wls:library-name>beehive-controls-1.0.1-10.0-war</wls:library-name>
         <wls:specification-version>1.0</wls:specification-version>
         <wls:exact-match>true</wls:exact-match>
@@ -10,11 +15,6 @@
     <wls:library-ref>
         <wls:library-name>weblogic-controls-10.0-war</wls:library-name>
         <wls:specification-version>10.0</wls:specification-version>
-        <wls:exact-match>true</wls:exact-match>
-    </wls:library-ref>
-    <wls:library-ref>
-        <wls:library-name>wls-commonslogging-bridge-war</wls:library-name>
-        <wls:specification-version>1.0</wls:specification-version>
         <wls:exact-match>true</wls:exact-match>
     </wls:library-ref>
 </wls:weblogic-web-app>

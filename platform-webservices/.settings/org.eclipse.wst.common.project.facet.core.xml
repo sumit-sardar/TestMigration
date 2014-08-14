@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <faceted-project>
   <runtime name="Oracle WebLogic Server v10.3"/>
-  <fixed facet="wls.web"/>
   <fixed facet="jst.web"/>
-  <fixed facet="jst.java"/>
+  <fixed facet="wls.web"/>
   <fixed facet="workshop.webservices"/>
+  <fixed facet="jst.java"/>
   <installed facet="jst.java" version="6.0"/>
   <installed facet="jst.web" version="2.4"/>
   <installed facet="wls.web" version="10.3"/>

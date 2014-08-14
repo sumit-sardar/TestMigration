@@ -5,7 +5,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/beehive-controls-1.0.1-10.0-war/exact/1.0"/>
 	<classpathentry kind="src" path="build/assembly/.src"/>
 	<classpathentry kind="con" path="com.bea.workshop.xmlbeans.lib/version_2_3"/>
 	<classpathentry kind="src" path=".apt_src">
@@ -13,7 +12,8 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/weblogic-controls-10.0-war/exact/10.0"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/wls-commonslogging-bridge-war/exact/1.0"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/beehive-controls-1.0.1-10.0-war/exact/1.0"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/weblogic-controls-10.0-war/exact/10.0"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
