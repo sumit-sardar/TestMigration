@@ -6,9 +6,11 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 
 
+<netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
+    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.lasLinks.reports']}"/>
 	<netui-template:section name="bodySection">
 
 		<netui:form action="academicScoresReport">
