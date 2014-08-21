@@ -743,19 +743,18 @@ public interface StudentItemSetStatus extends JdbcControl
 	
 	@JdbcControl.SQL(statement ="SELECT testRosterId FROM (SELECT ROWNUM AS rnum,siss.TEST_ROSTER_ID AS \n"
 		 +"testRosterId FROM STUDENT_ITEM_SET_STATUS siss, item_set ii, TEST_ROSTER \n"
-		 +"ros, test_admin ta WHERE ros.STUDENT_ID = {studentId} AND \n"
+		 +"ros, test_admin ta WHERE ros.STUDENT_ID = {studentId} AND ros.ACTIVATION_STATUS not in ('IN') AND \n"
 		 +"siss.TEST_ROSTER_ID = ros.TEST_ROSTER_ID AND siss.COMPLETION_STATUS not \n"
 		 +"in ('CO') AND ii.ITEM_SET_ID = siss.ITEM_SET_ID AND \n"
 		 +"ta.test_admin_id=ros.test_admin_id AND ta.test_catalog_id IN (SELECT \n"
 		 +"test_catalog_id FROM TEST_CATALOG WHERE PRODUCT_ID =4201) AND ii.SUBJECT = \n"
 		 +"{previousSubject} AND ii.sample='F' AND ii.item_set_level != 'L' AND \n"
 		 +"ITEM_SET_FORM IN (SELECT TESTLET_FORM FROM TESTLET_FORMS_BY_SUBJECT_LEVEL \n"
-		 +"WHERE subject = {previousSubject} AND TABE_LEVEL = {previousLevel}) ) \n"
-		 +" WHERE rnum =1",arrayMaxLength = 100000)
-	 Integer getRosterId(Integer studentId,String previousLevel,String previousSubject) throws SQLException;
+		 +"WHERE subject = {previousSubject} ) )",arrayMaxLength = 100000)
+	 Integer[] getRosterId(Integer studentId,String previousSubject) throws SQLException;
 		
-	@JdbcControl.SQL(statement ="UPDATE TEST_ROSTER SET ACTIVATION_STATUS = 'IN' WHERE TEST_ROSTER_ID = {rosterId}")
-	 void updateActivationStatus(Integer rosterId) throws SQLException;
+	@JdbcControl.SQL(statement ="UPDATE TEST_ROSTER SET ACTIVATION_STATUS = 'IN', UPDATED_BY = {userId}, UPDATED_DATE_TIME = sysdate WHERE TEST_ROSTER_ID IN ({sql: rosterIds}) ")
+	 void updateActivationStatus(String rosterIds,Integer userId) throws SQLException;
 	
     static final long serialVersionUID = 1L;
 

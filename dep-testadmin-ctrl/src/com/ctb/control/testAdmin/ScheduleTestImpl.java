@@ -1841,6 +1841,7 @@ public class ScheduleTestImpl implements ScheduleTest
         	//siss.getConnection().setAutoCommit(false);
             siss.deleteStudentItemSetStatusesForAdmin(testAdminId);
             //rosters.getConnection().setAutoCommit(false);
+            rosters.deleteTABELevelInfoForAdmin(testAdminId);
             rosters.deleteTestRostersForAdmin(testAdminId);
            // maintaining 100% availability
             rosters.mantainLicenseAvailabilty(testAdminId);            
@@ -1850,7 +1851,6 @@ public class ScheduleTestImpl implements ScheduleTest
             taur.deleteTestAdminUserRolesForAdmin(testAdminId);
             //admins.getConnection().setAutoCommit(false);
             admins.deleteTestAdmin(testAdminId);
-            rosters.deleteTABELevelInfoForAdmin(testAdminId);
         } catch (SQLException se) {
             CTBBusinessException cbe = new SessionDeletionException("ScheduleTestImpl: deleteTestSession: " + se.getMessage());
             cbe.setStackTrace(se.getStackTrace());
@@ -2495,24 +2495,24 @@ public class ScheduleTestImpl implements ScheduleTest
     	return lvl;
     }
     
-   //gets the previous level and subject
-    private String getPreviousLevelandSubject(List<StudentTestletInfo> sti){
-    	String previousLevel = null;
+   //gets the subject
+    private String getSubject(List<StudentTestletInfo> sti){
+    	String subject = null;
     	Map<Date,String> completionDateTime = new java.util.TreeMap<Date,String>();
     	List<Date> completionDate = new ArrayList<Date>();
     	Iterator<StudentTestletInfo> itr = sti.iterator();
     	while(itr.hasNext()){
     		StudentTestletInfo obj = itr.next();
     		if(obj.getCompletionDateTime()!=null){
-    			completionDateTime.put(obj.getCompletionDateTime(), obj.getItemSetLevel()+","+obj.getSubject());
+    			completionDateTime.put(obj.getCompletionDateTime(),obj.getSubject());
     			completionDate.add(obj.getCompletionDateTime());
     		}
     	}
     	if(completionDate!= null && completionDate.size()>=2 && completionDateTime.size()>=2 && completionDateTime!= null){
     		java.util.Collections.sort(completionDate);
-        	previousLevel = completionDateTime.get(completionDate.get(completionDate.size()-2));
+    		subject = completionDateTime.get(completionDate.get(completionDate.size()-2));
     	}
-       	return previousLevel;
+       	return subject;
     }
     
     private  Map <Integer, List<StudentTestletInfo>>  getStudentCompletedLevels( SessionStudent [] scheduledStudents,Integer itemSetId ) throws SQLException{
@@ -2538,14 +2538,21 @@ public class ScheduleTestImpl implements ScheduleTest
 	        return map;
     }
     
-    private void disablePreviousLvlTestletRoster(Integer studentId, List<StudentTestletInfo> studentTestletInfo) throws SQLException{
+    private void disablePreviousLvlTestletRosters(Integer userId,Integer studentId, List<StudentTestletInfo> studentTestletInfo) throws SQLException{
     	if(studentTestletInfo.size()>1){
-			String previousLevel = getPreviousLevelandSubject(studentTestletInfo); 
-			if(previousLevel!=null){
-				String[] previousLevelValues = previousLevel.split(",");
-        		Integer rosterId = siss.getRosterId(studentId,previousLevelValues[0],previousLevelValues[1]);
-        		if(rosterId!=null){
-        			siss.updateActivationStatus(rosterId);
+			String subject = getSubject(studentTestletInfo); 
+			if(subject!=null){
+				Integer[] rosterIds = siss.getRosterId(studentId,subject);
+        		if(rosterIds!=null && rosterIds.length>0){
+        			String deleteRosterIds= "";
+        			for(int i=0;i<rosterIds.length;i++)
+        			{
+        				deleteRosterIds = deleteRosterIds + rosterIds[i];
+            			if(i!=rosterIds.length-1){
+            				deleteRosterIds = deleteRosterIds + ",";
+            			}
+        			}
+        			siss.updateActivationStatus(deleteRosterIds, userId);
         		}
 			}
 		}
@@ -2682,9 +2689,11 @@ public class ScheduleTestImpl implements ScheduleTest
                     
                     try {
                     	//rosters.getConnection().setAutoCommit(false);
+                    	if(productId.intValue() == 4201){
+                        	disablePreviousLvlTestletRosters(userId,roster.getStudentId(),completedLevels.get(roster.getStudentId()));
+                        }
                         rosters.createNewTestRoster(roster);
                         if(productId.intValue() == 4201){
-                        	disablePreviousLvlTestletRoster(roster.getStudentId(),completedLevels.get(roster.getStudentId()));
                         	rosters.storeTABELevelInfoForTestlet(roster.getTestAdminId(), roster.getStudentId(), lvl);
                         }
                     } catch (SQLException se) {
@@ -2697,9 +2706,11 @@ public class ScheduleTestImpl implements ScheduleTest
                     	}
                         roster.setPassword(password);
                         //rosters.getConnection().setAutoCommit(false);
+                        if(productId.intValue() == 4201){
+                        	disablePreviousLvlTestletRosters(userId,roster.getStudentId(),completedLevels.get(roster.getStudentId()));
+                        }
                         rosters.createNewTestRoster(roster);
                         if(productId.intValue() == 4201){
-                        	disablePreviousLvlTestletRoster(roster.getStudentId(),completedLevels.get(roster.getStudentId()));
                         	rosters.storeTABELevelInfoForTestlet(roster.getTestAdminId(), roster.getStudentId(), lvl);
                         }
                     }
@@ -2942,9 +2953,11 @@ public class ScheduleTestImpl implements ScheduleTest
                     // End changes for Student Pacing
                     try {
                     	//rosters.getConnection().setAutoCommit(false);
+                    	if(productId.intValue() == 4201){
+                    		disablePreviousLvlTestletRosters(userId,re.getStudentId(),completedLevels.get(re.getStudentId()));
+                        }
                         rosters.createNewTestRoster(re);
                         if(productId.intValue() == 4201){
-                        	disablePreviousLvlTestletRoster(re.getStudentId(),completedLevels.get(re.getStudentId()));
                         	rosters.storeTABELevelInfoForTestlet(re.getTestAdminId(), re.getStudentId(), lvl);
                         }
                     } catch (SQLException se) {
@@ -2957,9 +2970,11 @@ public class ScheduleTestImpl implements ScheduleTest
                     	}
                         re.setPassword(password);
                         //rosters.getConnection().setAutoCommit(false);
+                        if(productId.intValue() == 4201){
+                    		disablePreviousLvlTestletRosters(userId,re.getStudentId(),completedLevels.get(re.getStudentId()));
+                        }
                         rosters.createNewTestRoster(re);
                         if(productId.intValue() == 4201){
-                        	disablePreviousLvlTestletRoster(re.getStudentId(),completedLevels.get(re.getStudentId()));
                         	rosters.storeTABELevelInfoForTestlet(re.getTestAdminId(), re.getStudentId(), lvl);
                         }
                     }
@@ -3055,9 +3070,6 @@ public class ScheduleTestImpl implements ScheduleTest
                         (re.getCustomerFlagStatus() != null && !re.getCustomerFlagStatus().equals(oldUnit.getCustomerFlagStatus()))  ) {
                     	//rosters.getConnection().setAutoCommit(false);
                         rosters.updateTestRoster(re);
-                        if(productId.intValue() == 4201){
-                        	disablePreviousLvlTestletRoster(re.getStudentId(),completedLevels.get(re.getStudentId()));
-                        }
                     }
                     oldMap.remove(newUnit.getStudentId());
                 }
