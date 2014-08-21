@@ -227,7 +227,8 @@
 	</div>
 	<div style="padding:10px;">			
 		<center>
-			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeOnChangeTestletGroupPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:okOnChangeTestletGroupPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:cancelOnChangeTestletGroupPopup();return false;" class="ui-widget-header" style="width:60px">
 		</center>
 	</div>	
 </div>

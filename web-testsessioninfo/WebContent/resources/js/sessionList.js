@@ -150,6 +150,14 @@ var isAlertPopup = false;
 
 var endDateChange = "F"; // Added for End Date change popup
 
+var onchangeSubTest = "";
+var onloadSubtest = "";
+var onselectSubtest = true;
+var onselectTestletGroup = true;
+var isChangeGroup = false;
+var previousGroup = "";
+var isOnloadSubtest = true;
+
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
@@ -157,7 +165,7 @@ $(document).bind('keydown', function(event) {
 	      			onCloseScheduleSessionPopUp();
 	      		}
 	      		if(isAlertPopup){
-	      			closeOnChangeTestletGroupPopup();
+	      			okOnChangeTestletGroupPopup();
 	      		}
 	            return false;
 	      }
@@ -1180,6 +1188,12 @@ function registerDelegate(tree){
 			clickOkMessage = false;
 			endDateChange = "F";
 			$('#endDate').removeAttr("disabled");
+			onselectSubtest = true;
+			isOnloadSubtest = true;
+			onselectTestletGroup = true;
+			onchangeSubTest = "";
+			onloadSubtest = "";
+			previousGroup = "";
 		}
 		var productSelected  = $("#testGroupList").val();
 		if(dailogId == 'closeScheduleSessionPopup'){
@@ -2106,8 +2120,9 @@ function registerDelegate(tree){
 		 
 		 var productSelected = $("#testGroupList").val();
 		 if(productSelected == 4201){
-		 	if($('#list6').getGridParam('records') > 0){
+		 	if($('#list6').getGridParam('records') > 0 && onselectTestletGroup == true){
 		 		isAlertPopup = true;
+		 		isChangeGroup = true;
 		 		openOnChangeTestletGroupPopup();
 		 	}
 		 	disableEndDateTabeAdultForAdd();
@@ -2121,6 +2136,10 @@ function registerDelegate(tree){
 		 			$('#endDate').val($('#editEndDate').val());
 		 			isEditChangeTestAdult = false;	
 		 		}
+		 		if(isOnloadSubtest)
+		 			onloadSubtest = "";
+		 		onselectTestletGroup = true;
+		 		previousGroup = $("#testGroupList").val();
 		 }
 		    
 		  changeGradeAndLevel();
@@ -2145,7 +2164,7 @@ function registerDelegate(tree){
 		 $("#onChangeTestletGroupPopup").parent().css("left",leftpos);	
 	}
 	
-	function closeOnChangeTestletGroupPopup(){
+	function okOnChangeTestletGroupPopup(){
 		closePopUp('onChangeTestletGroupPopup');
 		$('#list6').jqGrid('clearGridData');
 		$('#studentAddDeleteInfo').hide();
@@ -2154,6 +2173,29 @@ function registerDelegate(tree){
 		$("#cb_list6").attr("checked", false);
 		resetStudentSelection();
 		isAlertPopup = false;
+		onselectSubtest = true;
+		onselectTestletGroup = true;
+		onloadSubtest = onchangeSubTest;
+	}
+	
+	function cancelOnChangeTestletGroupPopup(){
+		closePopUp('onChangeTestletGroupPopup');
+		isAlertPopup = false;
+		onselectSubtest = false;
+		if(isChangeGroup){
+			onselectTestletGroup = false;
+			isOnloadSubtest = false;
+			$("#testGroupList").val(previousGroup);
+			changeProductConfirmed();
+			if(onloadSubtest!= ""){
+				$("#"+onloadSubtest).trigger('click');
+			}
+			isOnloadSubtest = true;
+		}else {
+			if( onchangeSubTest!= onloadSubtest ){
+				$("#"+onloadSubtest).trigger('click');
+			}
+		}
 	}
 	
 	function enableStudentMsgForTabeAdultCoreExp(){
@@ -2628,10 +2670,17 @@ function registerDelegate(tree){
 					}
 					
 					var productSelected = $("#testGroupList").val();
-					if(productSelected == 4201 && $('#list6').getGridParam('records') > 0 && !firstTimeOpen){
+					if(productSelected == 4201 && $('#list6').getGridParam('records') > 0 && !firstTimeOpen && onselectSubtest == true){
 						isAlertPopup = true;
+						isChangeGroup = false;
+						onchangeSubTest = $("#testList").jqGrid('getGridParam', 'selrow');
 		 				openOnChangeTestletGroupPopup();
+		 			}else{
+		 				onloadSubtest = $("#testList").jqGrid('getGridParam', 'selrow');
+		 				previousGroup = $("#testGroupList").val();
 		 			}
+	 				onselectSubtest = true;
+	 				onselectTestletGroup = true;
 		 			
 					if(firstTimeOpen)
 						firstTimeOpen = false;
