@@ -947,6 +947,24 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "SELECT CC.CUSTOMER_CONFIGURATION_ID as id, CC.CUSTOMER_CONFIGURATION_NAME as customerConfigurationName, CC.CUSTOMER_ID as customerId, CC.EDITABLE as editable, CC.DEFAULT_VALUE as defaultValue, CC.CREATED_BY as createdBy FROM CUSTOMER_CONFIGURATION cc, org_node ONO WHERE CC.CUSTOMER_CONFIGURATION_NAME = {customerConfigurationName} AND CC.CUSTOMER_ID = ONO.CUSTOMER_ID AND ONO.ORG_NODE_ID = {orgNodeId}") 
     CustomerConfiguration getCustomerConfigurationsValueByOrgNodeId(String customerConfigurationName, Integer orgNodeId) throws SQLException;
     
+    /**
+     * @jc:sql statement::
+     * SELECT CUSTOMER_CONFIGURATION_ID   as id,
+     *		  CUSTOMER_CONFIGURATION_NAME as customerConfigurationName,
+     * 		  CUSTOMER_ID                 as customerId,
+     * 		  EDITABLE                    as editable,
+     * 		  DEFAULT_VALUE               as defaultValue,
+     * 		  CREATED_BY                  as createdBy
+  	 *	FROM CUSTOMER_CONFIGURATION
+ 	 *	WHERE CUSTOMER_CONFIGURATION_NAME = {customerConfigurationName}
+   	 *	AND CUSTOMER_ID =
+     *  			(select distinct ono.customer_id
+     *    		   from users u, user_role ur, org_node ono
+     *    		  where u.user_id = ur.user_id
+     *     			and ur.org_node_id = ono.org_node_id
+     *      			and u.user_name = {selectedUserName})
+    */
+    
    	@JdbcControl.SQL(statement = "SELECT CUSTOMER_CONFIGURATION_ID as id, CUSTOMER_CONFIGURATION_NAME as customerConfigurationName, CUSTOMER_ID as customerId, EDITABLE as editable, DEFAULT_VALUE as defaultValue, CREATED_BY as createdBy FROM CUSTOMER_CONFIGURATION WHERE CUSTOMER_CONFIGURATION_NAME = {customerConfigurationName} AND CUSTOMER_ID = (select distinct ono.customer_id from users u, user_role ur, org_node ono where u.user_id = ur.user_id and ur.org_node_id = ono.org_node_id and u.user_name = {selectedUserName})") 
     CustomerConfiguration getCustomerConfigurationsValue(String customerConfigurationName, String selectedUserName) throws SQLException;
     
@@ -960,5 +978,21 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select ro.role_name from users u, user_role ur, role ro where u.user_id = ur.user_id and ur.role_id = ro.role_id and u.user_id = {userId}")
     String getUsersRoleNameByUserId(Integer userId) throws SQLException;
-    int checkUniquenessOfExtSchoolId(String extSchoolId, Integer customerId) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     * SELECT CC.CUSTOMER_CONFIGURATION_ID   as id,
+     *   CC.CUSTOMER_CONFIGURATION_NAME as customerConfigurationName,
+     *   CC.CUSTOMER_ID                 as customerId,
+     *   CC.EDITABLE                    as editable,
+     *   CC.DEFAULT_VALUE               as defaultValue,
+     *   CC.CREATED_BY                  as createdBy
+  	 * 	FROM CUSTOMER_CONFIGURATION cc
+ 	 * WHERE CC.CUSTOMER_CONFIGURATION_NAME = {customerConfigurationName}
+ 	 *   AND CC.CUSTOMER_ID = ORG.CUSTOMER_ID 
+ 	 *   AND {sql: sqlQuery}
+     */
+    
+    @JdbcControl.SQL(statement = "SELECT CC.CUSTOMER_CONFIGURATION_ID as id, CC.CUSTOMER_CONFIGURATION_NAME as customerConfigurationName, CC.CUSTOMER_ID as customerId, CC.EDITABLE as editable, CC.DEFAULT_VALUE as defaultValue, CC.CREATED_BY as createdBy FROM CUSTOMER_CONFIGURATION CC, ORG_NODE ORG WHERE CC.CUSTOMER_CONFIGURATION_NAME = {customerConfigurationName} AND CC.CUSTOMER_ID = ORG.CUSTOMER_ID AND {sql: sqlQuery}")
+    CustomerConfiguration[] getCustomerConfigurationsValueOrgNodeIds(String customerConfigurationName, String sqlQuery) throws SQLException;
 }

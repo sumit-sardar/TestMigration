@@ -52,7 +52,11 @@ function verifyDeleteUser(){
 function verifyExitAddUser(){
     var ret = confirm("Click 'OK' to quit editing user's information. Any changes you've made will be lost.");
     if (ret == true) {
-        <%if( null!= session.getAttribute("hasExtSchoolIdConfigurable") ){%>
+	    var isUsrAcctMgr;
+	    <%if( null!= session.getAttribute("isUsrAcctMgr")) {%>
+		    isUsrAcctMgr = <%=session.getAttribute("isUsrAcctMgr").toString()%>;
+		<%}%>
+		if(isUsrAcctMgr == true) { 
 	    	jQuery.ajax({
               	  async : false,
                   url : 'removeSessionVariable.do',
@@ -64,7 +68,7 @@ function verifyExitAddUser(){
                       console.log("Exception Occurred" + textStatus);
                 }
 	         });
-    	<%}%>
+   		}
         return true;
     }
     return false; 
@@ -103,7 +107,7 @@ function updateOrgNodeSelection(element)
 	<%if( null!= session.getAttribute("isUsrAcctMgr")) {%>
 	    isUsrAcctMgr = <%=session.getAttribute("isUsrAcctMgr").toString()%>;
 	<%}%>
-	if(isUsrAcctMgr == true && null != isAddUser && isAddUser == 'true' && (null == isEditUser || isEditUser != 'true')) {
+	if(isUsrAcctMgr == true) {
            if (element.checked) {
            postDataObject.selectedNodesOrgNodeId = element.value;
                jQuery.ajax({
@@ -114,16 +118,27 @@ function updateOrgNodeSelection(element)
                    data : postDataObject,
                    success : function(data, textStatus, XMLHttpRequest) {
                    		if(data != undefined && data != null) {
-							var x = data.replace(/\s+/, "");
+							var x = data.split('#')[0].replace(/\s+/, "");
+							var y;
+							if(data.split('#').length > 1) {
+								y = data.split('#')[1].replace(/\s+/, "");
+							}
 	                    	if(x == 'true') {
 	                    		if (document.getElementById("extSchoolIdTR") != undefined) {
 	                    			document.getElementById("extSchoolIdTR").style.display = "table-row";
+	                    			document.getElementById("extSchoolId").disabled = false;
+	                    			if(y != undefined && y != null && y != 'null' && y != '') {
+	                    				document.getElementById("extSchoolId").value = y;
+	                    			}
 	                    		}
 	                    	}
 	                    	else {
 	                    		document.getElementById("extSchoolIdTR").style.display = "none";
-	                    		document.getElementById("extSchoolId").value = "";
+	                    		document.getElementById("extSchoolId").disabled = true;
 	                    	}
+                   		}else{
+                   			document.getElementById("extSchoolIdTR").style.display = "none";
+	                    	document.getElementById("extSchoolId").disabled = true;
                    		}
 					},
 	                error : function(XMLHttpRequest, textStatus, errorThrown) {
@@ -133,6 +148,7 @@ function updateOrgNodeSelection(element)
            }
            if (!element.checked) {
            postDataObject.selectedNodesOrgNodeId = element.value;
+           postDataObject.extSchoolIdCurrentValue = document.getElementById("extSchoolId").value;
            		jQuery.ajax({
                	   async : false,
                    url : 'uncheckHasCustomerExternalSchoolIdConfigurable.do',
@@ -141,16 +157,27 @@ function updateOrgNodeSelection(element)
                    data : postDataObject,
                    success : function(data, textStatus, XMLHttpRequest) {
                    		if(data != undefined && data != null) {
-							var x = data.replace(/\s+/, "");
+							var x = data.split('#')[0].replace(/\s+/, "");
+							var y;
+							if(data.split('#').length > 1) {
+								y = data.split('#')[1].replace(/\s+/, "");
+							}
 	                    	if(x == 'true') {
 	                    		if (document.getElementById("extSchoolIdTR") != undefined) {
 	                    			document.getElementById("extSchoolIdTR").style.display = "table-row";
+	                    			document.getElementById("extSchoolId").disabled = false;
+	                    			if(y != undefined && y != null && y != 'null' && y != '') {
+	                    				document.getElementById("extSchoolId").value = y;
+	                    			}
 	                    		}
 	                    	}
 	                    	else {
 	                    		document.getElementById("extSchoolIdTR").style.display = "none";
-	                    		document.getElementById("extSchoolId").value = "";
+	                    		document.getElementById("extSchoolId").disabled = true;
 	                    	}
+                   		}else{
+                   			document.getElementById("extSchoolIdTR").style.display = "none";
+	                    	document.getElementById("extSchoolId").disabled = true;
                    		}
 					},
 	                error : function(XMLHttpRequest, textStatus, errorThrown) {

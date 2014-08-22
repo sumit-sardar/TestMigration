@@ -200,6 +200,7 @@ public class ManageUserController extends PageFlowController
 	private boolean isUsrAcctMgr = false;
 	private boolean hasExtSchoolIdConfigurable = false;
 	private int noOfLausdOrgNodeChecked = 0;
+	private String extSchoolId = "";
     
     
     /**
@@ -332,6 +333,7 @@ public class ManageUserController extends PageFlowController
         form.resetValuesForAction(actionElement, ACTION_FIND_USER);
         this.noOfLausdOrgNodeChecked = 0;
         this.hasExtSchoolIdConfigurable = false;
+        this.extSchoolId = "";
         this.getSession().removeAttribute("hasExtSchoolIdConfigurable");      
         if (currentAction.equals(ACTION_VIEW_USER) || currentAction.equals(ACTION_EDIT_USER) || currentAction.equals(ACTION_DELETE_USER) || currentAction.equals(ACTION_CHANGE_PASSWORD))
         {
@@ -935,8 +937,27 @@ public class ManageUserController extends PageFlowController
         this.selectedOrgNodes.add(node);
 
         this.isAddAdministrator = true;
-        
-       
+        if(null != getSession().getAttribute("isUsrAcctMgr") && Boolean.parseBoolean(getSession().getAttribute("isUsrAcctMgr").toString()))  {
+	        try {
+	        	this.hasExtSchoolIdConfigurable = false;
+	        	if(null != orgNodeId) {
+					CustomerConfiguration customerConfigurations = users.getCustomerConfigurationsValueByOrgNodeId("EXT_SCHOOL_ID_Configurable", new Integer(orgNodeId));
+					if(null != customerConfigurations) {
+						if("EXT_SCHOOL_ID_Configurable".equalsIgnoreCase(customerConfigurations.getCustomerConfigurationName()) && 
+								"T".equals(customerConfigurations.getDefaultValue())) {
+							this.hasExtSchoolIdConfigurable = true;
+						}
+					}
+	        	}
+	        	this.getSession().setAttribute("hasExtSchoolIdConfigurable", this.hasExtSchoolIdConfigurable);
+	        }
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
         form.getUserProfile().setRole(CTBConstants.DEFAULT_ROLE); 
         
         try
@@ -1020,6 +1041,9 @@ public class ManageUserController extends PageFlowController
             {
                 this.getRequest().getSession().setAttribute("UserFirstName", userProfile.getFirstName()); 
                 this.getRequest().getSession().setAttribute("UserLastName", userProfile.getLastName()); 
+            }
+            if("".equals(this.extSchoolId) && null != userProfile.getExtSchoolId()) {
+            	this.extSchoolId = userProfile.getExtSchoolId();
             }
         }
         catch (CTBBusinessException be)
@@ -1124,9 +1148,17 @@ public class ManageUserController extends PageFlowController
     protected Forward editUser(ManageUserForm form)
     {      
         handleAddEdit(form);
+        Integer[] orgNodeListArr = UserPathListUtils.retrieveCurrentOrgNodeIds(this.selectedOrgNodes);
+        String orgNodeList = "";
+        for(int i = 0; i < orgNodeListArr.length ; i++) {
+        	orgNodeList += orgNodeListArr[i] + ",";
+        }
         if(null != getSession().getAttribute("isUsrAcctMgr") && Boolean.parseBoolean(getSession().getAttribute("isUsrAcctMgr").toString()))  {
-	        this.hasExtSchoolIdConfigurable = customerHasGivenCustomerConfigurationByUserName("EXT_SCHOOL_ID_Configurable", form.getSelectedUserName());
-	        this.getSession().setAttribute("hasExtSchoolIdConfigurable", hasExtSchoolIdConfigurable);
+	    	if(null != orgNodeList && !"".equals(orgNodeList))  {
+	    		orgNodeList = orgNodeList.substring(0, orgNodeList.length() - 1);
+		        this.hasExtSchoolIdConfigurable = customerHasGivenCustomerConfigurationByOrgNodeIds("EXT_SCHOOL_ID_Configurable", orgNodeList);
+		        this.getSession().setAttribute("hasExtSchoolIdConfigurable", this.hasExtSchoolIdConfigurable);
+	        }
         }
         this.getRequest().setAttribute("isEditUser", Boolean.TRUE);
         
@@ -1310,7 +1342,9 @@ public class ManageUserController extends PageFlowController
                 form.getUserProfile().setRole(CTBConstants.DEFAULT_ROLE);   
                 
             }
-                          
+            if(null != form.getUserProfile().getExtSchoolId() && !"".equals(form.getUserProfile().getExtSchoolId())) {
+            	this.extSchoolId = form.getUserProfile().getExtSchoolId();
+            }
             return new Forward("error", form);
         }        
        
@@ -1395,10 +1429,11 @@ public class ManageUserController extends PageFlowController
            
             String contextPath = "/OrganizationManagementWeb/manageCustomer/returnToFindCustomer.do";
             String url = contextPath + "?" + messageParam ;
-            this.isAddAdministrator = false;                          
-            
+            this.isAddAdministrator = false;
+            this.hasExtSchoolIdConfigurable = false;
+            this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
             getResponse().sendRedirect(url);
-        } 
+        }
         catch (IOException ioe)
         {
             System.err.print(ioe.getStackTrace());
@@ -1556,7 +1591,7 @@ public class ManageUserController extends PageFlowController
         UserProfileInformation userProfile = null;
         try
         {
-            userProfile = setUserProfileToForm(form); 
+            userProfile = setUserProfileToForm(form);
         }
         catch (CTBBusinessException be)
         {
@@ -1723,6 +1758,7 @@ public class ManageUserController extends PageFlowController
         UserProfileInformation userProfile = null;
         this.hasExtSchoolIdConfigurable = false;
         this.noOfLausdOrgNodeChecked = 0;
+        this.extSchoolId = "";
         this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
         try
         {
@@ -3282,7 +3318,6 @@ public class ManageUserController extends PageFlowController
 	 * @return Return boolean 
 	 */
 	private boolean customerHasGivenCustomerConfigurationByUserName(String customerConfigurationName, String selectedUserName) {
-		//Integer customerId = this.user.getCustomer().getCustomerId();
 		boolean hasGivenCustomerConfiguration = false;
 		try {
 			CustomerConfiguration customerConfigurations = users.getCustomerConfigurationsValue(customerConfigurationName, selectedUserName);
@@ -3350,7 +3385,7 @@ public class ManageUserController extends PageFlowController
 				if(this.noOfLausdOrgNodeChecked > 0) {
 					this.hasExtSchoolIdConfigurable = true;
 					this.getSession().setAttribute("hasExtSchoolIdConfigurable", this.hasExtSchoolIdConfigurable);
-		        	String response = String.valueOf(this.hasExtSchoolIdConfigurable);
+		        	String response = String.valueOf(this.hasExtSchoolIdConfigurable + "#" + this.extSchoolId);
 		        	stream = resp.getOutputStream();
 		        	stream.write(response.getBytes());
 				}
@@ -3383,6 +3418,7 @@ public class ManageUserController extends PageFlowController
 	  protected Forward removeSessionVariable() {
 		  this.hasExtSchoolIdConfigurable = false;
 		  this.noOfLausdOrgNodeChecked = 0;
+		  this.extSchoolId = "";
 		  if ( null != this.getSession().getAttribute("hasExtSchoolIdConfigurable") ) {
 			  this.getSession().removeAttribute("hasExtSchoolIdConfigurable");
 		  }
@@ -3398,6 +3434,9 @@ public class ManageUserController extends PageFlowController
 		  if(null != getRequest().getParameter("selectedNodesOrgNodeId")) {
 	        	orgNodeId = Integer.parseInt(getRequest().getParameter("selectedNodesOrgNodeId"));
 	      }
+		  if(null != getRequest().getParameter("extSchoolIdCurrentValue") && getRequest().getParameter("extSchoolIdCurrentValue").trim().length() > 0) {
+			  this.extSchoolId = getRequest().getParameter("extSchoolIdCurrentValue").toString();
+	      }
 		  try {
 	        	if(null != orgNodeId) {
 					CustomerConfiguration customerConfigurations = users.getCustomerConfigurationsValueByOrgNodeId("EXT_SCHOOL_ID_Configurable", orgNodeId);
@@ -3409,7 +3448,7 @@ public class ManageUserController extends PageFlowController
 					}
 					if(this.noOfLausdOrgNodeChecked > 0) {
 						this.hasExtSchoolIdConfigurable = true;
-		        		String response = String.valueOf(this.hasExtSchoolIdConfigurable);
+		        		String response = String.valueOf(this.hasExtSchoolIdConfigurable + "#" + this.extSchoolId);
 			        	stream = resp.getOutputStream();
 			        	stream.write(response.getBytes());
 					}
@@ -3441,4 +3480,34 @@ public class ManageUserController extends PageFlowController
 			}
 		  return null;
 	  }
+	  
+	 /**
+	   * This method checks whether customer is configured with given Customer Configuration.
+	   * @return Return boolean 
+	   */
+	 private boolean customerHasGivenCustomerConfigurationByOrgNodeIds(String customerConfigurationName, String orgNodeList) {
+		boolean hasGivenCustomerConfiguration = false;
+		String sqlQuery = "ORG_NODE_ID IN (" + orgNodeList + ")";
+		try {
+			CustomerConfiguration[] customerConfigurations = users.getCustomerConfigurationsValueOrgNodeIds(customerConfigurationName, sqlQuery);
+			if(null != customerConfigurations) {
+				for(CustomerConfiguration customerConfiguration : customerConfigurations) {
+					if(customerConfigurationName.equalsIgnoreCase(customerConfiguration.getCustomerConfigurationName()) && 
+							"T".equals(customerConfiguration.getDefaultValue())) {
+						hasGivenCustomerConfiguration = true;
+						this.noOfLausdOrgNodeChecked = customerConfigurations.length;
+						System.out.println("NoOfLausdOrgNodeChecked :: " + this.noOfLausdOrgNodeChecked);
+						break;
+					}
+				}
+			}
+		}
+		catch(SQLException se) {
+			se.printStackTrace();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return hasGivenCustomerConfiguration;
+	}
 }

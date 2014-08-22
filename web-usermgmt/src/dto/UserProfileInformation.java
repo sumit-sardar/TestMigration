@@ -96,6 +96,7 @@ public class UserProfileInformation extends SanitizedFormField
         copied.setRoleId(this.roleId);
         copied.setEmail(this.email);
         copied.setExtPin1(this.extPin1); //ext_pin1 is added for DEX CR
+        copied.setExtSchoolId(this.extSchoolId); // Ext_School_Id is added for LAUSD Customer
         copied.setTimeZone(this.timeZone);
         copied.setTimeZoneDesc(this.timeZoneDesc);        
         copied.setOrganizationNodes(this.organizationNodes);
