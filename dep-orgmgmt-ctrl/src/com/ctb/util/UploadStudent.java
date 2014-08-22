@@ -133,9 +133,12 @@ public class UploadStudent extends BatchProcessor.Process
 
 	private int noOfDemographicList = 0;
 
-	public HashMap demoMap = new HashMap();
-
-	public HashMap demoGraphicMap = new HashMap();
+	//public HashMap demoMap = new HashMap();
+	public HashMap<String, Map<String, String>> demoMap = new HashMap<String, Map<String, String>>();
+	
+	//public HashMap demoGraphicMap = new HashMap();
+	public HashMap<String, Integer> demoGraphicMap = new HashMap<String, Integer>();
+	
 	private ArrayList colorList = new ArrayList();
 	private HashMap colorCombinationMap = new HashMap();
 	private HashMap colorCodeMap = new HashMap();
@@ -1455,17 +1458,22 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 					com.ctb.bean.testAdmin.CustomerDemographicValue []customerDemographicValue = 
 						uploadDataFile.getCustomerDemographicValue(customerDemographicId);
 
-					ArrayList demographicValueList = new ArrayList();
+					//ArrayList demographicValueList = new ArrayList();
+					Map<String, String> demographicValueMap = new HashMap<String, String>();
 
 					for ( int k=0; k<customerDemographicValue.length ;k++ ) {
 
-						String msDemographicValue = customerDemographicValue[k].getValueName();
+						/*String msDemographicValue = customerDemographicValue[k].getValueName();
 
 						demographicValueList.add(msDemographicValue);
-
+						*/
+						demographicValueMap.put(
+								customerDemographicValue[k].getValueName(),
+								customerDemographicValue[k].getValueCode());
 					}
 
-					demoMap.put(customerDemoName.toUpperCase(),demographicValueList); 
+					//demoMap.put(customerDemoName.toUpperCase(),demographicValueList); 
+					demoMap.put(customerDemoName.toUpperCase(), demographicValueMap);
 					demoGraphicMap.put(customerDemoName,customerDemographicId);
 					demoCardinalityMap.put(customerDemoName,customerDemoCardinality);
 
@@ -1483,7 +1491,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 	 */
 	private String getDbDemographicValue(String fieldName, String value){
 
-		if((value != null && !"".equals(value.trim())) ){
+		/*if((value != null && !"".equals(value.trim())) ){
 
 			fieldName = fieldName.trim().toUpperCase();
 
@@ -1503,9 +1511,21 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 				}
 
 			}
+		}*/
+		if ((value != null && !"".equals(value.trim()))) {
+			fieldName = fieldName.trim().toUpperCase();
+			Map<String, String> valueMap = (HashMap<String, String>) demoMap.get(fieldName);
+			if (valueMap.size() > 0) {
+				if (valueMap.containsKey(value)) {
+					return value + "~~" + valueMap.get(value);
+				}
+				/*
+				 * for(int i = 0 ; i < valueList.size() ; i ++) { String dbValue
+				 * = (String) valueList.get(i); if(
+				 * dbValue.equalsIgnoreCase(value) ){ return dbValue; } }
+				 */
+			}
 		}
-
-
 		return "";
 	}
 
@@ -1568,7 +1588,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 		fieldName = fieldName.trim().toUpperCase();
 
-		ArrayList valueList = (ArrayList) demoMap.get(fieldName);
+		/*ArrayList valueList = (ArrayList) demoMap.get(fieldName);
 
 		if ( valueList.size()>0 ) {
 
@@ -1583,6 +1603,12 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 			}
 
+		}*/
+		Map<String, String> valueMap = (HashMap<String, String>) demoMap.get(fieldName);
+
+		if (valueMap.size() > 0) {		
+			if (valueMap.containsKey(value))
+				return true;		
 		}
 
 		return false;
@@ -2373,15 +2399,17 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 
 						studentDemographicValue = new StudentDemographicValue();
-						studentDemographicValue.setValueName(demoValue);
+						//studentDemographicValue.setValueName(demoValue);
+						studentDemographicValue.setValueName(demoValue.equalsIgnoreCase("") ? "" : demoValue.split("~~")[0]);
+						studentDemographicValue.setValueCode(demoValue.equalsIgnoreCase("") ? "" : demoValue.split("~~")[1]);
 						studentDemographicValue.setVisible("T");
 						studentDemographicValue.setSelectedFlag("true");
 
 						studentDemographicValues[j++] = studentDemographicValue;
 						studentDemographic.setId(demoGraphicId);
 						studentDemographic.setStudentDemographicValues(studentDemographicValues);
-						studentDemographics[index]= studentDemographic;// index introduced on 3rd sep,2013..#75217 , #75292 MQC Defect addressing 
-
+						studentDemographics[index]= studentDemographic;// index introduced on 3rd sep,2013..#75217 , #75292 MQC Defect addressing 		
+												
 					}
 
 				} else {
@@ -2428,7 +2456,9 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 					
 					studentDemographicValue = new StudentDemographicValue();
 					demoLabelName = getDbDemographicValue(demoName ,demoLabelName); 
-					studentDemographicValue.setValueName(demoLabelName);
+					//studentDemographicValue.setValueName(demoLabelName);
+					studentDemographicValue.setValueName(demoLabelName.equalsIgnoreCase("") ? "" : demoLabelName.split("~~")[0]);
+					studentDemographicValue.setValueCode(demoLabelName.equalsIgnoreCase("") ? "" : demoLabelName.split("~~")[1]);
 					studentDemographicValue.setVisible("T");
 					studentDemographicValue.setSelectedFlag("true");
 					studentDemographicValues = new StudentDemographicValue[1];     
@@ -2477,7 +2507,9 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 	
 	
 							studentDemographicValue = new StudentDemographicValue();
-							studentDemographicValue.setValueName(demoValue);
+							//studentDemographicValue.setValueName(demoValue);
+							studentDemographicValue.setValueName(demoValue.equalsIgnoreCase("") ? "" : demoValue.split("~~")[0]);
+							studentDemographicValue.setValueCode(demoValue.equalsIgnoreCase("") ? "" : demoValue.split("~~")[1]);
 							studentDemographicValue.setVisible("T");
 							studentDemographicValue.setSelectedFlag("true");
 	
@@ -2493,7 +2525,10 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 							//Extra caution here to see if the column is "Ethnicity" and value is "HISPANIC OR LATINO"..Then only insert the value>> Same as UI.
 							studentDemographicValue = new StudentDemographicValue();
 							demoLabelName = getDbDemographicValue(demoName ,demoLabelName); 
-							studentDemographicValue.setValueName(demoLabelName);
+							//studentDemographicValue.setValueName(demoLabelName);
+							studentDemographicValue.setValueName(demoLabelName.equalsIgnoreCase("") ? "" : demoLabelName.split("~~")[0]);
+							studentDemographicValue.setValueCode(demoLabelName.equalsIgnoreCase("") ? "" : demoLabelName.split("~~")[1]);
+							
 							studentDemographicValue.setVisible("T");
 							studentDemographicValue.setSelectedFlag("true");
 							studentDemographicValues = new StudentDemographicValue[1];     
