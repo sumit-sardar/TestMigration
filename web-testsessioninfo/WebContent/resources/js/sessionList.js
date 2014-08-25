@@ -157,6 +157,12 @@ var onselectTestletGroup = true;
 var isChangeGroup = false;
 var previousGroup = "";
 var isOnloadSubtest = true;
+var reTestSessionName  = "";
+var reStartDate = "";
+var reEndDate = "";
+var reTime = "";
+var reTestLocation = "";
+var isReSetValue = true;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -1194,6 +1200,8 @@ function registerDelegate(tree){
 			onchangeSubTest = "";
 			onloadSubtest = "";
 			previousGroup = "";
+			isReSetValue = true;
+			resetTestDetails();
 		}
 		var productSelected  = $("#testGroupList").val();
 		if(dailogId == 'closeScheduleSessionPopup'){
@@ -2117,6 +2125,13 @@ function registerDelegate(tree){
 			 	isWVBreachTestSelected = false;
 			 }
 		 }
+		 if(isReSetValue){
+		 	reTestSessionName = $("#testSessionName").val();
+		 	reStartDate = $("#startDate").val();
+		 	reEndDate = $("#endDate").val();
+		 	reTime = $("#time").text();
+		 	reTestLocation = $("#testLocation").val();
+		 }
 		 
 		 var productSelected = $("#testGroupList").val();
 		 if(productSelected == 4201){
@@ -2186,7 +2201,9 @@ function registerDelegate(tree){
 			onselectTestletGroup = false;
 			isOnloadSubtest = false;
 			$("#testGroupList").val(previousGroup);
+			isReSetValue = false;
 			changeProductConfirmed();
+			isReSetValue = true;
 			if(onloadSubtest!= ""){
 				$("#"+onloadSubtest).trigger('click');
 			}
@@ -2196,6 +2213,20 @@ function registerDelegate(tree){
 				$("#"+onloadSubtest).trigger('click');
 			}
 		}
+		document.getElementById("testSessionName").value = reTestSessionName;
+		document.getElementById("startDate").value = reStartDate;
+		document.getElementById("endDate").value = reEndDate;
+		document.getElementById("time").innerHTML = reTime;
+		document.getElementById("testLocation").value = reTestLocation;
+		resetTestDetails();
+	}
+	
+	function resetTestDetails(){
+		reTestSessionName = "";
+		reStartDate = "";
+		reEndDate = "";
+		reTime = "";
+		reTestLocation = "";	
 	}
 	
 	function enableStudentMsgForTabeAdultCoreExp(){
@@ -2595,6 +2626,13 @@ function registerDelegate(tree){
 			},
 			onSelectRow: function () {
 					previousValue = $("#testGroupList").val();
+					if(previousValue == 4201 && onselectSubtest == true){
+						reTestSessionName = $("#testSessionName").val();
+		 				reStartDate = $("#startDate").val();
+		 				reEndDate = $("#endDate").val();
+		 				reTime = $("#time").text();
+		 				reTestLocation = $("#testLocation").val();
+					}
 					subtestGridLoaded = false;
 					if(selectedTestId == $("#testList").jqGrid('getGridParam', 'selrow')) {
 						$('#displayMessage').hide();
