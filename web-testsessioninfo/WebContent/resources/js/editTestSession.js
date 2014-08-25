@@ -491,6 +491,9 @@
     	  						 	if(subTestLength <= 2){
  										$("#testBreak").attr('disabled', true);
 									}
+									if(isCopySession){
+										$('#level').attr("disabled",true);
+									}
 									if(locatorOnlyTest){
 										$("#hasAutolocator").attr('disabled', true);
 										$("#testBreak").attr('disabled', true);
