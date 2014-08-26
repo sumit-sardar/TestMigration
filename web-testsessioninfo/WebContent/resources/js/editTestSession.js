@@ -377,6 +377,9 @@
     	  	disableSelectTest(); 
     	  }else{
     	  	removeDisableInEdit();
+    	  	if(isCopySession){
+				$('#level').attr("disabled",true);
+			}
     	  	var subTestLength = $('#subtestTable tr').length;
     	   	if(subTestLength <= 2){
  				$("#testBreak").attr('disabled', true);
