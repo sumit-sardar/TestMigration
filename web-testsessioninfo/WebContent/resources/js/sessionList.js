@@ -4393,7 +4393,10 @@ function registerDelegate(tree){
 					  	}
 					  	$('#defaultWindowMsgInfo').hide();
 					  	defaultDays = undefined;
-					  	},
+					  	
+					  	if(isInformaticaExported != undefined && isInformaticaExported != null && isInformaticaExported === "T" && state != undefined && state != null && state == "EDIT"){
+	 						$('#timeZoneList').attr("disabled",true);
+						}},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();
 							window.location.href="/SessionWeb/logout.do";

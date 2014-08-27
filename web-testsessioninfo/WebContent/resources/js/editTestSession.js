@@ -33,6 +33,7 @@
 	var savedAssignedRole = "Owner";
 	var defaultDays;
 	var isEdit = false; 
+	var isInformaticaExported;
 	
   function disableTabeAdultMsg(){
   		$('#testGroupList').attr("disabled",true);
@@ -293,7 +294,10 @@
 							msg = msg.replace('?',defaultDays);
 							$("#defaultWindowMsg").html(msg);
 			    			$('#defaultWindowMsgInfo').show();
-						}	
+						}
+						isInformaticaExported = data.savedTestDetails.testSession.isInfomaticaExported;
+						if(isInformaticaExported != undefined && isInformaticaExported != null && isInformaticaExported === "T")
+							$('#endDate').attr("disabled",true);	
 						$.unblockUI(); 
 									
 					},
