@@ -483,10 +483,19 @@ public class UploadStudent extends BatchProcessor.Process
 								categoryId = getCategoryId (strCellHeaderName, nodeCategory);
 								
 								HSSFCell loginUserOrgCell = row.getCell((short)j-2);
+								HSSFCell loginUserOrgCodeCell = row.getCell((short)j-1);
 		                        String loginUserOrgName = getCellValue(loginUserOrgCell);
-		                        Node loginUserNode = getLoginUserOrgDetail(this.detailNodeM, loginUserOrgName);
+		                        String loginUserOrgCode = getCellValue(loginUserOrgCodeCell);
+		                        Node loginUserNode = getTASCLoginUserOrgDetail(this.detailNodeM, loginUserOrgName, loginUserOrgCode);
 		                        Integer parentOId = loginUserNode.getOrgNodeId();
 		                        parentOrgId[0] = parentOId;
+		                        
+		                        System.out.println("loginUserOrgCell@@@ "+loginUserOrgCell);
+		                        System.out.println("loginUserOrgCodeCell@@@ "+loginUserOrgCodeCell);
+		                        System.out.println("loginUserOrgName@@@ "+loginUserOrgName);
+		                        System.out.println("loginUserOrgCode@@@ "+loginUserOrgCode);
+		                        System.out.println("parentOId@@@ "+parentOId);
+		                        System.out.println("categoryId@@@ "+categoryId);
 							}
 							
 							// OrgName required check
@@ -5240,6 +5249,23 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 	}
 
+	private Node getTASCLoginUserOrgDetail (Node []loginUserNodes, String organizationName, String organizationCode) {
+
+		Node orgDetail = null;
+		for ( int i = 0; i < loginUserNodes.length; i++ ) {
+
+			orgDetail = loginUserNodes[i];
+
+			if ( orgDetail.getOrgNodeName().equalsIgnoreCase(organizationName) && orgDetail.getOrgNodeCode().equalsIgnoreCase(organizationCode)) {
+
+				break;
+			}
+
+		}
+
+		return orgDetail;
+
+	}
 
 	/*
 	 * 
