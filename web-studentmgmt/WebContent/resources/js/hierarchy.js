@@ -2231,6 +2231,12 @@ function openNode(orgNodeId) {
 						fillselectedOrgNode("selectedOrgNodesName", organizationNodes);
 						prepareCheckedList();
 						setEditStudentDetail(rowid);
+						
+						if($("#isTascCustomer").val() == "true")
+						{
+							$("select#gradeOptions").closest("tr").hide();
+						}
+						
 						/*if(profileEditable === "false") {
 							$('#Student_Information :checkbox').attr('disabled', true); 
 							$('#Student_Information :radio').attr('disabled', true); 
@@ -2462,6 +2468,12 @@ function openNode(orgNodeId) {
 						$('#viewStudentDetail :checkbox').attr('disabled', true); 
 						$('#viewStudentDetail :radio').attr('disabled', true); 
 						$('#viewStudentDetail select').attr('disabled', true); 
+						
+						if($("#isTascCustomer").val() == "true")
+						{
+							$("#studentgradeView").closest("tr").hide();
+						}
+						
 						$.unblockUI();  
 						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 						// For MQC Defect - 67150
