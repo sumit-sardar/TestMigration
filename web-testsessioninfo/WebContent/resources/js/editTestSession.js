@@ -375,13 +375,14 @@
     function populateSelectTestGrid(wizard,index){
     
     	var testSessionList ={};
+    	var pId  = $("#testGroupList").val();
     	isPopUp = false;
     if(editDataCache.get(index)!= null && editDataCache.get(index)!= undefined){   
     	  if(stdsLogIn || isTestExpired || isProctor){
     	  	disableSelectTest(); 
     	  }else{
     	  	removeDisableInEdit();
-    	  	if(isCopySession){
+    	  	if(isCopySession && pId == 4201){
 				$('#level').attr("disabled",true);
 			}
     	  	var subTestLength = $('#subtestTable tr').length;
@@ -498,7 +499,7 @@
     	  						 	if(subTestLength <= 2){
  										$("#testBreak").attr('disabled', true);
 									}
-									if(isCopySession){
+									if(isCopySession && parseInt(selectedTestSession.testSession.productId) == 4201){
 										$('#level').attr("disabled",true);
 									}
 									if(locatorOnlyTest){
