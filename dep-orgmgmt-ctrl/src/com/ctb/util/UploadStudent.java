@@ -489,13 +489,6 @@ public class UploadStudent extends BatchProcessor.Process
 		                        Node loginUserNode = getTASCLoginUserOrgDetail(this.detailNodeM, loginUserOrgName, loginUserOrgCode);
 		                        Integer parentOId = loginUserNode.getOrgNodeId();
 		                        parentOrgId[0] = parentOId;
-		                        
-		                        System.out.println("loginUserOrgCell@@@ "+loginUserOrgCell);
-		                        System.out.println("loginUserOrgCodeCell@@@ "+loginUserOrgCodeCell);
-		                        System.out.println("loginUserOrgName@@@ "+loginUserOrgName);
-		                        System.out.println("loginUserOrgCode@@@ "+loginUserOrgCode);
-		                        System.out.println("parentOId@@@ "+parentOId);
-		                        System.out.println("categoryId@@@ "+categoryId);
 							}
 							
 							// OrgName required check
@@ -5428,7 +5421,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 	/*
 	 * to check TASC hierarchy exists or not
 	 */ 
-	private boolean isTASCOrganizationExist ( String searchString,String searchOrgId, Integer parentId,
+	private boolean isTASCOrganizationExist ( String orgName,String orgId, Integer parentId,
 			Integer categoryId) {
 
 		boolean hasOrganization = false;
@@ -5438,8 +5431,8 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 			for ( int i = 0; i < detailNode.length; i++ ) {
 				Node tempNode = detailNode[i];
 				if (tempNode.getOrgNodeCode() != null) {
-					if ( !searchString.trim().equals("") && !searchOrgId.trim().equals("") && tempNode.getOrgNodeName().equalsIgnoreCase(searchString)
-								&& tempNode.getOrgNodeCode().equalsIgnoreCase(searchOrgId) 
+					if ( !orgName.trim().equals("") && !orgId.trim().equals("") && tempNode.getOrgNodeName().equalsIgnoreCase(orgName)
+								&& tempNode.getOrgNodeCode().equalsIgnoreCase(orgId) 
 								&& tempNode.getParentOrgNodeId().intValue() 
 								== parentId.intValue()
 								&& categoryId.intValue() == tempNode.getOrgNodeCategoryId().intValue()) {
