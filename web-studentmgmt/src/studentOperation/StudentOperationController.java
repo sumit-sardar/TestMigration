@@ -3306,6 +3306,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
     	boolean isWVCustomer = false;
+    	boolean hasBlockStudentCreation = false;
+    	boolean hasBlockStudentDeletion = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -3438,6 +3440,14 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            		cc.getDefaultValue().equals("T")) {
 	        		isWVCustomer = Boolean.TRUE;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Block_Student_Creation") && 
+						cc.getDefaultValue().equals("T")){
+					hasBlockStudentCreation = Boolean.TRUE;
+				}				
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Block_Student_Deletion") && 
+						cc.getDefaultValue().equals("T")){
+					hasBlockStudentDeletion = Boolean.TRUE;
+				}
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
 			this.isTASC = isTascCustomer;
@@ -3523,6 +3533,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
      	
      	this.getSession().setAttribute("isWVCustomer", new Boolean(isWVCustomer));
+     	this.getSession().setAttribute("hasBlockStudentCreation", new Boolean(hasBlockStudentCreation));
+     	this.getSession().setAttribute("hasBlockStudentDeletion", new Boolean(hasBlockStudentDeletion));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

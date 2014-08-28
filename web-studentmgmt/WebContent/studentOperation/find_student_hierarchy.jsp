@@ -52,11 +52,14 @@
 	Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
 	Boolean hasLockHierarchyEditConfigured = (Boolean) request.getAttribute("hasLockHierarchyEditConfigured");
 	String hierarchyLockLevel = (String)request.getAttribute("hierarchyLockLevel");	
+	Boolean hasBlockStudentCreation = (Boolean) session.getAttribute("hasBlockStudentCreation");
+	Boolean hasBlockStudentDeletion = (Boolean) session.getAttribute("hasBlockStudentDeletion");
 %>
 <input type="hidden" id="canRegisterStudent" value='<%=canRegisterStudent %>'/>
 <input type="hidden" id="hasLockHierarchyEditConfigured" name = "hasLockHierarchyEditConfigured" value='<%=hasLockHierarchyEditConfigured %>' />
 <input type="hidden" id="hierarchyLockLevel" name = "hierarchyLockLevel" value='<%=Integer.parseInt(hierarchyLockLevel) %>' />
-
+<input type="hidden" id="hasBlockStudentCreation" name="hasBlockStudentCreation" value='<%=hasBlockStudentCreation %>'/>
+<input type="hidden" id="hasBlockStudentDeletion" name="hasBlockStudentDeletion" value='<%=hasBlockStudentDeletion %>'/>
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
@@ -69,7 +72,15 @@
 			</tr>
 			<tr> 
 				<td class="subtitle">  
+				<% if(hasBlockStudentCreation && !hasBlockStudentDeletion){ %>
+					<lb:label key="stu.students.subtitle.noAdd" />
+				<% }else if(hasBlockStudentDeletion && !hasBlockStudentCreation) { %>
+					<lb:label key="stu.students.subtitle.noDelete" />
+				<% }else if (hasBlockStudentCreation && hasBlockStudentDeletion) { %>
+					<lb:label key="stu.students.subtitle.noAddDelete" />
+				<% }else { %>
 					<lb:label key="stu.students.subtitle" />
+				<% } %>	
 				</td>	
 			</tr>
 		</table>

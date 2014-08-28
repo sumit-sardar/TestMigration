@@ -3138,6 +3138,16 @@ function setSelectedValue(selectObj, valueToSet) {
 			var element = document.getElementById('del_list2');
 			element.style.display = 'none';
 		}
+		
+		if($("#hasBlockStudentCreation").val() == 'true'){
+			var element = document.getElementById('add_list2');
+			element.style.display = 'none';
+		}
+		
+		if($("#hasBlockStudentDeletion").val() == 'true'){
+			var element = document.getElementById('del_list2');
+			element.style.display = 'none';
+		}
 	}
 	
 	function setSelectedFontColor(selectElement, fontColor){
