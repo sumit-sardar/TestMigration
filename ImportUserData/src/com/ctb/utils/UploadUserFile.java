@@ -186,6 +186,7 @@ public class UploadUserFile {
 
 					loginUserPosition = getLoginUserOrgPosition(row, rowHeader,
 							this.userTopOrgNode);
+					List<String> newMDRList = new ArrayList<String>();
 					// create Organization process
 					Node[] node = this.userFileRowHeader[0]
 							.getOrganizationNodes();
@@ -247,7 +248,7 @@ public class UploadUserFile {
 							break;
 						} else if (!isValidMDR(rowIndex, isMatchUploadOrgIds,
 								strCellId, parentOrgId, categoryId,
-								requiredMap, invalidCharMap, logicalErrorMap,
+								requiredMap, invalidCharMap, logicalErrorMap,newMDRList,
 								strCellMdr, strCellName,
 								strCellHeaderMdr , orgMDRImpl)) {
 							break;
@@ -343,9 +344,9 @@ public class UploadUserFile {
 			String orgCode, Integer[] parentOrgId, Integer categoryId,
 			Map<Integer, ArrayList<String>> requiredMap,
 			Map<Integer, ArrayList<String>> invalidCharMap,
-			Map<Integer, ArrayList<String>> logicalErrorMap, String strCellMdr,
-			String orgName, String strCellHeaderMdr,
-			OrgMDRDBCacheImpl orgMDRImpl) {
+			Map<Integer, ArrayList<String>> logicalErrorMap,
+			List<String> newMDRList, String strCellMdr, String orgName,
+			String strCellHeaderMdr, OrgMDRDBCacheImpl orgMDRImpl) {
 
 		if (orgName == null || orgName.length() == 0) {
 			return true;
@@ -371,13 +372,13 @@ public class UploadUserFile {
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 
-			} else if (!isUniqueMdr(strCellMdr, orgMDRImpl)) {
+			} else if (!isUniqueMdr(strCellMdr, newMDRList , orgMDRImpl)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
 				requiredList.add(strCellHeaderMdr);
 				logicalErrorMap.put(new Integer(cellPos), requiredList);
 				return false;
-
 			}
+			newMDRList.add(strCellMdr);
 		} else {
 			// Update Organization
 			if (!validMdrNo(strCellMdr)) {
@@ -481,12 +482,11 @@ public class UploadUserFile {
 		return true;
 	}
 
-	private boolean isUniqueMdr(String strCellMdr, OrgMDRDBCacheImpl orgMDRImpl) {
+	private boolean isUniqueMdr(String strCellMdr, List<String> newMDRList , OrgMDRDBCacheImpl orgMDRImpl) {
 		String val = "";
 		try {
 			val = orgMDRImpl.getOrgMDRNumber(strCellMdr);
-			if (val != null && !"".equalsIgnoreCase(val)) {
-				orgMDRImpl.addOrgFileRow(strCellMdr, strCellMdr);
+			if (val != null && !"".equalsIgnoreCase(val) && !(newMDRList.contains(strCellMdr))) {
 				return true;
 			}
 

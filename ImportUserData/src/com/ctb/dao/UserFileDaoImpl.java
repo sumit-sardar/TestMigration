@@ -1188,7 +1188,7 @@ public class UserFileDaoImpl implements UserFileDao {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rSet = null;
-		String queryString = " select org_node_mdr_number as org_node_mdr_number from org_node where org_node_mdr_number is not null ";
+		String queryString = " select org_node_mdr_number as org_node_mdr_number from org_node where  activation_status = 'AC' and org_node_mdr_number is not null ";
 		try {
 			conn = SQLUtil.getConnection();
 			pstmt = conn.prepareStatement(queryString);
