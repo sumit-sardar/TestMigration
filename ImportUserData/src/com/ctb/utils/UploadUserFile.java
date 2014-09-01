@@ -134,16 +134,16 @@ public class UploadUserFile {
 			/**
 			 * Caching of user data present in the DataBase.  
 			 */
-			logger.info("Existing Data Fecth Start Time:"
+			logger.info("Existing Data fetch Start Time:"
 					+ new Date(System.currentTimeMillis()));
 			userFileDao.getExistUserData(customerId, dbCacheImpl);
-			logger.info("Existing Data Fecth End Time:"
+			logger.info("Existing Data fetch End Time:"
 					+ new Date(System.currentTimeMillis()));
 			
-			logger.info("Existing Org-data Fecth Start Time:"
+			logger.info("Existing Org-data fetch Start Time:"
 					+ new Date(System.currentTimeMillis()));
 			userFileDao.getExistOrgData(customerId, orgMDRImpl);
-			logger.info("Existing Org-data Fecth End Time:"
+			logger.info("Existing Org-data fetch End Time:"
 					+ new Date(System.currentTimeMillis()));
 			
 			CSVReader csv = new CSVReader(new BufferedReader(new FileReader(
