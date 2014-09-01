@@ -317,7 +317,8 @@ public class UploadUserFile {
 					invalidCharMap, logicalErrorMap, hierarchyErrorMap,
 					userDataMap, blankRowMap, isMatchUploadOrgIds,
 					this.userTopOrgNode);
-
+			
+			logger.info("Total Rows Present in the file : "+ rowIndex);
 			/**
 			 * Archiving Process
 			 * */
