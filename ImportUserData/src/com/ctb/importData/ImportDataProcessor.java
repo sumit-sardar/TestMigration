@@ -33,14 +33,9 @@ public class ImportDataProcessor {
 			.getLogger(ImportDataProcessor.class.getName());
 
 	/**
-	 * This location needs to be changed according to Properties file Path.
-	 * Currently active path is pointing to DAGOBAH Location
-	 * **/
-	static final String propertiesFilePathLocation ="/export/home/oasdev/operations/operation-tools/java/ImportDataFromEngradeToOAS/ImportUser/PropertiesFiles/";
-	//static String propertiesFilePathLocation = "D:\\Sprint Data\\Sprint 78\\";
-	// static String propertiesFilePathLocation
-	// ="/local/apps/oas/ImportFromEngradeToOAS/PropertiesFile/";
-
+	 * Properties File name should be mentioned as 1st Argument and Properties
+	 * File location should be mentioned as 2nd Argument
+	 */
 	static String sourceDir, targetDir, archiveDir = "";
 	static Integer customerId = new Integer(0);
 	UploadMoveData uploadMoveData = null;
@@ -51,10 +46,11 @@ public class ImportDataProcessor {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		logger.info("\t******Utility Fresh Start*******");
+		Long startTime = System.currentTimeMillis();
 		logger.info("StartTime:" + new Date(System.currentTimeMillis()));
 		String envName = getPropFileFromCommandLine(args);
-		ExtractUtil.loadExternalPropetiesFile(envName,
-				propertiesFilePathLocation);
+		ExtractUtil.loadExternalPropetiesFile(envName, args[1]);
 		sourceDir = Configuration.getFtpFilePath();
 		targetDir = Configuration.getLocalFilePath();
 		archiveDir = Configuration.getArchivePath();
@@ -85,13 +81,12 @@ public class ImportDataProcessor {
 			 * End of Processing the files from Temp Location
 			 **/
 
-			logger.info("Import Process Is Completed..."
-					+ new Date(System.currentTimeMillis()));
+			logger.info("Import Process Is Completed...  total time taken -> "
+					+ (System.currentTimeMillis() - startTime) + "ms");
 		} catch (Exception e) {
-			logger.info("Runtime Exception Occurred..", e);
+			logger.info("Runtime Exception Occurred..");
 			logger.info(e.getMessage());
-		}
-		finally{
+		} finally {
 			System.exit(1);
 		}
 	}
@@ -137,10 +132,10 @@ public class ImportDataProcessor {
 							+ new Date(System.currentTimeMillis()));
 
 					uploadDataFileId = readFileContent(inFile).intValue();
-					
+
 					if (uploadDataFileId != 0) {
 						addErrorDataFile(inFile, new Integer(uploadDataFileId));
-						
+
 						logger.info("ReadFileContent End Time:"
 								+ new Date(System.currentTimeMillis()));
 						try {
@@ -162,7 +157,7 @@ public class ImportDataProcessor {
 					}
 				}
 			}
-		}else{
+		} else {
 			logger.info("No Input Files to be processed..");
 		}
 	}
