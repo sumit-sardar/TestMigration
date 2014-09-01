@@ -486,7 +486,7 @@ public class UploadUserFile {
 		String val = "";
 		try {
 			val = orgMDRImpl.getOrgMDRNumber(strCellMdr);
-			if (val != null && !"".equalsIgnoreCase(val) && !(newMDRList.contains(strCellMdr))) {
+			if (val == null && "".equalsIgnoreCase(val) && !(newMDRList.contains(strCellMdr))) {
 				return true;
 			}
 
