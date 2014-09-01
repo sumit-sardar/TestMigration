@@ -343,8 +343,9 @@ public class UploadUserFile {
 			String orgCode, Integer[] parentOrgId, Integer categoryId,
 			Map<Integer, ArrayList<String>> requiredMap,
 			Map<Integer, ArrayList<String>> invalidCharMap,
-			Map<Integer, ArrayList<String>> logicalErrorMap,String strCellMdr, String orgName,
-			String strCellHeaderMdr , OrgMDRDBCacheImpl orgMDRImpl) {
+			Map<Integer, ArrayList<String>> logicalErrorMap, String strCellMdr,
+			String orgName, String strCellHeaderMdr,
+			OrgMDRDBCacheImpl orgMDRImpl) {
 
 		if (orgName == null || orgName.length() == 0) {
 			return true;
@@ -377,7 +378,24 @@ public class UploadUserFile {
 				return false;
 
 			}
-
+		} else {
+			// Update Organization
+			if (!validMdrNo(strCellMdr)) {
+				ArrayList<String> requiredList = new ArrayList<String>();
+				requiredList.add(strCellHeaderMdr);
+				requiredMap.put(new Integer(cellPos), requiredList);
+				return false;
+			} else if (!validMdrNoLength(strCellMdr)) {
+				ArrayList<String> requiredList = new ArrayList<String>();
+				requiredList.add(strCellHeaderMdr);
+				invalidCharMap.put(new Integer(cellPos), requiredList);
+				return false;
+			} else if (!validMdrNoNumeric(strCellMdr)) {
+				ArrayList<String> requiredList = new ArrayList<String>();
+				requiredList.add(strCellHeaderMdr);
+				invalidCharMap.put(new Integer(cellPos), requiredList);
+				return false;
+			}
 		}
 
 		return true;
@@ -467,7 +485,6 @@ public class UploadUserFile {
 		String val = "";
 		try {
 			val = orgMDRImpl.getOrgMDRNumber(strCellMdr);
-
 			if (val != null && !"".equalsIgnoreCase(val)) {
 				orgMDRImpl.addOrgFileRow(strCellMdr, strCellMdr);
 				return true;
