@@ -23,6 +23,7 @@ import com.ctb.bean.UserFileRow;
 import com.ctb.utils.Constants;
 import com.ctb.utils.SQLUtil;
 import com.ctb.utils.UserUtils;
+import com.ctb.utils.cache.OrgMDRDBCacheImpl;
 import com.ctb.utils.cache.UserDBCacheImpl;
 import com.ctb.utils.cache.UserNewRecordCacheImpl;
 import com.ctb.utils.cache.UserUpdateRecordCacheImpl;
@@ -187,89 +188,79 @@ public class UserFileDaoImpl implements UserFileDao {
 	 * @param dbCache
 	 * @throws Exception
 	 */
-	public void getExistUserData_Pro(Integer customerId, UserDBCacheImpl dbCache)
-			throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rSet = null;
-		/**
-		 * This query is having order-by Clause. Do not remove the order-by
-		 * clause for any performance tuning.This will cause the code to break.
-		 */
-		String queryString = "select distinct u.user_id as userId, u.user_name as userName, u.first_name as firstName, "
-				+ " u.middle_name as middleName, u.last_name as lastName,  u.email as email, INITCAP(r.role_name) as roleName, "
-				+ " r.role_id as roleId, u.ext_school_id as extSchoolId, u.address_id as addressId , "
-				+ " ur.org_node_id as orgNodeId from users u, user_role ur, role r, org_node node "
-				+ " where u.user_id = ur.user_id and ur.org_node_id = node.org_node_id and ur.role_id = r.role_id "
-				+ " and node.activation_status = 'AC' and u.activation_status = 'AC' and ur.activation_status = 'AC' "
-				+ " and node.customer_id = ?  order by u.user_id ";
+	/*
+	 * private void getExistUserData_Pro(Integer customerId, UserDBCacheImpl
+	 * dbCache) throws Exception { Connection conn = null; PreparedStatement
+	 * pstmt = null; ResultSet rSet = null;
+	 *//**
+	 * This query is having order-by Clause. Do not remove the order-by
+	 * clause for any performance tuning.This will cause the code to break.
+	 */
+	/*
+	 * String queryString =
+	 * "select distinct u.user_id as userId, u.user_name as userName, u.first_name as firstName, "
+	 * +
+	 * " u.middle_name as middleName, u.last_name as lastName,  u.email as email, INITCAP(r.role_name) as roleName, "
+	 * +
+	 * " r.role_id as roleId, u.ext_school_id as extSchoolId, u.address_id as addressId , "
+	 * +
+	 * " ur.org_node_id as orgNodeId from users u, user_role ur, role r, org_node node "
+	 * +
+	 * " where u.user_id = ur.user_id and ur.org_node_id = node.org_node_id and ur.role_id = r.role_id "
+	 * +
+	 * " and node.activation_status = 'AC' and u.activation_status = 'AC' and ur.activation_status = 'AC' "
+	 * + " and node.customer_id = ?  order by u.user_id ";
+	 * 
+	 * int prevUserId = -1, newUserId = 0; try { conn = SQLUtil.getConnection();
+	 * pstmt = conn.prepareStatement(queryString); pstmt.setInt(1, customerId);
+	 * rSet = pstmt.executeQuery(); UserFileRow userFileRow = new UserFileRow();
+	 * List<Node> orgList = new ArrayList<Node>(); while (rSet.next()) {
+	 * newUserId = rSet.getInt("userId");
+	 *//**
+	 * An user can be linked to more than 1 orgs.So each user bean will be
+	 * having the Array of Org-nodes associated with that user.This block is
+	 * used to populate the User-bean having Node[] for each user.
+	 */
+	/*
+	 * if (newUserId != prevUserId) { userFileRow.setOrganizationNodes(orgList
+	 * .toArray(new Node[orgList.size()]));
+	 * dbCache.addUserFileRow(userFileRow.getKey(), userFileRow); userFileRow =
+	 * new UserFileRow(); orgList = new ArrayList<Node>(); }
+	 * 
+	 * Node orgNode = new Node(); String extSchoolId = "";
+	 * userFileRow.setUserId(newUserId);
+	 * userFileRow.setUserName(rSet.getString("userName"));
+	 * userFileRow.setFirstName(rSet.getString("firstName"));
+	 * userFileRow.setMiddleName(rSet.getString("middleName"));
+	 * userFileRow.setLastName(rSet.getString("lastName"));
+	 * userFileRow.setEmail(rSet.getString("email"));
+	 * userFileRow.setRoleName(rSet.getString("roleName"));
+	 * userFileRow.setRoleId(rSet.getInt("roleId"));
+	 * 
+	 * extSchoolId = rSet.getString("extSchoolId");
+	 * userFileRow.setExtSchoolId(extSchoolId);
+	 * userFileRow.setAddressId(rSet.getInt("addressId"));
+	 * 
+	 * orgNode.setOrgNodeId(rSet.getInt("orgNodeId")); orgList.add(orgNode);
+	 * 
+	 * prevUserId = newUserId;
+	 *//**
+	 * ExtSchoolId is Unique for each user and used for identifying Users. If
+	 * ExtSchoolId is not present for any User then Basic-Username will be used
+	 * for identifying purpose.
+	 */
+	/*
+	 * userFileRow.setKey(!("".equals(extSchoolId)) ? extSchoolId :
+	 * generateKey(userFileRow));
+	 * 
+	 * 
+	 * } userFileRow.setOrganizationNodes(orgList.toArray(new Node[orgList
+	 * .size()])); dbCache.addUserFileRow(userFileRow.getKey(), userFileRow); }
+	 * catch (Exception e) { logger.error("Exception in getExistUserData " +
+	 * e.getMessage()); throw e; } finally { SQLUtil.closeDbObjects(conn, pstmt,
+	 * null); } }
+	 */
 
-		int prevUserId = -1, newUserId = 0;
-		try {
-			conn = SQLUtil.getConnection();
-			pstmt = conn.prepareStatement(queryString);
-			pstmt.setInt(1, customerId);
-			rSet = pstmt.executeQuery();
-			UserFileRow userFileRow = new UserFileRow();
-			List<Node> orgList = new ArrayList<Node>();
-			while (rSet.next()) {
-				newUserId = rSet.getInt("userId");
-
-				/**
-				 * An user can be linked to more than 1 orgs.So each user bean
-				 * will be having the Array of Org-nodes associated with that
-				 * user.This block is used to populate the User-bean having
-				 * Node[] for each user.
-				 */
-				if (newUserId != prevUserId) {
-					userFileRow.setOrganizationNodes(orgList
-							.toArray(new Node[orgList.size()]));
-					dbCache.addUserFileRow(userFileRow.getKey(), userFileRow);
-					userFileRow = new UserFileRow();
-					orgList = new ArrayList<Node>();
-				}
-
-				Node orgNode = new Node();
-				String extSchoolId = "";
-				userFileRow.setUserId(newUserId);
-				userFileRow.setUserName(rSet.getString("userName"));
-				userFileRow.setFirstName(rSet.getString("firstName"));
-				userFileRow.setMiddleName(rSet.getString("middleName"));
-				userFileRow.setLastName(rSet.getString("lastName"));
-				userFileRow.setEmail(rSet.getString("email"));
-				userFileRow.setRoleName(rSet.getString("roleName"));
-				userFileRow.setRoleId(rSet.getInt("roleId"));
-
-				extSchoolId = rSet.getString("extSchoolId");
-				userFileRow.setExtSchoolId(extSchoolId);
-				userFileRow.setAddressId(rSet.getInt("addressId"));
-
-				orgNode.setOrgNodeId(rSet.getInt("orgNodeId"));
-				orgList.add(orgNode);
-
-				prevUserId = newUserId;
-				/**
-				 * ExtSchoolId is Unique for each user and used for identifying
-				 * Users. If ExtSchoolId is not present for any User then
-				 * Basic-Username will be used for identifying purpose.
-				 */
-				userFileRow.setKey(!("".equals(extSchoolId)) ? extSchoolId
-						: generateKey(userFileRow));
-				
-
-			}
-			userFileRow.setOrganizationNodes(orgList.toArray(new Node[orgList
-					.size()]));
-			dbCache.addUserFileRow(userFileRow.getKey(), userFileRow);
-		} catch (Exception e) {
-			logger.error("Exception in getExistUserData " + e.getMessage());
-			throw e;
-		} finally {
-			SQLUtil.closeDbObjects(conn, pstmt, null);
-		}
-	}
-
-	
 	/**
 	 * This method populates Cache with all existing user data in Database
 	 * 
@@ -286,37 +277,32 @@ public class UserFileDaoImpl implements UserFileDao {
 		 * This query is having order-by Clause. Do not remove the order-by
 		 * clause for any performance tuning.This will cause the code to break.
 		 */
-		String queryString = 	" select u.user_id as userId, " +
-								"        u.user_name as userName, " +
-								"        u.first_name as firstName, " +
-								"        u.middle_name as middleName, " +
-								"        u.last_name as lastName, " +
-								"        u.email as email, " +
-								"        INITCAP(r.role_name) as roleName, " +
-								"        r.role_id as roleId, " +
-								"        u.ext_school_id as extSchoolId, " +
-								"        u.address_id as addressId, " +
-								"        RTRIM(xmlagg(xmlelement(d, ur.org_node_id || ',')) " +
-								"              .extract('//text()'), " +
-								"              ',') AS orgNodeIds " +
-								"   from users u, user_role ur, role r, org_node node " +
-								"  where u.user_id = ur.user_id " +
-								"    and ur.org_node_id = node.org_node_id " +
-								"    and ur.role_id = r.role_id " +
-								"    and node.activation_status = 'AC' " +
-								"    and u.activation_status = 'AC' " +
-								"    and ur.activation_status = 'AC' " +
-								"    and node.customer_id = ? " +
-								"  group by u.user_id, " +
-								"           u.user_name, " +
-								"           u.first_name, " +
-								"           u.middle_name, " +
-								"           u.last_name, " +
-								"           u.email, " +
-								"           r.role_name, " +
-								"           r.role_id, " +
-								"           u.ext_school_id, " +
-								"           u.address_id ";
+		String queryString = " select u.user_id as userId, "
+				+ "        u.user_name as userName, "
+				+ "        u.first_name as firstName, "
+				+ "        u.middle_name as middleName, "
+				+ "        u.last_name as lastName, "
+				+ "        u.email as email, "
+				+ "        INITCAP(r.role_name) as roleName, "
+				+ "        r.role_id as roleId, "
+				+ "        u.ext_school_id as extSchoolId, "
+				+ "        u.address_id as addressId, "
+				+ "        RTRIM(xmlagg(xmlelement(d, ur.org_node_id || ',')) "
+				+ "              .extract('//text()'), "
+				+ "              ',') AS orgNodeIds "
+				+ "   from users u, user_role ur, role r, org_node node "
+				+ "  where u.user_id = ur.user_id "
+				+ "    and ur.org_node_id = node.org_node_id "
+				+ "    and ur.role_id = r.role_id "
+				+ "    and node.activation_status = 'AC' "
+				+ "    and u.activation_status = 'AC' "
+				+ "    and ur.activation_status = 'AC' "
+				+ "    and node.customer_id = ? " + "  group by u.user_id, "
+				+ "           u.user_name, " + "           u.first_name, "
+				+ "           u.middle_name, " + "           u.last_name, "
+				+ "           u.email, " + "           r.role_name, "
+				+ "           r.role_id, " + "           u.ext_school_id, "
+				+ "           u.address_id ";
 
 		try {
 			conn = SQLUtil.getConnection();
@@ -326,7 +312,7 @@ public class UserFileDaoImpl implements UserFileDao {
 			UserFileRow userFileRow = new UserFileRow();
 			while (rSet.next()) {
 				List<Node> orgList = new ArrayList<Node>();
-				
+
 				userFileRow.setUserId(rSet.getInt("userId"));
 				userFileRow.setUserName(rSet.getString("userName"));
 				userFileRow.setFirstName(rSet.getString("firstName"));
@@ -347,17 +333,17 @@ public class UserFileDaoImpl implements UserFileDao {
 				 */
 				userFileRow.setKey(!("".equals(extSchoolId)) ? extSchoolId
 						: generateKey(userFileRow));
-				
+
 				String orgNodeIds = rSet.getString("orgNodeIds");
 				String[] orgArr = orgNodeIds.split(",");
-				for(String org : orgArr){
+				for (String org : orgArr) {
 					orgList.add(new Node(Integer.valueOf(org)));
 				}
-				userFileRow.setOrganizationNodes(orgList.toArray(new Node[orgList.size()]));
+				userFileRow.setOrganizationNodes(orgList
+						.toArray(new Node[orgList.size()]));
 				dbCache.addUserFileRow(userFileRow.getKey(), userFileRow);
 			}
-			
-			
+
 		} catch (Exception e) {
 			logger.error("Exception in getExistUserData " + e.getMessage());
 			throw e;
@@ -365,8 +351,7 @@ public class UserFileDaoImpl implements UserFileDao {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
 	}
-	
-	
+
 	/**
 	 * Generates the user Key which is basic user-name
 	 * 
@@ -511,7 +496,7 @@ public class UserFileDaoImpl implements UserFileDao {
 	 * @param selectedMdrNumber
 	 * @return String
 	 * @throws Exception
-	 */
+	 *//*
 	public String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber)
 			throws Exception {
 		Connection conn = null;
@@ -535,7 +520,7 @@ public class UserFileDaoImpl implements UserFileDao {
 			SQLUtil.closeDbObjects(conn, pstmt, rSet);
 		}
 		return uniqueNumber;
-	}
+	}*/
 
 	/**
 	 * Username existence Count retrieval.
@@ -1195,6 +1180,32 @@ public class UserFileDaoImpl implements UserFileDao {
 			SQLUtil.closeDbObjects(connNew, pstmtNew, null);
 			logger.info("done executing updateUserRole()");
 		}
+	}
+
+	public void getExistOrgData(Integer customerId,
+			OrgMDRDBCacheImpl dbCacheOrgImpl) throws Exception {
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rSet = null;
+		String queryString = " select org_node_mdr_number as org_node_mdr_number from org_node where org_node_mdr_number is not null ";
+		try {
+			conn = SQLUtil.getConnection();
+			pstmt = conn.prepareStatement(queryString);
+			rSet = pstmt.executeQuery();
+			while (rSet.next()) {
+				String orgNodeMdrNumber = rSet.getString("org_node_mdr_number");
+				dbCacheOrgImpl
+						.addOrgFileRow(orgNodeMdrNumber.trim(), orgNodeMdrNumber);
+			}
+
+		} catch (Exception e) {
+			logger.error("Exception in getExistOrgData " + e.getMessage());
+			throw e;
+		} finally {
+			SQLUtil.closeDbObjects(conn, pstmt, null);
+		}
+
 	}
 
 }

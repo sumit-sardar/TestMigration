@@ -36,8 +36,7 @@ public class ImportDataProcessor {
 	 * This location needs to be changed according to Properties file Path.
 	 * Currently active path is pointing to DAGOBAH Location
 	 * **/
-	static final String propertiesFilePathLocation =
-	 "/export/home/oasdev/operations/operation-tools/java/ImportDataFromEngradeToOAS/ImportUser/PropertiesFiles/";
+	static final String propertiesFilePathLocation ="/export/home/oasdev/operations/operation-tools/java/ImportDataFromEngradeToOAS/ImportUser/PropertiesFiles/";
 	//static String propertiesFilePathLocation = "D:\\Sprint Data\\Sprint 78\\";
 	// static String propertiesFilePathLocation
 	// ="/local/apps/oas/ImportFromEngradeToOAS/PropertiesFile/";

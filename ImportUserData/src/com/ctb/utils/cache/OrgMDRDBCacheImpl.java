@@ -6,18 +6,15 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
-import com.ctb.bean.UserFileRow;
-
 /**
- * This Class is used for implementing Cache for User records present in
- * Database for a particular Customer
+ * This Class is used for implementing Cache for Org records present in
+ * Database. This cache will have the Org-MDR Number
  */
 public class OrgMDRDBCacheImpl {
 
 	private static final CacheManager cacheManager;
 
 	static {
-
 		ClassLoader contextClassLoader = Thread.currentThread()
 				.getContextClassLoader();
 		InputStream resourceAsStream = contextClassLoader
@@ -25,13 +22,13 @@ public class OrgMDRDBCacheImpl {
 		cacheManager = CacheManager.create(resourceAsStream);
 	}
 
-	private Ehcache userCache;
+	private Ehcache orgCache;
 
 	/**
 	 * No Argument Constructor
 	 */
 	public OrgMDRDBCacheImpl() {
-		userCache = cacheManager.getEhcache("userFileRows");
+		orgCache = cacheManager.getEhcache("orgRows");
 	}
 
 	/**
@@ -40,37 +37,36 @@ public class OrgMDRDBCacheImpl {
 	 * @return - long Cache Size
 	 */
 	public long getCacheSize() {
-		return userCache.getSize();
+		return orgCache.getSize();
 	}
 
 	/**
-	 * Puts the UserFileRow record in Cache and maps it with the username key
+	 * Puts the Org-MDR-Number record in Cache and maps it with the
+	 * Org-MDR-Number key
 	 * 
 	 * @param key
 	 *            - Username of User
 	 * @param user
 	 *            - UserFileRow Object
 	 */
-	public void addUserFileRow(String key, UserFileRow user) {
-		Element element = new Element(key, user);
-		userCache.put(element);
+	public void addOrgFileRow(String key, String orgNodeMDRNumber) {
+		Element element = new Element(key, orgNodeMDRNumber);
+		orgCache.put(element);
 	}
 
 	/**
-	 * Returns the UserFileRow object based upon the Username key
+	 * Returns the orgNodeMDRNumber based upon the orgNodeMDRNumber key
 	 * 
 	 * @param key
-	 *            - Username of User
-	 * @return user
+	 *            - String
+	 * @return orgNodeMDRNumber
 	 */
 	@SuppressWarnings("deprecation")
-	public UserFileRow getUserFileRow(String key) {
-		Element element = userCache.get(key);
+	public String getOrgMDRNumber(String key) {
+		Element element = orgCache.get(key);
 		if (element != null) {
-
-			return (UserFileRow) element.getValue();
+			return (String) element.getValue();
 		}
-
 		return null;
 	}
 }

@@ -41,6 +41,7 @@ import com.ctb.dao.UserFileDao;
 import com.ctb.dao.UserFileDaoImpl;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.FileNotUploadedException;
+import com.ctb.utils.cache.OrgMDRDBCacheImpl;
 import com.ctb.utils.cache.UserDBCacheImpl;
 import com.ctb.utils.cache.UserNewRecordCacheImpl;
 import com.ctb.utils.cache.UserUpdateRecordCacheImpl;
@@ -57,6 +58,7 @@ public class UploadUserFile {
 	private Date uploadDt;
 	private int noOfUserColumn;
 	private UserDBCacheImpl dbCacheImpl = new UserDBCacheImpl();
+	private OrgMDRDBCacheImpl orgMDRImpl = new OrgMDRDBCacheImpl();
 	private UserUpdateRecordCacheImpl userUpdateCacheImpl = new UserUpdateRecordCacheImpl();
 	private UserNewRecordCacheImpl userNewCacheImpl = new UserNewRecordCacheImpl();
 
@@ -138,6 +140,12 @@ public class UploadUserFile {
 			logger.info("Existing Data Fecth End Time:"
 					+ new Date(System.currentTimeMillis()));
 			
+			logger.info("Existing Org-data Fecth Start Time:"
+					+ new Date(System.currentTimeMillis()));
+			userFileDao.getExistOrgData(customerId, orgMDRImpl);
+			logger.info("Existing Org-data Fecth End Time:"
+					+ new Date(System.currentTimeMillis()));
+			
 			CSVReader csv = new CSVReader(new BufferedReader(new FileReader(
 					this.inFile)), ',');
 
@@ -178,7 +186,6 @@ public class UploadUserFile {
 
 					loginUserPosition = getLoginUserOrgPosition(row, rowHeader,
 							this.userTopOrgNode);
-					List<String> newMDRList = new ArrayList<String>();
 					// create Organization process
 					Node[] node = this.userFileRowHeader[0]
 							.getOrganizationNodes();
@@ -241,8 +248,8 @@ public class UploadUserFile {
 						} else if (!isValidMDR(rowIndex, isMatchUploadOrgIds,
 								strCellId, parentOrgId, categoryId,
 								requiredMap, invalidCharMap, logicalErrorMap,
-								newMDRList, strCellMdr, strCellName,
-								strCellHeaderMdr)) {
+								strCellMdr, strCellName,
+								strCellHeaderMdr , orgMDRImpl)) {
 							break;
 
 						} else {
@@ -297,11 +304,11 @@ public class UploadUserFile {
 			if (requiredMap.size() > 0 || maxLengthMap.size() > 0
 					|| invalidCharMap.size() > 0 || logicalErrorMap.size() > 0
 					|| hierarchyErrorMap.size() > 0) {
-				logger.info("Error Excel Start Time:"
+				logger.info("Error CSV Start Time:"
 						+ new Date(System.currentTimeMillis()));
 				errorExcelCreation(requiredMap, maxLengthMap, invalidCharMap,
 						logicalErrorMap, hierarchyErrorMap);
-				logger.info("Error Excel End Time:"
+				logger.info("Error CSV End Time:"
 						+ new Date(System.currentTimeMillis()));
 			}
 
@@ -320,7 +327,7 @@ public class UploadUserFile {
 					Configuration.getArchivePath(), inFile.getName());
 			logger.info("ArchiveProcessedFiles End Time:"
 					+ new Date(System.currentTimeMillis()));
-			logger.info("Student Upload Process Completed Time "
+			logger.info("User Upload Process Completed Time "
 					+ new Date(System.currentTimeMillis()));
 
 		} catch (Exception e) {
@@ -336,15 +343,14 @@ public class UploadUserFile {
 			String orgCode, Integer[] parentOrgId, Integer categoryId,
 			Map<Integer, ArrayList<String>> requiredMap,
 			Map<Integer, ArrayList<String>> invalidCharMap,
-			Map<Integer, ArrayList<String>> logicalErrorMap,
-			List<String> newMDRList, String strCellMdr, String orgName,
-			String strCellHeaderMdr) {
+			Map<Integer, ArrayList<String>> logicalErrorMap,String strCellMdr, String orgName,
+			String strCellHeaderMdr , OrgMDRDBCacheImpl orgMDRImpl) {
 
 		if (orgName == null || orgName.length() == 0) {
 			return true;
 		}
 		if (!isOrganizationExists(isMatchUploadOrgIds, orgCode, parentOrgId,
-				categoryId, newMDRList, strCellMdr, orgName)) {
+				categoryId, strCellMdr, orgName)) {
 
 			if (!validMdrNo(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
@@ -364,7 +370,7 @@ public class UploadUserFile {
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 
-			} else if (!isUniqueMdr(strCellMdr, newMDRList)) {
+			} else if (!isUniqueMdr(strCellMdr, orgMDRImpl)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
 				requiredList.add(strCellHeaderMdr);
 				logicalErrorMap.put(new Integer(cellPos), requiredList);
@@ -372,15 +378,13 @@ public class UploadUserFile {
 
 			}
 
-			newMDRList.add(strCellMdr);
 		}
 
 		return true;
 	}
 
 	private boolean isOrganizationExists(boolean isMatchUploadOrgIds,
-			String orgCode, Integer[] parentOrgIdArray, Integer categoryId,
-			List<String> newMDRList, String strCellMdr, String orgName) {
+			String orgCode, Integer[] parentOrgIdArray, Integer categoryId, String strCellMdr, String orgName) {
 
 		Node organization = null;
 		boolean isOrgExist = false;
@@ -459,17 +463,16 @@ public class UploadUserFile {
 		return true;
 	}
 
-	private boolean isUniqueMdr(String strCellMdr, List<String> newMDRList) {
-		
+	private boolean isUniqueMdr(String strCellMdr, OrgMDRDBCacheImpl orgMDRImpl) {
+		String val = "";
 		try {
-			String val = this.userFileDao
-					.checkUniqueMdrNumberForOrgNodes(strCellMdr);
-			
-			if ((val.equalsIgnoreCase("T"))
-					&& !(newMDRList.contains(strCellMdr))) {
+			val = orgMDRImpl.getOrgMDRNumber(strCellMdr);
+
+			if (val != null && !"".equalsIgnoreCase(val)) {
+				orgMDRImpl.addOrgFileRow(strCellMdr, strCellMdr);
 				return true;
 			}
-			
+
 		} catch (Exception e) {
 			return false;
 		}
@@ -862,13 +865,13 @@ public class UploadUserFile {
 			 * User Insert Execution Process
 			 */
 			if (this.userNewCacheImpl.getCacheSize() > 0) {
-				logger.info("Students to be Inserted::--> "
+				logger.info("Users to be Inserted::--> "
 						+ this.userNewCacheImpl.getCacheSize());
-				logger.info("ExecuteStudentCreation Start Time:"
+				logger.info("ExecuteUserCreation Start Time:"
 						+ new Date(System.currentTimeMillis()));
 				this.userManagement.executeUserCreation(this.userNewCacheImpl,
 						this.customerId , this.keyUserIdMap ,this.keyAddressIdMap);
-				logger.info("ExecuteStudentCreation End Time:"
+				logger.info("ExecuteUserCreation End Time:"
 						+ new Date(System.currentTimeMillis()));
 			}
 
@@ -879,13 +882,13 @@ public class UploadUserFile {
 			 * User Update Execution Process
 			 */
 			if (this.userUpdateCacheImpl.getCacheSize() > 0) {
-				logger.info("Students to be Updated::--> "
+				logger.info("Users to be Updated::--> "
 						+ this.userUpdateCacheImpl.getCacheSize());
-				logger.info("ExecuteStudentUpdate Start Time:"
+				logger.info("ExecuteUserUpdate Start Time:"
 						+ new Date(System.currentTimeMillis()));
 				this.userManagement.executeUserUpdate(this.userUpdateCacheImpl,
 						this.customerId ,  this.keyUserIdMap ,this.keyAddressIdMap);
-				logger.info("ExecuteStudentUpdate End Time:"
+				logger.info("ExecuteUserUpdate End Time:"
 						+ new Date(System.currentTimeMillis()));
 			}
 			
