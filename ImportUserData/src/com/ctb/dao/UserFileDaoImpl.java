@@ -309,10 +309,10 @@ public class UserFileDaoImpl implements UserFileDao {
 			pstmt = conn.prepareStatement(queryString);
 			pstmt.setInt(1, customerId);
 			rSet = pstmt.executeQuery();
-			UserFileRow userFileRow = new UserFileRow();
+			
 			while (rSet.next()) {
 				List<Node> orgList = new ArrayList<Node>();
-
+				UserFileRow userFileRow = new UserFileRow();
 				userFileRow.setUserId(rSet.getInt("userId"));
 				userFileRow.setUserName(rSet.getString("userName"));
 				userFileRow.setFirstName(rSet.getString("firstName"));
