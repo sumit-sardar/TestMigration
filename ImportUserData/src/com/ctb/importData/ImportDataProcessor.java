@@ -49,16 +49,17 @@ public class ImportDataProcessor {
 		logger.info("\t******Utility Fresh Start*******");
 		Long startTime = System.currentTimeMillis();
 		logger.info("StartTime:" + new Date(System.currentTimeMillis()));
-		String envName = getPropFileFromCommandLine(args);
-		ExtractUtil.loadExternalPropetiesFile(envName, args[1]);
-		sourceDir = Configuration.getFtpFilePath();
-		targetDir = Configuration.getLocalFilePath();
-		archiveDir = Configuration.getArchivePath();
-		customerId = Integer.valueOf(Configuration.getCustomerId());
-		logger.info("Import Process started..."
-				+ new Date(System.currentTimeMillis()));
-		Session session = null;
 		try {
+			String envName = getPropFileFromCommandLine(args);
+			ExtractUtil.loadExternalPropetiesFile(envName, args[1]);
+			sourceDir = Configuration.getFtpFilePath();
+			targetDir = Configuration.getLocalFilePath();
+			archiveDir = Configuration.getArchivePath();
+			customerId = Integer.valueOf(Configuration.getCustomerId());
+			logger.info("Import Process started..."
+					+ new Date(System.currentTimeMillis()));
+			Session session = null;
+
 			logger.info("Temp Directory CleanUp Started..."
 					+ new Date(System.currentTimeMillis()));
 			deleteFiles(targetDir);

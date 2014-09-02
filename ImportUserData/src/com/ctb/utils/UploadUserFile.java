@@ -318,7 +318,7 @@ public class UploadUserFile {
 					userDataMap, blankRowMap, isMatchUploadOrgIds,
 					this.userTopOrgNode);
 			
-			logger.info("Total Rows Present in the file : "+ rowIndex);
+			logger.info("Total Rows Present in the file : "+( rowIndex-1));
 			/**
 			 * Archiving Process
 			 * */
@@ -1191,7 +1191,6 @@ public class UploadUserFile {
 				user.setOrganizationNodes(updateNodes);
 			} else {
 				user.setOrganizationNodes(orgNodes);
-				
 			}
 			this.dbCacheImpl.addUserFileRow(user.getExtSchoolId(), user);
 			this.userUpdateCacheImpl.addUpdatedUser(user.getExtSchoolId(), user);
