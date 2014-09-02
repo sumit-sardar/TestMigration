@@ -484,10 +484,9 @@ public class UploadUserFile {
 	}
 
 	private boolean isUniqueMdr(String strCellMdr, List<String> newMDRList , OrgMDRDBCacheImpl orgMDRImpl) {
-		String val = "";
 		try {
-			val = orgMDRImpl.getOrgMDRNumber(strCellMdr);
-			if (val == null && "".equalsIgnoreCase(val) && !(newMDRList.contains(strCellMdr))) {
+			String val = orgMDRImpl.getOrgMDRNumber(strCellMdr);
+			if (val == null  && !(newMDRList.contains(strCellMdr))) {
 				return true;
 			}
 
