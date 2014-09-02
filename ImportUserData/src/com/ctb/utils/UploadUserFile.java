@@ -578,11 +578,12 @@ public class UploadUserFile {
 					this.inFile)), ',');
 
 			while ((row = csv.readNext()) != null) {
-				rowIndex++;
+				
 				if (isRowHeader) {
 					rowHeader = new String[row.length];
 					rowHeader = row;
 					isRowHeader = false;
+					rowIndex++;
 					continue;
 				}
 				int totalCells = rowHeader.length;
@@ -869,6 +870,7 @@ public class UploadUserFile {
 					uploadRecordCount++;
 				}
 				isBlankRow = true;
+				rowIndex++;
 			}// While loop end.
 			csv.close();
 			requiredMap = null;
