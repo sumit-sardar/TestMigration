@@ -44,14 +44,13 @@ public class UploadThread implements Runnable {
 					+ this.inFile.getName() + "-->"
 					+ new Date(System.currentTimeMillis()));
 
-			UploadUserFile userUpload = new UploadUserFile(customerId,
-					inFile, uploadFileId,
-					this.uploadMoveData.getOrgNodeCategory(),
-					this.uploadMoveData.getUserFileRowHeader(),	
+			UploadUserFile userUpload = new UploadUserFile(customerId, inFile,
+					uploadFileId, this.uploadMoveData.getOrgNodeCategory(),
+					this.uploadMoveData.getUserFileRowHeader(),
 					this.uploadMoveData.getNoOfUserColumn());
 
 			userUpload.startProcessing();
-			
+
 		} catch (Exception e) {
 			logger.error("Exception in run() of UploadThread.. Thread Error.");
 			System.exit(1);

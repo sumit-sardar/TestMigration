@@ -40,8 +40,10 @@ public interface UserFileDao {
 	public CustomerEmail getCustomerEmailByUserName(String userName,
 			Integer emailType) throws Exception;
 
-	/*public String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber)
-			throws Exception;*/
+	/*
+	 * public String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber)
+	 * throws Exception;
+	 */
 
 	public Integer findExistingUserName(String userName, String userNameescape,
 			String whereRegExp, String selectRegExp, String replaceStr)
@@ -52,7 +54,8 @@ public interface UserFileDao {
 
 	public void populateActualUserAndAddressIds(
 			UserNewRecordCacheImpl userNewCacheImpl, Integer userCount,
-			Integer addressCount ,Map<String,Integer> keyUserIdMap, Map<String, Integer> keyAddressIdMap) throws Exception;
+			Integer addressCount, Map<String, Integer> keyUserIdMap,
+			Map<String, Integer> keyAddressIdMap) throws Exception;
 
 	public void insertAddressForUser(UserNewRecordCacheImpl userNewCacheImpl)
 			throws Exception;
@@ -70,9 +73,13 @@ public interface UserFileDao {
 	public void updateAddressForUser(
 			UserUpdateRecordCacheImpl userUpdateCacheImpl) throws Exception;
 
-	public void updateUserProfile(UserUpdateRecordCacheImpl userUpdateCacheImpl , Map<String,Integer> keyUserIdMap) throws Exception;
+	public void updateUserProfile(
+			UserUpdateRecordCacheImpl userUpdateCacheImpl,
+			Map<String, Integer> keyUserIdMap) throws Exception;
 
-	public void updateUserRole(UserUpdateRecordCacheImpl userUpdateCacheImpl) throws Exception;
+	public void updateUserRole(UserUpdateRecordCacheImpl userUpdateCacheImpl)
+			throws Exception;
 
-	public void getExistOrgData(Integer customerId, OrgMDRDBCacheImpl dbCacheImpl) throws Exception;
+	public void getExistOrgData(Integer customerId,
+			OrgMDRDBCacheImpl dbCacheImpl) throws Exception;
 }

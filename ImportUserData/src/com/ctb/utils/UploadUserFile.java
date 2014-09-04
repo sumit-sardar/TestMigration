@@ -65,26 +65,25 @@ public class UploadUserFile {
 	private String username;
 	private int failedRecordCount;
 	private int uploadRecordCount;
-	public UserFile userFile;
-	public DataFileAudit dataFileAudit = new DataFileAudit();
-	public UserNode[] usernode = null;
-	public OrgNodeCategory orgNodeCategory[] = null;
+	private UserFile userFile;
+	private DataFileAudit dataFileAudit = new DataFileAudit();
+	private UserNode[] usernode = null;
+	private OrgNodeCategory orgNodeCategory[] = null;
 	private UserFileRow[] userFileRowHeader;
 	private String serverFilePath;
 	private Map<String, Integer> roleMap = new HashMap<String, Integer>();
 	private Map<String, String> stateMap = new HashMap<String, String>();
 	private Map<String, String> timeZoneMap = new HashMap<String, String>();
-	private Map<String,Integer> keyUserIdMap = new HashMap<String, Integer>();
-	private Map<String,Integer> keyAddressIdMap = new HashMap<String, Integer>();
-	
+	private Map<String, Integer> keyUserIdMap = new HashMap<String, Integer>();
+	private Map<String, Integer> keyAddressIdMap = new HashMap<String, Integer>();
+
 	private Node[] userTopOrgNode = null;
 
-	TimeZones[] timeZones;
-	USState[] usState;
-	public int traversCells = 0;
+	private TimeZones[] timeZones;
+	private USState[] usState;
 	private Node[] detailNodeM = null;
 	private int orgPosFact = 3;
-	boolean isMatchUploadOrgIds = false;
+	private boolean isMatchUploadOrgIds = false;
 
 	private UserFileDao userFileDao = new UserFileDaoImpl();
 	private UploadFileDao uploadFileDao = new UploadFileDaoImpl();
@@ -132,20 +131,18 @@ public class UploadUserFile {
 
 		try {
 			/**
-			 * Caching of user data present in the DataBase.  
+			 * Caching of user data present in the DataBase.
 			 */
-			logger.info("Existing Data fetch Start Time:"
-					+ new Date(System.currentTimeMillis()));
+			logger.info("Caching Data in progess..");
 			userFileDao.getExistUserData(customerId, dbCacheImpl);
-			logger.info("Existing Data fetch End Time:"
+			logger.info("User Data Cached:"
 					+ new Date(System.currentTimeMillis()));
-			
-			logger.info("Existing Org-data fetch Start Time:"
-					+ new Date(System.currentTimeMillis()));
+
 			userFileDao.getExistOrgData(customerId, orgMDRImpl);
-			logger.info("Existing Org-data fetch End Time:"
+			logger.info("Org Data Cached:"
 					+ new Date(System.currentTimeMillis()));
-			
+			logger.info("Caching data completed.");
+
 			CSVReader csv = new CSVReader(new BufferedReader(new FileReader(
 					this.inFile)), ',');
 
@@ -154,7 +151,7 @@ public class UploadUserFile {
 			String[] rowHeader = new String[0];
 			String[] row;
 			while ((row = csv.readNext()) != null) {
-				
+
 				if (isFirstRow) {
 					rowHeader = new String[row.length];
 					rowHeader = row;
@@ -248,9 +245,9 @@ public class UploadUserFile {
 							break;
 						} else if (!isValidMDR(rowIndex, isMatchUploadOrgIds,
 								strCellId, parentOrgId, categoryId,
-								requiredMap, invalidCharMap, logicalErrorMap,newMDRList,
-								strCellMdr, strCellName,
-								strCellHeaderMdr , orgMDRImpl)) {
+								requiredMap, invalidCharMap, logicalErrorMap,
+								newMDRList, strCellMdr, strCellName,
+								strCellHeaderMdr, orgMDRImpl)) {
 							break;
 
 						} else {
@@ -299,6 +296,16 @@ public class UploadUserFile {
 			}// while loop end of total row processing
 			csv.close();
 
+			/**
+			 * Creation of Org and Users
+			 */
+			createOrganizationAndUser(requiredMap, maxLengthMap,
+					invalidCharMap, logicalErrorMap, hierarchyErrorMap,
+					userDataMap, blankRowMap, isMatchUploadOrgIds,
+					this.userTopOrgNode, orgMDRImpl);
+
+			logger.info("Total Rows Present in the file : " + (rowIndex - 1));
+
 			/***
 			 * Error Excel to be created if any error records are present.
 			 */
@@ -312,13 +319,13 @@ public class UploadUserFile {
 				logger.info("Error CSV End Time:"
 						+ new Date(System.currentTimeMillis()));
 			}
+			requiredMap = null;
+			maxLengthMap = null;
+			logicalErrorMap = null;
+			invalidCharMap = null;
+			hierarchyErrorMap = null;
+			System.gc();
 
-			createOrganizationAndUser(requiredMap, maxLengthMap,
-					invalidCharMap, logicalErrorMap, hierarchyErrorMap,
-					userDataMap, blankRowMap, isMatchUploadOrgIds,
-					this.userTopOrgNode);
-			
-			logger.info("Total Rows Present in the file : "+( rowIndex-1));
 			/**
 			 * Archiving Process
 			 * */
@@ -373,7 +380,7 @@ public class UploadUserFile {
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 
-			} else if (!isUniqueMdr(strCellMdr, newMDRList , orgMDRImpl)) {
+			} else if (!isUniqueMdr(strCellMdr, newMDRList, orgMDRImpl)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
 				requiredList.add(strCellHeaderMdr);
 				logicalErrorMap.put(new Integer(cellPos), requiredList);
@@ -404,7 +411,8 @@ public class UploadUserFile {
 	}
 
 	private boolean isOrganizationExists(boolean isMatchUploadOrgIds,
-			String orgCode, Integer[] parentOrgIdArray, Integer categoryId, String strCellMdr, String orgName) {
+			String orgCode, Integer[] parentOrgIdArray, Integer categoryId,
+			String strCellMdr, String orgName) {
 
 		Node organization = null;
 		boolean isOrgExist = false;
@@ -483,10 +491,11 @@ public class UploadUserFile {
 		return true;
 	}
 
-	private boolean isUniqueMdr(String strCellMdr, List<String> newMDRList , OrgMDRDBCacheImpl orgMDRImpl) {
+	private boolean isUniqueMdr(String strCellMdr, List<String> newMDRList,
+			OrgMDRDBCacheImpl orgMDRImpl) {
 		try {
 			String val = orgMDRImpl.getOrgMDRNumber(strCellMdr);
-			if (val == null  && !(newMDRList.contains(strCellMdr))) {
+			if (val == null && !(newMDRList.contains(strCellMdr))) {
 				return true;
 			}
 
@@ -532,7 +541,7 @@ public class UploadUserFile {
 					.getTopNodeDetails(customerId);
 			this.dataFileAudit = this.userFileDao
 					.getUploadFile(this.uploadFileId);
-			
+
 			this.isMatchUploadOrgIds = this.uploadFileDao
 					.checkCustomerConfiguration(customerId,
 							Constants.MATCH_ORG_CODE);
@@ -557,8 +566,9 @@ public class UploadUserFile {
 			Map<Integer, ArrayList<String>> logicalErrorMap,
 			Map<Integer, ArrayList<String>> hierarchyErrorMap,
 			Map<String, String> userDataMap, Map<Integer, String> blankRowMap,
-			boolean isMatchUploadOrgIds, Node[] loginUserNodes)
-			throws SQLException, CTBBusinessException {
+			boolean isMatchUploadOrgIds, Node[] loginUserNodes,
+			OrgMDRDBCacheImpl orgMDRImpl) throws SQLException,
+			CTBBusinessException {
 
 		int loginUserOrgPosition = 0;
 		Node organization = null;
@@ -570,6 +580,7 @@ public class UploadUserFile {
 			String[] row;
 			int rowIndex = 0;
 			boolean isRowHeader = true;
+			boolean mdrCorrect = true;
 			Node[] nodeCategory = this.userFileRowHeader[0]
 					.getOrganizationNodes();
 			int orgHeaderLastPosition = nodeCategory.length * orgPosFact;
@@ -578,7 +589,7 @@ public class UploadUserFile {
 					this.inFile)), ',');
 
 			while ((row = csv.readNext()) != null) {
-				
+				mdrCorrect = true;
 				if (isRowHeader) {
 					rowHeader = new String[row.length];
 					rowHeader = row;
@@ -616,8 +627,8 @@ public class UploadUserFile {
 					// orgNodeId and parentId initialization process
 					Integer parentOrgId = loginUserNode.getOrgNodeId();
 					orgNodeId = loginUserNode.getOrgNodeId();
-					for (int ii = loginUserOrgPosition + orgPosFact; ii < orgHeaderLastPosition; ii = ii
-							+ orgPosFact) {
+					for (int ii = loginUserOrgPosition + orgPosFact; ii < orgHeaderLastPosition
+							&& mdrCorrect; ii = ii + orgPosFact) {
 						String OrgCellName = row[ii];
 						String OrgCellId = row[ii + 1];
 						String orgCode = getCellValue(OrgCellId);
@@ -663,10 +674,24 @@ public class UploadUserFile {
 											organization
 													.setParentOrgNodeId(parentOrgId);
 											organization.setMdrNumber(orgMdr);
+
 											// create Organization
 											organization = this.organizationManagement
 													.createOrganization(null,
-															organization);
+															organization,
+															orgMDRImpl);
+
+											if (organization.getOrgNodeId() == -99) {
+												mdrCorrect = false;
+												ArrayList<String> requiredList = new ArrayList<String>();
+												requiredList
+														.add(rowHeader[ii + 2]);
+												logicalErrorMap.put(
+														new Integer(rowIndex),
+														requiredList);
+												break;
+											}
+
 											// parentId and orgNodeId updated
 											parentOrgId = organization
 													.getOrgNodeId();
@@ -709,7 +734,20 @@ public class UploadUserFile {
 												organization = this.organizationManagement
 														.createOrganization(
 																null,
-																organization);
+																organization,
+																orgMDRImpl);
+
+												if (organization.getOrgNodeId() == -99) {
+													mdrCorrect = false;
+													ArrayList<String> requiredList = new ArrayList<String>();
+													requiredList
+															.add(rowHeader[ii + 2]);
+													logicalErrorMap.put(
+															new Integer(
+																	rowIndex),
+															requiredList);
+													break;
+												}
 												// parentId and orgNodeId
 												// updated
 												parentOrgId = organization
@@ -753,7 +791,19 @@ public class UploadUserFile {
 											// create Organization
 											organization = this.organizationManagement
 													.createOrganization(null,
-															organization);
+															organization,
+															orgMDRImpl);
+
+											if (organization.getOrgNodeId() == -99) {
+												mdrCorrect = false;
+												ArrayList<String> requiredList = new ArrayList<String>();
+												requiredList
+														.add(rowHeader[ii + 2]);
+												logicalErrorMap.put(
+														new Integer(rowIndex),
+														requiredList);
+												break;
+											}
 											// parentId and orgNodeId updated
 											parentOrgId = organization
 													.getOrgNodeId();
@@ -787,7 +837,17 @@ public class UploadUserFile {
 										// create Organization
 										organization = this.organizationManagement
 												.createOrganization(null,
-														organization);
+														organization,
+														orgMDRImpl);
+
+										if (organization.getOrgNodeId() == -99) {
+											mdrCorrect = false;
+											ArrayList<String> requiredList = new ArrayList<String>();
+											requiredList.add(rowHeader[ii + 2]);
+											logicalErrorMap.put(new Integer(
+													rowIndex), requiredList);
+											break;
+										}
 										// parentId and orgNodeId updated
 										parentOrgId = organization
 												.getOrgNodeId();
@@ -827,7 +887,19 @@ public class UploadUserFile {
 											// create Organization
 											organization = this.organizationManagement
 													.createOrganization(null,
-															organization);
+															organization,
+															orgMDRImpl);
+
+											if (organization.getOrgNodeId() == -99) {
+												mdrCorrect = false;
+												ArrayList<String> requiredList = new ArrayList<String>();
+												requiredList
+														.add(rowHeader[ii + 2]);
+												logicalErrorMap.put(
+														new Integer(rowIndex),
+														requiredList);
+												break;
+											}
 											// parentId and orgNodeId updated
 											parentOrgId = organization
 													.getOrgNodeId();
@@ -843,6 +915,10 @@ public class UploadUserFile {
 								}// End of checking orgName
 							} // Else block end
 						} // Else block (Organization creation process)
+					}
+
+					if (!mdrCorrect) {
+						continue;
 					}
 
 					Node[] orgDetail = new Node[1];
@@ -861,25 +937,19 @@ public class UploadUserFile {
 							userDataMap.put(strHeaderValue, strBodyValue);
 						}
 					}
-					
+
 					/**
 					 * This method determines the Insert/Update Flag of an User.
 					 */
 					createUpdateUser(userDataMap, orgDetail);
-					
+
 					uploadRecordCount++;
 				}
 				isBlankRow = true;
 				rowIndex++;
 			}// While loop end.
 			csv.close();
-			requiredMap = null;
-			maxLengthMap = null;
-			logicalErrorMap = null;
-			invalidCharMap = null;
-			hierarchyErrorMap = null;
-			System.gc();
-			
+
 			/**
 			 * User Insert Execution Process
 			 */
@@ -889,14 +959,15 @@ public class UploadUserFile {
 				logger.info("ExecuteUserCreation Start Time:"
 						+ new Date(System.currentTimeMillis()));
 				this.userManagement.executeUserCreation(this.userNewCacheImpl,
-						this.customerId , this.keyUserIdMap ,this.keyAddressIdMap);
+						this.customerId, this.keyUserIdMap,
+						this.keyAddressIdMap);
 				logger.info("ExecuteUserCreation End Time:"
 						+ new Date(System.currentTimeMillis()));
 			}
 
 			this.userNewCacheImpl.clearCacheContents();
 			this.userNewCacheImpl = null;
-			
+
 			/**
 			 * User Update Execution Process
 			 */
@@ -906,11 +977,12 @@ public class UploadUserFile {
 				logger.info("ExecuteUserUpdate Start Time:"
 						+ new Date(System.currentTimeMillis()));
 				this.userManagement.executeUserUpdate(this.userUpdateCacheImpl,
-						this.customerId ,  this.keyUserIdMap ,this.keyAddressIdMap);
+						this.customerId, this.keyUserIdMap,
+						this.keyAddressIdMap);
 				logger.info("ExecuteUserUpdate End Time:"
 						+ new Date(System.currentTimeMillis()));
 			}
-			
+
 			this.userUpdateCacheImpl.clearCacheContents();
 			this.userUpdateCacheImpl = null;
 
@@ -1102,16 +1174,14 @@ public class UploadUserFile {
 			Node[] userNode) throws Exception, CTBBusinessException {
 
 		UserFileRow user = new UserFileRow();
-		
+
 		// Set address details
-		user.setAddress1((String) userDataMap
-				.get(Constants.ADDRESS_LINE_1));
-		user.setAddress2((String) userDataMap
-				.get(Constants.ADDRESS_LINE_2));
+		user.setAddress1((String) userDataMap.get(Constants.ADDRESS_LINE_1));
+		user.setAddress2((String) userDataMap.get(Constants.ADDRESS_LINE_2));
 		user.setCity((String) userDataMap.get(Constants.CITY));
 		if (userDataMap.get(Constants.STATE_NAME) != null) {
-			user.setState((String) stateMap
-					.get(initCap((String) userDataMap.get(Constants.STATE_NAME))));
+			user.setState((String) stateMap.get(initCap((String) userDataMap
+					.get(Constants.STATE_NAME))));
 		}
 		String zipCode = (String) userDataMap.get(Constants.ZIP);
 		if (zipCode != null && !"".equals(zipCode)) {
@@ -1127,7 +1197,7 @@ public class UploadUserFile {
 				.get(Constants.PRIMARY_PHONE);
 		primaryPhoneNumber = getPhoneFax(primaryPhoneNumber);
 		user.setPrimaryPhone(primaryPhoneNumber);
-		
+
 		String secondaryPhoneNumber = (String) userDataMap
 				.get(Constants.SECONDARY_PHONE);
 		secondaryPhoneNumber = getPhoneFax(secondaryPhoneNumber);
@@ -1153,16 +1223,17 @@ public class UploadUserFile {
 
 		// Set External User Id for CR
 		user.setExtSchoolId((String) userDataMap.get(Constants.EXT_SCHOOL_ID));
-		
+
 		/**
 		 * Key for identifying User is User-name
 		 */
 		String generatedUserName = UserUtils.generateEscapeUsername(user);
 		user.setKey(user.getExtSchoolId());
 		user.setBasicUserName(generatedUserName);
-		user.setPassword(UserUtils.generateRandomPassword(Constants.PASSWORD_LENGTH));
+		user.setPassword(UserUtils
+				.generateRandomPassword(Constants.PASSWORD_LENGTH));
 		user.setAddressPresent(isAddressPresent(user));
-		
+
 		/**
 		 * This method will determine if the User is existing in the database or
 		 * not?
@@ -1195,11 +1266,12 @@ public class UploadUserFile {
 				user.setOrganizationNodes(orgNodes);
 			}
 			this.dbCacheImpl.addUserFileRow(user.getExtSchoolId(), user);
-			this.userUpdateCacheImpl.addUpdatedUser(user.getExtSchoolId(), user);
+			this.userUpdateCacheImpl
+					.addUpdatedUser(user.getExtSchoolId(), user);
 		}
 
 	}
-	
+
 	private boolean isAddressPresent(UserFileRow user) {
 		return ((user.getAddress1() != null && !"".equals(user.getAddress1()
 				.trim()))
@@ -1219,7 +1291,6 @@ public class UploadUserFile {
 	private UserFileRow isUserExists(UserFileRow user) {
 		return this.dbCacheImpl.getUserFileRow(user.getKey());
 	}
-
 
 	/*
 	 * Is user alresdy associate with orgNodeId
@@ -1410,7 +1481,15 @@ public class UploadUserFile {
 
 			dataFileAudit.setFaildRec(errorData);
 			dataFileAudit.setFailedRecordCount(new Integer(errorCount));
-			dataFileAudit.setUploadFileRecordCount(new Integer(0));
+
+			if (this.dataFileAudit.getFailedRecordCount() == null
+					|| this.dataFileAudit.getFailedRecordCount().intValue() == 0) {
+				this.dataFileAudit.setStatus("SC");
+				this.dataFileAudit.setFaildRec(null);
+			} else {
+				this.dataFileAudit.setStatus("FL");
+			}
+
 			dao.upDateAuditTable(dataFileAudit);
 			baos.flush();
 			baos.close();
@@ -1443,7 +1522,6 @@ public class UploadUserFile {
 		}
 
 	}
-
 
 	/**
 	 * 
@@ -1549,42 +1627,32 @@ public class UploadUserFile {
 	 * that to_address is not null. This method suppresses any exception
 	 * occurred.
 	 * 
-	 *//*
-	private void sendMail(String userName, Integer emailType, String to) {
-		try {
-			CustomerEmail emailData = new CustomerEmail();
-			if (userName != null) {
-				emailData = this.userFileDao.getCustomerEmailByUserName(
-						userName, emailType);
-			}
-			String content = Constants.USER_MAIL_BODY;
-
-			InitialContext ic = new InitialContext();
-
-			// the properties were configured in WebLogic through the console
-			javax.mail.Session session = (Session) ic
-					.lookup("UserManagementMail");
-
-			// contruct the actual message
-			Message msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress(Constants.EMAIL_FROM));
-
-			// emailTo could be a comma separated list of addresses
-			msg.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(to, false));
-			msg.setSubject(Constants.EMAIL_SUBJECT);
-			msg.setText(content);
-			msg.setSentDate(new Date());
-
-			// send the message
-			Transport.send(msg);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.getMessage());
-			logger.error("sendMail failed for emailType: " + emailType);
-		}
-	}*/
+	 */
+	/*
+	 * private void sendMail(String userName, Integer emailType, String to) {
+	 * try { CustomerEmail emailData = new CustomerEmail(); if (userName !=
+	 * null) { emailData = this.userFileDao.getCustomerEmailByUserName(
+	 * userName, emailType); } String content = Constants.USER_MAIL_BODY;
+	 * 
+	 * InitialContext ic = new InitialContext();
+	 * 
+	 * // the properties were configured in WebLogic through the console
+	 * javax.mail.Session session = (Session) ic .lookup("UserManagementMail");
+	 * 
+	 * // contruct the actual message Message msg = new MimeMessage(session);
+	 * msg.setFrom(new InternetAddress(Constants.EMAIL_FROM));
+	 * 
+	 * // emailTo could be a comma separated list of addresses
+	 * msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to,
+	 * false)); msg.setSubject(Constants.EMAIL_SUBJECT); msg.setText(content);
+	 * msg.setSentDate(new Date());
+	 * 
+	 * // send the message Transport.send(msg);
+	 * 
+	 * } catch (Exception e) { e.printStackTrace();
+	 * logger.error(e.getMessage());
+	 * logger.error("sendMail failed for emailType: " + emailType); } }
+	 */
 
 	/**
 	 * Checks if uploaded values of TimeZone , Role, State name are having
@@ -1625,8 +1693,6 @@ public class UploadUserFile {
 			return true;
 		}
 	}
-
-
 
 	/*
 	 * Is Upload Excel rolename and database role name are same
@@ -1852,8 +1918,7 @@ public class UploadUserFile {
 
 				else if (cellHeader.equals(Constants.REQUIREDFIELD_TIME_ZONE)) {
 					requiredList.add(Constants.REQUIREDFIELD_TIME_ZONE);
-				}
-				else if (cellHeader.equals(Constants.EXT_SCHOOL_ID)) {
+				} else if (cellHeader.equals(Constants.EXT_SCHOOL_ID)) {
 					requiredList.add(Constants.EXT_SCHOOL_ID);
 				}
 			}
@@ -2089,7 +2154,6 @@ public class UploadUserFile {
 		}
 	}
 
-
 	/**
 	 * Address character validation
 	 * 
@@ -2189,7 +2253,7 @@ public class UploadUserFile {
 
 	private static boolean isValidPhone(String str) {
 
-		String[] pieces = tokenize(str, " ()-eExt.:,");
+		String[] pieces = tokenize(str, "-");
 		if (pieces == null || pieces.length < 3 || pieces.length > 4) {
 			return false;
 		}
@@ -2225,7 +2289,7 @@ public class UploadUserFile {
 	}
 
 	private static boolean isValidFax(String str) {
-		String[] pieces = tokenize(str, " ()-eExt.:,");
+		String[] pieces = tokenize(str, "-");
 		if (pieces == null || pieces.length != 3) {
 			return false;
 		}
@@ -2285,7 +2349,6 @@ public class UploadUserFile {
 		}
 		return tokens;
 	}
-
 
 	// valid numeric field
 	private static boolean isValidNumber(String number) {
@@ -2386,6 +2449,5 @@ public class UploadUserFile {
 	public void setUploadRecordCount(int uploadRecordCount) {
 		this.uploadRecordCount = uploadRecordCount;
 	}
-
 
 }

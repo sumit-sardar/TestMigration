@@ -105,11 +105,12 @@ public class UserUtils implements Serializable {
 		if (null == userName) {
 			userName = user.getBasicUserName();
 		}
+		String basicUserName = userName;
 		int count = 0;
 		while (newSet.contains(userName)) {
 			count++;
-			String suffix = "-" + count;
-			userName = userName+suffix;
+			String suffix  = "-" + count;
+			userName = basicUserName + suffix;
 		}
 		newSet.add(userName);
 		return userName;

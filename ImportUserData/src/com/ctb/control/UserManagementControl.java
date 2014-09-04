@@ -60,15 +60,16 @@ public class UserManagementControl {
 
 	public void executeUserUpdate(
 			UserUpdateRecordCacheImpl userUpdateCacheImpl, Integer customerId,
-			Map<String, Integer> keyUserIdMap ,Map<String, Integer> keyAddressIdMap) throws Exception {
+			Map<String, Integer> keyUserIdMap,
+			Map<String, Integer> keyAddressIdMap) throws Exception {
 
 		List<String> keyList = new ArrayList<String>(
 				userUpdateCacheImpl.getKeys());
 		int addressCount = 0;
 		for (String key : keyList) {
 			UserFileRow user = userUpdateCacheImpl.getUpdatedUser(key);
-			
-			if(keyAddressIdMap.get(key) != null){
+
+			if (keyAddressIdMap.get(key) != null) {
 				user.setAddressId(keyAddressIdMap.get(key));
 			}
 			/**
@@ -85,7 +86,7 @@ public class UserManagementControl {
 
 		if (addressCount > 0)
 			userDao.populateActualAddressIds(userUpdateCacheImpl, new Integer(
-				addressCount));
+					addressCount));
 
 		userDao.updateAddressForUser(userUpdateCacheImpl);
 		userDao.updateUserProfile(userUpdateCacheImpl, keyUserIdMap);

@@ -307,9 +307,10 @@ public class UserFileDaoImpl implements UserFileDao {
 		try {
 			conn = SQLUtil.getConnection();
 			pstmt = conn.prepareStatement(queryString);
+			pstmt.setFetchSize(1000);
 			pstmt.setInt(1, customerId);
 			rSet = pstmt.executeQuery();
-			
+
 			while (rSet.next()) {
 				List<Node> orgList = new ArrayList<Node>();
 				UserFileRow userFileRow = new UserFileRow();
@@ -496,31 +497,21 @@ public class UserFileDaoImpl implements UserFileDao {
 	 * @param selectedMdrNumber
 	 * @return String
 	 * @throws Exception
-	 *//*
-	public String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber)
-			throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rSet = null;
-		String uniqueNumber = null;
-		String queryString = "SELECT DECODE(COUNT(1), 0, 'T', 'F') AS UNIQUEMDRNUMBER  FROM ORG_NODE ORG WHERE ORG.ORG_NODE_MDR_NUMBER = ? AND ORG.ACTIVATION_STATUS = 'AC'";
-		try {
-			conn = SQLUtil.getConnection();
-			pstmt = conn.prepareStatement(queryString);
-			pstmt.setString(1, selectedMdrNumber);
-			rSet = pstmt.executeQuery();
-			if (rSet.next()) {
-				uniqueNumber = rSet.getString("UNIQUEMDRNUMBER");
-			}
-		} catch (Exception e) {
-			logger.error("Exception in checkUniqueMdrNumberForOrgNodes"
-					+ e.getMessage());
-			throw e;
-		} finally {
-			SQLUtil.closeDbObjects(conn, pstmt, rSet);
-		}
-		return uniqueNumber;
-	}*/
+	 */
+	/*
+	 * public String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber)
+	 * throws Exception { Connection conn = null; PreparedStatement pstmt =
+	 * null; ResultSet rSet = null; String uniqueNumber = null; String
+	 * queryString =
+	 * "SELECT DECODE(COUNT(1), 0, 'T', 'F') AS UNIQUEMDRNUMBER  FROM ORG_NODE ORG WHERE ORG.ORG_NODE_MDR_NUMBER = ? AND ORG.ACTIVATION_STATUS = 'AC'"
+	 * ; try { conn = SQLUtil.getConnection(); pstmt =
+	 * conn.prepareStatement(queryString); pstmt.setString(1,
+	 * selectedMdrNumber); rSet = pstmt.executeQuery(); if (rSet.next()) {
+	 * uniqueNumber = rSet.getString("UNIQUEMDRNUMBER"); } } catch (Exception e)
+	 * { logger.error("Exception in checkUniqueMdrNumberForOrgNodes" +
+	 * e.getMessage()); throw e; } finally { SQLUtil.closeDbObjects(conn, pstmt,
+	 * rSet); } return uniqueNumber; }
+	 */
 
 	/**
 	 * Username existence Count retrieval.
@@ -898,6 +889,7 @@ public class UserFileDaoImpl implements UserFileDao {
 			 * Populating AddressIds
 			 */
 			pstmt = conn.prepareStatement(seqAddressQuery);
+			pstmt.setFetchSize(1000);
 			pstmt.setInt(1, addressCount.intValue());
 			rSet = pstmt.executeQuery();
 			while (rSet.next()) {
@@ -1192,11 +1184,12 @@ public class UserFileDaoImpl implements UserFileDao {
 		try {
 			conn = SQLUtil.getConnection();
 			pstmt = conn.prepareStatement(queryString);
+			pstmt.setFetchSize(1000);
 			rSet = pstmt.executeQuery();
 			while (rSet.next()) {
 				String orgNodeMdrNumber = rSet.getString("org_node_mdr_number");
-				dbCacheOrgImpl
-						.addOrgFileRow(orgNodeMdrNumber.trim(), orgNodeMdrNumber);
+				dbCacheOrgImpl.addOrgFileRow(orgNodeMdrNumber.trim(),
+						orgNodeMdrNumber);
 			}
 
 		} catch (Exception e) {

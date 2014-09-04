@@ -9,7 +9,7 @@ import com.ctb.bean.Node;
  * 
  */
 public interface IOrgNodeDAO {
-	
+
 	/**
 	 * Used for Inserting Node data in Database after creating Org-node-id from
 	 * Sequence generator
@@ -20,7 +20,7 @@ public interface IOrgNodeDAO {
 	 * @throws Exception
 	 */
 	Node createOrganization(Node orgNode) throws Exception;
-	
+
 	/**
 	 * Used for insertion of Data in Org-node-Parent table
 	 * 

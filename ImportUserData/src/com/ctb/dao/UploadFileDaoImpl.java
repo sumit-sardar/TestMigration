@@ -20,7 +20,7 @@ import com.ctb.utils.SQLUtil;
  * This Class implements the UploadFileDao Interface
  * 
  */
-public class UploadFileDaoImpl  implements UploadFileDao {
+public class UploadFileDaoImpl implements UploadFileDao {
 	private static Logger logger = Logger.getLogger(UploadFileDaoImpl.class
 			.getName());
 
@@ -169,8 +169,6 @@ public class UploadFileDaoImpl  implements UploadFileDao {
 		return orgNodeCategoryList
 				.toArray(new OrgNodeCategory[orgNodeCategoryList.size()]);
 	}
-
-	
 
 	/**
 	 * Returns CustomerConfigurations for a customer
