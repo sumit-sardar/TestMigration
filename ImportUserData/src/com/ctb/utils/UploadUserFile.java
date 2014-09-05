@@ -133,7 +133,7 @@ public class UploadUserFile {
 			/**
 			 * Caching of user data present in the DataBase.
 			 */
-			logger.info("Caching Data in progess..");
+			logger.info("Data Caching  in progess..");
 			userFileDao.getExistUserData(customerId, dbCacheImpl);
 			logger.info("User Data Cached:"
 					+ new Date(System.currentTimeMillis()));
@@ -151,12 +151,11 @@ public class UploadUserFile {
 			String[] rowHeader = new String[0];
 			String[] row;
 			while ((row = csv.readNext()) != null) {
-
+				rowIndex++;
 				if (isFirstRow) {
 					rowHeader = new String[row.length];
 					rowHeader = row;
 					isFirstRow = false;
-					rowIndex++;
 					continue;
 				}
 				int totalCells = row.length;
@@ -180,9 +179,63 @@ public class UploadUserFile {
 						|| invalidCharMap.containsKey(new Integer(rowIndex))
 						|| maxLengthMap.containsKey(new Integer(rowIndex)) || logicalErrorMap
 							.containsKey(new Integer(rowIndex)))) {
-
 					loginUserPosition = getLoginUserOrgPosition(row, rowHeader,
 							this.userTopOrgNode);
+
+					/**
+					 * Validating details of Top Level Org Cell Values
+					 */
+					String topOrgName = getCellValue(row[loginUserPosition]);
+					String topOrgCode = getCellValue(row[loginUserPosition + 1]);
+					String topOrgMDRNumber = getCellValue(row[loginUserPosition + 2]);
+
+					if ("".equals(topOrgName)
+							|| !this.userTopOrgNode[0].getOrgNodeName()
+									.equalsIgnoreCase(topOrgName)) {
+						ArrayList<String> logicalErrorList = new ArrayList<String>();
+						logicalErrorList.add(rowHeader[loginUserPosition]);
+						logicalErrorMap.put(new Integer(rowIndex),
+								logicalErrorList);
+						continue;
+					} else if (this.userTopOrgNode[0].getOrgNodeCode() != null
+							&& !"".equalsIgnoreCase(this.userTopOrgNode[0]
+									.getOrgNodeCode())) {
+						if (!this.userTopOrgNode[0].getOrgNodeCode()
+								.equalsIgnoreCase(topOrgCode)) {
+							ArrayList<String> logicalErrorList = new ArrayList<String>();
+							logicalErrorList
+									.add(rowHeader[loginUserPosition + 1]);
+							logicalErrorMap.put(new Integer(rowIndex),
+									logicalErrorList);
+							continue;
+						}
+					} else if (this.userTopOrgNode[0].getOrgNodeCode() == null
+							|| "".equalsIgnoreCase(this.userTopOrgNode[0]
+									.getOrgNodeCode())) {
+						if (!"".equals(topOrgCode)) {
+
+							ArrayList<String> logicalErrorList = new ArrayList<String>();
+							logicalErrorList
+									.add(rowHeader[loginUserPosition + 1]);
+							logicalErrorMap.put(new Integer(rowIndex),
+									logicalErrorList);
+							continue;
+						}
+
+					} else if ("".equals(topOrgMDRNumber)
+							|| !this.userTopOrgNode[0].getMdrNumber()
+									.equalsIgnoreCase(topOrgMDRNumber)) {
+						ArrayList<String> logicalErrorList = new ArrayList<String>();
+						logicalErrorList.add(rowHeader[loginUserPosition + 2]);
+						logicalErrorMap.put(new Integer(rowIndex),
+								logicalErrorList);
+						continue;
+					}
+
+					/**
+					 * End of Top level Validation
+					 */
+
 					List<String> newMDRList = new ArrayList<String>();
 					// create Organization process
 					Node[] node = this.userFileRowHeader[0]
@@ -270,7 +323,7 @@ public class UploadUserFile {
 												maxLengthList);
 										flag = true;
 									}
-									if (!isMaxLength32(strCellHeaderId)) {
+									if (!isMaxLength32(strCellId)) {
 										ArrayList<String> maxLengthList = new ArrayList<String>();
 										maxLengthList.add(strCellHeaderId);
 										maxLengthMap.put(new Integer(rowIndex),
@@ -292,7 +345,6 @@ public class UploadUserFile {
 					}
 				}
 				isBlankRow = true;
-				rowIndex++;
 			}// while loop end of total row processing
 			csv.close();
 
@@ -589,12 +641,12 @@ public class UploadUserFile {
 					this.inFile)), ',');
 
 			while ((row = csv.readNext()) != null) {
+				rowIndex++;
 				mdrCorrect = true;
 				if (isRowHeader) {
 					rowHeader = new String[row.length];
 					rowHeader = row;
 					isRowHeader = false;
-					rowIndex++;
 					continue;
 				}
 				int totalCells = rowHeader.length;
@@ -946,7 +998,6 @@ public class UploadUserFile {
 					uploadRecordCount++;
 				}
 				isBlankRow = true;
-				rowIndex++;
 			}// While loop end.
 			csv.close();
 
@@ -1347,7 +1398,7 @@ public class UploadUserFile {
 			int rowNumber = 0;
 			int totalCells = 0;
 			while ((rowData = csvReader.readNext()) != null) {
-
+				rowNumber++;
 				totalCells = rowData.length;
 				if (isFileHeader) {
 					rowDataList = new ArrayList<String>(Arrays.asList(rowData));
@@ -1456,13 +1507,9 @@ public class UploadUserFile {
 						csvOutput.writeNext(rowDataList
 								.toArray(new String[rowDataList.size()]));
 					}
-
 				}// else block
-
 				isFileHeader = false;
-				rowNumber++;
 			}
-
 			bWriter.close();
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
