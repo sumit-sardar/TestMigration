@@ -2006,6 +2006,9 @@ public class UploadUserFile {
 				} else if (cellHeader.equals(Constants.REQUIREDFIELD_LAST_NAME)
 						&& !validNameString(strCell)) {
 					invalidList.add(Constants.REQUIREDFIELD_LAST_NAME);
+				} else if (cellHeader.equals(Constants.EXT_SCHOOL_ID)
+						&& !validUserIdString(strCell)) {
+					invalidList.add(Constants.EXT_SCHOOL_ID);
 				} else if (cellHeader.equals(Constants.EMAIL)
 						&& !strCell.trim().equals("") && !validEmail(strCell)) {
 					invalidList.add(Constants.EMAIL);
@@ -2248,6 +2251,23 @@ public class UploadUserFile {
 		return true;
 	}
 
+	/**
+	 * The UserId field can have Alpha-Numeric Values only.
+	 * @param str
+	 * @return boolean
+	 */
+	private boolean validUserIdString(String str) {
+		str = str.trim();
+		char[] characters = str.toCharArray();
+		for (int i = 0; i < characters.length; i++) {
+			char character = characters[i];
+			if (!validUserIDField(character)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private static boolean validNameCharacter(char ch) {
 		boolean A_Z = ((ch >= 65) && (ch <= 90));
 		boolean a_z = ((ch >= 97) && (ch <= 122));
@@ -2256,6 +2276,18 @@ public class UploadUserFile {
 				|| (ch == '_') || (ch == '\\') || (ch == '.') || (ch == '(')
 				|| (ch == ')') || (ch == '&') || (ch == '+') || (ch == ',') || (ch == ' '));
 		return (zero_nine || A_Z || a_z || validChar);
+	}
+	
+	/**
+	 * 
+	 * @param ch
+	 * @return boolean
+	 */
+	private boolean validUserIDField(char ch) {
+		boolean A_Z = ((ch >= 65) && (ch <= 90));
+		boolean a_z = ((ch >= 97) && (ch <= 122));
+		boolean zero_nine = ((ch >= 48) && (ch <= 57));
+		return (zero_nine || A_Z || a_z);
 	}
 
 	private boolean validString(String str) {
