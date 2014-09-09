@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache name="ApplicationCache">
+ 
+     
+      <cache name="userFileRows"
+          maxEntriesLocalHeap="25000"
+          eternal="true"
+          timeToIdleSeconds="120"
+          timeToLiveSeconds="120"
+          overflowToDisk="true"
+          diskSpoolBufferSizeMB="30"
+          maxElementsOnDisk="10000000"
+          diskPersistent="false"
+          diskExpiryThreadIntervalSeconds="120"
+          memoryStoreEvictionPolicy="LRU">
+      </cache>
+      
+      <cache name="orgRows"
+          maxEntriesLocalHeap="25000"
+          eternal="true"
+          timeToIdleSeconds="120"
+          timeToLiveSeconds="120"
+          overflowToDisk="true"
+          diskSpoolBufferSizeMB="30"
+          maxElementsOnDisk="10000000"
+          diskPersistent="false"
+          diskExpiryThreadIntervalSeconds="120"
+          memoryStoreEvictionPolicy="LRU">
+      </cache>
+      
+      
+       <cache name="insertUserCache"
+          maxEntriesLocalHeap="25000"
+          eternal="true"
+          timeToIdleSeconds="120"
+          timeToLiveSeconds="120"
+          overflowToDisk="true"
+          diskSpoolBufferSizeMB="30"
+          maxElementsOnDisk="10000000"
+          diskPersistent="false"
+          diskExpiryThreadIntervalSeconds="120"
+          memoryStoreEvictionPolicy="LRU">
+      </cache>
+      <cache name="updateUserCache"
+          maxEntriesLocalHeap="25000"
+          eternal="true"
+          timeToIdleSeconds="120"
+          timeToLiveSeconds="120"
+          overflowToDisk="true"
+          diskSpoolBufferSizeMB="30"
+          maxElementsOnDisk="10000000"
+          diskPersistent="false"
+          diskExpiryThreadIntervalSeconds="120"
+          memoryStoreEvictionPolicy="LRU">
+      </cache>
+       
+       
+</ehcache>
