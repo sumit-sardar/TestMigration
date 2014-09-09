@@ -197,7 +197,15 @@ public class UploadUserFile {
 						logicalErrorMap.put(new Integer(rowIndex),
 								logicalErrorList);
 						continue;
-					} else if (this.userTopOrgNode[0].getOrgNodeCode() != null
+					}  if ("".equals(topOrgMDRNumber)
+							|| !this.userTopOrgNode[0].getMdrNumber()
+									.equalsIgnoreCase(topOrgMDRNumber)) {
+						ArrayList<String> logicalErrorList = new ArrayList<String>();
+						logicalErrorList.add(rowHeader[loginUserPosition + 2]);
+						logicalErrorMap.put(new Integer(rowIndex),
+								logicalErrorList);
+						continue;
+					}  if (this.userTopOrgNode[0].getOrgNodeCode() != null
 							&& !"".equalsIgnoreCase(this.userTopOrgNode[0]
 									.getOrgNodeCode())) {
 						if (!this.userTopOrgNode[0].getOrgNodeCode()
@@ -209,7 +217,7 @@ public class UploadUserFile {
 									logicalErrorList);
 							continue;
 						}
-					} else if (this.userTopOrgNode[0].getOrgNodeCode() == null
+					}  if (this.userTopOrgNode[0].getOrgNodeCode() == null
 							|| "".equalsIgnoreCase(this.userTopOrgNode[0]
 									.getOrgNodeCode())) {
 						if (!"".equals(topOrgCode)) {
@@ -222,14 +230,6 @@ public class UploadUserFile {
 							continue;
 						}
 
-					} else if ("".equals(topOrgMDRNumber)
-							|| !this.userTopOrgNode[0].getMdrNumber()
-									.equalsIgnoreCase(topOrgMDRNumber)) {
-						ArrayList<String> logicalErrorList = new ArrayList<String>();
-						logicalErrorList.add(rowHeader[loginUserPosition + 2]);
-						logicalErrorMap.put(new Integer(rowIndex),
-								logicalErrorList);
-						continue;
 					}
 
 					/**
