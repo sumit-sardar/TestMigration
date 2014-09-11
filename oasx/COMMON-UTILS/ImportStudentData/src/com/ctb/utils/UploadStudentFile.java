@@ -3837,6 +3837,26 @@ public class UploadStudentFile {
 									}
 								}
 							}
+							
+							
+							/**
+							 * checking for leaf node logical error
+							 * */
+							if (leafNodeErrorMap.size() > 0) {
+								if (leafNodeErrorMap.containsKey(new Integer(
+										rowNumber))) {
+									String logicalErrorList = leafNodeErrorMap
+											.get(new Integer(rowNumber));
+									if (logicalErrorList
+											.contains(rowHeaderData[cellPosition])) {
+										rowDataList
+												.add(Constants.LEAF_NODE_ERROR
+														+ " - "
+														+ rowHeaderData[cellPosition]);
+										break;
+									}
+								}
+							}
 
 						}// for block
 
