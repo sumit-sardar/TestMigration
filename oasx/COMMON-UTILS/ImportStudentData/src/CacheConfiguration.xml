@@ -15,6 +15,19 @@
           memoryStoreEvictionPolicy="LRU">
       </cache>
       
+      <cache name="orgRows"
+          maxEntriesLocalHeap="25000"
+          eternal="true"
+          timeToIdleSeconds="120"
+          timeToLiveSeconds="120"
+          overflowToDisk="true"
+          diskSpoolBufferSizeMB="30"
+          maxElementsOnDisk="10000000"
+          diskPersistent="false"
+          diskExpiryThreadIntervalSeconds="120"
+          memoryStoreEvictionPolicy="LRU">
+       </cache>
+      
        <cache name="insertStudentCache"
           maxEntriesLocalHeap="25000"
           eternal="true"

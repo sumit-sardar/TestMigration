@@ -440,16 +440,17 @@ public class UploadFormUtils {
 		} else {
 			headerArray.add(Constants.STUDENT_ID2);
 		}
-		headerArray.add(Constants.SCREEN_READER);
-		headerArray.add(Constants.CALCULATOR);
-		headerArray.add(Constants.TEST_PAUSE);
-		headerArray.add(Constants.UNTIMED_TEST);
-		headerArray.add(Constants.HIGHLIGHTER);
-		headerArray.add(Constants.QUESTION_BACKGROUND_COLOR);
-		headerArray.add(Constants.QUESTION_FONT_COLOR);
-		headerArray.add(Constants.ANSWER_BACKGROUND_COLOR);
-		headerArray.add(Constants.ANSWER_FONT_COLOR);
-		headerArray.add(Constants.FONT_SIZE);
+		/** Commented out because of story : OAS-636 & OAS-637**/
+		// headerArray.add(Constants.SCREEN_READER);
+		// headerArray.add(Constants.CALCULATOR);
+		// headerArray.add(Constants.TEST_PAUSE);
+		// headerArray.add(Constants.UNTIMED_TEST);
+		// headerArray.add(Constants.HIGHLIGHTER);
+		// headerArray.add(Constants.QUESTION_BACKGROUND_COLOR);
+		// headerArray.add(Constants.QUESTION_FONT_COLOR);
+		// headerArray.add(Constants.ANSWER_BACKGROUND_COLOR);
+		// headerArray.add(Constants.ANSWER_FONT_COLOR);
+		// headerArray.add(Constants.FONT_SIZE);
 
 		return headerArray;
 	}

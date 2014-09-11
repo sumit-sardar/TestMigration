@@ -8,8 +8,6 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Logger;
-
 /**
  * This class provides properties file handling utility functions.
  * 
@@ -19,8 +17,8 @@ import org.apache.log4j.Logger;
 public class ExtractUtil extends ResourceBundle {
 
 	private static ResourceBundle rb;
-	private static Logger logger = Logger
-			.getLogger(ExtractUtil.class.getName());
+	// private static Logger logger = Logger
+	// .getLogger(ExtractUtil.class.getName());
 
 	public static void loadPropetiesFile(String fileName) {
 		rb = ResourceBundle.getBundle(fileName);
@@ -42,14 +40,14 @@ public class ExtractUtil extends ResourceBundle {
 			URL[] urls = { file.toURI().toURL() };
 			loader = new URLClassLoader(urls);
 		} catch (MalformedURLException e) {
-			// TODO: handle exception
-			logger.error("Properties File Loading Error. System exiting..");
+			System.out.println("Properties File Loading Error. System exiting..");
+			// logger.error("Properties File Loading Error. System exiting..");
 			e.printStackTrace();
 			System.exit(1);
 		}
 		rb = ResourceBundle.getBundle(baseName, Locale.getDefault(), loader);
-		logger.info("Properties File Successfully Loaded of Environment :: "
-				+ baseName);
+		// logger.info("Properties File Successfully Loaded of Environment :: "
+		// + baseName);
 	}
 
 	/**
@@ -60,7 +58,7 @@ public class ExtractUtil extends ResourceBundle {
 	 * @return Value of the Key
 	 */
 	public static String getDetail(String key) {
-		return rb.getString(key);
+		return (rb.containsKey(key))?rb.getString(key):"";
 	}
 
 	@Override

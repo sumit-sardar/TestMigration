@@ -14,6 +14,7 @@ import com.ctb.bean.DataFileAudit;
 import com.ctb.bean.DataFileTemp;
 import com.ctb.bean.OrgNodeCategory;
 import com.ctb.bean.StudentDemoGraphics;
+import com.ctb.utils.Configuration;
 import com.ctb.utils.Constants;
 import com.ctb.utils.SQLUtil;
 
@@ -180,16 +181,29 @@ public class UploadFileDaoImpl  implements UploadFileDao {
 	 */
 	public StudentDemoGraphics[] getStudentDemoGraphics(Integer customerId)
 			throws Exception {
+		String definedDemos = ("".equals(Configuration.getDemographics()))?null:Configuration.getDemographics();
+		int totalDemosGiven = 0;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rSet = null;
 		ArrayList<StudentDemoGraphics> studentDemographicsList = new ArrayList<StudentDemoGraphics>();
 		String queryString = " select  cusDemo.Customer_Demographic_Id as customerDemographicId,  cusDemo.Customer_Id  as customerId,  cusDemo.Label_Name  as labelName,  cusDemo.Label_Code  as labelCode,  cusDemo.Value_Cardinality  as valueCardinality,  cusDemo.Sort_Order  as sortOrder,  cusDemo.Import_Editable  as importEditable,  cusDemo.Visible  as visible,  cusDemo.Created_Date_Time  as createdDateTime  from customer_demographic cusDemo  where cusDemo.customer_id = ? ";
+		
+		/**
+		 * Changes for user story : OAS-636 & OAS-637
+		 */
+		if(definedDemos != null){
+			String[] demoArr = definedDemos.split(Constants.DEMOGRAPHIC_VALUSE_SEPARATOR);
+			totalDemosGiven = demoArr.length; 
+			queryString = getManualDemographicString(demoArr, queryString);
+		}
+		
 		try {
 			conn = SQLUtil.getConnection();
 			pstmt = conn.prepareStatement(queryString);
 			pstmt.setInt(1, customerId);
 			rSet = pstmt.executeQuery();
+			int rSetCount =0;
 			while (rSet.next()) {
 				StudentDemoGraphics studentDemoGraphics = new StudentDemoGraphics();
 				studentDemoGraphics.setCustomerDemographicId(rSet
@@ -205,7 +219,13 @@ public class UploadFileDaoImpl  implements UploadFileDao {
 				studentDemoGraphics.setCreatedDateTime(rSet
 						.getDate("createdDateTime"));
 				studentDemographicsList.add(studentDemoGraphics);
+				rSetCount++;
 			}
+			
+			if(definedDemos != null && rSetCount != totalDemosGiven){
+				throw new Exception(" :: Given manual demographic names are not match with the database...");
+			}
+			
 		} catch (SQLException e) {
 			logger.error("SQL Exception in getStudentDemoGraphics-- >"
 					+ e.getErrorCode());
@@ -218,6 +238,29 @@ public class UploadFileDaoImpl  implements UploadFileDao {
 
 		return studentDemographicsList
 				.toArray(new StudentDemoGraphics[studentDemographicsList.size()]);
+	}
+
+	/**
+	 * Returns manual customer demographic name query string
+	 * 
+	 * @param demoArr
+	 * @param queryString
+	 * @return queryString
+	 * @throws Exception
+	 */
+	private String getManualDemographicString(String[] demoArr, String queryString) throws Exception{
+		boolean isFistValue = true;
+		for(String demo : demoArr){
+			if(isFistValue){
+				queryString += "and cusDemo.Label_Name in ('"+demo.trim()+"'";
+				isFistValue = false;
+			}else{
+				queryString += ",'"+demo.trim()+"'";
+			}
+		}
+		queryString += ")";
+		
+		return queryString;
 	}
 
 	/**

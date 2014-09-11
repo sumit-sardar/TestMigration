@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import com.ctb.bean.DataFileAudit;
 import com.ctb.bean.OrgNodeCategory;
@@ -36,8 +37,8 @@ public class ImportDataProcessor {
 	 * This location needs to be changed according to Properties file Path.
 	 * Currently active path is pointing to DAGOBAH Location
 	 * **/
-	 static final String propertiesFilePathLocation =
-	 "/export/home/oasdev/operations/operation-tools/java/ImportDataFromEngradeToOAS/PropertiesFiles/";
+	// static final String propertiesFilePathLocation =
+	// "/export/home/oasdev/operations/operation-tools/java/ImportDataFromEngradeToOAS/PropertiesFiles/";
 	//static String propertiesFilePathLocation = "D:\\Sprint Data\\Sprint 75\\";
 	// static String propertiesFilePathLocation
 	// ="/local/apps/oas/ImportFromEngradeToOAS/PropertiesFile/";
@@ -52,10 +53,11 @@ public class ImportDataProcessor {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		logger.info("StartTime:" + new Date(System.currentTimeMillis()));
 		String envName = getPropFileFromCommandLine(args);
-		ExtractUtil.loadExternalPropetiesFile(envName,
-				propertiesFilePathLocation);
+		ExtractUtil.loadExternalPropetiesFile(envName,args[1]);
+		PropertyConfigurator.configure(Configuration.getLog4jFile());
+		logger.info("Properties File Successfully Loaded of Environment :: "+ envName);
+		logger.info("StartTime:" + new Date(System.currentTimeMillis()));
 		sourceDir = Configuration.getFtpFilePath();
 		targetDir = Configuration.getLocalFilePath();
 		archiveDir = Configuration.getArchivePath();
@@ -101,8 +103,9 @@ public class ImportDataProcessor {
 		String envName = "";
 		String usage = "Usage:\n 	java -jar ImportStudentData.jar <properties file name>";
 		if (args.length < 1) {
-			logger.info("Cannot parse command line. No command specified.");
-			logger.info(usage);
+			System.err.println("Cannot parse command line. No command specified.\n"+usage);
+			// logger.info("Cannot parse command line. No command specified.");
+			// logger.info(usage);
 			System.exit(1);
 		} else {
 			envName = args[0].toUpperCase();

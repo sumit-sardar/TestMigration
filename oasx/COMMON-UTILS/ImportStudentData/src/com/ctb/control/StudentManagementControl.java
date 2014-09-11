@@ -67,7 +67,8 @@ public class StudentManagementControl {
 
 		studentManagement.insertStudentDetails(newStdRecordCacheImpl);
 		studentManagement.createOrgnodeStudent(newStdRecordCacheImpl);
-		studentManagement.createStudentAccommodations(newStdRecordCacheImpl);
+		/** Commented out because of story : OAS-636 & OAS-637 **/
+		// studentManagement.createStudentAccommodations(newStdRecordCacheImpl);
 		studentManagement.createStudentDemographicData(newStdRecordCacheImpl);
 
 	}
@@ -91,7 +92,8 @@ public class StudentManagementControl {
 		studentManagement.updateStudent(updateStdRecordCacheImpl,
 				studentIdExtPinMap);
 		updateOrgNodeStudent(updateStdRecordCacheImpl, customerId);
-		updateAccommodation(updateStdRecordCacheImpl);
+ 		/** Commented out because of story : OAS-636 & OAS-637 **/ 
+		// updateAccommodation(updateStdRecordCacheImpl);
 		updateStudentDemographicData(updateStdRecordCacheImpl);
 		System.gc();
 
@@ -130,6 +132,7 @@ public class StudentManagementControl {
 	 *            - Cache having student records for Update
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unused")
 	private void updateAccommodation(
 			StudentUpdateRecordCacheImpl updateStdRecordCacheImpl)
 			throws Exception {

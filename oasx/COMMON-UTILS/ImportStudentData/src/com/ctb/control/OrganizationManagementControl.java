@@ -1,12 +1,14 @@
 package com.ctb.control;
 
-import java.sql.SQLException;
 import java.util.Date;
+
+import org.apache.log4j.Logger;
 
 import com.ctb.bean.Node;
 import com.ctb.dao.IOrgNodeDAO;
 import com.ctb.dao.OrgNodeDAO;
 import com.ctb.utils.Constants;
+import com.ctb.utils.cache.OrgMDRDBCacheImpl;
 
 /**
  * Class used for Organization related DB transactions control handling
@@ -17,6 +19,8 @@ import com.ctb.utils.Constants;
 public class OrganizationManagementControl {
 
 	private IOrgNodeDAO orgNode = new OrgNodeDAO();
+	private static Logger logger = Logger
+	.getLogger(OrganizationManagementControl.class.getName());
 
 	/**
 	 * Creates the Organization in the Database and returns the Node Object.
@@ -30,22 +34,33 @@ public class OrganizationManagementControl {
 	 * @return Node - The Created Node having Information such as Org-node-Id
 	 * @throws Exception
 	 */
-	public Node createOrganization(String userName, Node node) throws Exception {
+	public Node createOrganization(String userName, Node node,
+			OrgMDRDBCacheImpl orgMDRImpl) throws Exception {
 
 		try {
 			node.setCreatedBy(new Integer(1));
 			node.setCreatedDateTime(new Date());
 			node.setActivationStatus(Constants.ACTIVATION_STATUS_ACTIVE);
+			String mdrNumber = node.getMdrNumber();
+			if (orgMDRImpl.getOrgMDRNumber(mdrNumber) != null) {
+				/**
+				 * If the organization that is to be created is having same
+				 * MDRNumebr as of another org then skip creation process and
+				 * return the node with Id -99.This will be used to track this
+				 * skipped process.
+				 */
+				node.setOrgNodeId(-99);
+				return node;
+			}
+
 			node = orgNode.createOrganization(node);
 			orgNode.insertOrgNodeForParent(node);
+			orgMDRImpl.addOrgFileRow(mdrNumber, mdrNumber);
 			return node;
-		} catch (SQLException se) {
-			se.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Exception in createOrganization" + e.getMessage());
+			throw e;
 		}
-		return null;
-
 	}
 
 }

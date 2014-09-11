@@ -14,7 +14,10 @@ import com.ctb.bean.CustomerDemographicValue;
 import com.ctb.bean.Node;
 import com.ctb.bean.StudentDemoGraphics;
 import com.ctb.bean.StudentFileRow;
+import com.ctb.utils.Configuration;
+import com.ctb.utils.Constants;
 import com.ctb.utils.SQLUtil;
+import com.ctb.utils.cache.OrgMDRDBCacheImpl;
 import com.ctb.utils.cache.StudentDBCacheImpl;
 
 /**
@@ -81,11 +84,17 @@ public class StudentFileDaoImpl implements StudentFileDao {
 	 */
 	public StudentDemoGraphics[] getStudentDemoGraphics(Integer customerId)
 			throws Exception {
+		String definedDemos = ("".equals(Configuration.getDemographics()))?null:Configuration.getDemographics();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rSet = null;
 		ArrayList<StudentDemoGraphics> studentDemographicsList = new ArrayList<StudentDemoGraphics>();
 		String queryString = "select  cusDemo.Customer_Demographic_Id as customerDemographicId,  cusDemo.Customer_Id  as customerId,  cusDemo.Label_Name  as labelName,  cusDemo.Label_Code  as labelCode,  cusDemo.Value_Cardinality  as valueCardinality,  cusDemo.Sort_Order  as sortOrder,  cusDemo.Import_Editable  as importEditable,  cusDemo.Visible  as visible,  cusDemo.Created_Date_Time  as createdDateTime  from customer_demographic cusDemo  where cusDemo.customer_id = ?";
+		
+		if(definedDemos != null){
+			String[] demoArr = definedDemos.split(Constants.DEMOGRAPHIC_VALUSE_SEPARATOR);
+			queryString = getManualDemographicString(demoArr, queryString);
+		}
 		try {
 			conn = SQLUtil.getConnection();
 			pstmt = conn.prepareStatement(queryString);
@@ -119,6 +128,29 @@ public class StudentFileDaoImpl implements StudentFileDao {
 
 		return studentDemographicsList
 				.toArray(new StudentDemoGraphics[studentDemographicsList.size()]);
+	}
+	
+	/**
+	 * Returns manual customer demographic name query string
+	 * 
+	 * @param demoArr
+	 * @param queryString
+	 * @return queryString
+	 * @throws Exception
+	 */
+	private String getManualDemographicString(String[] demoArr, String queryString) throws Exception{
+		boolean isFistValue = true;
+		for(String demo : demoArr){
+			if(isFistValue){
+				queryString += "and cusDemo.Label_Name in ('"+demo.trim()+"'";
+				isFistValue = false;
+			}else{
+				queryString += ",'"+demo.trim()+"'";
+			}
+		}
+		queryString += ")";
+		
+		return queryString;
 	}
 
 	/**
@@ -503,6 +535,33 @@ public class StudentFileDaoImpl implements StudentFileDao {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
 		return uniqueStudentId;
+	}
+	
+	public void getExistOrgData(Integer customerId,
+			OrgMDRDBCacheImpl dbCacheOrgImpl) throws Exception {
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rSet = null;
+		String queryString = " select org_node_mdr_number as org_node_mdr_number from org_node where  activation_status = 'AC' and org_node_mdr_number is not null ";
+		try {
+			conn = SQLUtil.getConnection();
+			pstmt = conn.prepareStatement(queryString);
+			pstmt.setFetchSize(1000);
+			rSet = pstmt.executeQuery();
+			while (rSet.next()) {
+				String orgNodeMdrNumber = rSet.getString("org_node_mdr_number");
+				dbCacheOrgImpl.addOrgFileRow(orgNodeMdrNumber.trim(),
+						orgNodeMdrNumber);
+			}
+
+		} catch (Exception e) {
+			logger.error("Exception in getExistOrgData " + e.getMessage());
+			throw e;
+		} finally {
+			SQLUtil.closeDbObjects(conn, pstmt, null);
+		}
+
 	}
 
 }

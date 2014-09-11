@@ -18,6 +18,8 @@ public class Configuration {
 	static String customerId = "";
 	static String errorPath = "";
 	static String clientPrivateKeyPath = "";
+	static String demographics = "";
+	static String log4jFile = "";
 
 	static {
 		localFilePath = ExtractUtil.getDetail("oas.importdata.local.filepath");
@@ -30,6 +32,8 @@ public class Configuration {
 		errorPath = ExtractUtil.getDetail("oas.importdata.ftp.errorpath");
 		customerId = ExtractUtil.getDetail("oas.customerId");
 		clientPrivateKeyPath = ExtractUtil.getDetail("oas.private.keyPath");
+		demographics = ExtractUtil.getDetail("oas.manual.demographics");
+		log4jFile = ExtractUtil.getDetail("oas.log4j.file");
 	}
 
 	/**
@@ -97,6 +101,20 @@ public class Configuration {
 	 */
 	public static String getErrorPath() {
 		return errorPath;
+	}
+
+	/**
+	 * @return the demographics
+	 */
+	public static String getDemographics() {
+		return demographics;
+	}
+
+	/**
+	 * @return the log4jFile
+	 */
+	public static String getLog4jFile() {
+		return log4jFile;
 	}
 
 }

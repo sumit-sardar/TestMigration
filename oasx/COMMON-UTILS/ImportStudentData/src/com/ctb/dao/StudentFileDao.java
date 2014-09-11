@@ -5,6 +5,7 @@ import com.ctb.bean.CustomerConfigurationValue;
 import com.ctb.bean.CustomerDemographicValue;
 import com.ctb.bean.Node;
 import com.ctb.bean.StudentDemoGraphics;
+import com.ctb.utils.cache.OrgMDRDBCacheImpl;
 import com.ctb.utils.cache.StudentDBCacheImpl;
 
 /**
@@ -35,5 +36,7 @@ public interface StudentFileDao {
 	public String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber) throws Exception;
 
 	public String checkUniqueStudentId(String studentId, Integer customerId) throws Exception;
+	
+	public void getExistOrgData(Integer customerId,	OrgMDRDBCacheImpl dbCacheImpl) throws Exception;
 
 }
