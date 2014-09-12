@@ -474,7 +474,7 @@ function populateGrid() {
 		 mtype:   'POST',
 		 datatype: "json",         
           postData: postDataObject,      
-          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(),$("#jqgLoginID").val(), $("#jqgRoleID").val(), $("#jqgEmailID").val(),$("#jqgOrgID").val()],
+          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(),$("#jqgLoginID").val(), $("#jqgRoleID").val(), $("#jqgEmailID").val(),$("#jqgOrgID").val(), 'actionPermission'],
 		   	colModel:[
 		   	
 		   	    {name:'lastName',index:'lastName', width:130, editable: true,align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -482,7 +482,8 @@ function populateGrid() {
 		   		{name:'loginId',index:'loginId', width:130, editable: true,align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'role',index:'role',editable: true, width:200, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		     	{name:'email',index:'email',editable: true, width:150,align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr',editable: true, align:"left" ,width:200, edittype:"newtree",editoptions:{readonly:true},sortable:true,sorttype:'text', cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr',editable: true, align:"left" ,width:200, edittype:"newtree",editoptions:{readonly:true},sortable:true,sorttype:'text', cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'actionPermission',index:'actionPermission', width:130, editable: true, hidden:true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		
 		   	],
 		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId",records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
@@ -517,7 +518,9 @@ function populateGrid() {
 				setAnchorButtonState('changePWButton', true);
 			},
 			onSelectRow: function (rowid) {
-				var actionPermission = getColValueJson(rowid,'actionPermission');
+				//var actionPermission = getColValueJson(rowid,'actionPermission');
+				var actionPermission = $('#list2').jqGrid('getCell',rowid,'actionPermission');
+				
 				if(actionPermission != "" && actionPermission != undefined){
 					var changePwdFlag = actionPermission.substr(3, 1);
 					var deleteUsrFlag = actionPermission.substr(2, 1);//get the delete flag					
