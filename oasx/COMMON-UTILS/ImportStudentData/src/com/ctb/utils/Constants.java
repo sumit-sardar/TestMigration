@@ -125,5 +125,4 @@ public class Constants {
 	public static final String MINIMUM_FIELD_ERROR = "Minimum Length Error";
 	public static final String MAXIMUM_FIELD_ERROR = "Maximum Length Error";
 	public static final String INVALID_FIELD_ERROR = "Invalid Field";
-	public static final String LEAF_NODE_ERROR = "Leaf Node Error";
 }

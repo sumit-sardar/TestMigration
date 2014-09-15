@@ -45,8 +45,7 @@ public class FtpSftpUtil {
 			/*
 			 * Key authentication
 			 */
-			jsch.addIdentity(Configuration.getClientPrivateKeyPath(),
-					"engrade-auth");
+			jsch.addIdentity(Configuration.getClientPrivateKeyPath());
 			session = jsch.getSession(Configuration.getFtpUser(),
 					Configuration.getFtpHost(),
 					Integer.parseInt(Configuration.getFtpPort()));

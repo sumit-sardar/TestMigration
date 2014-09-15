@@ -3036,7 +3036,7 @@ public class UploadStudentFile {
 		Node[] node = this.studentFileRowHeader[0].getOrganizationNodes();
 		int OrgHeaderLastPosition = node.length;
 		int lastNodePos = 0;
-		int lastCellPos = 0;
+		//int lastCellPos = 0;
 		String cellName = null;
 		String cellId = null;
 
@@ -3048,13 +3048,14 @@ public class UploadStudentFile {
 				if ((!getCellValue(cellName).equals(""))
 						|| (!getCellValue(cellId).equals(""))) {
 					lastNodePos = i;
-					lastCellPos = j;
+					//lastCellPos = j;
 				}
 			}
 		}
+		int leafPos = (OrgHeaderLastPosition-1)*orgPosFact;
 		if (lastNodePos != (OrgHeaderLastPosition - 1)) {
 			leafNodeErrorMap.put(new Integer(position),
-					getCellValue(rowHeader[lastCellPos]));
+					getCellValue(rowHeader[leafPos]));
 		}
 
 	}
@@ -3850,7 +3851,7 @@ public class UploadStudentFile {
 									if (logicalErrorList
 											.contains(rowHeaderData[cellPosition])) {
 										rowDataList
-												.add(Constants.LEAF_NODE_ERROR
+												.add(Constants.LOGICAL_FIELD_ERROR
 														+ " - "
 														+ rowHeaderData[cellPosition]);
 										break;
