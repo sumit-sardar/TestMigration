@@ -120,6 +120,7 @@ public class UploadProcess extends BatchProcessor.Process
     
     private HashMap visibleUsers = null;
     private boolean isLaslinksCustomer = false;
+    private boolean isTascCustomer = false;
     private int orgPosFact = 2;
     
     
@@ -240,6 +241,7 @@ public class UploadProcess extends BatchProcessor.Process
                         
             }
             System.out.println("[iaa] up.5 inside UploadProcess.run().");
+            System.out.println("isTascCustomer : "+isTascCustomer);
             //retrive each row from uploaded excel sheet for validation
             HSSFRow rowHeader = sheet.getRow(0);
             for ( int i = 1; i < totalRows; i++ ) {
@@ -284,6 +286,28 @@ public class UploadProcess extends BatchProcessor.Process
                 }
                 getEachRowUserDetail(i, row,rowHeader, requiredMap,
                         maxLengthMap, invalidCharMap, logicalErrorMap, user, isMatchUploadOrgIds);
+                
+                if(isTascCustomer){
+					HSSFCell cellHeaderName = rowHeader.getCell(0);
+					HSSFCell cellHeaderId = rowHeader.getCell(1);
+					HSSFCell cellName = row.getCell(0);
+					HSSFCell cellId = row.getCell(1);
+
+					strCellName = getCellValue(cellName);
+					strCellId = getCellValue(cellId);
+					strCellHeaderName = getCellValue(cellHeaderName);
+					strCellHeaderId = getCellValue(cellHeaderId);
+					
+					if(strCellName == null || strCellName.equals("") ){
+						ArrayList requiredList = new ArrayList();
+						requiredList.add(strCellHeaderName); 
+		                requiredMap.put(new Integer(i), requiredList);
+					}else if(strCellId==null || strCellId.equals("")){
+						ArrayList requiredList = new ArrayList();
+		                requiredList.add(strCellHeaderId); 
+		                requiredMap.put(new Integer(i), requiredList);
+					}
+				}
                 
                 //check if any required fieldmissing, invalid char, 
                 //maxlength exceed, logical error has been occured        
@@ -356,7 +380,18 @@ public class UploadProcess extends BatchProcessor.Process
                                     }
                                      // END:  MDR columns needs to be removed for nonLaslinks
 									 // End LAS Online – 2013 – Defect 74768 – support MDR number upload-download
-                                    
+                                    if(isTascCustomer){
+        								Node []nodeCategory =  this.userFileRowHeader[0].getOrganizationNodes();
+        								categoryId = getCategoryId (strCellHeaderName, nodeCategory);
+        								
+        								HSSFCell loginUserOrgCell = row.getCell((short)j-2);
+        								HSSFCell loginUserOrgCodeCell = row.getCell((short)j-1);
+        		                        String loginUserOrgName = getCellValue(loginUserOrgCell);
+        		                        String loginUserOrgCode = getCellValue(loginUserOrgCodeCell);
+        		                        Node loginUserNode = getTASCLoginUserOrgDetail(this.detailNodeM, loginUserOrgName, loginUserOrgCode);
+        		                        Integer parentOId = loginUserNode.getOrgNodeId();
+        		                        parentOrgId[0] = parentOId;
+        							}
                                     // OrgName required check
                                     if ( strCellName.equals("")  && hasOrganization(j, row) 
                                             && !strCellId.equals("") ) {
@@ -383,10 +418,10 @@ public class UploadProcess extends BatchProcessor.Process
                                        // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
                                        // For MDR columns needs to be removed for nonLaslinks 
                                     } else if(isLaslinksCustomer && !isValidMDR (i, isMatchUploadOrgIds, strCellId, parentOrgId, categoryId, requiredMap, invalidCharMap , logicalErrorMap, newMDRList, strCellMdr,strCellName, strCellHeaderMdr )) {
-
                                     	break;
-                                    } else { 
-                                    
+                                    }else if(isTascCustomer && !isValidTASCHierachy(i, row, strCellId, strCellName, parentOrgId, categoryId, strCellHeaderName,strCellHeaderId, requiredMap, logicalErrorMap)){
+    									break;
+        							}else {                                     
                                         //OrgName invalid char check
                                         if ( validString(strCellName) ) {
                                             
@@ -490,6 +525,32 @@ public class UploadProcess extends BatchProcessor.Process
      * Initialize RoleMap,TimeZoneMap,StateMap
     */
 
+    private boolean isValidTASCHierachy(int cellPos, HSSFRow row,String orgId,String orgName,Integer[] parentOrgIds,Integer categoryId, String strCellHeaderName, String strCellHeaderId, HashMap requiredMap, HashMap logicalErrorMap){
+		Integer parentOrgId=parentOrgIds[0] != null ? parentOrgIds[0]:0;
+		
+		if (orgName==null || orgName.trim().length()==0) {
+			
+			ArrayList requiredList = new ArrayList();
+			requiredList.add(strCellHeaderName); 
+            requiredMap.put(new Integer(cellPos), requiredList); 
+            return false;
+		}else if(orgId==null || orgId.trim().length()==0){
+			ArrayList requiredList = new ArrayList();
+            requiredList.add(strCellHeaderId); 
+            requiredMap.put(new Integer(cellPos), requiredList); 
+            return false;
+		}else if(!isTASCOrganizationExist(orgName,orgId, parentOrgId, categoryId)){
+			ArrayList logicalList = new ArrayList();
+			logicalList.add(strCellHeaderName);
+			logicalList.add(strCellHeaderId);
+            logicalErrorMap.put(new Integer(cellPos), logicalList); 
+            return false;
+		}
+
+	return true;
+    }
+    
+    
 	// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
     private boolean isValidMDR(int cellPos, boolean isMatchUploadOrgIds, String orgCode,
 			Integer[] parentOrgId, Integer categoryId, HashMap requiredMap,
@@ -699,6 +760,12 @@ public class UploadProcess extends BatchProcessor.Process
          com.ctb.bean.testAdmin.Customer customer = users.getCustomer(this.username);
          isLaslinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
                    customer.getCustomerId(),"LASLINK_Customer");
+         
+         //Checking for tasc customer
+         isTascCustomer = this.uploadDataFile.checkTASCCustomerConfigurationEntries(
+                 customer.getCustomerId(),"TASC_Customer");
+         
+         
          if(isLaslinksCustomer){
 	        orgPosFact = 3;
 	     } else {
@@ -1173,6 +1240,33 @@ public class UploadProcess extends BatchProcessor.Process
    /*
    *
    */ 
+   private boolean isTASCOrganizationExist ( String searchString,String searchOrgId, Integer parentId,
+			Integer categoryId) {
+
+		boolean hasOrganization = false;
+		try {
+			Node [] detailNode = this.detailNodeM;
+
+			for ( int i = 0; i < detailNode.length; i++ ) {
+				Node tempNode = detailNode[i];
+				if (tempNode.getOrgNodeCode() != null) {
+					if ( !searchString.trim().equals("") && !searchOrgId.trim().equals("") && tempNode.getOrgNodeName().equalsIgnoreCase(searchString)
+								&& tempNode.getOrgNodeCode().equalsIgnoreCase(searchOrgId) 
+								&& tempNode.getParentOrgNodeId().intValue() 
+								== parentId.intValue()
+								&& categoryId.intValue() == tempNode.getOrgNodeCategoryId().intValue()) {
+
+							hasOrganization = true;
+							break;
+						}
+					}
+			} 
+		} catch (Exception e) {
+			e.printStackTrace();
+      }
+      return hasOrganization;
+	}
+   
    
    private Integer getCategoryId ( String categoryName, Node []categoryNode ) {
     
@@ -1211,6 +1305,25 @@ public class UploadProcess extends BatchProcessor.Process
         return orgDetail;
     
    }
+   
+   
+   private Node getTASCLoginUserOrgDetail (Node []loginUserNodes, String organizationName, String organizationCode) {
+
+		Node orgDetail = null;
+		for ( int i = 0; i < loginUserNodes.length; i++ ) {
+
+			orgDetail = loginUserNodes[i];
+
+			if ( orgDetail.getOrgNodeName().equalsIgnoreCase(organizationName) && orgDetail.getOrgNodeCode().equalsIgnoreCase(organizationCode)) {
+
+				break;
+			}
+
+		}
+
+		return orgDetail;
+
+	}
    
    /*
    *
