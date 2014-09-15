@@ -389,8 +389,6 @@ public class UploadStudent extends BatchProcessor.Process
 				getEachRowStudentDetail(i,row,rowHeader,requiredMap,maxLengthMap,
 						invalidCharMap,logicalErrorMap,minLengthMap);
 				
-				//System.out.println("isTascCustomer : "+isTascCustomer);
-				
 				if(isTascCustomer){
 					HSSFCell cellHeaderName = rowHeader.getCell(0);
 					HSSFCell cellHeaderId = rowHeader.getCell(1);
