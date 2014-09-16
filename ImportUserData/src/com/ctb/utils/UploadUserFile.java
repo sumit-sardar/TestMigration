@@ -197,7 +197,8 @@ public class UploadUserFile {
 						logicalErrorMap.put(new Integer(rowIndex),
 								logicalErrorList);
 						continue;
-					}  if ("".equals(topOrgMDRNumber)
+					}
+					if ("".equals(topOrgMDRNumber)
 							|| !this.userTopOrgNode[0].getMdrNumber()
 									.equalsIgnoreCase(topOrgMDRNumber)) {
 						ArrayList<String> logicalErrorList = new ArrayList<String>();
@@ -205,7 +206,8 @@ public class UploadUserFile {
 						logicalErrorMap.put(new Integer(rowIndex),
 								logicalErrorList);
 						continue;
-					}  if (this.userTopOrgNode[0].getOrgNodeCode() != null
+					}
+					if (this.userTopOrgNode[0].getOrgNodeCode() != null
 							&& !"".equalsIgnoreCase(this.userTopOrgNode[0]
 									.getOrgNodeCode())) {
 						if (!this.userTopOrgNode[0].getOrgNodeCode()
@@ -217,7 +219,8 @@ public class UploadUserFile {
 									logicalErrorList);
 							continue;
 						}
-					}  if (this.userTopOrgNode[0].getOrgNodeCode() == null
+					}
+					if (this.userTopOrgNode[0].getOrgNodeCode() == null
 							|| "".equalsIgnoreCase(this.userTopOrgNode[0]
 									.getOrgNodeCode())) {
 						if (!"".equals(topOrgCode)) {
@@ -379,6 +382,22 @@ public class UploadUserFile {
 			System.gc();
 
 			/**
+			 * Send mail
+			 */
+			String successBody = " The successful record count is : "
+					+ this.dataFileAudit.getUploadFileRecordCount()
+					+ " and errorneous record count is : "
+					+ this.dataFileAudit.getFailedRecordCount();
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("", Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectImportSuccess() ,
+						Configuration.getEmailBodyImportSuccess()+ successBody, null);
+			}
+			
+			/**
 			 * Archiving Process
 			 * */
 			logger.info("ArchiveProcessedFiles Start Time:"
@@ -390,6 +409,8 @@ public class UploadUserFile {
 					+ new Date(System.currentTimeMillis()));
 			logger.info("User Upload Process Completed Time "
 					+ new Date(System.currentTimeMillis()));
+
+			
 
 		} catch (Exception e) {
 			logger.error("UploadUserFile Error.. startProcessing() Block..."
@@ -2253,6 +2274,7 @@ public class UploadUserFile {
 
 	/**
 	 * The UserId field can have Alpha-Numeric Values only.
+	 * 
 	 * @param str
 	 * @return boolean
 	 */
@@ -2277,7 +2299,7 @@ public class UploadUserFile {
 				|| (ch == ')') || (ch == '&') || (ch == '+') || (ch == ',') || (ch == ' '));
 		return (zero_nine || A_Z || a_z || validChar);
 	}
-	
+
 	/**
 	 * 
 	 * @param ch

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import com.ctb.bean.DataFileAudit;
 import com.ctb.bean.OrgNodeCategory;
@@ -15,6 +16,7 @@ import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.FileHeaderException;
 import com.ctb.exception.FileNotUploadedException;
 import com.ctb.utils.Configuration;
+import com.ctb.utils.EmailSender;
 import com.ctb.utils.ExtractUtil;
 import com.ctb.utils.FtpSftpUtil;
 import com.ctb.utils.UploadFormUtils;
@@ -46,12 +48,14 @@ public class ImportDataProcessor {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		String envName = getPropFileFromCommandLine(args);
+		ExtractUtil.loadExternalPropetiesFile(envName,args[1]);
+		PropertyConfigurator.configure(Configuration.getLog4jFile());
 		logger.info("\t******Utility Fresh Start*******");
+		logger.info("Properties File Successfully Loaded of Environment :: "+ envName);
 		Long startTime = System.currentTimeMillis();
 		logger.info("StartTime:" + new Date(System.currentTimeMillis()));
 		try {
-			String envName = getPropFileFromCommandLine(args);
-			ExtractUtil.loadExternalPropetiesFile(envName, args[1]);
 			sourceDir = Configuration.getFtpFilePath();
 			targetDir = Configuration.getLocalFilePath();
 			archiveDir = Configuration.getArchivePath();
@@ -77,7 +81,6 @@ public class ImportDataProcessor {
 			 **/
 			ImportDataProcessor importProcessor = new ImportDataProcessor();
 			importProcessor.processImportedFiles();
-
 			/**
 			 * End of Processing the files from Temp Location
 			 **/
@@ -85,7 +88,7 @@ public class ImportDataProcessor {
 			logger.info("Import Process Is Completed...  total time taken -> "
 					+ (System.currentTimeMillis() - startTime) + "ms");
 		} catch (Exception e) {
-			logger.info("Runtime Exception Occurred..");
+			logger.info("Exception Occurred..");
 			logger.info(e.getMessage());
 		} finally {
 			System.exit(1);
@@ -96,8 +99,8 @@ public class ImportDataProcessor {
 		String envName = "";
 		String usage = "Usage:\n 	java -jar ImportStudentData.jar <properties file name>";
 		if (args.length < 1) {
-			logger.info("Cannot parse command line. No command specified.");
-			logger.info(usage);
+			System.out.println("Cannot parse command line. No command specified.");
+			System.out.println(usage);
 			System.exit(1);
 		} else {
 			envName = args[0].toUpperCase();
@@ -203,6 +206,17 @@ public class ImportDataProcessor {
 		long filesize = (inFile.getTotalSpace());
 		if ((filesize == 0) || (strFileName.length() == 0)) {
 			logger.error("Upload File Cannot be empty..");
+			/**
+			 * Send Mail
+			 */
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("", Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectFileEmptyIssue(),
+						Configuration.getEmailBodyFileEmptyIssue(), null);
+			}
 			return new Integer(0);
 		}
 		try {

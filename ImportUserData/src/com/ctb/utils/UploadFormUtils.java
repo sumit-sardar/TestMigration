@@ -175,6 +175,11 @@ public class UploadFormUtils {
 					 * check if the uploaded excel student info header and
 					 * template are same or not
 					 */
+					
+					if(headerListFromTemplate.size()!=headerList.size()){
+						throw new CTBBusinessException("FileHeader.Failed");
+					}
+					
 					for (int i = 0; i < headerListFromTemplate.size(); i++) {
 						if (!headerListFromTemplate.get(i).equals(
 								headerList.get(i))) {
@@ -195,6 +200,20 @@ public class UploadFormUtils {
 			fileNotUploadedException.setStackTrace(e.getStackTrace());
 			throw fileNotUploadedException;
 		} catch (CTBBusinessException e) {
+			/**
+			 * Send Mail
+			 */
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("",
+						Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectFileHeaderValidationIssue(),
+						Configuration.getEmailBodyFileHeaderValidationIssue(),
+						null);
+			}
+			
 			FileHeaderException fileHeaderException = new FileHeaderException(
 					"FileHeader.Failed");
 			fileHeaderException.setStackTrace(e.getStackTrace());

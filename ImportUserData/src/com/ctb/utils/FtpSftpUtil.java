@@ -13,10 +13,10 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import com.ctb.exception.CTBBusinessException;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
@@ -45,18 +45,23 @@ public class FtpSftpUtil {
 			/*
 			 * Key authentication
 			 */
-			jsch.addIdentity(Configuration.getClientPrivateKeyPath(),
-					"engrade-auth");
+			jsch.addIdentity(Configuration.getClientPrivateKeyPath());
 			session = jsch.getSession(Configuration.getFtpUser(),
 					Configuration.getFtpHost(),
 					Integer.parseInt(Configuration.getFtpPort()));
 			session.setConfig("StrictHostKeyChecking", "no");
 			session.connect();
 			return session;
-		} catch (JSchException e) {
-			e.printStackTrace();
-			throw new Exception();
 		} catch (Exception e) {
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("", Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectFtpIssue(),
+						Configuration.getEmailBodyFtpIsuue(), null);
+			}
+			logger.info("FTP Session Connection error..");
 			throw new Exception();
 		}
 	}
@@ -99,6 +104,17 @@ public class FtpSftpUtil {
 
 		} catch (SftpException e) {
 			logger.info("Exception : " + e.getMessage());
+			/**
+			 * Send mail
+			 */
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("", Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectErrorFileFTPIssue(),
+						Configuration.getEmailBodyErrorFileFTPIssue(), null);
+			}
 		} finally {
 			if (sftpChannel != null) {
 				sftpChannel.exit();
@@ -135,7 +151,20 @@ public class FtpSftpUtil {
 			if (fileList != null && fileList.size() > 0) {
 				if (fileList.size() > 1) {
 					logger.info("More than 1 files are present. System will exit.");
-					throw new Exception();
+					/**
+					 * Send Mail
+					 */
+					if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+						EmailSender.sendMail("",
+								Configuration.getEmailSender(),
+								Configuration.getEmailRecipient(),
+								Configuration.getEmailCC(),
+								Configuration.getEmailBCC(),
+								Configuration.getEmailSubjectMoreFilesIssue(),
+								Configuration.getEmailBodyMoreFilesIssue(),
+								null);
+					}
+					throw new CTBBusinessException("More than 1 files present");
 				}
 				for (Iterator iterator = fileList.iterator(); iterator
 						.hasNext();) {
@@ -188,11 +217,35 @@ public class FtpSftpUtil {
 			} else {
 				logger.info("******No Files Present:**** "
 						+ new Date(System.currentTimeMillis()));
+				/**
+				 * Send Mail
+				 */
+				if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+					EmailSender.sendMail("", Configuration.getEmailSender(),
+							Configuration.getEmailRecipient(),
+							Configuration.getEmailCC(),
+							Configuration.getEmailBCC(),
+							Configuration.getEmailSubjectNoFileIssue(),
+							Configuration.getEmailBodyNoFileIssue(), null);
+				}
 			}
 			logger.info("Download End Time: "
 					+ new Date(System.currentTimeMillis()));
+		} catch (CTBBusinessException e) {
+			throw e;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info("**Downloading of Files Failed..**");
+			/**
+			 * Send Mail
+			 */
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("", Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectDownloadFileIssue(),
+						Configuration.getEmailBodyDownloadFileIssue(), null);
+			}
 			throw e;
 
 		} finally {
@@ -238,6 +291,17 @@ public class FtpSftpUtil {
 			logger.info("File -> \"" + fileName
 					+ "\": archived successfully to " + targetDir + archiveDate);
 		} catch (Exception e) {
+			/**
+			 * Send mail
+			 */
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("", Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectArchiveFTPIssue(),
+						Configuration.getEmailBodyArchiveFTPIssue(), null);
+			}
 			e.getMessage();
 			throw e;
 		} finally {
