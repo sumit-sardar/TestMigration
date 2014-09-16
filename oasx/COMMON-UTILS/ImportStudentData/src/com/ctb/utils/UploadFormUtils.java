@@ -232,6 +232,20 @@ public class UploadFormUtils {
 			fileNotUploadedException.setStackTrace(e.getStackTrace());
 			throw fileNotUploadedException;
 		} catch (CTBBusinessException e) {
+			/**
+			 * Send Mail
+			 */
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("",
+						Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectFileHeaderValidationIssue(),
+						Configuration.getEmailBodyFileHeaderValidationIssue(),
+						null);
+			}
+			
 			FileHeaderException fileHeaderException = new FileHeaderException(
 					"FileHeader.Failed");
 			fileHeaderException.setStackTrace(e.getStackTrace());

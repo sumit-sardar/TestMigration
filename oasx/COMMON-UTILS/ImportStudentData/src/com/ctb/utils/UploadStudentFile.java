@@ -70,6 +70,7 @@ public class UploadStudentFile {
 	private int failedRecordCount;
 	private int uploadRecordCount = 0;
 	private DataFileAudit dataFileAudit = new DataFileAudit();;
+	@SuppressWarnings("unused")
 	private OrgNodeCategory orgNodeCategory[] = null;
 	private StudentFileRow[] studentFileRowHeader;
 	private String[] grades = null;
@@ -82,7 +83,9 @@ public class UploadStudentFile {
 	private HashMap<String, String> defaultAccommodationMap = new HashMap<String, String>();
 	private HashMap<String, String> editableAccomodationMap = new HashMap<String, String>();
 	private HashMap<String, String> demoCardinalityMap = new HashMap<String, String>();
+	@SuppressWarnings("unused")
 	private boolean checkExternalStudent_id;
+	@SuppressWarnings("unused")
 	private boolean checkOrgNodeCode;
 	private boolean isMatchUploadOrgIds = false;
 	private Node[] userTopOrgNode = null;
@@ -103,6 +106,7 @@ public class UploadStudentFile {
 	private int orgPosFact = 2;
 	private String ethnicityLabel = Constants.ETHNICITY_LABEL;
 	private String subEthnicityLabel = Constants.SUB_ETHNICITY_LABEL;
+	@SuppressWarnings("unused")
 	private UploadFormUtils uploadFormUtils = null;
 	private UploadFileDao dao = null;
 	private StudentFileDao studentDao = null;
@@ -405,8 +409,7 @@ public class UploadStudentFile {
 
 			logger.info("Data Validation End Time:"
 					+ new Date(System.currentTimeMillis()));
-			logger
-					.info(" Data validation Complete.. Data Insertion Process in Progress...");
+			logger.info(" Data validation Complete.. Data Insertion Process in Progress...");
 
 			createOrganizationAndStudent(requiredMap, minLengthMap,
 					maxLengthMap, invalidCharMap, logicalErrorMap,
@@ -438,6 +441,27 @@ public class UploadStudentFile {
 			leafNodeErrorMap = null;
 			hierarchyErrorMap = null;
 			System.gc();
+
+			/**
+			 * Send mail
+			 */
+			String successBody = "The successful record counts are : "
+					+ this.dataFileAudit.getUploadFileRecordCount()
+					+ " and errorneous record counts are : "
+					+ this.dataFileAudit.getFailedRecordCount() + ".";
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail(
+						"",
+						Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectImportSuccess(),
+						Configuration.getEmailBodyImportSuccess()
+								.replace("<#FileName#>", inFile.getName())
+								.replace("<#CustomMessage#>", successBody),
+						null);
+			}
 
 			/**
 			 * Archiving Process
@@ -1044,9 +1068,9 @@ public class UploadStudentFile {
 
 	private OrganizationNode[] getExistingNode(Node[] organizationNodes,
 			OrganizationNode organizationNode) {
-		
+
 		List<OrganizationNode> orgList = new ArrayList<OrganizationNode>();
-		for(Node node: organizationNodes){
+		for (Node node : organizationNodes) {
 			OrganizationNode orgNode = new OrganizationNode();
 			orgNode.setOrgNodeId(node.getOrgNodeId());
 			orgList.add(orgNode);
@@ -2550,7 +2574,7 @@ public class UploadStudentFile {
 			String[] row, String[] rowHeader, ArrayList<String> logicalErrorList) {
 		int totalCells = rowHeader.length;
 		// retrieve each cell value for user
-		//String msBackGroundColor = "";
+		// String msBackGroundColor = "";
 		String strCell = "";
 		boolean isEthnicityPresent = false;
 		boolean isSubEthnicityRequired = false;
@@ -3057,7 +3081,7 @@ public class UploadStudentFile {
 		Node[] node = this.studentFileRowHeader[0].getOrganizationNodes();
 		int OrgHeaderLastPosition = node.length;
 		int lastNodePos = 0;
-		//int lastCellPos = 0;
+		// int lastCellPos = 0;
 		String cellName = null;
 		String cellId = null;
 
@@ -3069,11 +3093,11 @@ public class UploadStudentFile {
 				if ((!getCellValue(cellName).equals(""))
 						|| (!getCellValue(cellId).equals(""))) {
 					lastNodePos = i;
-					//lastCellPos = j;
+					// lastCellPos = j;
 				}
 			}
 		}
-		int leafPos = (OrgHeaderLastPosition-1)*orgPosFact;
+		int leafPos = (OrgHeaderLastPosition - 1) * orgPosFact;
 		if (lastNodePos != (OrgHeaderLastPosition - 1)) {
 			leafNodeErrorMap.put(new Integer(position),
 					getCellValue(rowHeader[leafPos]));
@@ -3753,7 +3777,7 @@ public class UploadStudentFile {
 									rowNumber))
 							|| hierarchyErrorMap.containsKey(new Integer(
 									rowNumber)) || leafNodeErrorMap
-							.containsKey(new Integer(rowNumber)))) {
+								.containsKey(new Integer(rowNumber)))) {
 
 						rowDataList = new ArrayList<String>(
 								Arrays.asList(rowData));
@@ -3859,8 +3883,7 @@ public class UploadStudentFile {
 									}
 								}
 							}
-							
-							
+
 							/**
 							 * checking for leaf node logical error
 							 * */
@@ -3910,14 +3933,14 @@ public class UploadStudentFile {
 
 			dataFileAudit.setFaildRec(errorData);
 			dataFileAudit.setFailedRecordCount(new Integer(errorCount));
-			
+
 			if (this.dataFileAudit.getFailedRecordCount() == null
 					|| this.dataFileAudit.getFailedRecordCount().intValue() == 0) {
 				this.dataFileAudit.setStatus("SC");
 			} else {
 				dataFileAudit.setStatus("FL");
 			}
-			
+
 			dao.upDateAuditTable(dataFileAudit);
 			baos.flush();
 			baos.close();

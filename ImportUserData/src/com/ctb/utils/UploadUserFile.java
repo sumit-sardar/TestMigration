@@ -384,17 +384,22 @@ public class UploadUserFile {
 			/**
 			 * Send mail
 			 */
-			String successBody = " The successful record count is : "
+			String successBody = "The successful record counts are : "
 					+ this.dataFileAudit.getUploadFileRecordCount()
-					+ " and errorneous record count is : "
-					+ this.dataFileAudit.getFailedRecordCount();
+					+ " and errorneous record counts are : "
+					+ this.dataFileAudit.getFailedRecordCount() + ".";
 			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
-				EmailSender.sendMail("", Configuration.getEmailSender(),
+				EmailSender.sendMail(
+						"",
+						Configuration.getEmailSender(),
 						Configuration.getEmailRecipient(),
 						Configuration.getEmailCC(),
 						Configuration.getEmailBCC(),
-						Configuration.getEmailSubjectImportSuccess() ,
-						Configuration.getEmailBodyImportSuccess()+ successBody, null);
+						Configuration.getEmailSubjectImportSuccess(),
+						Configuration.getEmailBodyImportSuccess()
+								.replace("<#FileName#>", inFile.getName())
+								.replace("<#CustomMessage#>", successBody),
+						null);
 			}
 			
 			/**

@@ -16,6 +16,7 @@ import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.FileHeaderException;
 import com.ctb.exception.FileNotUploadedException;
 import com.ctb.utils.Configuration;
+import com.ctb.utils.EmailSender;
 import com.ctb.utils.ExtractUtil;
 import com.ctb.utils.FtpSftpUtil;
 import com.ctb.utils.UploadFormUtils;
@@ -37,11 +38,6 @@ public class ImportDataProcessor {
 	 * This location needs to be changed according to Properties file Path.
 	 * Currently active path is pointing to DAGOBAH Location
 	 * **/
-	// static final String propertiesFilePathLocation =
-	// "/export/home/oasdev/operations/operation-tools/java/ImportDataFromEngradeToOAS/PropertiesFiles/";
-	//static String propertiesFilePathLocation = "D:\\Sprint Data\\Sprint 75\\";
-	// static String propertiesFilePathLocation
-	// ="/local/apps/oas/ImportFromEngradeToOAS/PropertiesFile/";
 
 	static String sourceDir, targetDir, archiveDir = "";
 	static Integer customerId = new Integer(0);
@@ -54,9 +50,10 @@ public class ImportDataProcessor {
 	 */
 	public static void main(String[] args) {
 		String envName = getPropFileFromCommandLine(args);
-		ExtractUtil.loadExternalPropetiesFile(envName,args[1]);
+		ExtractUtil.loadExternalPropetiesFile(envName, args[1]);
 		PropertyConfigurator.configure(Configuration.getLog4jFile());
-		logger.info("Properties File Successfully Loaded of Environment :: "+ envName);
+		logger.info("Properties File Successfully Loaded of Environment :: "
+				+ envName);
 		logger.info("StartTime:" + new Date(System.currentTimeMillis()));
 		sourceDir = Configuration.getFtpFilePath();
 		targetDir = Configuration.getLocalFilePath();
@@ -64,8 +61,9 @@ public class ImportDataProcessor {
 		customerId = Integer.valueOf(Configuration.getCustomerId());
 		logger.info("Import Process started..."
 				+ new Date(System.currentTimeMillis()));
-		Session session = null;
+
 		try {
+			Session session = null;
 			logger.info("Temp Directory CleanUp Started..."
 					+ new Date(System.currentTimeMillis()));
 			deleteFiles(targetDir);
@@ -93,8 +91,7 @@ public class ImportDataProcessor {
 		} catch (Exception e) {
 			logger.info("Runtime Exception Occurred..", e);
 			logger.info(e.getMessage());
-		}
-		finally{
+		} finally {
 			System.exit(1);
 		}
 	}
@@ -103,7 +100,9 @@ public class ImportDataProcessor {
 		String envName = "";
 		String usage = "Usage:\n 	java -jar ImportStudentData.jar <properties file name>";
 		if (args.length < 1) {
-			System.err.println("Cannot parse command line. No command specified.\n"+usage);
+			System.err
+					.println("Cannot parse command line. No command specified.\n"
+							+ usage);
 			// logger.info("Cannot parse command line. No command specified.");
 			// logger.info(usage);
 			System.exit(1);
@@ -204,9 +203,19 @@ public class ImportDataProcessor {
 			logger.error("Upload File Extension must be .csv");
 			return new Integer(0);
 		}
-		long filesize = (inFile.getTotalSpace());
-		if ((filesize == 0) || (strFileName.length() == 0)) {
+		if ((inFile.length() == 0) || (strFileName.length() == 0)) {
 			logger.error("Upload File Cannot be empty..");
+			/**
+			 * Send Mail
+			 */
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("", Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectFileEmptyIssue(),
+						Configuration.getEmailBodyFileEmptyIssue(), null);
+			}
 			return new Integer(0);
 		}
 		try {
