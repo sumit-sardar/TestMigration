@@ -1026,7 +1026,10 @@ public class UploadStudentFile {
 				createNewStudent(manageStudent, studentAccommodations,
 						studentDemographic, studentNode);
 			} else { // Update student Record
-				manageStudent.setOrganizationNodes(studentOrgNode);
+				manageStudent.setOrganizationNodes((null == studentFile
+						.getOrganizationNodes()) ? studentOrgNode
+						: getExistingNode(studentFile.getOrganizationNodes(),
+								organizationNode));
 				/** Commented out because of story : OAS-636 & OAS-637 **/
 				// setStudentAccommodationData(studentAccommodations,
 				// studentDataMap);
@@ -1037,6 +1040,19 @@ public class UploadStudentFile {
 			e.printStackTrace();
 			throw e;
 		}
+	}
+
+	private OrganizationNode[] getExistingNode(Node[] organizationNodes,
+			OrganizationNode organizationNode) {
+		
+		List<OrganizationNode> orgList = new ArrayList<OrganizationNode>();
+		for(Node node: organizationNodes){
+			OrganizationNode orgNode = new OrganizationNode();
+			orgNode.setOrgNodeId(node.getOrgNodeId());
+			orgList.add(orgNode);
+		}
+		orgList.add(organizationNode);
+		return orgList.toArray(new OrganizationNode[orgList.size()]);
 	}
 
 	/**
@@ -1055,6 +1071,10 @@ public class UploadStudentFile {
 		updateStdRecordCacheImpl.addUpdatedStudent(manageStudent
 				.getStudentIdNumber().trim(), new UploadStudent(manageStudent,
 				studentAccommodations, studentDemographic));
+		StudentFileRow studentFileRow = new StudentFileRow();
+		copyStudentDetail(studentFileRow, manageStudent, studentAccommodations);
+		dbCacheImpl.addStudentFileRow(
+				manageStudent.getStudentIdNumber().trim(), studentFileRow);
 	}
 
 	/**
@@ -1587,6 +1607,7 @@ public class UploadStudentFile {
 		studentFileRow.setExtPin1(manageStudent.getStudentIdNumber());
 		studentFileRow.setStudentId(manageStudent.getId());
 		studentFileRow.setUserName(manageStudent.getLoginId());
+		studentFileRow.setCustomerId(manageStudent.getCustomerId());
 	}
 
 	/**
