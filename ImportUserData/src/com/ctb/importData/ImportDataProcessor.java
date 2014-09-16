@@ -199,27 +199,27 @@ public class ImportDataProcessor {
 		UploadFormUtils uploadFormUtils = new UploadFormUtils();
 		String strFileName = inFile.getName();
 		Integer uploadDataFileId = new Integer(0);
-		if (!UploadFormUtils.verifyFileExtension(strFileName)) {
-			logger.error("Upload File Extension must be .csv");
-			return new Integer(0);
-		}
-		long filesize = (inFile.getTotalSpace());
-		if ((filesize == 0) || (strFileName.length() == 0)) {
-			logger.error("Upload File Cannot be empty..");
-			/**
-			 * Send Mail
-			 */
-			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
-				EmailSender.sendMail("", Configuration.getEmailSender(),
-						Configuration.getEmailRecipient(),
-						Configuration.getEmailCC(),
-						Configuration.getEmailBCC(),
-						Configuration.getEmailSubjectFileEmptyIssue(),
-						Configuration.getEmailBodyFileEmptyIssue(), null);
-			}
-			return new Integer(0);
-		}
 		try {
+			if (!UploadFormUtils.verifyFileExtension(strFileName)) {
+				logger.error("Upload File Extension must be .csv");
+				return new Integer(0);
+			}
+			if ((inFile.length() == 0) || (strFileName.length() == 0)) {
+				logger.error("Upload File Cannot be empty..");
+				/**
+				 * Send Mail
+				 */
+				if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+					EmailSender.sendMail("", Configuration.getEmailSender(),
+							Configuration.getEmailRecipient(),
+							Configuration.getEmailCC(),
+							Configuration.getEmailBCC(),
+							Configuration.getEmailSubjectFileEmptyIssue(),
+							Configuration.getEmailBodyFileEmptyIssue(), null);
+				}
+				return new Integer(0);
+			}
+
 			uploadDataFileId = uploadFormUtils.saveFileToDBTemp(inFile);
 			logger.info("File Data saved in data_file_temp table..");
 			return uploadDataFileId;
