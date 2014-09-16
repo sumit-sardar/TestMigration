@@ -348,15 +348,21 @@ public class FileTransporter {
 		String destinationPath = null;
 		String ftpHost = Configuration.getFtphostLAUSD();
 		String ftpUser = Configuration.getFtpuserLAUSD();
-		String ftpPass = Configuration.getFtppasswordLAUSD();
-		int ftpPort = Configuration.getFtpFilePortLAUSD();
+		// String ftpPass = Configuration.getFtppasswordLAUSD();
+		Integer ftpPort = Configuration.getFtpFilePortLAUSD();
+		String clientPrivateKeyPath = Configuration.getClientPrivateKeyPath();
 		Integer i =0;
 		System.out.println("Connecting to server:"+ftpHost);
 		try {
-			session = jsch.getSession(ftpUser, ftpHost, ftpPort);
+			
+			/*
+			 * Key authentication
+			 */
+			jsch.addIdentity(clientPrivateKeyPath);
+			session = jsch.getSession(ftpUser,
+					ftpHost,
+					ftpPort.intValue());
 			session.setConfig(properties);
-			session.setPassword(ftpPass);
-
 			session.connect();
 			Channel channel = session.openChannel("sftp");
 			channel.connect();
