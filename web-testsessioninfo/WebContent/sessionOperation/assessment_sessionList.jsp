@@ -21,6 +21,7 @@
 	 
 	 Boolean isTASCCustomer = (Boolean)session.getAttribute("isTascCustomer");
 	 Boolean isLasLinkCustomer = (Boolean)session.getAttribute("isLasLinkCustomer");
+	 Boolean isTABECustomer = (Boolean)session.getAttribute("isTABECustomer");
 	 Boolean isAdminUser = (Boolean)session.getAttribute("adminUser");
 	 
 	 Boolean isActiveProgramExpiredOrInactive = (Boolean) session.getAttribute("isActiveProgramExpiredOrInactive");
@@ -45,6 +46,7 @@
 	
 	<input type="hidden" id="isTASCCustomer" name="isTASCCustomer" value='<%=isTASCCustomer%>' />
 	<input type="hidden" id="isLasLinkCustomer" name="isLasLinkCustomer" value='<%=isLasLinkCustomer%>' />
+	<input type="hidden" id="isTABECustomer" name="isTABECustomer" value='<%=isTABECustomer%>' />
 	<input type="hidden" id="isAdminUser" name="isAdminUser" value='<%=isAdminUser%>' />
 	
 	<input type="hidden" id="isActiveProgramExpiredOrInactive" name="isActiveProgramExpiredOrInactive" value='<%=isActiveProgramExpiredOrInactive%>' />

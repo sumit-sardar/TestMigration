@@ -6959,7 +6959,8 @@ function validNumber(str){
 		var isActiveProgramExpiredOrInactive = $('#isActiveProgramExpiredOrInactive').val();
 		var LLExpiredOrInactivePrograms = $('#LLExpiredOrInactivePrograms').val();
 		var isLasLinkCust = $('#isLasLinkCustomer').val();
-		if (isLasLinkCust.toUpperCase() == "TRUE" && isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE" && LLExpiredOrInactivePrograms.length>0)
+		var isTABECustomer = $('#isTABECustomer').val();
+		if ((isLasLinkCust.toUpperCase() == "TRUE" || isTABECustomer.toUpperCase() == "TRUE") && isActiveProgramExpiredOrInactive.toUpperCase() == "TRUE" && LLExpiredOrInactivePrograms.length>0)
 		{
 			var selectedTestGroup = $("#testGroupList").val();
 			var LLExpPrograms = LLExpiredOrInactivePrograms.split(",");
@@ -6971,6 +6972,17 @@ function validNumber(str){
 					return false;
 				}
 				else if (selectedTestGroup >= 7500 && LLExpPrograms[i]==7500)
+				{
+					//** if selected testGroup is from an inactive or expired program, dont allow save
+					return false;
+				}
+				//**for TABE/Testlets
+				if (selectedTestGroup < 4200 && LLExpPrograms[i]==4000)
+				{
+					//** if selected testGroup is from an inactive or expired program, dont allow save
+					return false;
+				}
+				else if (selectedTestGroup >= 4200 && LLExpPrograms[i]==4200)
 				{
 					//** if selected testGroup is from an inactive or expired program, dont allow save
 					return false;

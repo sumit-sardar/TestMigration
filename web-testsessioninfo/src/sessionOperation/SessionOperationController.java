@@ -163,6 +163,12 @@ public class SessionOperationController extends PageFlowController {
 	@Control()
 	private com.ctb.control.db.OrgNode orgnode;
     
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.CustomerReportBridge ReportBridge;
+    
 	TestletLevelForm[] forms = null;
 	
     //Added for view/monitor test status
@@ -5386,6 +5392,7 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("isTascCustomer", new Boolean(this.isTASCCustomer));
 		this.getSession().setAttribute("isTASCReadinessCustomer", new Boolean(this.isTASCReadinessCustomer));
 		this.getSession().setAttribute("isLasLinkCustomer", new Boolean(isLasLinkCustomer));
+		this.getSession().setAttribute("isTABECustomer", new Boolean(isTABECustomer));
 		
      	//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
@@ -5448,7 +5455,9 @@ public class SessionOperationController extends PageFlowController {
 				int expProgramCount=0;
 				for (int i=0; expPrograms!=null && i<expPrograms.length;i++)
 				{
-					if (isLasLinkCustomer)
+					//**TABE customers with Testlet access have 2 programs
+					//** Defect#80419
+					if (isLasLinkCustomer || isTABECustomer)
 					{
 						ActiveOrExp = true;
 						if (expiredOrInactivePrograms.length()>0) expiredOrInactivePrograms += ",";
@@ -5460,9 +5469,22 @@ public class SessionOperationController extends PageFlowController {
 						ActiveOrExp = true;
 					}
 				}
-				if (isLasLinkCustomer)
+				if (isLasLinkCustomer || isTABECustomer)
 				{
 					if (expProgramCount >= 2) expiredOrInactivePrograms = "";
+				}
+				if (isTABECustomer && expProgramCount == 1)
+				{
+					//Program [] allPrograms = this.scheduleTest.getCustomerExpiredPrograms(this.customerId, new Date());
+					int NumPrograms = 0;
+					try {
+			        	
+						Program [] allPrograms = ReportBridge.getProgramsForUser(userName);
+						NumPrograms = allPrograms.length;
+			        	
+			        } catch (Exception e) {}
+			        //NumPrograms=2, TABE customer has testlets access, otherwise TABE only (1 program)
+			        if (NumPrograms==1) expiredOrInactivePrograms = "";
 				}
 			}
 			getSession().setAttribute("isActiveProgramExpiredOrInactive",ActiveOrExp);
