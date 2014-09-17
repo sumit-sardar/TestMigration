@@ -2208,7 +2208,17 @@ public class SessionOperationController extends PageFlowController {
         	        	if(savedSessionMinData.getTestSession().getItemSetId().intValue() == scheduledSession.getTestSession().getItemSetId().intValue()){
     	        			TestElement[] te = TestSessionUtils.setupSessionSubtests( savedSessionMinData.getScheduledUnits(), scheduledSession.getScheduledUnits());
     	        			scheduledSession.setScheduledUnits(te);
-    	        			
+    	        			// added code for defect #80372
+    	        			if(TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()){
+    	        				TestElement[] testElementList = new TestElement[te.length];
+    	        				for(int i=0;i<te.length;i++){
+    	        					TestElement testElement = te[i];
+    	        					if(testElement.getItemSetForm()!=null && testElement.getItemSetForm().equals("E"))
+    	        						testElement.setItemSetForm(null);
+    	        					testElementList[i] = testElement;
+    	        				}
+    	        				scheduledSession.setScheduledUnits(testElementList);
+    	        			}
     	        		}
     	        		
         	        }
