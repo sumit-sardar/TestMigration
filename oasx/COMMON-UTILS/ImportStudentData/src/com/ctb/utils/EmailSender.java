@@ -67,9 +67,10 @@ public class EmailSender {
 			// Sender is a comma-separated list of e-mail addresses as per
 			// RFC822.
 			if (asSender != null && asSender.length() > 0) {
-				InternetAddress[] marrvInternetAddresses = InternetAddress
+				/*InternetAddress[] marrvInternetAddresses = InternetAddress
 						.parse(asSender);
-				mvMimeMessage.addFrom(marrvInternetAddresses);
+				mvMimeMessage.addFrom(marrvInternetAddresses);*/
+				mvMimeMessage.setFrom(new InternetAddress(asSender, Configuration.getEmailAlias()));
 			}
 			// Extract the recipients and assign them to the message.
 			// Recipient is a comma-separated list of e-mail addresses as per

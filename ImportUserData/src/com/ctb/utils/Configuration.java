@@ -25,6 +25,7 @@ public class Configuration {
 	private static String emailAlerts = "";
 	
 	private static String emailSender = "";
+	private static String emailAlias = "";
 	private static String emailRecipient = "";
 	private static String emailCC = "";
 	private static String emailBCC = "";
@@ -61,6 +62,7 @@ public class Configuration {
 		
 		emailAlerts = ExtractUtil.getDetail("email.alerts");
 		emailSender = ExtractUtil.getDetail("email.sender");
+		emailAlias = ExtractUtil.getDetail("email.sender.alias");
 		emailRecipient = ExtractUtil.getDetail("email.recipient");
 		emailCC = ExtractUtil.getDetail("email.cc");
 		emailBCC = ExtractUtil.getDetail("email.bcc");
@@ -218,5 +220,10 @@ public class Configuration {
 		return emailBodyErrorFileFTPIssue;
 	}
 
+	public static String getEmailAlias() {
+		return emailAlias;
+	}
+
+	
 	
 }
