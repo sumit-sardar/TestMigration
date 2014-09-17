@@ -108,12 +108,15 @@ public class FtpSftpUtil {
 			 * Send mail
 			 */
 			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
-				EmailSender.sendMail("", Configuration.getEmailSender(),
+				EmailSender.sendMail(
+						"",
+						Configuration.getEmailSender(),
 						Configuration.getEmailRecipient(),
 						Configuration.getEmailCC(),
 						Configuration.getEmailBCC(),
 						Configuration.getEmailSubjectErrorFileFTPIssue(),
-						Configuration.getEmailBodyErrorFileFTPIssue(), null);
+						Configuration.getEmailBodyErrorFileFTPIssue().replace(
+								"<#FileName#>", sourceFile), null);
 			}
 		} finally {
 			if (sftpChannel != null) {
@@ -250,7 +253,7 @@ public class FtpSftpUtil {
 			}
 			throw e;
 
-		}  finally {
+		} finally {
 			if (sftpChannel != null) {
 				try {
 					sftpChannel.exit();
@@ -297,12 +300,15 @@ public class FtpSftpUtil {
 			 * Send mail
 			 */
 			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
-				EmailSender.sendMail("", Configuration.getEmailSender(),
+				EmailSender.sendMail(
+						"",
+						Configuration.getEmailSender(),
 						Configuration.getEmailRecipient(),
 						Configuration.getEmailCC(),
 						Configuration.getEmailBCC(),
 						Configuration.getEmailSubjectArchiveFTPIssue(),
-						Configuration.getEmailBodyArchiveFTPIssue(), null);
+						Configuration.getEmailBodyArchiveFTPIssue().replace(
+								"<#FileName#>", fileName), null);
 			}
 			e.getMessage();
 			throw e;
