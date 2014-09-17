@@ -1457,7 +1457,8 @@ function fillselectedOrgNode( elementId, orgList) {
 																		 loginId:data.userProfile.userName,
 																		 role:data.userProfile.role,
 																		 email:data.userProfile.email,
-																		 orgNodeNamesStr:orgName};
+																		 orgNodeNamesStr:orgName,
+																		 actionPermission:'TTTT'};
 													
 													var sortOrd = jQuery("#list2").getGridParam("sortorder");
 													var sortCol = jQuery("#list2").getGridParam("sortname");	
