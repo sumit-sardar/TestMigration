@@ -364,6 +364,7 @@ public class UploadProcess extends BatchProcessor.Process
                                     strCellId = getCellValue(cellId);
                                     strCellHeaderName = getCellValue(cellHeaderName);
                                     strCellHeaderId = getCellValue(cellHeaderId);
+                                    boolean validateNode = true;
                                      // Start LAS Online – 2013 – Defect 74768 – support MDR number upload-download
                                      // START: MDR columns needs to be removed for nonLaslinks
                                     Integer categoryId = null;
@@ -381,14 +382,39 @@ public class UploadProcess extends BatchProcessor.Process
                                      // END:  MDR columns needs to be removed for nonLaslinks
 									 // End LAS Online – 2013 – Defect 74768 – support MDR number upload-download
                                     if(isTascCustomer){
+                                    	HSSFCell parentOrgNameCell = row.getCell((short)j-2);
+        								HSSFCell parentOrgCodeCell = row.getCell((short)j-1);
+        								String parentOrgName = getCellValue(parentOrgNameCell);
+          		                        String parentOrgCode = getCellValue(parentOrgCodeCell);
+          		                        
+          		                        //if child node given in the upload file then parent node values to be validated
+          		                        if(!strCellName.equals("")||!strCellId.equals("")){
+          		                        	if(parentOrgName.equals("")){
+          		                        		HSSFCell parentOrgNameHdrCell = rowHeader.getCell((short)j-2);
+          		                        		String parentOrgNameHdr = getCellValue(parentOrgNameHdrCell);
+          		                        		ArrayList requiredList = new ArrayList();
+          		                        		requiredList.add(parentOrgNameHdr); 
+          		                        		requiredMap.put(new Integer(i), requiredList);
+          		                        		break;
+          		                        	}else if(parentOrgCode.equals("")){
+          		                        		HSSFCell parentOrgCodeHdrCell = rowHeader.getCell((short)j-1);
+          		                        		String parentOrgCodeHdr = getCellValue(parentOrgCodeHdrCell);
+                  		                        ArrayList requiredList = new ArrayList();
+        		                        		requiredList.add(parentOrgCodeHdr); 
+        		                        		requiredMap.put(new Integer(i), requiredList);
+        		                        		break;
+          		                        	}
+          		                        }
+          		                        
+          		                      if(strCellName.equals("")&&strCellId.equals("")){
+          		                    	validateNode = false;
+          		                      }
+        								
         								Node []nodeCategory =  this.userFileRowHeader[0].getOrganizationNodes();
         								categoryId = getCategoryId (strCellHeaderName, nodeCategory);
-        								
-        								HSSFCell loginUserOrgCell = row.getCell((short)j-2);
-        								HSSFCell loginUserOrgCodeCell = row.getCell((short)j-1);
-        		                        String loginUserOrgName = getCellValue(loginUserOrgCell);
-        		                        String loginUserOrgCode = getCellValue(loginUserOrgCodeCell);
-        		                        Node loginUserNode = getTASCLoginUserOrgDetail(this.detailNodeM, loginUserOrgName, loginUserOrgCode);
+        								        								
+        		                      
+        		                        Node loginUserNode = getTASCLoginUserOrgDetail(this.detailNodeM, parentOrgName, parentOrgCode);
         		                        Integer parentOId = loginUserNode.getOrgNodeId();
         		                        parentOrgId[0] = parentOId;
         							}
@@ -419,7 +445,7 @@ public class UploadProcess extends BatchProcessor.Process
                                        // For MDR columns needs to be removed for nonLaslinks 
                                     } else if(isLaslinksCustomer && !isValidMDR (i, isMatchUploadOrgIds, strCellId, parentOrgId, categoryId, requiredMap, invalidCharMap , logicalErrorMap, newMDRList, strCellMdr,strCellName, strCellHeaderMdr )) {
                                     	break;
-                                    }else if(isTascCustomer && !isValidTASCHierachy(i, row, strCellId, strCellName, parentOrgId, categoryId, strCellHeaderName,strCellHeaderId, requiredMap, logicalErrorMap)){
+                                    }else if(isTascCustomer && !isValidTASCHierachy(validateNode, i, row, strCellId, strCellName, parentOrgId, categoryId, strCellHeaderName,strCellHeaderId, requiredMap, logicalErrorMap)){
     									break;
         							}else {                                     
                                         //OrgName invalid char check
@@ -525,8 +551,12 @@ public class UploadProcess extends BatchProcessor.Process
      * Initialize RoleMap,TimeZoneMap,StateMap
     */
 
-    private boolean isValidTASCHierachy(int cellPos, HSSFRow row,String orgId,String orgName,Integer[] parentOrgIds,Integer categoryId, String strCellHeaderName, String strCellHeaderId, HashMap requiredMap, HashMap logicalErrorMap){
-		Integer parentOrgId=parentOrgIds[0] != null ? parentOrgIds[0]:0;
+    private boolean isValidTASCHierachy(boolean validateNode, int cellPos, HSSFRow row,String orgId,String orgName,Integer[] parentOrgIds,Integer categoryId, String strCellHeaderName, String strCellHeaderId, HashMap requiredMap, HashMap logicalErrorMap){
+		if(!validateNode){
+			return true;
+		}
+    	
+    	Integer parentOrgId=parentOrgIds[0] != null ? parentOrgIds[0]:0;
 		
 		if (orgName==null || orgName.trim().length()==0) {
 			
