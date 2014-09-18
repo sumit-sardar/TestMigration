@@ -480,12 +480,12 @@ public class UploadStudent extends BatchProcessor.Process
 								Node []nodeCategory =  this.studentFileRowHeader[0].getOrganizationNodes();
 								categoryId = getCategoryId (strCellHeaderName, nodeCategory);
 								
-								HSSFCell loginUserOrgCell = row.getCell((short)j-2);
-								HSSFCell loginUserOrgCodeCell = row.getCell((short)j-1);
-		                        String loginUserOrgName = getCellValue(loginUserOrgCell);
-		                        String loginUserOrgCode = getCellValue(loginUserOrgCodeCell);
-		                        Node loginUserNode = getTASCLoginUserOrgDetail(this.detailNodeM, loginUserOrgName, loginUserOrgCode);
-		                        Integer parentOId = loginUserNode.getOrgNodeId();
+								HSSFCell parentOrgNameCell = row.getCell((short)j-2);
+								HSSFCell parentOrgCodeCell = row.getCell((short)j-1);
+		                        String parentOrgName = getCellValue(parentOrgNameCell);
+		                        String parentOrgCode = getCellValue(parentOrgCodeCell);
+		                        Node parentOrgNode = getTASCLoginUserOrgDetail(this.detailNodeM, parentOrgName, parentOrgCode);
+		                        Integer parentOId = parentOrgNode.getOrgNodeId();
 		                        parentOrgId[0] = parentOId;
 							}
 							
