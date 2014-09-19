@@ -1,0 +1,1 @@
+update item_set set ITEM_SET_LEVEL = 'E-M-D-A' WHERE item_set_id in (296068, 296061, 296037, 296060, 296067, 296036);
