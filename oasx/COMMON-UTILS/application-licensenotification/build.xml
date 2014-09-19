@@ -1,0 +1,217 @@
+<!-- $Revision$$Date$ -->
+<!-- A "project" describes a set of targets that may be requested
+when Ant is executed.  The "default" attribute defines the
+target which is executed if no specific target is requested,
+and the "basedir" attribute defines the current working directory
+from which Ant executes the requested task.  This is normally
+set to the current working directory.
+-->
+
+
+<project name="application-licensenotification" default="dist" basedir=".">
+    
+    <!-- ==================== File and Directory Names ======================== -->
+
+    <!--
+
+    These properties generally define file and directory names (or paths) that
+    affect where the build process stores its outputs.
+
+    app.name             Base name of this application, used to
+    construct filenames and directories.
+    Defaults to "myapp".
+
+    app.version          Version identifier for this application.
+
+    build.home           The directory into which the "prepare" and
+    "compile" targets will generate their output.
+    Defaults to "build".
+
+    catalina.home        The directory in which you have installed
+    a binary distribution of Tomcat 4.  This will
+    be used by the "deploy" target.
+
+    deploy.home          The name of the directory into which the
+    deployment hierarchy will be created, and into
+    which the build directory will be copied.
+    Defaults to "${catalina.home}/webapps/${app.name}".
+
+    dist.home            The name of the base directory in which
+    distribution files are created.
+    Defaults to "dist".
+
+    -->
+
+    <property name="app.name"           value="application-licensenotification"/>
+	<property name="jar.name"           value="LicenseNotification_TABE_LM"/>
+    <property name="app.path"           value="/application-licensenotification"/>
+    <property name="app.version"        value="1.0"/>
+    <property name="build.home"         value="build"/>
+<!-- JG 10/05 this variable should be defined in your build.properties file at the root of u: -->
+<!--    <property name="catalina.home"      value="c:/lib/tomcat4.1"/>-->
+    <property name="deploy.home"        value="${basedir}/../stage"/>
+    <property name="deploy.web"         value="${deploy.home}/web"/>
+    <property name="source.conf"        value="web/WEB-INF"/>
+    <property name="source.java"        value="com"/>
+    <property name="source.web"         value="web"/>
+    <property name="source.tlds"        value="src/tlds"/>
+    <property name="source.torque"      value="torque"/>
+	<property name="dist.home"     value="./dist/${app.name}"/>
+
+    <!--
+      Set these in the build.properties or in the Properties for
+      the Ant build file in IDEA.
+
+      ??? Don't change the build.xml for this !!!
+    -->
+    <property name="manager.url" value="" />
+    <property name="manager.username" value="" />
+    <property name="manager.password" value="" />
+
+
+
+    <!--  ==================== Compilation Control Options ==================== -->
+
+    <!--
+
+    These properties control option settings on the Javac compiler when it
+    is invoked using the <javac> task.
+
+    compile.debug        Should compilation include the debug option?
+
+    compile.deprecation  Should compilation include the deprecation option?
+
+    compile.optimize     Should compilation include the optimize option?
+
+    -->
+
+    <property name="compile.debug"       value="true"/>
+    <property name="compile.deprecation" value="false"/>
+    <property name="compile.optimize"    value="true"/>
+
+
+
+    <!-- ==================== External Dependencies =========================== -->
+
+    <!-- All external application dependancies should go in ${basedir)/app/lib -->
+
+
+    <!-- ==================== Compilation Classpath =========================== -->
+
+    <!--
+
+    Rather than relying on the CLASSPATH environment variable, Ant includes
+    features that makes it easy to dynamically construct the classpath you
+    need for each compilation.  The example below constructs the compile
+    classpath to include the servlet.jar file, as well as the other components
+    that Tomcat makes available to web applications automatically, plus anything
+    that you explicitly added.
+
+    -->
+
+    <path id="compile.classpath">
+
+        <!-- Include all JAR files that will be included in /WEB-INF/lib -->
+        <!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
+        <pathelement location="${basedir}/app/classes"/>
+        <fileset dir="${basedir}/app/lib/">
+            <include name="*.*"/>
+        </fileset>
+        
+        
+    </path>
+
+
+
+        
+    <!-- ==================== Clean Target ==================================== -->
+
+    <!--
+
+    The "clean" target deletes any previous "build" and "dist" directory,
+    so that you can be ensured the application can be built from scratch.
+
+    -->
+
+    <target name="clean" 
+        description="Delete old build, stage and dist directories">
+        <delete dir="${build.home}"/>
+        <delete dir="${dist.home}/${jar.name}.jar"/>
+    </target>
+
+
+
+    <!-- ==================== Compile Target ================================== -->
+
+    <!--
+
+    The "compile" target transforms source files (from your "src" directory)
+    into object files in the appropriate location in the build directory.
+    This example assumes that you will be including your classes in an
+    unpacked directory hierarchy under "/WEB-INF/classes".
+
+    -->
+
+    <target name="compile" depends="clean"
+        description="Compile Java sources to build.">
+
+
+        <!-- Compile Java classes as necessary -->
+        <mkdir    dir="${build.home}"/>
+        <javac srcdir="com"
+            destdir="${build.home}"
+            debug="${compile.debug}"
+            deprecation="${compile.deprecation}"
+            optimize="${compile.optimize}">
+            <classpath refid="compile.classpath"/>
+        </javac>
+
+        <!-- Copy associated resource files and mail templates-->
+        <copy  todir="${build.home}">
+            <fileset dir="com" includes="**/*.properties"/>
+			<fileset dir="${basedir}/app/lib/" includes="weblogic.jar" />
+        </copy>
+
+    </target>
+
+    
+    <!-- ==================== Dist Target ===================================== -->
+
+    <target name="dist-prep" depends="compile"
+        description="Create distribution directory.">
+
+        <property name="dist.home"     value="../dist/${app.name}-${DSTAMP}"/>
+        <mkdir          dir="${dist.home}"/>
+
+    </target>
+
+    <!--
+
+    The "dist" target creates a binary distribution of your application
+    in a directory structure ready to be archived in a tar.gz or zip file.
+    Note that this target depends on two others:
+    * "deploy" so that the entire web application (including external
+    dependencies) will have been assembled
+    * "javadoc" so that the application Javadocs will have been created
+
+    -->
+
+   
+
+    <target name="dist" depends="dist-prep">
+        <!-- Put everything in ${deploy.web}/WEB-INF/classes into the alaa-${DSTAMP}.jar file -->
+         <jar jarfile="${dist.home}/${jar.name}.jar" basedir="${build.home}">
+             <manifest>
+                 <attribute name="Built-By" value="sumit_sardar"/>
+                 <attribute name="Main-Class" value="com.ctb.action.CustomerNotification"/>
+             	 <attribute name="Class-Path" value="classes12.jar weblogic.jar"/>
+                 <attribute name="Specification-Title" value="OAS - License"/>
+                 <attribute name="Specification-Vendor" value="TCS"/>
+              </manifest>
+         </jar>
+     </target>
+
+
+</project>
+
+
