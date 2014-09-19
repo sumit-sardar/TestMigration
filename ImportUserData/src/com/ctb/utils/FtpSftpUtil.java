@@ -87,8 +87,8 @@ public class FtpSftpUtil {
 	 *            - The Location from where the files are to be picked up
 	 * @throws Exception
 	 */
-	public void sendfilesSFTP(String destinationPath, String sourceFile)
-			throws Exception {
+	public void sendfilesSFTP(String destinationPath, String sourceFile,
+			String errorFileName) throws Exception {
 
 		Session session = null;
 		ChannelSftp sftpChannel = null;
@@ -100,10 +100,14 @@ public class FtpSftpUtil {
 			sftpChannel = (ChannelSftp) channel;
 
 			String destination = destinationPath;
+			sftpChannel.cd(destination);
 			sftpChannel.put(sourceFile, destination);
+			logger.info("Error File is Created and Placed at specified Location..");
 
 		} catch (SftpException e) {
-			logger.info("Exception : " + e.getMessage());
+			logger.info("Exception : "
+					+ e.getMessage()
+					+ " --> Error File cannot be placed at specified location..");
 			/**
 			 * Send mail
 			 */
@@ -116,7 +120,7 @@ public class FtpSftpUtil {
 						Configuration.getEmailBCC(),
 						Configuration.getEmailSubjectErrorFileFTPIssue(),
 						Configuration.getEmailBodyErrorFileFTPIssue().replace(
-								"<#FileName#>", sourceFile), null);
+								"<#FileName#>", errorFileName), null);
 			}
 		} finally {
 			if (sftpChannel != null) {

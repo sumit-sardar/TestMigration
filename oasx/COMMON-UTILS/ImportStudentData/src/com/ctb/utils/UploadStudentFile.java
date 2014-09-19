@@ -3951,8 +3951,7 @@ public class UploadStudentFile {
 			if (errorCount > 0) {
 				logger.info("Total error records present are : " + errorCount);
 				new FtpSftpUtil().sendfilesSFTP(Configuration.getErrorPath(),
-						errorFileName);
-				logger.info("Error File is Created and Placed at specified Location..");
+						errorFileName,this.inFile.getName());
 			}
 
 		} catch (Exception e) {
