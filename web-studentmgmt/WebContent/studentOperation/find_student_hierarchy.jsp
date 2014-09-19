@@ -48,6 +48,8 @@
 <input type="hidden" id="filterNoStuSelected" name = "filterNoStuSelected" value=<lb:label key="student.filterNoStuSelected.message" prefix="'" suffix="'"/>/> 
 <input type="hidden" id="jqgNotTesting" name = "jqgNotTesting" value=<lb:label key="student.info.outOfSchool" prefix="'" suffix="'"/>/>
 <input type="hidden" id="isWVCustomer" name="isWVCustomer" value='<%=session.getAttribute("isWVCustomer") %>'/>
+<input type="hidden" id="matchesSSN" name="matchesSSN" value=<lb:label key="stu.msg.matchesSSN" prefix="'" suffix="'"/>/>
+<input type="hidden" id="matchesSSNInstruction" name="matchesSSNInstruction" value=<lb:label key="stu.msg.matchesSSNInstruction" prefix="'" suffix="'"/>/>
 <%
 	Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
 	Boolean hasLockHierarchyEditConfigured = (Boolean) request.getAttribute("hasLockHierarchyEditConfigured");

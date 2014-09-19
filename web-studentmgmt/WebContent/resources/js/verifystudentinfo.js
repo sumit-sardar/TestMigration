@@ -37,6 +37,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
                         studentId2LabelName = $("#studentId2LabelName").val();
 						studentIdConfigurable = $("#isStudentIdConfigurable").val();
 						studentId2Configurable= $("#isStudentId2Configurable").val();
+						isGACustomer=$("#isGACustomer").val();
                         isStudentIdNumeric = $("#isStudentIdNumeric").val();
                         isStudentId2Numeric = $("#isStudentId2Numeric").val();
                         studentIdMinLength = $("#studentIdMinLength").val();
@@ -153,6 +154,14 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 				setMessage($("#invalidCharID").val(), invalidCharFields, "errorMessage" , invalidFields);
 					return false;
 				}
+			
+			if(isGACustomer == "true") {	
+				var isSSN=isValidSSN(studentSecondNumber);
+				if(isSSN) {
+					setMessage($("#matchesSSN").val(), studentId2LabelName, "errorMessage",$("#matchesSSNInstruction").val());
+					return false;
+				}
+			}
 						
 			if(isMandatoryBirthdate == "true" && !allSelected(month, day, year)) {
 				if (!noneSelected(month, day, year)) {
@@ -574,3 +583,66 @@ function validAddressCharacter(ch)
     return valid;
 }
 
+function isValidSSN(extPin2) {
+			var isValidSSN=true;
+			
+			//Check whether in SSN Format : ###-##-####, (# - digits)
+			ssnWithHyphen=/^\d{3}-\d{2}-\d{4}$/;
+			
+			//Check whether 9 digits
+			nineDigits=/^\d{9}$/;
+
+			//Check whether all zeros in first digit group with hyphen
+			allZeroInFirstGroup=/^[0]{3}-\d{2}-\d{4}$/;
+			
+			//Check whether all zeros in second digit group with hyphen
+			allZeroInSecondGroup=/^\d{3}-[0]{2}-\d{4}$/;
+			
+			//Check whether all zeros in third digit group with hyphen
+			allZeroInThirdGroup=/^\d{3}-\d{2}-[0]{4}$/;
+			
+			//Check whether all zeros in first digit group without hyphen
+			allZeroInFirstGroup2=/^[0]{3}\d{6}$/;
+			
+			//Check whether all zeros in second digit group without hyphen
+			allZeroInSecondGroup2=/^\d{3}[0]{2}\d{4}$/;
+			
+			//Check whether all zeros in third digit group without hyphen
+			allZeroInThirdGroup2=/^\d{5}[0]{4}$/;
+			
+			//Check whether 666 in first digit group
+			firstGroup666=/^6{3}(.*)/;
+			
+			//Check whether 900-999 in first digit group
+			firstGroup900=/^9[0-9]{2}(.*)/;
+			
+			//Check whether all same digits with hyphen
+			allSameDigitsWithHyphen=/^(000-00-0000|111-11-1111|222-22-2222|333-33-3333|444-44-4444|555-55-5555|666-66-6666|777-77-7777|888-88-8888|999-99-9999)$/;
+			
+			//Check whether all same digits without hyphen
+			allSameDigitsWithoutHyphen=/^(0{9}|1{9}|2{9}|3{9}|4{9}|5{9}|6{9}|7{9}|8{9}|9{9})$/;
+			
+			//Check whether all incremental i.e. 123-45-6789
+			allIncremental=/^(123-45-6789|123456789)$/;
+			
+			//078-05-1120 is Invalid SSN  (due to the Woolworths Wallet Fiasco)
+			//219-09-9999 is Invalid SSN (appeared in an advertisement for the Social Security Administration)
+			specificSSN=/^(078-05-1120|078051120|219-09-9999|219099999)$/;
+			
+			if(ssnWithHyphen.test(extPin2) || nineDigits.test(extPin2)) {
+				if(allZeroInFirstGroup.test(extPin2) || allZeroInSecondGroup.test(extPin2) || allZeroInThirdGroup.test(extPin2)
+						|| allZeroInFirstGroup2.test(extPin2) || allZeroInSecondGroup2.test(extPin2) || allZeroInThirdGroup2.test(extPin2)) {
+					isValidSSN=false;
+				} else if(firstGroup666.test(extPin2) || firstGroup900.test(extPin2)) {
+					isValidSSN=false;
+				} else if(allSameDigitsWithHyphen.test(extPin2) || allSameDigitsWithoutHyphen.test(extPin2) || allIncremental.test(extPin2) || specificSSN.test(extPin2)) {
+					isValidSSN=false;
+				} else {
+					isValidSSN=true;
+				}
+			} else {
+				isValidSSN=false;
+			}
+			
+			return isValidSSN;
+		}

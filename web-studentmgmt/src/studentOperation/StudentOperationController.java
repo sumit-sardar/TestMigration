@@ -3511,6 +3511,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		this.getRequest().setAttribute("isTascCustomer", isTascCustomer);
+		this.getRequest().setAttribute("isGACustomer", isGACustomer);
 		//System.out.println(laslinkCustomer);
      	//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));

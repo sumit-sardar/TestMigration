@@ -7,6 +7,7 @@
     Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
 	Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 	Boolean isTascCustomer = (Boolean) request.getAttribute("isTascCustomer");
+	Boolean isGACustomer = (Boolean) request.getAttribute("isGACustomer");
 	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
 	Boolean isStudentId2Configurable = (Boolean)request.getAttribute("isStudentId2Configurable");
 	Boolean isOOSConfigured = (Boolean)session.getAttribute("isOOSConfigured");
@@ -41,6 +42,7 @@
 <div>
 <input type="hidden" id="isLasLinkCustomer"  value = '<%=isLasLinkCustomer %>' />
 <input type="hidden" id="isTascCustomer"  value = '<%=isTascCustomer %>' />
+<input type="hidden" id="isGACustomer"  value = '<%=isGACustomer %>' />
 <input type="hidden" id="isOOSConfigured"  value = '<%=isOOSConfigured %>' />
 <input type="hidden" id="isMandatoryBirthDate"  value = '<%=isMandatoryBirthDate %>' />
 <input type="hidden" id="isMandatoryStudentId" value = '<%=isMandatoryStudentId %>' />
