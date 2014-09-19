@@ -154,6 +154,7 @@ public class UploadStudent extends BatchProcessor.Process
       // For  MDR columns needs to be removed for nonLaslinks
     boolean isLasLinksCustomer = false;
     boolean isTascCustomer = false;
+    boolean isGACustomer = false;
 
 	//Changed 04/12/2008
 	private Node [] detailNodeM = null;
@@ -1740,6 +1741,10 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 			
 			isTascCustomer = this.uploadDataFile.checkTASCCustomerConfigurationEntries(
                     customer.getCustomerId(),"TASC_Customer");
+			
+			isGACustomer = this.uploadDataFile.checkTASCCustomerConfigurationEntries(
+                    customer.getCustomerId(),"GA_Customer");
+			
 			 // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
 	        if(isLasLinksCustomer){
 	        	orgPosFact = 3;
@@ -1809,8 +1814,11 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 		student.setLastName(initStringCap((String)studentDataMap.get
 				(CTBConstants.REQUIREDFIELD_LAST_NAME)));
 
-		student.setStudentIdNumber2(
-				((String)studentDataMap.get(this.studentId2Label)).trim() );
+		String extPin2=((String)studentDataMap.get(this.studentId2Label)).trim();
+		if(isGACustomer && isValidSSN(extPin2)) {
+			extPin2="";
+		}
+		student.setStudentIdNumber2(extPin2);
 
 
 		String date = (String)studentDataMap.get(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
@@ -5886,6 +5894,84 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 				}
 			return true;
 		}
-
+		
+		private boolean isValidSSN(String extPin2) {
+			boolean isValidSSN=true;
+			
+			//Check whether in SSN Format : ###-##-####, (# - digits)
+			Pattern pattern1=Pattern.compile("^\\d{3}-\\d{2}-\\d{4}$");
+			Matcher ssnWithHyphen=pattern1.matcher(extPin2);
+			
+			//Check whether 9 digits
+			Pattern pattern2=Pattern.compile("^\\d{9}$");
+			Matcher nineDigits=pattern2.matcher(extPin2);
+			
+			//Check whether all zeros in first digit group with hyphen
+			Pattern pattern3=Pattern.compile("^[0]{3}-\\d{2}-\\d{4}$");
+			Matcher allZeroInFirstGroup=pattern3.matcher(extPin2);
+			
+			//Check whether all zeros in second digit group with hyphen
+			Pattern pattern4=Pattern.compile("^\\d{3}-[0]{2}-\\d{4}$");
+			Matcher allZeroInSecondGroup=pattern4.matcher(extPin2);
+			
+			//Check whether all zeros in third digit group with hyphen
+			Pattern pattern5=Pattern.compile("^\\d{3}-\\d{2}-[0]{4}$");
+			Matcher allZeroInThirdGroup=pattern5.matcher(extPin2);
+			
+			//Check whether all zeros in first digit group without hyphen
+			Pattern pattern6=Pattern.compile("^[0]{3}\\d{6}$");
+			Matcher allZeroInFirstGroup2=pattern6.matcher(extPin2);
+			
+			//Check whether all zeros in second digit group without hyphen
+			Pattern pattern7=Pattern.compile("^\\d{3}[0]{2}\\d{4}$");
+			Matcher allZeroInSecondGroup2=pattern7.matcher(extPin2);
+			
+			//Check whether all zeros in third digit group without hyphen
+			Pattern pattern8=Pattern.compile("^\\d{5}[0]{4}$");
+			Matcher allZeroInThirdGroup2=pattern8.matcher(extPin2);
+			
+			//Check whether 666 in first digit group
+			Pattern pattern9=Pattern.compile("^6{3}(.*)");
+			Matcher firstGroup666=pattern9.matcher(extPin2);
+			
+			//Check whether 900-999 in first digit group
+			Pattern pattern10=Pattern.compile("^9[0-9]{2}(.*)");
+			Matcher firstGroup900=pattern10.matcher(extPin2);
+			
+			//Check whether all same digits with hyphen
+			Pattern pattern11=Pattern.compile("^(000-00-0000|111-11-1111|222-22-2222|333-33-3333|444-44-4444|" +
+												"555-55-5555|666-66-6666|777-77-7777|888-88-8888|999-99-9999)$");
+			Matcher allSameDigitsWithHyphen=pattern11.matcher(extPin2);
+			
+			//Check whether all same digits without hyphen
+			Pattern pattern12=Pattern.compile("^(0{9}|1{9}|2{9}|3{9}|4{9}|5{9}|6{9}|7{9}|8{9}|9{9})$");
+			Matcher allSameDigitsWithoutHyphen=pattern12.matcher(extPin2);
+			
+			//Check whether all incremental i.e. 123-45-6789
+			Pattern pattern13=Pattern.compile("^(123-45-6789|123456789)$");
+			Matcher allIncremental=pattern13.matcher(extPin2);
+			
+			//'078-05-1120' Not valid due to the Woolworth’s Wallet Fiasco
+			//'219-09-9999' Not valid as it appeared in an advertisement for SSN
+			Pattern pattern14=Pattern.compile("^(078-05-1120|078051120|219-09-9999|219099999)$");
+			Matcher specificSSN=pattern14.matcher(extPin2);
+			
+			if(ssnWithHyphen.matches() || nineDigits.matches()) {
+				if(allZeroInFirstGroup.matches() || allZeroInSecondGroup.matches() || allZeroInThirdGroup.matches()
+						|| allZeroInFirstGroup2.matches() || allZeroInSecondGroup2.matches() || allZeroInThirdGroup2.matches()) {
+					isValidSSN=false;
+				} else if(firstGroup666.matches() || firstGroup900.matches()) {
+					isValidSSN=false;
+				} else if(allSameDigitsWithHyphen.matches() || allSameDigitsWithoutHyphen.matches() || allIncremental.matches() || specificSSN.matches()) {
+					isValidSSN=false;
+				} else {
+					isValidSSN=true;
+				}
+			} else {
+				isValidSSN=false;
+			}
+			
+			return isValidSSN;
+		}
 } 
 
