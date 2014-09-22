@@ -40,6 +40,7 @@ public class UploadThread implements Runnable {
 
 	public void run() {
 		try {
+			System.out.println("\n");
 			logger.info("Actual Process Start Time for file :"
 					+ this.inFile.getName() + "-->"
 					+ new Date(System.currentTimeMillis()));
@@ -51,9 +52,14 @@ public class UploadThread implements Runnable {
 
 			userUpload.startProcessing();
 
+			logger.info("Import process is completed for file :"
+					+ this.inFile.getName() + "-->"
+					+ new Date(System.currentTimeMillis()));
 		} catch (Exception e) {
 			logger.error("Exception in run() of UploadThread.. Thread Error.");
-			System.exit(1);
+			logger.info("Import process is not completed for file :"
+					+ this.inFile.getName() + "-->"
+					+ new Date(System.currentTimeMillis()));
 		}
 
 	}

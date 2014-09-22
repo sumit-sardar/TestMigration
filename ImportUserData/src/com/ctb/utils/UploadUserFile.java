@@ -422,6 +422,9 @@ public class UploadUserFile {
 					+ e.getMessage());
 			e.printStackTrace();
 			throw e;
+		} finally{
+			orgMDRImpl.clearCacheContents();
+			dbCacheImpl.clearCacheContents();
 		}
 
 	}
@@ -1043,7 +1046,6 @@ public class UploadUserFile {
 			}
 
 			this.userNewCacheImpl.clearCacheContents();
-			this.userNewCacheImpl = null;
 
 			/**
 			 * User Update Execution Process
@@ -1061,7 +1063,6 @@ public class UploadUserFile {
 			}
 
 			this.userUpdateCacheImpl.clearCacheContents();
-			this.userUpdateCacheImpl = null;
 
 			if (this.dataFileAudit.getFailedRecordCount() == null
 					|| this.dataFileAudit.getFailedRecordCount().intValue() == 0) {

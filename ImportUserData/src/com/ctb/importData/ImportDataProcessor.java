@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -16,11 +20,16 @@ import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.FileHeaderException;
 import com.ctb.exception.FileNotUploadedException;
 import com.ctb.utils.Configuration;
+import com.ctb.utils.Constants;
 import com.ctb.utils.EmailSender;
 import com.ctb.utils.ExtractUtil;
 import com.ctb.utils.FtpSftpUtil;
 import com.ctb.utils.UploadFormUtils;
 import com.ctb.utils.UploadThread;
+import com.ctb.utils.cache.OrgMDRDBCacheImpl;
+import com.ctb.utils.cache.UserDBCacheImpl;
+import com.ctb.utils.cache.UserNewRecordCacheImpl;
+import com.ctb.utils.cache.UserUpdateRecordCacheImpl;
 import com.jcraft.jsch.Session;
 
 /**
@@ -91,8 +100,15 @@ public class ImportDataProcessor {
 			logger.info("Exception Occurred..");
 			logger.info(e.getMessage());
 		} finally {
-			System.exit(1);
+			cacheManagerClean();
 		}
+	}
+
+	private static void cacheManagerClean() {
+		OrgMDRDBCacheImpl.removeCache();
+		UserDBCacheImpl.removeCache();
+		UserNewRecordCacheImpl.removeCache();
+		UserUpdateRecordCacheImpl.removeCache();
 	}
 
 	private static String getPropFileFromCommandLine(String[] args) {
@@ -113,7 +129,7 @@ public class ImportDataProcessor {
 	 * 
 	 * @throws Exception
 	 */
-	private void processImportedFiles() throws Exception {
+	private void processImportedFiles() {
 		File folder = new File(targetDir);
 
 		File[] listOfFiles = folder.listFiles(new FilenameFilter() {
@@ -124,42 +140,57 @@ public class ImportDataProcessor {
 
 		int uploadDataFileId = 0;
 		if (listOfFiles != null && listOfFiles.length > 0) {
+			Arrays.sort(listOfFiles, new Comparator<File>() {
+				public int compare(File f1, File f2) {
+					return Long.valueOf(f1.lastModified()).compareTo(Long.valueOf(f2.lastModified()));
+				}
+			});
 			int length = listOfFiles.length;
+			ExecutorService executor = Executors
+					.newFixedThreadPool(Constants.THREADCOUNT);
+			logger.info("Process Started for Customer Id used : "
+					+ ImportDataProcessor.customerId);
 			for (int j = 0; j < length; j++) {
 				File inFile = listOfFiles[j];
-				logger.info("File Process Started for-> " + inFile.getName()
-						+ " \t Customer-id used : "
-						+ ImportDataProcessor.customerId);
-
 				if (inFile.isFile()) {
-					logger.info("ReadFileContent Start Time:"
-							+ new Date(System.currentTimeMillis()));
-
+					logger.info("ReadFileContent Start Time :"
+							+ new Date(System.currentTimeMillis())
+							+ " for file :" + inFile.getName());
+					
 					uploadDataFileId = readFileContent(inFile).intValue();
-
 					if (uploadDataFileId != 0) {
-						addErrorDataFile(inFile, new Integer(uploadDataFileId));
-
-						logger.info("ReadFileContent End Time:"
-								+ new Date(System.currentTimeMillis()));
 						try {
-							if (null != uploadMoveData) {
-								UploadThread uploadThread = new UploadThread(
-										customerId, inFile, new Integer(
-												uploadDataFileId),
-										uploadMoveData);
-								Thread t = new Thread(uploadThread);
-								t.start();
-								t.join();
-							}
+							addErrorDataFile(inFile, new Integer(
+									uploadDataFileId));
 						} catch (Exception e) {
-							logger.error("Thread invoking Error.. ");
-							throw e;
+						} finally {
+							logger.info("ReadFileContent End Time:"
+									+ new Date(System.currentTimeMillis())
+									+ " for file :" + inFile.getName());
 						}
 					} else {
-						logger.info("Upload Process Failed.. ");
+						logger.info("Upload Process Failed.. for file :"
+								+ inFile.getName());
 					}
 				}
+			}
+
+			for (int indx = 0; indx < length; indx++) {
+				File inFile = listOfFiles[indx];
+				try {
+					if (null != uploadMoveData) {
+						UploadThread uploadThread = new UploadThread(
+								customerId, inFile, new Integer(
+										uploadDataFileId), uploadMoveData);
+						executor.execute(uploadThread);
+					}
+				} catch (Exception e) {
+					logger.error("Thread invoking Error.. ");
+				}
+			}
+			executor.shutdown();
+			while (!executor.isTerminated()) {
+				// Break after all the task is completed.
 			}
 		} else {
 			logger.info("No Input Files to be processed..");
@@ -201,11 +232,11 @@ public class ImportDataProcessor {
 		Integer uploadDataFileId = new Integer(0);
 		try {
 			if (!UploadFormUtils.verifyFileExtension(strFileName)) {
-				logger.error("Upload File Extension must be .csv");
+				logger.error("Upload File Extension must be .csv : file :"+inFile.getName());
 				return new Integer(0);
 			}
 			if ((inFile.length() == 0) || (strFileName.length() == 0)) {
-				logger.error("Upload File Cannot be empty..");
+				logger.error("Upload File Cannot be empty.. : file :"+inFile.getName());
 				/**
 				 * Send Mail
 				 */
@@ -221,7 +252,7 @@ public class ImportDataProcessor {
 			}
 
 			uploadDataFileId = uploadFormUtils.saveFileToDBTemp(inFile);
-			logger.info("File Data saved in data_file_temp table..");
+			logger.info("File Data saved in data_file_temp table.. : file :"+inFile.getName());
 			return uploadDataFileId;
 		} catch (Exception e) {
 			e.printStackTrace();
