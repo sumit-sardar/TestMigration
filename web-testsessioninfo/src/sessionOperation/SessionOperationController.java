@@ -2434,8 +2434,9 @@ public class SessionOperationController extends PageFlowController {
                       // set recommended level for this student if there is no locator for this session
                       if (! sessionHasLocator && TestSessionUtils.isTabeProduct(productType).booleanValue())
                       {
-                          Integer studentId = sessionStudent.getStudentId();
-                          Integer itemSetId = scheduledSession.getTestSession().getItemSetId() /*testSession.getItemSetId()*/;
+                    	  //commented for defect #80363
+                          /*Integer studentId = sessionStudent.getStudentId();
+                          Integer itemSetId = scheduledSession.getTestSession().getItemSetId() testSession.getItemSetId();
                          // SubtestVO locSubtest = this.locatorSubtest;
                           if (locSubtest == null) {
                               locSubtest = TestSessionUtils.getLocatorSubtest(this.scheduleTest, this.userName, itemSetId); 
@@ -2443,7 +2444,7 @@ public class SessionOperationController extends PageFlowController {
                           if (locSubtest != null) {
                           	Integer locatorItemSetId = locSubtest.getId();
                           	TestSessionUtils.setRecommendedLevelForStudent(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, studentManifests);
-                          }
+                          }*/
                           Map<Integer, String> subtestItemMap= scheduleTest.getSubtestNames(studentManifests);
                           for (int j=0; j < studentManifests.length; j++)
                           {
