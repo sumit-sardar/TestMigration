@@ -82,6 +82,7 @@ public class OrgMDRDBCacheImpl {
 	 * Clear the cache manager
 	 */
 	public static void removeCache(){
+		if(cacheManager.cacheExists("orgRows"))
 		cacheManager.removeCache("orgRows");
 	}
 }

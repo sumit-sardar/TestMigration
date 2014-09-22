@@ -98,6 +98,7 @@ public class UserNewRecordCacheImpl {
 	 * Clear the cache manager
 	 */
 	public static void removeCache(){
+		if(cacheManager.cacheExists("insertUserCache"))
 		cacheManager.removeCache("insertUserCache");
 	}
 }

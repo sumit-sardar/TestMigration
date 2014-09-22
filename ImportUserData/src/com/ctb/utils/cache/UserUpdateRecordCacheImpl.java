@@ -96,6 +96,7 @@ public class UserUpdateRecordCacheImpl {
 	 * Clear the cache manager
 	 */
 	public static void removeCache(){
+		if(cacheManager.cacheExists("updateUserCache"))
 		cacheManager.removeCache("updateUserCache");
 	}
 

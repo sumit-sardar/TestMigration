@@ -210,7 +210,7 @@ public class UploadFormUtils {
 						Configuration.getEmailCC(),
 						Configuration.getEmailBCC(),
 						Configuration.getEmailSubjectFileHeaderValidationIssue(),
-						Configuration.getEmailBodyFileHeaderValidationIssue(),
+						Configuration.getEmailBodyFileHeaderValidationIssue().replace("<#FileName#>", file.getName()),
 						null);
 			}
 			
