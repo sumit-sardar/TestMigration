@@ -97,6 +97,7 @@ public class StudentUpdateRecordCacheImpl {
 	 * Clear the cache manager
 	 */
 	public static void removeCache(){
+		if(cacheManager.cacheExists("updateStudentCache"))
 		cacheManager.removeCache("updateStudentCache");
 	}
 }

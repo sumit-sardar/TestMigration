@@ -52,7 +52,7 @@ public class ImportDataProcessor {
 
 	static String sourceDir, targetDir, archiveDir = "";
 	static Integer customerId = new Integer(0);
-	UploadMoveData uploadMoveData = null;
+	Map<Integer, UploadMoveData> uploadMoveDataMap =  new HashMap<Integer, UploadMoveData>();
 
 	/**
 	 * Accepts single Parameter denoting the Properties file Name
@@ -171,9 +171,9 @@ public class ImportDataProcessor {
 					uploadDataFileId = readFileContent(inFile).intValue();
 					if (uploadDataFileId != 0) {
 						try {
+							fileMap.put(inFile.getName(), new Long(uploadDataFileId));
 							addErrorDataFile(inFile, new Integer(
 									uploadDataFileId));
-							fileMap.put(inFile.getName(), new Long(uploadDataFileId));
 						} catch (Exception e) {
 						} finally {
 							logger.info("ReadFileContent End Time:"
@@ -191,7 +191,8 @@ public class ImportDataProcessor {
 				File inFile = listOfFiles[indx];
 				int uploadDataFileId = fileMap.get(inFile.getName()).intValue();
 				try {
-					if (null != uploadMoveData) {
+					if (uploadMoveDataMap.containsKey(new Integer(uploadDataFileId))) {
+						UploadMoveData uploadMoveData = uploadMoveDataMap.get(new Integer(uploadDataFileId));
 						UploadThread uploadThread = new UploadThread(
 								customerId, inFile, new Integer(
 										uploadDataFileId), uploadMoveData);
@@ -327,7 +328,8 @@ public class ImportDataProcessor {
 			dataFileAudit.setCreatedBy(new Integer(1));
 			uploadFormUtils.createDataFileAudit(dataFileAudit);
 
-			uploadMoveData = uploadFormUtils.getUploadMoveData();
+			UploadMoveData uploadMoveData = uploadFormUtils.getUploadMoveData();
+			uploadMoveDataMap.put(uploadDataFileId, uploadMoveData);
 
 		} catch (FileNotFoundException fn) {
 			FileNotUploadedException fileNotUploadedException = new FileNotUploadedException(

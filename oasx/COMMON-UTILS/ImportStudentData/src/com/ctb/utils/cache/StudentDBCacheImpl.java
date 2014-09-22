@@ -87,6 +87,7 @@ public class StudentDBCacheImpl {
 	 * Clear the cache manager
 	 */
 	public static void removeCache(){
+		if(cacheManager.cacheExists("studentFileRows"))
 		cacheManager.removeCache("studentFileRows");
 	}
 }

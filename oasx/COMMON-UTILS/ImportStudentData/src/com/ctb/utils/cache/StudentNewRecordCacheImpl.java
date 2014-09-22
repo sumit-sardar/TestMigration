@@ -98,6 +98,7 @@ public class StudentNewRecordCacheImpl {
 	 * Clear the cache manager
 	 */
 	public static void removeCache(){
+		if(cacheManager.cacheExists("insertStudentCache"))
 		cacheManager.removeCache("insertStudentCache");
 	}
 }
