@@ -1155,7 +1155,7 @@ function registerDelegate(tree){
 			orgunCheckedStudent = [];
 			$('#selectStudent').GridUnload();
 			selectStudentgridLoaded = false;				
-			$("#slider-range").slider("option", "values", [540, 1020]);
+			$("#slider-range").slider("option", "values", [480, 1020]);
 			resetPopup();
 			AddStudentLocaldata ={};
 			delStuIdObjArray = [];
