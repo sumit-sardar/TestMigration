@@ -2438,6 +2438,26 @@ public class ScheduleTestImpl implements ScheduleTest
 	        return map;
     }
     
+    private  Map <Integer, String>  getScreenReaderStudentAccommodations( SessionStudent [] scheduledStudents) throws SQLException{
+        Map <Integer, String> map = new HashMap<Integer, String>();
+            String studentIds = "";
+	        for (int s=0;s<scheduledStudents.length;s++)
+	        {
+	        	SessionStudent stu = scheduledStudents[s];	        
+	        	if (studentIds.length()>0)
+		        {
+	        		studentIds += ",";
+		        }
+	        	
+	        	studentIds += stu.getStudentId();
+	        }
+	        StudentAccommodations[] studentAccommo = accommodation.getScreenReaderStudentAccommodations(studentIds);
+	        for (int k=0;k<studentAccommo.length;k++){	        	 
+	        	map.put(studentAccommo[k].getStudentId(), studentAccommo[k].getScreenReader());
+	        }	        
+	        return map;
+    }
+    
     private Map <String, List<String>> getTestletFormsByLevels(Integer itemSetId) throws SQLException{
     	Map <String, List<String>> map = new HashMap<String, List<String>>();
     	TestletLevelForm[] levelForms = siss.getTestletLevelFormsByItemSetId(itemSetId);
@@ -2612,6 +2632,18 @@ public class ScheduleTestImpl implements ScheduleTest
             	formsByLevel = getTestletFormsByLevels(newSession.getTestSession().getItemSetId());
             	formsCountByLevel = segregateFormsCountsByCurrentLevel(formCounts, formsByLevel);
             	completedLevels = getStudentCompletedLevels(scheduledStudents, newSession.getTestSession().getItemSetId());
+            }  
+            
+            Map <Integer, String> studentAccommo = null;  
+            ArrayList<FormAssignmentCount>  srformCounts =new ArrayList<FormAssignmentCount>(); 
+            if(scheduledStudents.length>0 && productId.intValue() == 32){ //new GA winter 
+                 studentAccommo = getScreenReaderStudentAccommodations(scheduledStudents);  
+                 for(int h=0; h<formCounts.length; h++){ 
+                      FormAssignmentCount obj = formCounts[h]; 
+                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
+                           srformCounts.add(obj); 
+                      } 
+                 } 
             }
             
             ArrayList subtestAssignments = new ArrayList();
@@ -2647,7 +2679,16 @@ public class ScheduleTestImpl implements ScheduleTest
                         		Integer studentId = scheduledStudents[j].getStudentId();
                         		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                         		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                        	}else{
+                        	}else if(productId.intValue() == 32){ 
+                                String sr = studentAccommo.get(student.getStudentId()); 
+                                FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
+                                srformCounts.toArray(fc); 
+                                if(sr!=null && sr.equalsIgnoreCase("T")){ 
+                                     form=TestFormSelector.getFormWithLowestCountAndIncrement(fc); 
+                                }else{ 
+                                     form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts); 
+                                } 
+                           }else {	
                         		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
                         	}
                         }
@@ -2880,6 +2921,19 @@ public class ScheduleTestImpl implements ScheduleTest
             	completedLevels = getStudentCompletedLevels(newUnits, newSession.getTestSession().getItemSetId());
             }
             
+            Map <Integer, String> studentAccommo = null;  
+            ArrayList<FormAssignmentCount>  srformCounts =new ArrayList<FormAssignmentCount>(); 
+            if(newUnits.length>0 && productId.intValue() == 32){ //new GA winter 
+                 studentAccommo = getScreenReaderStudentAccommodations(newUnits);  
+                 for(int h=0; h<formCounts.length; h++){ 
+                      FormAssignmentCount obj = formCounts[h]; 
+                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
+                           srformCounts.add(obj); 
+                      } 
+                 } 
+            }            
+            
+            
             for(int j=0;newUnits!=null && j<newUnits.length;j++) {
             	String lvl = "";
                 String form = newSession.getTestSession().getPreferredForm();
@@ -2934,7 +2988,16 @@ public class ScheduleTestImpl implements ScheduleTest
                     		Integer studentId = newUnit.getStudentId();
                     		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                     		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                    	}else{
+                    	}else if(productId.intValue() == 32){ 
+                            String sr = studentAccommo.get(newUnit.getStudentId()); 
+                            FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
+                            srformCounts.toArray(fc); 
+                            if(sr!=null && sr.equalsIgnoreCase("T")){ 
+                                 form=TestFormSelector.getFormWithLowestCountAndIncrement(fc); 
+                            }else{ 
+                                 form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts); 
+                            } 
+                       }else{
                     		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
                     	}
                     }
@@ -3015,7 +3078,16 @@ public class ScheduleTestImpl implements ScheduleTest
                                 		Integer studentId = newUnit.getStudentId();
                                 		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                                 		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                                	}else{
+                                	}else if(productId.intValue() == 32){ 
+                                        String sr = studentAccommo.get(newUnit.getStudentId()); 
+                                        FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
+                                        srformCounts.toArray(fc); 
+                                        if(sr!=null && sr.equalsIgnoreCase("T")){ 
+                                             form=TestFormSelector.getFormWithLowestCountAndIncrement(fc); 
+                                        }else{ 
+                                             form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts); 
+                                        } 
+                                   }else{
                                 		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
                                 	}
                                 }
@@ -3033,7 +3105,16 @@ public class ScheduleTestImpl implements ScheduleTest
                                 		Integer studentId = newUnit.getStudentId();
                                 		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                                 		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                                	}else{
+                                	}else if(productId.intValue() == 32){ 
+                                        String sr = studentAccommo.get(newUnit.getStudentId()); 
+                                        FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
+                                        srformCounts.toArray(fc); 
+                                        if(sr!=null && sr.equalsIgnoreCase("T")){ 
+                                             form=TestFormSelector.getFormWithLowestCountAndIncrement(fc); 
+                                        }else{ 
+                                             form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts); 
+                                        } 
+                                   }else{
                                 		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
                                 	}
                                 }
@@ -3043,7 +3124,16 @@ public class ScheduleTestImpl implements ScheduleTest
                         		Integer studentId = newUnit.getStudentId();
                         		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                         		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                        	}else{
+                        	}else if(productId.intValue() == 32){ 
+                                String sr = studentAccommo.get(newUnit.getStudentId()); 
+                                FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
+                                srformCounts.toArray(fc); 
+                                if(sr!=null && sr.equalsIgnoreCase("T")){ 
+                                     form=TestFormSelector.getFormWithLowestCountAndIncrement(fc); 
+                                }else{ 
+                                     form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts); 
+                                } 
+                           }else{
                         		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
                         	}
                         }

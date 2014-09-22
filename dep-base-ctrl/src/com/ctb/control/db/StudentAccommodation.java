@@ -131,6 +131,21 @@ public interface StudentAccommodation extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  distinct stu.STUDENT_ID as studentId,  stu.grade as studentGrade,  accom.SCREEN_MAGNIFIER as screenMagnifier,  accom.SCREEN_READER as screenReader,  accom.CALCULATOR as calculator,  accom.TEST_PAUSE as testPause,  accom.UNTIMED_TEST as untimedTest,  accom.HIGHLIGHTER as highlighter,  accom.QUESTION_BACKGROUND_COLOR as questionBackgroundColor,  accom.QUESTION_FONT_COLOR as questionFontColor,  accom.QUESTION_FONT_SIZE as questionFontSize,  accom.ANSWER_BACKGROUND_COLOR as answerBackgroundColor,  accom.ANSWER_FONT_COLOR as answerFontColor,  accom.ANSWER_FONT_SIZE as answerFontSize, accom.MASKING_RULER as maskingRuler, accom.MUSIC_FILE_ID as musicFile, accom.MAGNIFYING_GLASS as magnifyingGlass, accom.EXTENDED_TIME as extendedTime, accom.MASKING_TOOL as maskingTool, accom.MICROPHONE_HEADPHONE as microphoneHeadphone, accom.EXTENDED_TIME_FACTOR as extendedTimeFactor from  student_accommodation accom,  student stu where  accom.student_id (+) = stu.student_id  and stu.activation_status = 'AC' \t and stu.student_id = {studentId}")
     StudentAccommodations getStudentAccommodations(Integer studentId) throws SQLException;
+    
+    
+    /**
+     * @jc:sql statement::
+     * select 
+     *      distinct accom.STUDENT_ID as studentId,
+     *      accom.SCREEN_READER as screenReader
+     * from
+     *      student_accommodation accom      
+     * where accom.student_id in ({sql : studentIds})
+     */
+    @JdbcControl.SQL(statement = "select  distinct accom.STUDENT_ID as studentId,  accom.SCREEN_READER as screenReader from  student_accommodation accom where  accom.student_id IN ({sql: studentIds})")
+    StudentAccommodations[] getScreenReaderStudentAccommodations(String studentIds) throws SQLException;
+    
+    
 
     /**
      * @jc:sql statement::
