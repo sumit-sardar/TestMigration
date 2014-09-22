@@ -5,7 +5,10 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+import com.ctb.bean.DataFileAudit;
 import com.ctb.bean.UploadMoveData;
+import com.ctb.dao.UploadFileDao;
+import com.ctb.dao.UploadFileDaoImpl;
 
 /**
  * Thread for Uploading UserData for each uploaded File
@@ -60,6 +63,15 @@ public class UploadThread implements Runnable {
 			logger.info("Import process is not completed for file :"
 					+ this.inFile.getName() + "-->"
 					+ new Date(System.currentTimeMillis()));
+			DataFileAudit dataFileAudit = new DataFileAudit();
+			dataFileAudit.setDataFileAuditId(uploadFileId);
+			dataFileAudit.setStatus("FL");
+			try {
+				UploadFileDao dao = new UploadFileDaoImpl();
+				dao.upDateAuditTable(dataFileAudit);
+			} catch (Exception se) {
+				se.printStackTrace();
+			}
 		}
 
 	}
