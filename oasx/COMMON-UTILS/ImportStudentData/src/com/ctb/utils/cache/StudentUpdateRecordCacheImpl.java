@@ -84,5 +84,19 @@ public class StudentUpdateRecordCacheImpl {
 	public List getKeys() {
 		return (List) updateStudentCache.getKeys();
 	}
+	
+	/**
+	 * Clear Cache Contents
+	 */
+	public void clearCacheContents() {
+		updateStudentCache.flush();
+		updateStudentCache.removeAll();
+	}
 
+	/**
+	 * Clear the cache manager
+	 */
+	public static void removeCache(){
+		cacheManager.removeCache("updateStudentCache");
+	}
 }

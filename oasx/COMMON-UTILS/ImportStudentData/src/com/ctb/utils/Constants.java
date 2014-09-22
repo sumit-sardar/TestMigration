@@ -125,4 +125,7 @@ public class Constants {
 	public static final String MINIMUM_FIELD_ERROR = "Minimum Length Error";
 	public static final String MAXIMUM_FIELD_ERROR = "Maximum Length Error";
 	public static final String INVALID_FIELD_ERROR = "Invalid Field";
+	
+	//static thread count should be 1 always
+	public static final int THREADCOUNT = 1;
 }

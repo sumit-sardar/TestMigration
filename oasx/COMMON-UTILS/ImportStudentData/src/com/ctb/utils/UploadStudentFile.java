@@ -480,6 +480,9 @@ public class UploadStudentFile {
 			logger.error("UploadStudentFile Error.. startProcessing() Block...");
 			ex.printStackTrace();
 			throw ex;
+		} finally {
+			orgMDRImpl.clearCacheContents();
+			dbCacheImpl.clearCacheContents();
 		}
 	}
 
@@ -914,7 +917,6 @@ public class UploadStudentFile {
 			}
 
 			newStdRecordCacheImpl.clearCacheContents();
-			newStdRecordCacheImpl = null;
 			if (updateStdRecordCacheImpl.getCacheSize() > 0) {
 				logger.info("Students to be Updated::--> "
 						+ updateStdRecordCacheImpl.getCacheSize());
@@ -926,7 +928,7 @@ public class UploadStudentFile {
 				logger.info("ExecuteStudentUpdate End Time:"
 						+ new Date(System.currentTimeMillis()));
 			}
-
+			updateStdRecordCacheImpl.clearCacheContents();
 			if (this.dataFileAudit.getFailedRecordCount() == null
 					|| this.dataFileAudit.getFailedRecordCount().intValue() == 0) {
 				this.dataFileAudit.setStatus("SC");
@@ -972,8 +974,6 @@ public class UploadStudentFile {
 			dataNotFoundException.setStackTrace(e.getStackTrace());
 			throw dataNotFoundException;
 
-		} finally {
-			logger.info("Import process is completed, exiting!");
 		}
 
 	}

@@ -62,6 +62,7 @@ public class StudentNewRecordCacheImpl {
 	 * Clear Cache Contents
 	 */
 	public void clearCacheContents() {
+		newStudentCache.flush();
 		newStudentCache.removeAll();
 	}
 
@@ -91,5 +92,12 @@ public class StudentNewRecordCacheImpl {
 		}
 
 		return null;
+	}
+	
+	/**
+	 * Clear the cache manager
+	 */
+	public static void removeCache(){
+		cacheManager.removeCache("insertStudentCache");
 	}
 }

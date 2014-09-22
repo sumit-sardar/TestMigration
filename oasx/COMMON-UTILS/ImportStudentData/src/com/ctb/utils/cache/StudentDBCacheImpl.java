@@ -74,4 +74,19 @@ public class StudentDBCacheImpl {
 
 		return null;
 	}
+	
+	/**
+	 * Clear Cache Contents
+	 */
+	public void clearCacheContents() {
+		studentCache.flush();
+		studentCache.removeAll();
+	}
+	
+	/**
+	 * Clear the cache manager
+	 */
+	public static void removeCache(){
+		cacheManager.removeCache("studentFileRows");
+	}
 }

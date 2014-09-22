@@ -9,15 +9,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import com.ctb.exception.CTBBusinessException;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 /**
@@ -141,6 +142,7 @@ public class FtpSftpUtil {
 	 * @param targetDir
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public static void downloadFiles(Session session, String sourceDir,
 			String targetDir) throws Exception {
 		System.out.println("Download Start Time: "
@@ -158,34 +160,29 @@ public class FtpSftpUtil {
 			Vector fileList = sftpChannel.ls("*.csv");
 
 			if (fileList != null && fileList.size() > 0) {
-				if (fileList.size() > 1) {
-					logger.info("More than 1 files are present. System will exit.");
-					/**
-					 * Send Mail
-					 */
-					if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
-						EmailSender.sendMail("",
-								Configuration.getEmailSender(),
-								Configuration.getEmailRecipient(),
-								Configuration.getEmailCC(),
-								Configuration.getEmailBCC(),
-								Configuration.getEmailSubjectMoreFilesIssue(),
-								Configuration.getEmailBodyMoreFilesIssue(),
-								null);
-					}
-					throw new CTBBusinessException("More than 1 files present");
-				}
 				for (Iterator iterator = fileList.iterator(); iterator
 						.hasNext();) {
 					ChannelSftp.LsEntry entry = (ChannelSftp.LsEntry) iterator
 							.next();
 					try {
+						String remoteFile = sourceDir + File.separator
+								+ entry.getFilename();
+						SftpATTRS attrs = sftpChannel.lstat(remoteFile);
+
+						SimpleDateFormat format = new SimpleDateFormat(
+								"EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
+						Date modDate = (Date) format.parse(attrs
+								.getMtimeString());
+
 						inStream = sftpChannel.get(entry.getFilename());
 						File filename = new File(targetDir);
 						if (!filename.exists())
 							filename.mkdir();
-						outStream = new FileOutputStream(new File(targetDir
-								+ File.separator + entry.getFilename()));
+						String localFile = targetDir + File.separator
+								+ entry.getFilename();
+						File downloadedFile = new File(localFile);
+						downloadedFile.setLastModified(modDate.getTime());
+						outStream = new FileOutputStream(downloadedFile);
 
 						if (inStream == null) {
 							logger.info("Could not retrieve file...."
@@ -240,8 +237,6 @@ public class FtpSftpUtil {
 			}
 			logger.info("Download End Time: "
 					+ new Date(System.currentTimeMillis()));
-		} catch (CTBBusinessException e) {
-			throw e;
 		} catch (Exception e) {
 			logger.info("**Downloading of Files Failed..**");
 			/**
