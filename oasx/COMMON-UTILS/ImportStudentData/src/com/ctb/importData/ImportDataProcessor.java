@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -73,6 +75,7 @@ public class ImportDataProcessor {
 
 		try {
 			Session session = null;
+			Map<String, Long>fileTimeMap = new HashMap<String, Long>();
 			logger.info("Temp Directory CleanUp Started..."
 					+ new Date(System.currentTimeMillis()));
 			deleteFiles(targetDir);
@@ -81,7 +84,7 @@ public class ImportDataProcessor {
 			logger.info(" DownloadFiles Start Time:"
 					+ new Date(System.currentTimeMillis()));
 			session = FtpSftpUtil.getSFTPSession();
-			FtpSftpUtil.downloadFiles(session, sourceDir, targetDir);
+			FtpSftpUtil.downloadFiles(session, sourceDir, targetDir, fileTimeMap);
 			logger.info("DownloadFiles End Time:"
 					+ new Date(System.currentTimeMillis()));
 
@@ -89,7 +92,7 @@ public class ImportDataProcessor {
 			 * Processing the files from Temp Location
 			 **/
 			ImportDataProcessor importProcessor = new ImportDataProcessor();
-			importProcessor.processImportedFiles();
+			importProcessor.processImportedFiles(fileTimeMap);
 
 			/**
 			 * End of Processing the files from Temp Location
@@ -130,10 +133,11 @@ public class ImportDataProcessor {
 
 	/**
 	 * All files that are downloaded in the targetDir are processed one by one.
+	 * @param fileTimeMap 
 	 * 
 	 * @throws Exception
 	 */
-	private void processImportedFiles() {
+	private void processImportedFiles(Map<String, Long> fileMap) {
 		File folder = new File(targetDir);
 
 		File[] listOfFiles = folder.listFiles(new FilenameFilter() {
@@ -141,8 +145,9 @@ public class ImportDataProcessor {
 				return filename.endsWith(".csv");
 			}
 		});
-
-		int uploadDataFileId = 0;
+		setFileLastModifiedTime(listOfFiles,fileMap);
+		fileMap.clear();
+		
 		if (listOfFiles != null && listOfFiles.length > 0) {
 			Arrays.sort(listOfFiles, new Comparator<File>() {
 				public int compare(File f1, File f2) {
@@ -155,7 +160,9 @@ public class ImportDataProcessor {
 			logger.info("Process Started for Customer Id used : "
 					+ ImportDataProcessor.customerId);
 			for (int j = 0; j < length; j++) {
+				int uploadDataFileId = 0;
 				File inFile = listOfFiles[j];
+				System.out.println("File modified time :: ******** "+ inFile.lastModified());
 				if (inFile.isFile()) {
 					logger.info("ReadFileContent Start Time :"
 							+ new Date(System.currentTimeMillis())
@@ -166,6 +173,7 @@ public class ImportDataProcessor {
 						try {
 							addErrorDataFile(inFile, new Integer(
 									uploadDataFileId));
+							fileMap.put(inFile.getName(), new Long(uploadDataFileId));
 						} catch (Exception e) {
 						} finally {
 							logger.info("ReadFileContent End Time:"
@@ -181,6 +189,7 @@ public class ImportDataProcessor {
 
 			for (int indx = 0; indx < length; indx++) {
 				File inFile = listOfFiles[indx];
+				int uploadDataFileId = fileMap.get(inFile.getName()).intValue();
 				try {
 					if (null != uploadMoveData) {
 						UploadThread uploadThread = new UploadThread(
@@ -192,11 +201,25 @@ public class ImportDataProcessor {
 					logger.error("Thread invoking Error.. ");
 				}
 			}
+			fileMap.clear();
 			executor.shutdown();
 			while (!executor.isTerminated()) {
 				// Break after all the task is completed.
 			}
 		}
+	}
+
+	private void setFileLastModifiedTime(File[] listOfFiles,
+			Map<String, Long> fileTimeMap) {
+		if (listOfFiles != null && listOfFiles.length > 0) {
+			for(int i=0; i<listOfFiles.length; i++){
+				File inFile = listOfFiles[i];
+				String name = inFile.getName();
+				if(fileTimeMap.containsKey(name))
+					inFile.setLastModified(fileTimeMap.get(name));
+			}
+		}
+		
 	}
 
 	/**

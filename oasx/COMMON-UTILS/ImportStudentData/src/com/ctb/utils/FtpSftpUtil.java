@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -140,11 +140,12 @@ public class FtpSftpUtil {
 	 * @param session
 	 * @param sourceDir
 	 * @param targetDir
+	 * @param fileTimeMap 
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static void downloadFiles(Session session, String sourceDir,
-			String targetDir) throws Exception {
+			String targetDir, Map<String, Long> fileTimeMap) throws Exception {
 		System.out.println("Download Start Time: "
 				+ new Date(System.currentTimeMillis()));
 		logger.info("Download Start Time: "
@@ -168,12 +169,7 @@ public class FtpSftpUtil {
 						String remoteFile = sourceDir + File.separator
 								+ entry.getFilename();
 						SftpATTRS attrs = sftpChannel.lstat(remoteFile);
-
-						SimpleDateFormat format = new SimpleDateFormat(
-								"EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
-						Date modDate = (Date) format.parse(attrs
-								.getMtimeString());
-
+						Date modDate = new Date(attrs.getMTime() * 1000L);
 						inStream = sftpChannel.get(entry.getFilename());
 						File filename = new File(targetDir);
 						if (!filename.exists())
@@ -181,7 +177,6 @@ public class FtpSftpUtil {
 						String localFile = targetDir + File.separator
 								+ entry.getFilename();
 						File downloadedFile = new File(localFile);
-						downloadedFile.setLastModified(modDate.getTime());
 						outStream = new FileOutputStream(downloadedFile);
 
 						if (inStream == null) {
@@ -195,6 +190,7 @@ public class FtpSftpUtil {
 						while ((read = inStream.read(bytes)) != -1) {
 							outStream.write(bytes, 0, read);
 						}
+						fileTimeMap.put(entry.getFilename(), modDate.getTime());
 						logger.info("File ->" + entry.getFilename()
 								+ " downloaded successfully...");
 					} catch (IOException e) {
