@@ -5947,8 +5947,8 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 			Pattern pattern12=Pattern.compile("^(0{9}|1{9}|2{9}|3{9}|4{9}|5{9}|6{9}|7{9}|8{9}|9{9})$");
 			Matcher allSameDigitsWithoutHyphen=pattern12.matcher(extPin2);
 			
-			//Check whether all incremental i.e. 123-45-6789
-			Pattern pattern13=Pattern.compile("^(123-45-6789|123456789)$");
+			//Check whether all incremental i.e. 123-45-6789 or 012-34-5678
+			Pattern pattern13=Pattern.compile("^(123-45-6789|123456789|012-34-5678|012345678)$");
 			Matcher allIncremental=pattern13.matcher(extPin2);
 			
 			//'078-05-1120' Not valid due to the Woolworth’s Wallet Fiasco
