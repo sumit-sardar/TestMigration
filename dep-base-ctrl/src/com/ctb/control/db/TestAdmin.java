@@ -4,6 +4,8 @@ import com.bea.control.*;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import com.ctb.bean.testAdmin.ActiveSession;
 import com.ctb.bean.testAdmin.LASLicenseNode;
+import com.ctb.bean.testAdmin.LicenseNodeData;
+import com.ctb.bean.testAdmin.OrgNodeRosterCount;
 import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.SubtestAccessCodeDetail;
 import com.ctb.bean.testAdmin.TestSession; 
@@ -975,5 +977,98 @@ public interface TestAdmin extends JdbcControl
             		 arrayMaxLength = 1)
     java.lang.String  getAllLocatorCompletionStatus (Integer studentId , Integer testAdminId) throws SQLException;
   
-
+    @JdbcControl.SQL(statement = "select license_enabled from product prod, test_admin ta where prod.product_id = ta.product_id and ta.test_admin_id = {testAdminId} and ta.activation_status = 'AC'")
+    java.lang.String isProductLicenseEnabledByTestAdminId(Integer testAdminId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select license_enabled from product where product_id = {productId} and activation_status = 'AC'")
+    java.lang.String isProductLicenseEnabledByProductId(Integer productId) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     * SELECT ORG_NODE_ID as orgNodeId, 
+     * 		  COUNT(TEST_ROSTER_ID) as licenseCount
+		 FROM TEST_ADMIN TA, TEST_ROSTER TR
+		WHERE TA.TEST_ADMIN_ID = {TESTADMINID}
+		  AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID
+		  AND TA.ACTIVATION_STATUS = 'AC'
+	     GROUP BY TR.ORG_NODE_ID
+     */
+    
+    @JdbcControl.SQL(statement = "select org_node_id as orgNodeId, count(test_roster_id) as licenseCount from test_admin ta, test_roster tr where ta.test_admin_id = {testAdminId} and tr.test_admin_id = ta.test_admin_id and ta.activation_status = 'AC' group by tr.org_node_id")
+    OrgNodeRosterCount[] getOrgNodeWiseLicenseCountByTestAdminIdSession(Integer testAdminId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "update customer_orgnode_license set available = available + {licenseCount}, reserved = reserved - {licenseCount} where customer_id = {customerId} and org_node_id = {orgNodeId}")
+    void increaseAvailableLicenseCountCOL(Integer customerId, Integer orgNodeId, int licenseCount) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "update customer_orgnode_license set available = available - {licenseCount}, reserved = reserved + {licenseCount} where customer_id = {customerId} and org_node_id = {orgNodeId}")
+    void decreaseAvailableLicenseCountCOL(Integer customerId, Integer orgNodeId, int licenseCount) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     * SELECT ORG_NODE_ID AS orgNodeId, 
+		      SUM(licenseCount) AS licenseCount
+		 FROM (SELECT TR.ORG_NODE_ID AS ORG_NODE_ID,
+		              TR.TEST_ROSTER_ID,
+		              COUNT(DISTINCT ISET.ITEM_SET_ID) AS licenseCount
+		         FROM TEST_ADMIN TA,
+		              TEST_ROSTER TR,
+		              STUDENT_ITEM_SET_STATUS SISS,
+		              ITEM_SET ISET,
+		              ITEM_SET ISETTD,
+		              ITEM_SET_PARENT ISP
+		        WHERE TA.TEST_ADMIN_ID = {testAdminId}
+		          AND TA.ACTIVATION_STATUS = 'AC'
+		          AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID
+		          AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID
+		          AND ISETTD.ITEM_SET_ID = SISS.ITEM_SET_ID
+		          AND ISETTD.ACTIVATION_STATUS = 'AC'
+		          AND ISETTD.sample = 'F'
+		          AND ISETTD.ITEM_SET_LEVEL <> 'L'
+		          AND ISP.ITEM_SET_ID = ISETTD.ITEM_SET_ID
+		          AND ISET.ITEM_SET_ID = ISP.PARENT_ITEM_SET_ID
+		          AND ISET.ITEM_SET_TYPE = 'TS'
+		          AND ISET.sample = 'F'
+		          AND ISET.ITEM_SET_LEVEL <> 'L'
+		          AND ISET.ACTIVATION_STATUS = 'AC'
+		     GROUP BY TR.ORG_NODE_ID, TR.TEST_ROSTER_ID)
+		 GROUP BY ORG_NODE_ID
+     */
+    @JdbcControl.SQL(statement = "SELECT ORG_NODE_ID AS orgNodeId, SUM(licenseCount) AS licenseCount FROM (SELECT TR.ORG_NODE_ID AS ORG_NODE_ID, TR.TEST_ROSTER_ID, COUNT(DISTINCT ISET.ITEM_SET_ID) AS licenseCount FROM TEST_ADMIN TA, TEST_ROSTER TR, STUDENT_ITEM_SET_STATUS SISS, ITEM_SET ISET, ITEM_SET ISETTD, ITEM_SET_PARENT ISP WHERE TA.TEST_ADMIN_ID = {testAdminId} AND TA.ACTIVATION_STATUS = 'AC' AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID AND ISETTD.ITEM_SET_ID = SISS.ITEM_SET_ID AND ISETTD.ACTIVATION_STATUS = 'AC' AND ISETTD.sample = 'F' AND ISETTD.ITEM_SET_LEVEL <> 'L' AND ISP.ITEM_SET_ID = ISETTD.ITEM_SET_ID AND ISET.ITEM_SET_ID = ISP.PARENT_ITEM_SET_ID AND ISET.ITEM_SET_TYPE = 'TS' AND ISET.sample = 'F' AND ISET.ITEM_SET_LEVEL <> 'L' AND ISET.ACTIVATION_STATUS = 'AC' GROUP BY TR.ORG_NODE_ID, TR.TEST_ROSTER_ID) GROUP BY ORG_NODE_ID")
+    OrgNodeRosterCount[] getOrgNodeWiseLicenseCountByTestAdminIdSubtest(Integer testAdminId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT COL.ORG_NODE_ID as orgNodeId, COL.AVAILABLE as available, COL.SUBTEST_MODEL as subtestModel FROM CUSTOMER_ORGNODE_LICENSE COL WHERE COL.CUSTOMER_ID = {customerId}")
+    LicenseNodeData[] getLicenseCountCustomer(Integer customerId) throws SQLException;
+    
+    /**
+     *	@jc:sql statement::
+		SELECT ORG_NODE_ID AS orgNodeId, SUM(licenseCount) AS licenseCount
+		  FROM (SELECT TR.ORG_NODE_ID AS ORG_NODE_ID,
+		               TR.TEST_ROSTER_ID,
+		               COUNT(DISTINCT ISET.ITEM_SET_ID) AS licenseCount
+		          FROM TEST_ADMIN        TA,
+		               TEST_ROSTER       TR,
+		               TEST_CATALOG      TC,
+		               ITEM_SET          ISET,
+		               ITEM_SET_ANCESTOR ISa
+		         WHERE TA.TEST_ADMIN_ID = {testAdminId}
+		           AND TA.ACTIVATION_STATUS = 'AC'
+		           AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID
+		           AND TC.ITEM_SET_ID = {newTCItemSetId}
+		           AND TC.ITEM_SET_ID = ISA.ANCESTOR_ITEM_SET_ID
+		           AND ISET.ACTIVATION_STATUS = 'AC'
+		           AND ISET.SAMPLE = 'F'
+		           AND ISET.ITEM_SET_LEVEL <> 'L'
+		           AND ISA.ITEM_SET_ID = ISET.ITEM_SET_ID
+		           AND ISET.ITEM_SET_TYPE = 'TS'
+		         GROUP BY TR.ORG_NODE_ID, TR.TEST_ROSTER_ID)
+		 GROUP BY ORG_NODE_ID
+     */
+    //@JdbcControl.SQL(statement = "SELECT ORG_NODE_ID AS orgNodeId, SUM(licenseCount) AS licenseCount FROM (SELECT TR.ORG_NODE_ID AS ORG_NODE_ID, TR.TEST_ROSTER_ID, COUNT(DISTINCT ISET.ITEM_SET_ID) AS licenseCount FROM TEST_ADMIN TA, TEST_ROSTER TR, TEST_CATALOG TC, ITEM_SET ISET, ITEM_SET_ANCESTOR ISA WHERE TA.TEST_ADMIN_ID = {testAdminId} AND TA.ACTIVATION_STATUS = 'AC' AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND TC.ITEM_SET_ID = {newTCItemSetId} AND TC.ITEM_SET_ID = ISA.ANCESTOR_ITEM_SET_ID AND ISET.ACTIVATION_STATUS = 'AC' AND ISET.SAMPLE = 'F' AND ISET.ITEM_SET_LEVEL <> 'L' AND ISa.ITEM_SET_ID = ISET.ITEM_SET_ID AND ISET.ITEM_SET_TYPE = 'TS' GROUP BY TR.ORG_NODE_ID, TR.TEST_ROSTER_ID) GROUP BY ORG_NODE_ID")
+    //OrgNodeRosterCount[] getOrgNodeWiseLicenseCountByTestAdminIdNewTCItemSetId(Integer testAdminId, Integer newTCItemSetId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "DELETE FROM TEMP_SISS_UPDATE WHERE TEST_ROSTER_ID IN (SELECT TEST_ROSTER_ID FROM TEST_ROSTER WHERE TEST_ADMIN_ID = {testAdminId})")
+    void deleteFromTempSissUpdate(Integer testAdminId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT COUNT(1) AS subtestCount FROM ITEM_SET ISET WHERE {sql: itemSetIdList} AND ISET.ACTIVATION_STATUS = 'AC' AND ISET.ITEM_SET_LEVEL <> 'L' AND ISET.ITEM_SET_TYPE = 'TS'")
+    java.lang.Integer getSubtestCount(String itemSetIdList) throws SQLException;
 }

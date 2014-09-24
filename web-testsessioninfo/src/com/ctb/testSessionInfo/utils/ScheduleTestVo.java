@@ -329,6 +329,7 @@ public class ScheduleTestVo implements Serializable{
 				
 				List<TestVO> testSession= getTestsForProductForUser(val,userName,val.getProductId(), scheduleTest, prod.getShowLevelOrGrade());
 				prod.setTestSessionList(testSession);
+				prod.setProductLicenseEnabled(val.getProductLicenseEnabled());
 				
 				product.add(prod);
 
@@ -684,6 +685,8 @@ class ProductBean implements Serializable{
 	
 	private boolean isTASCReadinessProduct = false;
 	
+	private String productLicenseEnabled;
+	
 	public ProductBean(Integer productId, String productName) {
 		this.productId = productId;
 		this.productName = productName;
@@ -897,7 +900,13 @@ class ProductBean implements Serializable{
 		this.isTabeAdaptiveProduct = isTabeAdaptiveProduct;
 	}
 
-
+	public String getProductLicenseEnabled() {
+		return productLicenseEnabled;
+	}
+	
+	public void setProductLicenseEnabled(String productLicenseEnabled) {
+		this.productLicenseEnabled = productLicenseEnabled;
+	}
 }
 
 @SuppressWarnings( "all")

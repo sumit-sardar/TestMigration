@@ -1059,8 +1059,12 @@ public class SessionOperationController extends PageFlowController {
 				            				 throw new InsufficientLicenseQuantityException("Not enough license..") ;
             		                }
             			/*end checking license count*/
-            		                   
-            			
+            		    /*To Fix TABE License Defects 80405 & 80408*/            
+            		    if( null != session && null != session.getTestSession() && null != session.getTestSession().getTestAdminId() 
+            		    		&& this.hasLicenseConfig && null != this.customerId) {          
+            		    	this.scheduleTest.updateLicenseCountEditSessionCatalogChange(session, this.customerId);             
+            		    }
+            		    /*End Defect Fix*/
             			testAdminId = saveOrUpdateTestSession( session );
                 		TestSessionData testSessionData = this.testSessionStatus.getTestSessionDetails(this.userName, testAdminId);
                 		RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName, testAdminId, null, null, null);

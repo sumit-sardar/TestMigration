@@ -12,6 +12,7 @@ import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.StudentManifest;
 import org.apache.beehive.controls.api.bean.ControlInterface;
+import com.ctb.bean.testAdmin.ScheduledSession;
 
 /**
  * Platform control provides functions related to test session
@@ -671,4 +672,5 @@ public interface ScheduleTest
 	com.ctb.bean.testAdmin.StudentTestletInfo[] getStudentCompletedTabe9Or10(java.lang.String studentIds, java.lang.Integer testItemSetId) throws com.ctb.exception.CTBBusinessException;
 	com.ctb.bean.testAdmin.TestletLevelForm[] getTestletLevelForms(java.lang.String subject) throws com.ctb.exception.CTBBusinessException;
 	
+	void updateLicenseCountEditSessionCatalogChange(ScheduledSession session, Integer customerId) throws com.ctb.exception.CTBBusinessException;
 } 

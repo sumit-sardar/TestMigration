@@ -5,6 +5,7 @@ import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -175,6 +176,15 @@ public class ScheduledSession extends CTBBean
 		this.isTestSessionHasStudents = isTestSessionHasStudents;
 	}
 	
+	public Map<Integer,Integer> getSessionStudentMap(){
+		Map<Integer,Integer> sessionStudentMap = new HashMap<Integer, Integer>();
+		if(this.students != null && this.students.length > 0){
+			for(SessionStudent st : this.students){
+				sessionStudentMap.put(st.getStudentId(), st.getOrgNodeId());
+			}
+		}
+		return sessionStudentMap;
+	}
 	
 	
 } 

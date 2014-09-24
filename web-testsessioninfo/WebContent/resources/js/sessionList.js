@@ -163,6 +163,7 @@ var reEndDate = "";
 var reTime = "";
 var reTestLocation = "";
 var isReSetValue = true;
+var newProductLicenseEnabled;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -2116,7 +2117,14 @@ function registerDelegate(tree){
 			 	isOKEqTestSelected = false;
 			 }
 		 }
-		 
+		 if(undefined != ProductData && null != ProductData && undefined != ProductData.product && null != ProductData.product) {
+		 	var productSelected = $("#testGroupList").val();
+			for(var i = 0; i < ProductData.product.length; i++ ) {
+				if(ProductData.product[i].productId == productSelected) {
+					newProductLicenseEnabled = ProductData.product[i].productLicenseEnabled;
+				}
+			}
+		 }
 		 if(isWVAdmin) {
 			 var productSelected = $("#testGroupList").val();
 			 if(productSelected == '5501') {

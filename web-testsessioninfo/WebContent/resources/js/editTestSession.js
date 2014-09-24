@@ -34,6 +34,7 @@
 	var defaultDays;
 	var isEdit = false; 
 	var isInformaticaExported;
+	var oldProductLicenseEnabled;
 	
   function disableTabeAdultMsg(){
   		$('#testGroupList').attr("disabled",true);
@@ -426,7 +427,7 @@
 								ProductData = data.productsDetails;
 								
 								 var selectedProdIndex = fillProductGradeLevelDropDown('testGroupList', data.productsDetails.product,selectedTestSession.testSession.productId);
-													 
+								oldProductLicenseEnabled = ProductData.product[selectedProdIndex].productLicenseEnabled;					 
 								//$('#testList').GridUnload();				
 								reloadGrids(ProductData.product[selectedProdIndex].testSessionList, ProductData.product[selectedProdIndex].showLevelOrGrade);
 								displayProductAcknowledgement(ProductData.product[selectedProdIndex].acknowledgmentsURL);

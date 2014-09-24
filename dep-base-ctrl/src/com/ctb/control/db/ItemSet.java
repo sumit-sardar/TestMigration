@@ -619,6 +619,25 @@ public interface ItemSet extends JdbcControl
     
     /** 
      * @jc:sql statement::
+     * select distinct
+	 *      iset.item_set_form as form
+     * from 
+	 *      item_set iset,
+     *      item_set_ancestor isa 
+     * where 
+     *      iset.item_set_id = isa.item_set_id
+     *      and iset.item_set_type = 'TD'
+     *      and isa.ancestor_item_set_id = {itemSetId}
+     * order by
+     *      iset.item_set_form:: 
+     *      array-max-length="100000"
+    */ 
+    @JdbcControl.SQL(statement = "select distinct  iset.item_set_form as form from  item_set iset,  item_set_ancestor isa  where  iset.item_set_id = isa.item_set_id  and iset.item_set_type = 'TD' and iset.item_set_level <> 'L'  and isa.ancestor_item_set_id = {itemSetId} order by  iset.item_set_form",
+                     arrayMaxLength = 0, fetchSize=500 )
+    String [] getFormsForTABETests(Integer itemSetId) throws SQLException;
+    
+    /** 
+     * @jc:sql statement::
      * select
      *    itemSetId,
      * 	  itemSetName,

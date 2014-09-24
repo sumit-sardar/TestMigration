@@ -118,7 +118,7 @@
 		<input type="hidden" name="lastNameLbl" id="lastNameLbl" value=<lb:label key="viewStatus.text.lastNameLbl" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="firstNameLbl" id="firstNameLbl" value=<lb:label key="viewStatus.text.firstNameLbl" prefix="'" suffix="'"/>/>
 		<c:if test="${isTascCustomer || isTASCReadinessCustomer}">
-		<input type="hidden" name="studentIdLbl" id="studentIdLbl" value="<%=sessionStudentIdLabelName%>"/>/>
+		<input type="hidden" name="studentIdLbl" id="studentIdLbl" value="<%=sessionStudentIdLabelName%>"/>
 		</c:if>        
 		<c:if test="${! isTascCustomer && !isTASCReadinessCustomer}">		
 		<input type="hidden" name="studentIdLbl" id="studentIdLbl" value=<lb:label key="viewStatus.text.studentId" prefix="'" suffix="'"/>/>

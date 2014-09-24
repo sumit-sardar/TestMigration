@@ -1898,6 +1898,9 @@ function calculateLicenseUsedForOrgNode(orgNodeId) {
 			if (! studentInTest(stdId, orgNodeId)) {
 				usedLicenses += licensePerStudent;
 			}
+			else if(oldProductLicenseEnabled == 'F' && newProductLicenseEnabled == 'T') {
+				usedLicenses += licensePerStudent;
+			}
 		}
 	}
 	return usedLicenses;

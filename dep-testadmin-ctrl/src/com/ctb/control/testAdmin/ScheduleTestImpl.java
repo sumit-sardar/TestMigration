@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 
@@ -32,7 +33,9 @@ import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.LASLicenseNode;
+import com.ctb.bean.testAdmin.LicenseNodeData;
 import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrgNodeRosterCount;
 import com.ctb.bean.testAdmin.OrgNodeStudent;
 import com.ctb.bean.testAdmin.ProctorAssignment;
 import com.ctb.bean.testAdmin.Program;
@@ -2864,7 +2867,13 @@ public class ScheduleTestImpl implements ScheduleTest
                 overrideUsingStudentManifest = true;
             
             Integer testAdminId = newSession.getTestSession().getTestAdminId();
-            String [] validForms = itemSet.getFormsForTest(itemSetId);
+            String [] validForms = null;
+            if(null != productId && (productId.intValue() == 4009 || productId.intValue() == 4010 
+            		|| productId.intValue() == 4011 || productId.intValue() == 4012)) {
+            	validForms = itemSet.getFormsForTABETests(itemSetId);
+            } else {
+            	validForms = itemSet.getFormsForTest(itemSetId);
+            }
             Integer customerId = newSession.getTestSession().getCustomerId();
             boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue(); 
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
@@ -4956,5 +4965,109 @@ public class ScheduleTestImpl implements ScheduleTest
     		e.printStackTrace(); 
     	}
         return null;
+    }
+    
+    public void updateLicenseCountEditSessionCatalogChange(ScheduledSession session, Integer customerId) throws com.ctb.exception.CTBBusinessException {
+    	Integer testAdminId = session.getTestSession().getTestAdminId();
+    	Integer newProductId = session.getTestSession().getProductId();
+    	Integer newTCItemSetId = session.getTestSession().getItemSetId();
+    	try {
+    		String oldProductLicenseEnabled = this.admins.isProductLicenseEnabledByTestAdminId(testAdminId);
+    		String newProductLicenseEnabled = this.admins.isProductLicenseEnabledByProductId(newProductId);
+    		LicenseNodeData[] licenseNodeData = this.admins.getLicenseCountCustomer(customerId);
+    		HashMap<Integer,Integer> licenseNodeMap = new HashMap<Integer,Integer>();
+    		String licenseSubtestModel = "";
+    		for(int i = 0 ; i < licenseNodeData.length ; i++) { 
+    			licenseSubtestModel = licenseNodeData[i].getSubtestModel();
+    			licenseNodeMap.put(licenseNodeData[i].getOrgNodeId(), Integer.parseInt(licenseNodeData[i].getAvailable()));
+    		}
+    		
+    		if(null != oldProductLicenseEnabled && null != newProductLicenseEnabled && null != licenseSubtestModel) {
+	    		if("T".equals(oldProductLicenseEnabled) && "F".equals(newProductLicenseEnabled)) {
+	    			if("F".equalsIgnoreCase(licenseSubtestModel)) {
+	    				OrgNodeRosterCount[] orgNodeRosterCounts = this.admins.getOrgNodeWiseLicenseCountByTestAdminIdSession(testAdminId);
+	    				if(null != orgNodeRosterCounts && orgNodeRosterCounts.length > 0) {
+		    				for(int i = 0 ; i < orgNodeRosterCounts.length ; i++) {
+		    					this.admins.increaseAvailableLicenseCountCOL(customerId, orgNodeRosterCounts[i].getOrgNodeId(), orgNodeRosterCounts[i].getLicenseCount());
+		    				}
+	    				}		
+	    			} else if("T".equalsIgnoreCase(licenseSubtestModel)) {
+	    				OrgNodeRosterCount[] orgNodeRosterCounts = this.admins.getOrgNodeWiseLicenseCountByTestAdminIdSubtest(testAdminId);
+	    				if(null != orgNodeRosterCounts && orgNodeRosterCounts.length > 0) {
+		    				for(int i = 0 ; i < orgNodeRosterCounts.length ; i++) {
+		    					this.admins.increaseAvailableLicenseCountCOL(customerId, orgNodeRosterCounts[i].getOrgNodeId(), orgNodeRosterCounts[i].getLicenseCount());
+		    				}
+	    				}
+	    				this.admins.deleteFromTempSissUpdate(testAdminId);
+	    			}
+	    		}
+	    		else if("F".equals(oldProductLicenseEnabled) && "T".equals(newProductLicenseEnabled)) {
+	    			RosterElement [] oldUnits = rosters.getRosterForTestSession(testAdminId);
+	    			Map<Integer, Integer> oldOrgNodeStudentMap = new HashMap<Integer,Integer>();
+	    			Map<Integer, Integer> newStudentMap = session.getSessionStudentMap();
+	    			for(RosterElement rosElement : oldUnits){
+	    				if(!newStudentMap.containsKey(rosElement.getStudentId())) {
+	    					siss.deleteStudentItemSetStatusesForRoster(rosElement.getTestRosterId());
+                        	rosters.deleteTestRoster(rosElement);
+	    				} else {
+	    					oldOrgNodeStudentMap.put(rosElement.getStudentId(), rosElement.getOrgNodeId());
+	    				}
+	    			}
+	    			Map<Integer,Integer> OrgNodeStudentMap = new HashMap<Integer,Integer>();
+	    			Set<Integer> studentIds = newStudentMap.keySet();
+	    			Integer orgNodeId = null;
+	    			for(Integer studentId : studentIds) {
+	    				orgNodeId = newStudentMap.get(studentId);
+	    				if(!OrgNodeStudentMap.containsKey(orgNodeId)) {
+	    					OrgNodeStudentMap.put(orgNodeId, new Integer(1));
+	    				} else {
+	    					OrgNodeStudentMap.put(orgNodeId, OrgNodeStudentMap.get(orgNodeId) + 1);
+	    				}
+	    			}
+	    			if("F".equalsIgnoreCase(licenseSubtestModel)) {
+	    				if(null != OrgNodeStudentMap && OrgNodeStudentMap.size() > 0) {
+	    					Set<Integer> orgNodeIds = OrgNodeStudentMap.keySet();
+	    					for(Integer classOrgNodeId : orgNodeIds) {
+	    						if(licenseNodeMap.get(classOrgNodeId) < OrgNodeStudentMap.get(classOrgNodeId)) {
+		    						throw new InsufficientLicenseQuantityException("Available License in Org Node is less than Required");
+		    					}
+	    					}
+	    					for(Integer newStudentId : studentIds) {
+	    						if(!oldOrgNodeStudentMap.containsKey(newStudentId)) {
+	    							OrgNodeStudentMap.put(newStudentMap.get(newStudentId), OrgNodeStudentMap.get(orgNodeId) - 1);
+	    						}
+	    					}
+	    					for(Integer classOrgNodeId : orgNodeIds) {
+		    					this.admins.decreaseAvailableLicenseCountCOL(customerId, classOrgNodeId, OrgNodeStudentMap.get(classOrgNodeId));
+		    				}
+	    				}
+	    			}
+	    			/** Below Logic is implemented in Trigger (LIC_CREATE_SUBTEST_ORGNODE) on STUDENT_ITEM_SET_STATUS **/
+	    			else if("T".equalsIgnoreCase(licenseSubtestModel)) {
+	    				Integer subtestCount = 0;
+	    				String itemSetIdTS = "";
+	    				TestElement [] scheduledElements = session.getScheduledUnits();
+	    				for(TestElement te : scheduledElements) {
+	    					itemSetIdTS += te.getItemSetId().toString() + ",";
+	    				}
+	    				subtestCount = this.admins.getSubtestCount(" ISET.ITEM_SET_ID IN ( " + itemSetIdTS.substring(0, itemSetIdTS.length() - 1) + ") ");
+	    				if(null != OrgNodeStudentMap && OrgNodeStudentMap.size() > 0) {
+	    					Set<Integer> orgNodeIds = OrgNodeStudentMap.keySet();
+	    					for(Integer classOrgNodeId : orgNodeIds) {
+	    						if(licenseNodeMap.get(classOrgNodeId) < (OrgNodeStudentMap.get(classOrgNodeId) * subtestCount)) {
+		    						throw new InsufficientLicenseQuantityException("Available License in Org Node is less than Required");
+		    					}
+	    					}
+	    				}
+	    			}
+	    		}
+    		}
+    	} catch (SQLException se) {
+    		CTBBusinessException ctbe = null;
+    		String message = se.getMessage().toLowerCase();
+            ctbe = new SessionCreationException("ScheduleTestImpl: updateLicenseCountEditSessionCatalogChange : " + message);
+            ctbe.setStackTrace(se.getStackTrace());
+    		throw ctbe;
+    	}
     }
 } 
