@@ -183,20 +183,23 @@ public class ImportDataProcessor {
 
 			for (int indx = 0; indx < length; indx++) {
 				File inFile = listOfFiles[indx];
-				int uploadDataFileId = fileMap.get(inFile.getName()).intValue();
-				try {
-					if (uploadMoveDataMap.containsKey(new Integer(uploadDataFileId))) {
-						UploadMoveData uploadMoveData = uploadMoveDataMap.get(new Integer(uploadDataFileId));
-						UploadThread uploadThread = new UploadThread(
-								customerId, inFile, new Integer(
-										uploadDataFileId), uploadMoveData);
-						executor.execute(uploadThread);
+				if(fileMap.containsKey(inFile.getName())){
+					int uploadDataFileId = fileMap.get(inFile.getName()).intValue();
+					try {
+						if (uploadMoveDataMap.containsKey(new Integer(uploadDataFileId))) {
+							UploadMoveData uploadMoveData = uploadMoveDataMap.get(new Integer(uploadDataFileId));
+							UploadThread uploadThread = new UploadThread(
+									customerId, inFile, new Integer(
+											uploadDataFileId), uploadMoveData);
+							executor.execute(uploadThread);
+						}
+					} catch (Exception e) {
+						logger.error("Thread invoking Error.. ");
 					}
-				} catch (Exception e) {
-					logger.error("Thread invoking Error.. ");
 				}
 			}
 			fileMap.clear();
+			uploadMoveDataMap.clear();
 			executor.shutdown();
 			while (!executor.isTerminated()) {
 				// Break after all the task is completed.
@@ -268,7 +271,7 @@ public class ImportDataProcessor {
 							Configuration.getEmailCC(),
 							Configuration.getEmailBCC(),
 							Configuration.getEmailSubjectFileEmptyIssue(),
-							Configuration.getEmailBodyFileEmptyIssue(), null);
+							Configuration.getEmailBodyFileEmptyIssue().replace("<#FileName#>", inFile.getName()), null);
 				}
 				return new Integer(0);
 			}
