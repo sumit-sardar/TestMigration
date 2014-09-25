@@ -1036,9 +1036,10 @@ public class SessionOperationController extends PageFlowController {
             			
             			/*Checking if the customer has license feature and any license is present is present for that user. If no license is present then
             			 *throw an error and do not allow to save the session */
-            	
+            			/** To Fix Defect 80527 "productId == 4201" (TABE Testlet) condition is inserted **/
+            			
             		                int productId=session.getTestSession().getProductId();
-            		                if(!(productId== 4008 || productId==4013) && session.getStudents().length!=0 && isTABECustomer && isAddOperation) {
+            		                if(!(productId == 4008 || productId == 4013 || productId == 4201) && session.getStudents().length!=0 && isTABECustomer && isAddOperation) {
             		                	
             		                	Set<Integer> orgNodes=new HashSet<Integer>();
             		                	SessionStudent[] students=session.getStudents();
