@@ -2486,6 +2486,17 @@ public class UploadProcess extends BatchProcessor.Process
                 }// End if-else
                 
             }
+            //Defect#80505
+            if(isTascCustomer){
+				if (hierarchyErrorMap.size() > 0 && hierarchyErrorMap.containsKey(new Integer(rowPosition))) {
+										
+					return false;
+			
+				} else {
+			
+					return true;   
+				} 
+			}
             
             
             
