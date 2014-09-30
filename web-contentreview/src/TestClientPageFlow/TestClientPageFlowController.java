@@ -10,17 +10,20 @@ import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import global.Global;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -62,6 +65,7 @@ public class TestClientPageFlowController extends PageFlowController
     public static final String FALSE = "<false />";
     public static final String ERROR = "<ERROR />";
     public static boolean forReal = true;
+    static ResourceBundle rbTdc = null;
     // Uncomment this declaration to access Global.app.
     // 
     protected global.Global globalApp;
@@ -319,6 +323,9 @@ public class TestClientPageFlowController extends PageFlowController
              return getLocalResource();
        else if (method.equals("downloadFileParts"))
     	   result = this.OK;
+       else if (method.equals("getRefCardOverlayData")){
+			result = getRefCardOverlayData();		
+      }
        else
             result = this.ERROR;  
        
@@ -340,6 +347,40 @@ public class TestClientPageFlowController extends PageFlowController
         }
         return null; 
     }
+	
+	private static String resourceBundleGetString(ResourceBundle rb, String name) {
+        return rb.getString(name).trim();
+    }
+	
+	 private String getRefCardOverlayData() throws IOException {
+	        String xmlData = "";
+			try {
+				rbTdc = ResourceBundle.getBundle("previewer");
+				String REF_CARD_OVERLAY_XML_FOLDER_PATH = resourceBundleGetString(rbTdc, "ref.card.overlay");
+				System.out.println("REF_CARD_OVERLAY_XML_FOLDER_PATH "+REF_CARD_OVERLAY_XML_FOLDER_PATH);
+				
+				xmlData = readFile(REF_CARD_OVERLAY_XML_FOLDER_PATH);
+			}catch (Exception e){
+				//logger.info(e);
+			}
+	        return xmlData;		
+		} 
+	 
+	 private String readFile( String file ) throws IOException {
+		    BufferedReader reader = new BufferedReader( new FileReader (file));
+		    String         line = null;
+	        StringBuffer strBuff = new StringBuffer();
+		    //StringBuilder  stringBuilder = new StringBuilder();
+		    String         ls = System.getProperty("line.separator");
+
+		    while( ( line = reader.readLine() ) != null ) {
+		        strBuff.append( line );
+		        strBuff.append( ls );
+		    }
+	        System.out.println("xml read is "+strBuff.toString());
+
+		    return strBuff.toString();
+		}
 
 
     /**
