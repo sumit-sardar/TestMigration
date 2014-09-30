@@ -6,7 +6,9 @@ import java.text.ParseException;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class EmetricUtil {
@@ -47,6 +49,22 @@ public class EmetricUtil {
 		totalMonths = (year * 12) + mm3;
 
 		return totalMonths.toString();
+	}
+	
+	public static String calculateChronologicalAge(Date birthDate) {
+		Calendar startCalendar = new GregorianCalendar();
+		startCalendar.setTime(birthDate);
+		Calendar endCalendar = new GregorianCalendar();
+		Date today = new Date();
+
+		endCalendar.setTime(today);
+
+		int diffYear = endCalendar.get(Calendar.YEAR)
+				- startCalendar.get(Calendar.YEAR);
+		int diffMonth = diffYear * 12 + endCalendar.get(Calendar.MONTH)
+				- startCalendar.get(Calendar.MONTH);
+
+		return String.valueOf(diffMonth);
 	}
 
 	public static String convertPhoneNumber(String phoneNumber) {

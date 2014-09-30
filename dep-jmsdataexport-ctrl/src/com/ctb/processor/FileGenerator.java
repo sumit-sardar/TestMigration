@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -1134,7 +1135,7 @@ public class FileGenerator {
 		tfil.setGrade(EmetricUtil.formatGrade(st.getGrade()));
 		tfil.setStudentBirthDate(st.getBirthDate());
 
-		tfil.setStudentChronologicalAge(EmetricUtil.calculateAge(st
+		tfil.setStudentChronologicalAge(EmetricUtil.calculateChronologicalAge(st
 				.getBirthDate()));
 
 		tfil.setPurposeOfTestp(st.getTestPurpose());

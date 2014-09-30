@@ -559,7 +559,7 @@ public class FileGeneratorForLL2ND {
 		tfil.setStudentGradeFromAnswerSheets(EmetricUtil.formatGrade(st.getGrade()));
 		tfil.setGrade(EmetricUtil.formatGrade(st.getGrade()));
 		tfil.setStudentBirthDate(st.getBirthDate());
-		tfil.setStudentChronologicalAge(EmetricUtil.calculateAge(st.getBirthDate()));
+		tfil.setStudentChronologicalAge(EmetricUtil.calculateChronologicalAge(st.getBirthDate()));
 	}
 
 	private void generateModelLevel(Connection conn) throws CTBBusinessException  {
