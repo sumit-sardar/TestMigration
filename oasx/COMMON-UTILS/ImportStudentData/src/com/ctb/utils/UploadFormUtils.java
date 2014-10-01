@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -206,18 +208,33 @@ public class UploadFormUtils {
 
 					// if actual demographic field does not match with given
 					// demographic field
-					if ((headerList.size() - headerListFromTemplate.size()) != demographicsHeaderListTemplate
+					/*if ((headerList.size() - headerListFromTemplate.size()) != demographicsHeaderListTemplate
+							.size()) {
+						throw new CTBBusinessException("FileHeader.Failed");
+					}*/
+					//Modified on 09/30/2014 for OAS-820
+					if ((headerList.size() - headerListFromTemplate.size()) < demographicsHeaderListTemplate
 							.size()) {
 						throw new CTBBusinessException("FileHeader.Failed");
 					}
 					// position should be after student personal details to end
-					for (int i = headerListFromTemplate.size(); i < headerList
+					/*for (int i = headerListFromTemplate.size(); i < headerList
 							.size() - 1; i++) {
 						if (!headerList.get(i).equals(
 								demographicsHeaderListTemplate.get(count))) {
 							throw new CTBBusinessException("FileHeader.Failed");
 						}
 						count++;
+					}*/
+					//Modified on 09/30/2014 for OAS-820
+					Map<String, String> remainingHeadersMap = new HashMap<String, String>();
+					for(int k = headerListFromTemplate.size(); k < headerList.size() - 1; k++){
+						remainingHeadersMap.put(headerList.get(k), headerList.get(k));
+					}
+					
+					for (int i=0; i < demographicsHeaderListTemplate.size();i++){
+						if(!remainingHeadersMap.containsKey((demographicsHeaderListTemplate.get(i))))
+							throw new CTBBusinessException("FileHeader.Failed");
 					}
 				} // end of student header validation
 				else {

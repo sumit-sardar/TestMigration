@@ -879,15 +879,17 @@ public class UploadStudentFile {
 					HashMap<String, String> studentDemoMap = new HashMap<String, String>();
 					ArrayList<String> demolist = new ArrayList<String>();
 					// Get the position of Demographic details
-					int start = rowHeader.length - noOfDemographicList;
-					for (int d = start; d < rowHeader.length; d++) {
+					for (int d = orgHeaderLastPosition; d < rowHeader.length; d++) {
 						String headerCell = rowHeader[d];
 						String bodyCell = row[d];
 						String strHeaderValue = getCellValue(headerCell);
 						String strBodyValue = getCellValue(bodyCell);
-						if (!(strBodyValue.equals("")) && strBodyValue != null) {
-							studentDemoMap.put(strHeaderValue, strBodyValue);
-							demolist.add(strHeaderValue);
+						String fieldName = strHeaderValue.trim().toUpperCase();
+						if(this.demoMap.containsKey(fieldName)){
+							if (!(strBodyValue.equals("")) && strBodyValue != null) {
+								studentDemoMap.put(strHeaderValue, strBodyValue);
+								demolist.add(strHeaderValue);
+							}
 						}
 					}
 					// populate finalStudent List
@@ -2578,8 +2580,8 @@ public class UploadStudentFile {
 		String strCell = "";
 		boolean isEthnicityPresent = false;
 		boolean isSubEthnicityRequired = false;
-		// Start demographic checking
-		int start = totalCells - noOfDemographicList;
+		// Start demographic position should be studentHeaderStartPosition now.
+		int start = studentHeaderStartPosition;
 		for (int i = studentHeaderStartPosition; i < totalCells; i++) {
 			String cellHeader = rowHeader[i];
 			String cell = row[i];
@@ -2621,18 +2623,24 @@ public class UploadStudentFile {
 			if (cellHeader.equalsIgnoreCase(this.ethnicityLabel)) {
 				if (!strCell.trim().equals("")) {
 					isEthnicityPresent = true;
-					if (strCell.equalsIgnoreCase("HISPANIC OR LATINO")) {
-						isSubEthnicityRequired = true;
+					if(isValidEthnicityValue(strCell)){
+						if (strCell.equalsIgnoreCase("HISPANIC OR LATINO")) {
+							isSubEthnicityRequired = true;
+						}
+					}else{
+						logicalErrorList.add(Constants.ETHNICITY_LABEL);
 					}
 				}
 			} else if (cellHeader.equalsIgnoreCase(this.subEthnicityLabel)) {
-
+				
 				if (!isSubEthnicityRequired && !strCell.trim().equals("")) {
 					logicalErrorList.add(Constants.ETHNICITY_LABEL);
 				}
 				if (!isEthnicityPresent && !strCell.trim().equals("")) {
 					logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
 				}
+				if(!isValidSubEthnicityValue(strCell))
+					logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
 				break;
 			}
 		}// end Demographic checking for logical error
@@ -2643,6 +2651,23 @@ public class UploadStudentFile {
 			return true;
 		}
 	}
+
+	private boolean isValidEthnicityValue(String strCell) {
+		Map<String, String> values = this.demoMap.get(this.ethnicityLabel.toUpperCase());
+		if(values.containsKey(strCell)){
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isValidSubEthnicityValue(String strCell) {
+		Map<String, String> values = this.demoMap.get(this.subEthnicityLabel.toUpperCase());
+		if(values.containsKey(strCell)){
+			return true;
+		}
+		return false;
+	}
+
 
 	/**
 	 * Required Field error check
