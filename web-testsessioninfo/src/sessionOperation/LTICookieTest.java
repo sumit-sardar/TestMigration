@@ -54,12 +54,15 @@ import javax.servlet.http.HttpServletResponse;
 			String errorURL = request.getParameter(ERROR_URL_PARAMNAME);
 			if(errorURL == null || errorURL.isEmpty())
 			{
-				errorURL = "/LTIError.jsp?ERROR_CODE="+ERROR_CODE;
+				//errorURL = "/LTIError.jsp?ERROR_CODE="+ERROR_CODE;
+				errorURL = request.getContextPath()+"/LTIError.jsp?error=ERROR_CODE";
+				errorURL = errorURL.replace("ERROR_CODE", ERROR_CODE);
 			}
 			else
 			{
 				//errorURL +="ERROR_CODE="+ERROR_CODE;
-				errorURL += ERROR_URL_PARAM + "=" + ERROR_CODE; //Modified on 10/01/2014 for OAS-821
+				//errorURL += ERROR_URL_PARAM + "=" + ERROR_CODE; //Modified on 10/01/2014 for OAS-821
+				errorURL = errorURL.replace("ERROR_CODE", ERROR_CODE);
 			}
 			response.sendRedirect(errorURL);
 		}

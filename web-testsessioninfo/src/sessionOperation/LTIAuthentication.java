@@ -83,7 +83,7 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 			System.out.println("Customer ID cannot blank");
 
 			if (errorURL == null || errorURL.isEmpty()) {
-				errorURL = "/LTIError.jsp";
+				errorURL = request.getContextPath()+"/LTIError.jsp?error=ERROR_CODE";
 			}
 			gotoErrorPage(request, response, errorURL, ERROR_UNKNOWN_CUSTOMER,
 					"Consumer key cannot be blank");
@@ -93,7 +93,7 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 		if (errorURL == null || errorURL.isEmpty()) {
 			errorURL = validation.getErrorURL(customerID);
 			if (errorURL == null || errorURL.isEmpty()) {
-				errorURL = "/LTIError.jsp";// error page link was not provided
+				errorURL = request.getContextPath()+"/LTIError.jsp?error=ERROR_CODE";// error page link was not provided
 				// by the provider as well as in the
 				// database.
 			}
@@ -196,7 +196,8 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 						
 			errorURL = getErrorURL(errorURL);
 			//errorURL += "ERROR_CODE=" + errorCode;
-			errorURL += ERROR_URL_PARAM + "=" + errorCode;//Modified on 10/01/2014 for OAS-821
+			//errorURL += ERROR_URL_PARAM + "=" + errorCode;//Modified on 10/01/2014 for OAS-821
+			errorURL = errorURL.replace("ERROR_CODE", errorCode);
 			response.sendRedirect(errorURL);
 
 		} catch (IOException e) {
@@ -210,9 +211,9 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 		
 		if(errorURL==null || errorURL.isEmpty())
 		{
-			errorURL = "/LTIError.jsp?";
+			errorURL = "/SessionWeb/LTIError.jsp?error=ERROR_CODE";
 		}
-		else
+		/*else
 		if(errorURL.indexOf('?')>=0)
 		{
 			adjustedErrorURL +='&';
@@ -220,7 +221,7 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 		else
 		{
 			adjustedErrorURL +='?';
-		}
+		}*/
 		
 		return adjustedErrorURL;
 	}

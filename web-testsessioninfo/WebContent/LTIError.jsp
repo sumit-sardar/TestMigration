@@ -31,7 +31,9 @@
 		}
 	}
 	String message = "";
-	String errorCode = (String) request.getParameter("ERROR_CODE");
+	String errorCode = (String) request.getParameter("error");
+	System.out.println("errorCode >>"+errorCode);
+	System.out.println("LTIErrorURL >>"+LTIErrorURL);
 	if (errorCode == null) {
 		message = "No error code received";
 	} else {
@@ -54,8 +56,10 @@
 	}
 	if(!(LTIErrorURL == null || LTIErrorURL.indexOf("LTIError.jsp")>=0))
 	{
-		if(LTIErrorURL.indexOf('?')<0) LTIErrorURL += '?';
-		response.sendRedirect(LTIErrorURL+"&ERROR_CODE="+errorCode);
+		//if(LTIErrorURL.indexOf('?')<0) LTIErrorURL += '?';		
+		//response.sendRedirect(LTIErrorURL+"&ERROR_CODE="+errorCode);
+		LTIErrorURL.replace("ERROR_CODE", errorCode);
+		response.sendRedirect(LTIErrorURL);
 	}
 %>
 
