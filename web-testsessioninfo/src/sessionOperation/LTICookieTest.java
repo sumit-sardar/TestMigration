@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
    static final long serialVersionUID = 1L;
    private static final String ERROR_URL_PARAMNAME = "errorURL";
    private static final String ERROR_CODE = "cookie_disabled";
+   private static final String ERROR_URL_PARAM = "lti_errormsg";//Added on 10/01/2014 for OAS-821
     /* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
 	 */
@@ -57,7 +58,8 @@ import javax.servlet.http.HttpServletResponse;
 			}
 			else
 			{
-				errorURL +="ERROR_CODE="+ERROR_CODE;
+				//errorURL +="ERROR_CODE="+ERROR_CODE;
+				errorURL += ERROR_URL_PARAM + "=" + ERROR_CODE; //Modified on 10/01/2014 for OAS-821
 			}
 			response.sendRedirect(errorURL);
 		}

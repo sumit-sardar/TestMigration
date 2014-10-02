@@ -43,6 +43,8 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 	private static final String ERROR_LTI_ERROR = "lti_error";// signature is
 
 	private static final String USER_VALID_STATUS = "AC";
+	
+	private static final String ERROR_URL_PARAM = "lti_errormsg";//Added on 10/01/2014 for OAS-821
 
 	/*
 	 * (non-Java-doc)
@@ -193,8 +195,8 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 		try {
 						
 			errorURL = getErrorURL(errorURL);
-			errorURL += "ERROR_CODE=" + errorCode;
-			
+			//errorURL += "ERROR_CODE=" + errorCode;
+			errorURL += ERROR_URL_PARAM + "=" + errorCode;//Modified on 10/01/2014 for OAS-821
 			response.sendRedirect(errorURL);
 
 		} catch (IOException e) {
