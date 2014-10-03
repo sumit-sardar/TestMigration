@@ -27,6 +27,8 @@ public class Configuration {
 	static String ftpOrderFilepathLAUSD = "";
 	static Integer ftpFilePortLAUSD = 0;
 	static String clientPrivateKeyPath = "";
+	static String ftpDataFileMovedDirectory = "";
+	static String ftpOrderFileMovedDirectory = "";
 	
 	static String customerConfigurationName="";
 
@@ -58,6 +60,8 @@ public class Configuration {
 		localFilePathEngrade = ExtractUtil.getDetail("engrade.exportdata.local.filestore");
 		customerConfigurationName = ExtractUtil.getDetail("engrade.customer.configuration.name");
 		clientPrivateKeyPath = ExtractUtil.getDetail("engrade.oas.private.keyPath");
+		ftpDataFileMovedDirectory = ExtractUtil.getDetail("engrade.exportdata.remote.ftp.datafile.finallocation");
+		ftpOrderFileMovedDirectory = ExtractUtil.getDetail("engrade.exportdata.remote.ftp.orderfile.finallocation");
 	}
 
 	
@@ -227,5 +231,19 @@ public class Configuration {
 	public static String getClientPrivateKeyPath() {
 		return clientPrivateKeyPath;
 	}
-		
+
+	/**
+	 * @return the ftpDataFileMovedDirectory
+	 */
+	public static String getFtpDataFileMovedDirectory() {
+		return ftpDataFileMovedDirectory;
+	}
+
+	/**
+	 * @return the ftpOrderFileMovedDirectory
+	 */
+	public static String getFtpOrderFileMovedDirectory() {
+		return ftpOrderFileMovedDirectory;
+	}
+	
 }

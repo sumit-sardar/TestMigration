@@ -345,7 +345,10 @@ public class FileTransporter {
 
 		final String destinationPathDataFile = Configuration.getFtpDataFilepathLAUSD();
 		final String destinationPathOrderFile = Configuration.getFtpOrderFilepathLAUSD();
+		final String movedDirectoryOfDataFile = Configuration.getFtpDataFileMovedDirectory();
+		final String movedDirectoryOfOrderFile = Configuration.getFtpOrderFileMovedDirectory();
 		String destinationPath = null;
+		String ftpMovedDirectory = null;
 		String ftpHost = Configuration.getFtphostLAUSD();
 		String ftpUser = Configuration.getFtpuserLAUSD();
 		// String ftpPass = Configuration.getFtppasswordLAUSD();
@@ -379,9 +382,11 @@ public class FileTransporter {
 						sourceCompressedFileWithPath);
 				if ( i > 0){
 					destinationPath = destinationPathOrderFile;
+					ftpMovedDirectory = movedDirectoryOfOrderFile;
 				} 
 				else{
 					destinationPath = destinationPathDataFile;
+					ftpMovedDirectory = movedDirectoryOfDataFile;
 				}
 				
 				String destinationFileWithPath = destinationPath
@@ -393,6 +398,8 @@ public class FileTransporter {
 				transferFile(sftpChannel, sourceCompressedFileWithPath, localFileName, sourceFileWithPath, destinationPath);
 				System.out.println("File transfer is completed for file "
 						+ getfileName(sourceFileWithPath));
+				String sftpFileName = localFileName+".transferred";
+				fileMoveToImportLocation(sftpChannel, destinationPath, sftpFileName, ftpMovedDirectory);
 				i++;
 			}
 
@@ -420,5 +427,14 @@ public class FileTransporter {
 
 		}
 
+	}
+
+	private void fileMoveToImportLocation(ChannelSftp sftpChannel,
+			String destinationPath, String movedDirectory, String sftpFileName)
+			throws SftpException {
+		String sourcepath = destinationPath + File.separator + sftpFileName;
+		String destinationpath = movedDirectory + File.separator + sftpFileName;
+		sftpChannel.cd(movedDirectory);
+		sftpChannel.rename(sourcepath, destinationpath);
 	}
 }
