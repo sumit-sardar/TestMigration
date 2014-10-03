@@ -377,7 +377,9 @@ public class FileTransporter {
 				sourceFileWithPath = sourceFileWithPath.replaceAll("%20", " ");
 				sourceCompressedFileWithPath = sourceFileWithPath
 				+ ".gz";
+				System.out.println("sourceCompressedFileWithPath >> "+sourceCompressedFileWithPath);
 				localFileName = getfileName(sourceCompressedFileWithPath);
+				System.out.println("localFileName >> "+localFileName);
 				CompressUtil.gzipFile(sourceFileWithPath,
 						sourceCompressedFileWithPath);
 				if ( i > 0){
@@ -398,7 +400,7 @@ public class FileTransporter {
 				transferFile(sftpChannel, sourceCompressedFileWithPath, localFileName, sourceFileWithPath, destinationPath);
 				System.out.println("File transfer is completed for file "
 						+ getfileName(sourceFileWithPath));
-				String sftpFileName = localFileName;
+				String sftpFileName = localFileName+".gz";
 				fileMoveToImportLocation(sftpChannel, destinationPath, sftpFileName, ftpMovedDirectory);
 				i++;
 			}
