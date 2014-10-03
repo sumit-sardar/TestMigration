@@ -398,7 +398,7 @@ public class FileTransporter {
 				transferFile(sftpChannel, sourceCompressedFileWithPath, localFileName, sourceFileWithPath, destinationPath);
 				System.out.println("File transfer is completed for file "
 						+ getfileName(sourceFileWithPath));
-				String sftpFileName = localFileName+".transferred";
+				String sftpFileName = localFileName;
 				fileMoveToImportLocation(sftpChannel, destinationPath, sftpFileName, ftpMovedDirectory);
 				i++;
 			}
