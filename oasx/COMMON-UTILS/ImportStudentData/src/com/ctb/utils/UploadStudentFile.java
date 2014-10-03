@@ -2580,6 +2580,7 @@ public class UploadStudentFile {
 		String strCell = "";
 		boolean isEthnicityPresent = false;
 		boolean isSubEthnicityRequired = false;
+		boolean isValidEthnicity = false;
 		// Start demographic position should be studentHeaderStartPosition now.
 		int start = studentHeaderStartPosition;
 		for (int i = studentHeaderStartPosition; i < totalCells; i++) {
@@ -2624,23 +2625,35 @@ public class UploadStudentFile {
 				if (!strCell.trim().equals("")) {
 					isEthnicityPresent = true;
 					if(isValidEthnicityValue(strCell)){
+						isValidEthnicity = true;
 						if (strCell.equalsIgnoreCase("HISPANIC OR LATINO")) {
 							isSubEthnicityRequired = true;
 						}
 					}else{
+						isValidEthnicity = false;
 						logicalErrorList.add(Constants.ETHNICITY_LABEL);
 					}
 				}
 			} else if (cellHeader.equalsIgnoreCase(this.subEthnicityLabel)) {
 				
-				if (!isSubEthnicityRequired && !strCell.trim().equals("")) {
+			/*	if (!isSubEthnicityRequired && !strCell.trim().equals("")) {
 					logicalErrorList.add(Constants.ETHNICITY_LABEL);
+				}*/
+				if(isEthnicityPresent && !strCell.trim().equals("")){
+					if (!isSubEthnicityRequired && !isValidEthnicity) {
+						logicalErrorList.add(Constants.ETHNICITY_LABEL);
+					}
+					if (!isSubEthnicityRequired && isValidEthnicity) {
+						logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
+					}
 				}
-				if (!isEthnicityPresent && !strCell.trim().equals("")) {
+				else if (!isEthnicityPresent && !strCell.trim().equals("")) {
 					logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
 				}
-				if(!isValidSubEthnicityValue(strCell))
-					logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
+				if(isSubEthnicityRequired){
+					if(!isValidSubEthnicityValue(strCell))
+						logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
+				}
 				break;
 			}
 		}// end Demographic checking for logical error
