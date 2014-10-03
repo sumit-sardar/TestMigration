@@ -400,8 +400,8 @@ public class FileTransporter {
 				transferFile(sftpChannel, sourceCompressedFileWithPath, localFileName, sourceFileWithPath, destinationPath);
 				System.out.println("File transfer is completed for file "
 						+ getfileName(sourceFileWithPath));
-				String sftpFileName = localFileName+".gz";
-				fileMoveToImportLocation(sftpChannel, destinationPath, sftpFileName, ftpMovedDirectory);
+				String sftpFileName = localFileName;
+				fileMoveToImportLocation(sftpChannel, destinationPath, ftpMovedDirectory, sftpFileName);
 				i++;
 			}
 
@@ -436,6 +436,8 @@ public class FileTransporter {
 			throws SftpException {
 		String sourcepath = destinationPath + File.separator + sftpFileName;
 		String destinationpath = movedDirectory + File.separator + sftpFileName;
+		System.out.println("sourcepath >> "+sourcepath);
+		System.out.println("destinationpath >> "+destinationpath);
 		sftpChannel.cd(movedDirectory);
 		sftpChannel.rename(sourcepath, destinationpath);
 	}
