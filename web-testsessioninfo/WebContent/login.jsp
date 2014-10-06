@@ -57,7 +57,13 @@
 		System.out.println("sessionTimeout..."+sessionTimeout);
 		if (LTISessionTimeout) {
 			//request.setAttribute("message", "session_expired:Session timeout");
-			response.sendRedirect("/SessionWeb/LTIError.jsp?ERROR_CODE=session_expired");
+			//response.sendRedirect("/SessionWeb/LTIError.jsp?ERROR_CODE=session_expired");
+			String errorURL = (String)request.getSession().getServletContext().getAttribute("LTI_Error_URL");
+			System.out.println("errorURL >> "+errorURL);
+			errorURL = errorURL.replace("ERROR_CODE", "session_expired");
+			System.out.println("errorURL after replace >> "+errorURL);
+			response.sendRedirect(errorURL);
+			//response.sendRedirect("https://www.engradesandbox.com/app/oauth/return.php?lti_errormsg=session_expired");
 			//RequestDispatcher rd = getServletContext().getRequestDispatcher("/SessionWeb/LTIError.jsp");
 		} else if (sessionTimeout) {
 			String message = rb.getString("sessionTimeout");
