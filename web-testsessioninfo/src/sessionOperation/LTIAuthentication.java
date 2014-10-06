@@ -158,7 +158,6 @@ public class LTIAuthentication extends javax.servlet.http.HttpServlet implements
 						sess.setAttribute("isSSO_LTIUser", new Boolean(
 								Boolean.TRUE));
 						String finalErrorURL = getErrorURL(errorURL);
-						request.getSession().getServletContext().setAttribute("LTI_Error_URL", finalErrorURL);
 						Cookie cookieErrorURL = new Cookie("LTI_ErrorURL",finalErrorURL);
 						cookie.setPath("/");
 						cookieErrorURL.setSecure(true);
