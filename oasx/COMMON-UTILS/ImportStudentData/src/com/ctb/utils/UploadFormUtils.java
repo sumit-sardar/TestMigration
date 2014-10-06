@@ -228,7 +228,7 @@ public class UploadFormUtils {
 					}*/
 					//Modified on 09/30/2014 for OAS-820
 					Map<String, String> remainingHeadersMap = new HashMap<String, String>();
-					for(int k = headerListFromTemplate.size(); k < headerList.size() - 1; k++){
+					for(int k = headerListFromTemplate.size(); k < headerList.size(); k++){
 						remainingHeadersMap.put(headerList.get(k), headerList.get(k));
 					}
 					

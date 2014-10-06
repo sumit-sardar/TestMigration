@@ -74,7 +74,7 @@ public class UploadStudentFile {
 	private OrgNodeCategory orgNodeCategory[] = null;
 	private StudentFileRow[] studentFileRowHeader;
 	private String[] grades = null;
-	private int noOfDemographicList = 0;
+	// private int noOfDemographicList = 0;
 	private HashMap<String, Map<String, String>> demoMap = new HashMap<String, Map<String, String>>();
 	private HashMap<String, Integer> demoGraphicMap = new HashMap<String, Integer>();
 	private ArrayList<String> colorList = new ArrayList<String>();
@@ -1967,7 +1967,7 @@ public class UploadStudentFile {
 			 */
 			grades = studentUploadUtils.getGradesForCustomer(customerId);
 			getValidDemographicValue(customerId, demoMap);
-			noOfDemographicList = demoMap.size();
+			// noOfDemographicList = demoMap.size();
 			populateDefaultAccommodationValues(customerId,
 					defaultAccommodationMap, editableAccomodationMap);
 			isMatchUploadOrgIds = studentDao.checkCustomerConfigurationEntries(
@@ -2580,7 +2580,6 @@ public class UploadStudentFile {
 		String strCell = "";
 		boolean isEthnicityPresent = false;
 		boolean isSubEthnicityRequired = false;
-		boolean isValidEthnicity = false;
 		// Start demographic position should be studentHeaderStartPosition now.
 		int start = studentHeaderStartPosition;
 		for (int i = studentHeaderStartPosition; i < totalCells; i++) {
@@ -2624,35 +2623,17 @@ public class UploadStudentFile {
 			if (cellHeader.equalsIgnoreCase(this.ethnicityLabel)) {
 				if (!strCell.trim().equals("")) {
 					isEthnicityPresent = true;
-					if(isValidEthnicityValue(strCell)){
-						isValidEthnicity = true;
-						if (strCell.equalsIgnoreCase("HISPANIC OR LATINO")) {
-							isSubEthnicityRequired = true;
-						}
-					}else{
-						isValidEthnicity = false;
-						logicalErrorList.add(Constants.ETHNICITY_LABEL);
+					if (strCell.equalsIgnoreCase("HISPANIC OR LATINO")) {
+						isSubEthnicityRequired = true;
 					}
 				}
 			} else if (cellHeader.equalsIgnoreCase(this.subEthnicityLabel)) {
-				
-			/*	if (!isSubEthnicityRequired && !strCell.trim().equals("")) {
+
+				if (!isSubEthnicityRequired && !strCell.trim().equals("")) {
 					logicalErrorList.add(Constants.ETHNICITY_LABEL);
-				}*/
-				if(isEthnicityPresent && !strCell.trim().equals("")){
-					if (!isSubEthnicityRequired && !isValidEthnicity) {
-						logicalErrorList.add(Constants.ETHNICITY_LABEL);
-					}
-					if (!isSubEthnicityRequired && isValidEthnicity) {
-						logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
-					}
 				}
-				else if (!isEthnicityPresent && !strCell.trim().equals("")) {
+				if (!isEthnicityPresent && !strCell.trim().equals("")) {
 					logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
-				}
-				if(isSubEthnicityRequired){
-					if(!isValidSubEthnicityValue(strCell))
-						logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
 				}
 				break;
 			}
@@ -2664,23 +2645,6 @@ public class UploadStudentFile {
 			return true;
 		}
 	}
-
-	private boolean isValidEthnicityValue(String strCell) {
-		Map<String, String> values = this.demoMap.get(this.ethnicityLabel.toUpperCase());
-		if(values.containsKey(strCell)){
-			return true;
-		}
-		return false;
-	}
-	
-	private boolean isValidSubEthnicityValue(String strCell) {
-		Map<String, String> values = this.demoMap.get(this.subEthnicityLabel.toUpperCase());
-		if(values.containsKey(strCell)){
-			return true;
-		}
-		return false;
-	}
-
 
 	/**
 	 * Required Field error check
@@ -2745,16 +2709,11 @@ public class UploadStudentFile {
 		String strCellHeader = "";
 
 		// Get the position of Demographic details
-		int start = totalCells - noOfDemographicList;
 		String strCell = "";
-		boolean isDemographicStart = false;
 		for (int i = studentHeaderStartPosition; i < totalCells; i++) {
 			String cellHeader = rowHeader[i];
 			String cell = row[i];
 			strCell = getCellValue(cell);
-			if (i == start) {
-				isDemographicStart = true;
-			}
 			if (!strCell.equals("")) {
 				if (cellHeader.equals(Constants.REQUIREDFIELD_FIRST_NAME)
 						&& !validNameString(strCell)) {
@@ -2851,7 +2810,7 @@ public class UploadStudentFile {
 							&& !validConfigurableStudentId(strCell)) {
 						invalidList.add(this.studentId2Label);
 					}
-				} else if (i == start) {
+				} else if (demoMap.containsKey(cellHeader.trim().toUpperCase())) {
 					strCellHeader = getCellValue(cellHeader);
 					if (!strCell.equals("")
 							&& !validateDemographic(strCellHeader, strCell)) {
@@ -2860,9 +2819,6 @@ public class UploadStudentFile {
 				}
 			} // End if cell validation start from firstName
 				// increment demographic position
-			if (isDemographicStart) {
-				start++;
-			}
 		}
 		if (invalidList.size() == 0) {
 			return false;
