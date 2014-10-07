@@ -5950,7 +5950,9 @@ public class SessionOperationController extends PageFlowController {
         try {                
             if (sti != null)
             {
-            	if (forms==null)
+            	//** Fixed defect 80268: TABE Testlet Regression:- Multiple testlet session of same subject of same level can be scheduled for the same student even though existing testlet sessions are in scheduled status
+            	//** If forms has not been initialized, or when testlet subject changes: initial forms
+            	if (forms==null || (forms!=null && !(sti[0].getSubject().equalsIgnoreCase(forms[0].getSubject()))))
             	{
             		forms = this.scheduleTest.getTestletLevelForms(sti[0].getSubject());
             	}
