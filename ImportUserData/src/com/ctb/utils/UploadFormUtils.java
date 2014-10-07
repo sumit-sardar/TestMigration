@@ -159,7 +159,7 @@ public class UploadFormUtils {
 					 * student details
 					 */
 					for (int i = 0; i < orgNodeListFromTemplate.size() - 1; i++) {
-						if (!orgNodeList.get(i).equals(
+						if (!orgNodeList.get(i).equalsIgnoreCase(
 								orgNodeListFromTemplate.get(i))) {
 							throw new CTBBusinessException("FileHeader.Failed");
 						}
@@ -181,7 +181,7 @@ public class UploadFormUtils {
 					}
 					
 					for (int i = 0; i < headerListFromTemplate.size(); i++) {
-						if (!headerListFromTemplate.get(i).equals(
+						if (!headerListFromTemplate.get(i).equalsIgnoreCase(
 								headerList.get(i))) {
 							throw new CTBBusinessException("FileHeader.Failed");
 						}
