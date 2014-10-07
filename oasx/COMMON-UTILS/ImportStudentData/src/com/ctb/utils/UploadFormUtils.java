@@ -142,14 +142,17 @@ public class UploadFormUtils {
 				firstRowProcessed = true;
 				int totalColumns = firstRow.length;
 				for (int i = noOfUserColumn; i < totalColumns; i++) {
-					if (firstRow[i].equals("Gender")) {
+					if (firstRow[i].equalsIgnoreCase("Gender")) {
 						fileType = "Upload_Student_Data";
 						break;
 					}
 				}
 				if (fileType.equals("Upload_Student_Data")) {
-					createTemplateHeader(customerId, orgNodeCategory,
-							studentFileRow);
+					try {
+						createTemplateHeader(customerId, orgNodeCategory, studentFileRow);
+					} catch (Exception e) {
+						throw new CTBBusinessException("FileHeader.Failed");
+					}
 					for (int i = 0; i < noOfUserColumn - 1; i++) {
 						orgNodeListFromTemplate.add(firstRow[i]);
 					}
@@ -169,7 +172,7 @@ public class UploadFormUtils {
 					 * student details
 					 */
 					for (int i = 0; i < orgNodeListFromTemplate.size() - 1; i++) {
-						if (!orgNodeList.get(i).equals(
+						if (!orgNodeList.get(i).equalsIgnoreCase(
 								orgNodeListFromTemplate.get(i))) {
 							throw new CTBBusinessException("FileHeader.Failed");
 						}
@@ -189,7 +192,7 @@ public class UploadFormUtils {
 					 * template are same or not
 					 */
 					for (int i = 0; i < headerListFromTemplate.size(); i++) {
-						if (!headerListFromTemplate.get(i).equals(
+						if (!headerListFromTemplate.get(i).equalsIgnoreCase(
 								headerList.get(i))) {
 							throw new CTBBusinessException("FileHeader.Failed");
 						}
@@ -229,11 +232,11 @@ public class UploadFormUtils {
 					//Modified on 09/30/2014 for OAS-820
 					Map<String, String> remainingHeadersMap = new HashMap<String, String>();
 					for(int k = headerListFromTemplate.size(); k < headerList.size(); k++){
-						remainingHeadersMap.put(headerList.get(k), headerList.get(k));
+						remainingHeadersMap.put(headerList.get(k).toUpperCase(), headerList.get(k));
 					}
 					
 					for (int i=0; i < demographicsHeaderListTemplate.size();i++){
-						if(!remainingHeadersMap.containsKey((demographicsHeaderListTemplate.get(i))))
+						if(!remainingHeadersMap.containsKey((demographicsHeaderListTemplate.get(i).toUpperCase())))
 							throw new CTBBusinessException("FileHeader.Failed");
 					}
 				} // end of student header validation
@@ -285,9 +288,10 @@ public class UploadFormUtils {
 	 * @param customerId
 	 * @param OrgNodeCategory
 	 * @param object
+	 * @throws Exception 
 	 */
 	private void createTemplateHeader(Integer customerId,
-			OrgNodeCategory[] OrgNodeCategory, StudentFileRow[] object) {
+			OrgNodeCategory[] OrgNodeCategory, StudentFileRow[] object) throws Exception {
 
 		this.dao = new UploadFileDaoImpl();
 		StudentFileRow[] studentFileRow = (StudentFileRow[]) object;
@@ -306,14 +310,8 @@ public class UploadFormUtils {
 			node[i] = currentHeader;
 		}
 		StudentDemoGraphics[] StudentDemoGraphics = null;
-		try {
-			StudentDemoGraphics = dao.getStudentDemoGraphics(customerId);
-		} catch (SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		StudentDemoGraphics = dao.getStudentDemoGraphics(customerId);
+		
 		tempStudentFileRow.setOrganizationNodes(node);
 		tempStudentFileRow.setStudentDemoGraphics(StudentDemoGraphics);
 		StudentHeader studentHeader = new StudentHeader();

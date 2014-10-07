@@ -248,7 +248,7 @@ public class UploadStudentFile {
 							|| !this.userTopOrgNode[0].getOrgNodeName()
 									.equalsIgnoreCase(topOrgName)) {
 						ArrayList<String> logicalErrorList = new ArrayList<String>();
-						logicalErrorList.add(rowHeader[loginUserPosition]);
+						logicalErrorList.add(rowHeader[loginUserPosition].toUpperCase());
 						logicalErrorMap.put(new Integer(rowIndex),
 								logicalErrorList);
 						continue;
@@ -257,7 +257,7 @@ public class UploadStudentFile {
 							|| !this.userTopOrgNode[0].getMdrNumber()
 									.equalsIgnoreCase(topOrgMDRNumber)) {
 						ArrayList<String> logicalErrorList = new ArrayList<String>();
-						logicalErrorList.add(rowHeader[loginUserPosition + 2]);
+						logicalErrorList.add(rowHeader[loginUserPosition + 2].toUpperCase());
 						logicalErrorMap.put(new Integer(rowIndex),
 								logicalErrorList);
 						continue;
@@ -269,7 +269,7 @@ public class UploadStudentFile {
 								.equalsIgnoreCase(topOrgCode)) {
 							ArrayList<String> logicalErrorList = new ArrayList<String>();
 							logicalErrorList
-									.add(rowHeader[loginUserPosition + 1]);
+									.add(rowHeader[loginUserPosition + 1].toUpperCase());
 							logicalErrorMap.put(new Integer(rowIndex),
 									logicalErrorList);
 							continue;
@@ -282,7 +282,7 @@ public class UploadStudentFile {
 
 							ArrayList<String> logicalErrorList = new ArrayList<String>();
 							logicalErrorList
-									.add(rowHeader[loginUserPosition + 1]);
+									.add(rowHeader[loginUserPosition + 1].toUpperCase());
 							logicalErrorMap.put(new Integer(rowIndex),
 									logicalErrorList);
 							continue;
@@ -333,7 +333,7 @@ public class UploadStudentFile {
 						if (strCellName.equals("") && hasOrganization(j, row)
 								&& !strCellId.equals("")) {
 							ArrayList<String> requiredList = new ArrayList<String>();
-							requiredList.add(strCellHeaderName);
+							requiredList.add(strCellHeaderName.toUpperCase());
 							requiredMap
 									.put(new Integer(rowIndex), requiredList);
 							break;
@@ -341,14 +341,14 @@ public class UploadStudentFile {
 								&& hasOrganization(j - orgPosFact, row)
 								&& !strCellId.equals("")) {
 							ArrayList<String> requiredList = new ArrayList<String>();
-							requiredList.add(strCellHeaderName);
+							requiredList.add(strCellHeaderName.toUpperCase());
 							requiredMap
 									.put(new Integer(rowIndex), requiredList);
 							break;
 						} else if (strCellName.equals("")
 								&& !strCellMdr.equals("")) {
 							ArrayList<String> requiredList = new ArrayList<String>();
-							requiredList.add(strCellHeaderName);
+							requiredList.add(strCellHeaderName.toUpperCase());
 							requiredMap
 									.put(new Integer(rowIndex), requiredList);
 							break;
@@ -365,7 +365,7 @@ public class UploadStudentFile {
 								// OrgCode invalid char check
 								if (!validString(strCellId)) {
 									ArrayList<String> invalidList = new ArrayList<String>();
-									invalidList.add(strCellHeaderId);
+									invalidList.add(strCellHeaderId.toUpperCase());
 									invalidCharMap.put(new Integer(rowIndex),
 											invalidList);
 									break;
@@ -374,14 +374,14 @@ public class UploadStudentFile {
 									boolean flag = false;
 									if (!isMaxLength50(strCellName)) {
 										ArrayList<String> maxLengthList = new ArrayList<String>();
-										maxLengthList.add(strCellHeaderName);
+										maxLengthList.add(strCellHeaderName.toUpperCase());
 										maxLengthMap.put(new Integer(rowIndex),
 												maxLengthList);
 										flag = true;
 									}
 									if (!isMaxLength32(strCellId)) {
 										ArrayList<String> maxLengthList = new ArrayList<String>();
-										maxLengthList.add(strCellHeaderId);
+										maxLengthList.add(strCellHeaderId.toUpperCase());
 										maxLengthMap.put(new Integer(rowIndex),
 												maxLengthList);
 										flag = true;
@@ -392,7 +392,7 @@ public class UploadStudentFile {
 								}
 							} else {
 								ArrayList<String> invalidList = new ArrayList<String>();
-								invalidList.add(strCellHeaderName);
+								invalidList.add(strCellHeaderName.toUpperCase());
 								invalidCharMap.put(new Integer(rowIndex),
 										invalidList);
 								break;
@@ -620,7 +620,7 @@ public class UploadStudentFile {
 												mdrCorrect = false;
 												ArrayList<String> requiredList = new ArrayList<String>();
 												requiredList
-														.add(rowHeader[ii + 2]);
+														.add(rowHeader[ii + 2].toUpperCase());
 												logicalErrorMap.put(
 														new Integer(rowIndex),
 														requiredList);
@@ -678,7 +678,7 @@ public class UploadStudentFile {
 													mdrCorrect = false;
 													ArrayList<String> requiredList = new ArrayList<String>();
 													requiredList
-															.add(rowHeader[ii + 2]);
+															.add(rowHeader[ii + 2].toUpperCase());
 													logicalErrorMap.put(
 															new Integer(
 																	rowIndex),
@@ -738,7 +738,7 @@ public class UploadStudentFile {
 												mdrCorrect = false;
 												ArrayList<String> requiredList = new ArrayList<String>();
 												requiredList
-														.add(rowHeader[ii + 2]);
+														.add(rowHeader[ii + 2].toUpperCase());
 												logicalErrorMap.put(
 														new Integer(rowIndex),
 														requiredList);
@@ -785,7 +785,7 @@ public class UploadStudentFile {
 										if (organization.getOrgNodeId() == -99) {
 											mdrCorrect = false;
 											ArrayList<String> requiredList = new ArrayList<String>();
-											requiredList.add(rowHeader[ii + 2]);
+											requiredList.add(rowHeader[ii + 2].toUpperCase());
 											logicalErrorMap.put(new Integer(
 													rowIndex), requiredList);
 											break;
@@ -839,7 +839,7 @@ public class UploadStudentFile {
 												mdrCorrect = false;
 												ArrayList<String> requiredList = new ArrayList<String>();
 												requiredList
-														.add(rowHeader[ii + 2]);
+														.add(rowHeader[ii + 2].toUpperCase());
 												logicalErrorMap.put(
 														new Integer(rowIndex),
 														requiredList);
@@ -873,7 +873,7 @@ public class UploadStudentFile {
 						String bodyCell = row[j];
 						String strHeaderValue = getCellValue(headerCell);
 						String strBodyValue = getCellValue(bodyCell);
-						studentDataMap.put(strHeaderValue, strBodyValue);
+						studentDataMap.put(strHeaderValue.toUpperCase(), strBodyValue);
 					}
 
 					HashMap<String, String> studentDemoMap = new HashMap<String, String>();
@@ -887,8 +887,8 @@ public class UploadStudentFile {
 						String fieldName = strHeaderValue.trim().toUpperCase();
 						if(this.demoMap.containsKey(fieldName)){
 							if (!(strBodyValue.equals("")) && strBodyValue != null) {
-								studentDemoMap.put(strHeaderValue, strBodyValue);
-								demolist.add(strHeaderValue);
+								studentDemoMap.put(fieldName, strBodyValue);
+								demolist.add(fieldName);
 							}
 						}
 					}
@@ -1114,17 +1114,17 @@ public class UploadStudentFile {
 			HashMap<String, String> studentDataMap) {
 
 		student.setStudentIdNumber(((String) studentDataMap
-				.get(this.studentIdLabel)).trim());
+				.get(this.studentIdLabel.toUpperCase())).trim());
 		student.setFirstName(initStringCap((String) studentDataMap
-				.get(Constants.REQUIREDFIELD_FIRST_NAME)));
+				.get(Constants.REQUIREDFIELD_FIRST_NAME.toUpperCase())));
 		student.setMiddleName(initStringCap((String) studentDataMap
-				.get(Constants.MIDDLE_NAME)));
+				.get(Constants.MIDDLE_NAME.toUpperCase())));
 		student.setLastName(initStringCap((String) studentDataMap
-				.get(Constants.REQUIREDFIELD_LAST_NAME)));
+				.get(Constants.REQUIREDFIELD_LAST_NAME.toUpperCase())));
 		student.setStudentIdNumber2(((String) studentDataMap
-				.get(this.studentId2Label)).trim());
+				.get(this.studentId2Label.toUpperCase())).trim());
 		String date = (String) studentDataMap
-				.get(Constants.REQUIREDFIELD_DATE_OF_BIRTH);
+				.get(Constants.REQUIREDFIELD_DATE_OF_BIRTH.toUpperCase());
 
 		Date dateOfBirth = null;
 
@@ -1137,9 +1137,9 @@ public class UploadStudentFile {
 		}
 		student.setBirthDate(dateOfBirth);
 		student.setGender(getGender((String) studentDataMap
-				.get(Constants.REQUIREDFIELD_GENDER)));
+				.get(Constants.REQUIREDFIELD_GENDER.toUpperCase())));
 		student.setGrade(getGradeValue((String) studentDataMap
-				.get(Constants.REQUIREDFIELD_GRADE)));
+				.get(Constants.REQUIREDFIELD_GRADE.toUpperCase())));
 	}
 
 	/**
@@ -2035,8 +2035,8 @@ public class UploadStudentFile {
 					}
 					demoMap.put(customerDemoName.toUpperCase(),
 							demographicValueMap);
-					demoGraphicMap.put(customerDemoName, customerDemographicId);
-					demoCardinalityMap.put(customerDemoName,
+					demoGraphicMap.put(customerDemoName.toUpperCase(), customerDemographicId);
+					demoCardinalityMap.put(customerDemoName.toUpperCase(),
 							customerDemoCardinality);
 				}
 			}
@@ -2246,22 +2246,22 @@ public class UploadStudentFile {
 			// New Organization
 			if (!validMdrNo(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toUpperCase());
 				requiredMap.put(new Integer(cellPos), requiredList);
 				return false;
 			} else if (!validMdrNoLength(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toUpperCase());
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 			} else if (!validMdrNoNumeric(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toUpperCase());
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 			} else if (!isUniqueMdr(strCellMdr, newMDRList, orgMDRImpl)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toUpperCase());
 				logicalErrorMap.put(new Integer(cellPos), requiredList);
 				return false;
 
@@ -2271,17 +2271,17 @@ public class UploadStudentFile {
 			// Update Organization
 			if (!validMdrNo(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toUpperCase());
 				requiredMap.put(new Integer(cellPos), requiredList);
 				return false;
 			} else if (!validMdrNoLength(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toUpperCase());
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 			} else if (!validMdrNoNumeric(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toUpperCase());
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 			}
@@ -2587,9 +2587,9 @@ public class UploadStudentFile {
 			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!(strCell == null || strCell.equals(""))) {
-				if (cellHeader.equals(Constants.REQUIREDFIELD_DATE_OF_BIRTH)
+				if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_DATE_OF_BIRTH)
 						&& isFutureDate(strCell)) {
-					logicalErrorList.add(Constants.REQUIREDFIELD_DATE_OF_BIRTH);
+					logicalErrorList.add(Constants.REQUIREDFIELD_DATE_OF_BIRTH.toUpperCase());
 				}
 				// For validating combination of question background and font
 				// color
@@ -2630,10 +2630,10 @@ public class UploadStudentFile {
 			} else if (cellHeader.equalsIgnoreCase(this.subEthnicityLabel)) {
 
 				if (!isSubEthnicityRequired && !strCell.trim().equals("")) {
-					logicalErrorList.add(Constants.ETHNICITY_LABEL);
+					logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL.toUpperCase());
 				}
 				if (!isEthnicityPresent && !strCell.trim().equals("")) {
-					logicalErrorList.add(Constants.SUB_ETHNICITY_LABEL);
+					logicalErrorList.add(Constants.ETHNICITY_LABEL.toUpperCase());
 				}
 				break;
 			}
@@ -2666,22 +2666,22 @@ public class UploadStudentFile {
 			strCell = getCellValue(cell);
 			// Required field checking
 			if (strCell.equals("")) {
-				if (cellHeader.equals(Constants.REQUIREDFIELD_FIRST_NAME)) {
-					requiredList.add(Constants.REQUIREDFIELD_FIRST_NAME);
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_LAST_NAME)) {
-					requiredList.add(Constants.REQUIREDFIELD_LAST_NAME);
+				if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_FIRST_NAME)) {
+					requiredList.add(Constants.REQUIREDFIELD_FIRST_NAME.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_LAST_NAME)) {
+					requiredList.add(Constants.REQUIREDFIELD_LAST_NAME.toUpperCase());
 				} else if (cellHeader
-						.equals(Constants.REQUIREDFIELD_DATE_OF_BIRTH)) {
+						.equalsIgnoreCase(Constants.REQUIREDFIELD_DATE_OF_BIRTH)) {
 					if (!disableMandatoryBirthdate) {
-						requiredList.add(Constants.REQUIREDFIELD_DATE_OF_BIRTH);
+						requiredList.add(Constants.REQUIREDFIELD_DATE_OF_BIRTH.toUpperCase());
 					}
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_GRADE)) {
-					requiredList.add(Constants.REQUIREDFIELD_GRADE);
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_GENDER)) {
-					requiredList.add(Constants.REQUIREDFIELD_GENDER);
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_GRADE)) {
+					requiredList.add(Constants.REQUIREDFIELD_GRADE.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_GENDER)) {
+					requiredList.add(Constants.REQUIREDFIELD_GENDER.toUpperCase());
 				} else if (this.isStudentIdMandatory) {
-					if (cellHeader.equals(this.studentIdLabel)) {
-						requiredList.add(this.studentIdLabel);
+					if (cellHeader.equalsIgnoreCase(this.studentIdLabel)) {
+						requiredList.add(this.studentIdLabel.toUpperCase());
 					}
 				}
 			}
@@ -2715,30 +2715,30 @@ public class UploadStudentFile {
 			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!strCell.equals("")) {
-				if (cellHeader.equals(Constants.REQUIREDFIELD_FIRST_NAME)
+				if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_FIRST_NAME)
 						&& !validNameString(strCell)) {
-					invalidList.add(Constants.REQUIREDFIELD_FIRST_NAME);
-				} else if (cellHeader.equals(Constants.MIDDLE_NAME)
+					invalidList.add(Constants.REQUIREDFIELD_FIRST_NAME.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.MIDDLE_NAME)
 						&& !validNameString(strCell)) {
-					invalidList.add(Constants.MIDDLE_NAME);
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_LAST_NAME)
+					invalidList.add(Constants.MIDDLE_NAME.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_LAST_NAME)
 						&& !validNameString(strCell)) {
-					invalidList.add(Constants.REQUIREDFIELD_LAST_NAME);
+					invalidList.add(Constants.REQUIREDFIELD_LAST_NAME.toUpperCase());
 				}
 
-				else if (cellHeader.equals(Constants.REQUIREDFIELD_GRADE)
+				else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_GRADE)
 						&& !isValidGrade(strCell)) {
-					invalidList.add(Constants.REQUIREDFIELD_GRADE);
+					invalidList.add(Constants.REQUIREDFIELD_GRADE.toUpperCase());
 				}
 
-				else if (cellHeader.equals(Constants.REQUIREDFIELD_GENDER)
+				else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_GENDER)
 						&& !isValidGender(strCell)) {
-					invalidList.add(Constants.REQUIREDFIELD_GENDER);
+					invalidList.add(Constants.REQUIREDFIELD_GENDER.toUpperCase());
 				} else if (!(strCell == null || strCell.equals(""))
 						&& cellHeader
-								.equals(Constants.REQUIREDFIELD_DATE_OF_BIRTH)
+								.equalsIgnoreCase(Constants.REQUIREDFIELD_DATE_OF_BIRTH)
 						&& !validateDateString(strCell)) {
-					invalidList.add(Constants.REQUIREDFIELD_DATE_OF_BIRTH);
+					invalidList.add(Constants.REQUIREDFIELD_DATE_OF_BIRTH.toUpperCase());
 				}
 				// Student accomodation
 				/**
@@ -2782,39 +2782,39 @@ public class UploadStudentFile {
 				 * !strCell.trim().equals("") && !isValidFontSize(strCell)) {
 				 * invalidList.add(Constants.FONT_SIZE); }
 				 */
-				else if (cellHeader.equals(this.studentIdLabel)
+				else if (cellHeader.equalsIgnoreCase(this.studentIdLabel)
 						&& !strCell.trim().equals("")) {
 					if (!this.isStudentIdConfigurable
 							&& !validStudentId(strCell)) {
-						invalidList.add(this.studentIdLabel);
+						invalidList.add(this.studentIdLabel.toUpperCase());
 					} else if (this.isStudentIdConfigurable
 							&& this.isStudentIdNumeric.equals("AN")
 							&& !validAlphaNumericStudentId(strCell)) {
-						invalidList.add(this.studentIdLabel);
+						invalidList.add(this.studentIdLabel.toUpperCase());
 					} else if (this.isStudentIdConfigurable
 							&& this.isStudentIdNumeric.equals("NU")
 							&& !validConfigurableStudentId(strCell)) {
-						invalidList.add(this.studentIdLabel);
+						invalidList.add(this.studentIdLabel.toUpperCase());
 					}
-				} else if (cellHeader.equals(this.studentId2Label)
+				} else if (cellHeader.equalsIgnoreCase(this.studentId2Label)
 						&& !strCell.trim().equals("")) {
 					if (!this.isStudentId2Configurable
 							&& !validStudentId(strCell)) {
-						invalidList.add(this.studentId2Label);
+						invalidList.add(this.studentId2Label.toUpperCase());
 					} else if (this.isStudentId2Configurable
 							&& this.isStudentId2Numeric.equals("AN")
 							&& !validAlphaNumericStudentId(strCell)) {
-						invalidList.add(this.studentId2Label);
+						invalidList.add(this.studentId2Label.toUpperCase());
 					} else if (this.isStudentId2Configurable
 							&& this.isStudentId2Numeric.equals("NU")
 							&& !validConfigurableStudentId(strCell)) {
-						invalidList.add(this.studentId2Label);
+						invalidList.add(this.studentId2Label.toUpperCase());
 					}
 				} else if (demoMap.containsKey(cellHeader.trim().toUpperCase())) {
 					strCellHeader = getCellValue(cellHeader);
 					if (!strCell.equals("")
-							&& !validateDemographic(strCellHeader, strCell)) {
-						invalidList.add(strCellHeader);
+							&& !validateDemographic(strCellHeader.toUpperCase(), strCell)) {
+						invalidList.add(strCellHeader.toUpperCase());
 					}
 				}
 			} // End if cell validation start from firstName
@@ -2845,38 +2845,38 @@ public class UploadStudentFile {
 			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!strCell.equals("")) {
-				if (cellHeader.equals(Constants.REQUIREDFIELD_FIRST_NAME)
+				if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_FIRST_NAME)
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.REQUIREDFIELD_FIRST_NAME);
-				} else if (cellHeader.equals(Constants.MIDDLE_NAME)
+					maxLengthList.add(Constants.REQUIREDFIELD_FIRST_NAME.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.MIDDLE_NAME)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.MIDDLE_NAME);
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_LAST_NAME)
+					maxLengthList.add(Constants.MIDDLE_NAME.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_LAST_NAME)
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.REQUIREDFIELD_LAST_NAME);
-				} else if (cellHeader.equals(this.studentIdLabel)
+					maxLengthList.add(Constants.REQUIREDFIELD_LAST_NAME.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(this.studentIdLabel)
 						&& !strCell.trim().equals("")
 						&& this.isStudentIdConfigurable
 						&& !isMaxLengthConfigurableStudentId(strCell)
 						&& this.maxlengthStudentID != null) {
-					maxLengthList.add(this.studentIdLabel);
-				} else if (cellHeader.equals(Constants.STUDENT_ID)
+					maxLengthList.add(this.studentIdLabel.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.STUDENT_ID)
 						&& !strCell.trim().equals("")
 						&& !this.isStudentIdConfigurable
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.STUDENT_ID);
-				} else if (cellHeader.equals(this.studentId2Label)
+					maxLengthList.add(Constants.STUDENT_ID.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(this.studentId2Label)
 						&& !strCell.trim().equals("")
 						&& this.isStudentId2Configurable
 						&& !isMaxLengthConfigurableStudentId2(strCell)
 						&& this.maxlengthStudentId2 != null) {
-					maxLengthList.add(this.studentId2Label);
-				} else if (cellHeader.equals(Constants.STUDENT_ID2)
+					maxLengthList.add(this.studentId2Label.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.STUDENT_ID2)
 						&& !strCell.trim().equals("")
 						&& !this.isStudentIdConfigurable
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.STUDENT_ID2);
+					maxLengthList.add(Constants.STUDENT_ID2.toUpperCase());
 				}
 			}
 		}
@@ -2906,18 +2906,18 @@ public class UploadStudentFile {
 			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!strCell.equals("")) {
-				if (cellHeader.equals(this.studentIdLabel)
+				if (cellHeader.equalsIgnoreCase(this.studentIdLabel)
 						&& !strCell.trim().equals("")
 						&& this.isStudentIdConfigurable
 						&& !isMinLengthConfigurableStudentId(strCell)
 						&& this.studentIdMinLength != null) {
-					minLengthList.add(this.studentIdLabel);
-				} else if (cellHeader.equals(this.studentId2Label)
+					minLengthList.add(this.studentIdLabel.toUpperCase());
+				} else if (cellHeader.equalsIgnoreCase(this.studentId2Label)
 						&& !strCell.trim().equals("")
 						&& this.isStudentId2Configurable
 						&& !isMinLengthConfigurableStudentId2(strCell)
 						&& this.studentId2MinLength != null) {
-					minLengthList.add(this.studentId2Label);
+					minLengthList.add(this.studentId2Label.toUpperCase());
 				}
 			}
 		}
@@ -3788,7 +3788,7 @@ public class UploadStudentFile {
 									ArrayList<String> requiredList = requiredMap
 											.get(new Integer(rowNumber));
 									if (requiredList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toUpperCase())) {
 										/*
 										 * rowDataList
 										 * .add(rowHeaderData[cellPosition]);
@@ -3811,7 +3811,7 @@ public class UploadStudentFile {
 									ArrayList<String> invalidCharList = invalidCharMap
 											.get(new Integer(rowNumber));
 									if (invalidCharList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toUpperCase())) {
 										rowDataList
 												.add(Constants.INVALID_FIELD_ERROR
 														+ " - "
@@ -3830,7 +3830,7 @@ public class UploadStudentFile {
 									ArrayList<String> minLengthList = minLengthMap
 											.get(new Integer(rowNumber));
 									if (minLengthList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toUpperCase())) {
 										rowDataList
 												.add(Constants.MINIMUM_FIELD_ERROR
 														+ " - "
@@ -3849,7 +3849,7 @@ public class UploadStudentFile {
 									ArrayList<String> maxLengthList = maxLengthMap
 											.get(new Integer(rowNumber));
 									if (maxLengthList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toUpperCase())) {
 										rowDataList
 												.add(Constants.MAXIMUM_FIELD_ERROR
 														+ " - "
@@ -3868,7 +3868,7 @@ public class UploadStudentFile {
 									ArrayList<String> logicalErrorList = logicalErrorMap
 											.get(new Integer(rowNumber));
 									if (logicalErrorList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toUpperCase())) {
 										rowDataList
 												.add(Constants.LOGICAL_FIELD_ERROR
 														+ " - "
@@ -3887,7 +3887,7 @@ public class UploadStudentFile {
 									String logicalErrorList = leafNodeErrorMap
 											.get(new Integer(rowNumber));
 									if (logicalErrorList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toUpperCase())) {
 										rowDataList
 												.add(Constants.LOGICAL_FIELD_ERROR
 														+ " - "

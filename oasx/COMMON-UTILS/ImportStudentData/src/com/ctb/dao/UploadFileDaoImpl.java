@@ -230,8 +230,10 @@ public class UploadFileDaoImpl  implements UploadFileDao {
 			logger.error("SQL Exception in getStudentDemoGraphics-- >"
 					+ e.getErrorCode());
 			logger.error("Exception in getStudentDemoGraphics" + e.getMessage());
+			throw new Exception();
 		} catch (Exception e) {
 			logger.error("Exception in getStudentDemoGraphics" + e.getMessage());
+			throw new Exception();
 		} finally {
 			SQLUtil.closeDbObjects(conn, pstmt, rSet);
 		}
@@ -252,10 +254,10 @@ public class UploadFileDaoImpl  implements UploadFileDao {
 		boolean isFistValue = true;
 		for(String demo : demoArr){
 			if(isFistValue){
-				queryString += "and cusDemo.Label_Name in ('"+demo.trim()+"'";
+				queryString += "and upper(cusDemo.Label_Name) in ('"+demo.trim().toUpperCase()+"'";
 				isFistValue = false;
 			}else{
-				queryString += ",'"+demo.trim()+"'";
+				queryString += ",'"+demo.trim().toUpperCase()+"'";
 			}
 		}
 		queryString += ")";

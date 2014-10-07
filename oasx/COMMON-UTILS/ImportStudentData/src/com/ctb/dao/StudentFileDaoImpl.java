@@ -142,10 +142,10 @@ public class StudentFileDaoImpl implements StudentFileDao {
 		boolean isFistValue = true;
 		for(String demo : demoArr){
 			if(isFistValue){
-				queryString += "and cusDemo.Label_Name in ('"+demo.trim()+"'";
+				queryString += "and upper(cusDemo.Label_Name) in ('"+demo.trim().toUpperCase()+"'";
 				isFistValue = false;
 			}else{
-				queryString += ",'"+demo.trim()+"'";
+				queryString += ",'"+demo.trim().toUpperCase()+"'";
 			}
 		}
 		queryString += ")";
