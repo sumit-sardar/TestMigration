@@ -28,7 +28,7 @@ public class Constants {
 	public static final String PRIMARY_PHONE = "Primary Phone";
 	public static final String SECONDARY_PHONE = "Secondary Phone";
 	public static final String FAX = "Fax Number";
-	public static final String EXT_SCHOOL_ID = "Engrade User Id";
+	public static final String EXT_SCHOOL_ID = "External User Id";
 
 	public static final String ACTIVATION_STATUS_ACTIVE = "AC";
 

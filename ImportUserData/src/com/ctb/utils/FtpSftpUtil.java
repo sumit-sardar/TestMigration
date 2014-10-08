@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -144,7 +143,6 @@ public class FtpSftpUtil {
 	 * @param fileTimeMap 
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	public static void downloadFiles(Session session, String sourceDir,
 			String targetDir, Map<String, Long> fileTimeMap) throws Exception {
 		logger.info("Download Start Time: "
