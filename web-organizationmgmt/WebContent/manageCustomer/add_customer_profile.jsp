@@ -16,6 +16,7 @@
 	Boolean formCEnabled = false;
 
 	Boolean espanolBEnabled = false;
+	Boolean formDEnabled = false;
 	
 	if(("editCustomer".equals(currentAction))){
 		for(String selection : selectedList){
@@ -30,6 +31,8 @@
 			
 			else if(selection.equals("Espanol B"))
 				espanolBEnabled = true;
+			else if(selection.equals("Form D"))
+				formDEnabled = true;
 		}
 	}
 	
@@ -75,7 +78,8 @@
 							<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
 							<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" /> <br>
 							<netui:checkBoxOption value="Form C" tagId="FormCcheckBox" />
-							<netui:checkBoxOption value="Espanol B" tagId="EspanolBcheckBox" />
+							<netui:checkBoxOption value="Form D" tagId="FormDcheckBox"/>
+							<netui:checkBoxOption value="Espanol B" tagId="EspanolBcheckBox" />							
 						</netui:checkBoxGroup></div>
 					</c:if>
 					<c:if test="${isLasLinkProduct}">
@@ -85,6 +89,7 @@
 							<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" disabled="<%=formBEnabled %>"/>
 							<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" disabled="<%=espanolEnabled %>"/><br>
 							<netui:checkBoxOption value="Form C" tagId="FormCcheckBox" disabled="<%=formCEnabled %>"/>
+							<netui:checkBoxOption value="Form D" tagId="FormDcheckBox" disabled="<%=formDEnabled %>"/>
 							<netui:checkBoxOption value="Espanol B" tagId="EspanolBcheckBox" disabled="<%=espanolBEnabled %>" />
 						</netui:checkBoxGroup></div>
 					</c:if>

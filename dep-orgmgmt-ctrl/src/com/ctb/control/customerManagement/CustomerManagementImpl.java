@@ -119,6 +119,7 @@ public class CustomerManagementImpl implements CustomerManagement
         boolean laslinkFormAOrFormBSelected = false;  
         boolean laslinkEspanolSelected = false; 
         boolean laslinkFormCSelected = false;
+        boolean laslinkFormDSelected = false;
         
         boolean laslinkEspanolBSelected = false;
         
@@ -219,6 +220,11 @@ public class CustomerManagementImpl implements CustomerManagement
                 	customers.setupLaslinkFormCCustomerConfiguration(customerId);
                 	laslinkFormCSelected = true;
                 }
+            	
+            	else if(CTBConstants.CUSTOMER_PRODUCT_FORMD.equals(selectedProduct)){
+                	customers.setupLaslinkFormDCustomerConfiguration(customerId);
+                	laslinkFormDSelected = true;
+                }
                
                 else if(CTBConstants.CUSTOMER_PRODUCT_ESPANOLB.equals(selectedProduct)){
                 	customers.setupEspanolBCustomerConfiguration(customerId);
@@ -270,7 +276,7 @@ public class CustomerManagementImpl implements CustomerManagement
         boolean laslinkFormAOrFormBSelected = false;  
         boolean laslinkEspanolSelected = false; 
         boolean laslinkFormCSelected = false;
-       
+        boolean laslinkFormDSelected = false;
         boolean laslinkEspanolBSelected = false;
         
         try {
@@ -378,7 +384,10 @@ public class CustomerManagementImpl implements CustomerManagement
                     	customers.setupLaslinkFormCCustomerConfiguration(customerId);
                     	laslinkFormCSelected = true;
                     }
-                    
+                    else if(CTBConstants.CUSTOMER_PRODUCT_FORMD.equals(selectedProduct)){
+                    	customers.setupLaslinkFormDCustomerConfiguration(customerId);
+                    	laslinkFormDSelected = true;
+                    }
                 	//changes for FORM C and FORM D ends
                 	
                     else if(CTBConstants.CUSTOMER_PRODUCT_ESPANOLB.equals(selectedProduct)){
@@ -913,7 +922,9 @@ public class CustomerManagementImpl implements CustomerManagement
 	           if(Arrays.asList(productTestCatalogIds).contains(7501)){
 	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_FORMC);
 	           }
-	           
+	           if(Arrays.asList(productTestCatalogIds).contains(7505)){
+	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_FORMD);
+	           }
 	           if(Arrays.asList(productTestCatalogIds).contains(7502)){
 	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_ESPANOLB);
 	           }

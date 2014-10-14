@@ -366,7 +366,12 @@ public interface Customer extends JdbcControl
     //set up for Laslink Form C
     @JdbcControl.SQL(statement = "call setup_laslinkformc_customer({CustomerId})")
     void setupLaslinkFormCCustomerConfiguration(Integer CustomerId) throws SQLException;
-       
+    
+    //set up for Laslinks Formm D    
+    @JdbcControl.SQL(statement = "call setup_laslinkformd_customer({CustomerId})")
+    void setupLaslinkFormDCustomerConfiguration(Integer CustomerId) throws SQLException;
+    
+    
   //set up for Laslink Espanol B
     @JdbcControl.SQL(statement = "call setup_espanolb_customer({CustomerId})")
     void setupEspanolBCustomerConfiguration(Integer CustomerId) throws SQLException;
