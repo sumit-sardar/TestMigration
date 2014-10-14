@@ -1409,8 +1409,10 @@ public class UploadUserFile {
 		UploadFileDao dao = new UploadFileDaoImpl();
 
 		String errorFileName = Configuration.getLocalFilePath()
-				+ Constants.FILE_SEPARATOR + this.inFile.getName() + ".errors";
-
+				+ Constants.FILE_SEPARATOR + this.inFile.getName() + ".error";
+		
+		String errorMovedFileName = this.inFile.getName() + ".error";
+		
 		BufferedWriter bWriter = new BufferedWriter(new FileWriter(
 				errorFileName, true), ',');
 		CSVWriter csvOutput = new CSVWriter(bWriter);
@@ -1574,7 +1576,7 @@ public class UploadUserFile {
 			if (errorCount > 0) {
 				logger.info("Total error records present are : " + errorCount);
 				new FtpSftpUtil().sendfilesSFTP(Configuration.getErrorPath(),
-						errorFileName , this.inFile.getName());
+						errorFileName , this.inFile.getName() , errorMovedFileName);
 			}
 
 		} catch (Exception e) {

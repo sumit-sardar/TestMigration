@@ -89,7 +89,7 @@ public class FtpSftpUtil {
 	 * @throws Exception
 	 */
 	public void sendfilesSFTP(String destinationPath, String sourceFile,
-			String errorFileName) throws Exception {
+			String errorFileName , String errorMovedFileName) throws Exception {
 
 		Session session = null;
 		ChannelSftp sftpChannel = null;
@@ -101,27 +101,42 @@ public class FtpSftpUtil {
 			sftpChannel = (ChannelSftp) channel;
 
 			String destination = destinationPath;
+			String finalDestinationPath = Configuration.getFinalErrorPath();
 			sftpChannel.cd(destination);
 			sftpChannel.put(sourceFile, destination);
 			logger.info("Error File is Created and Placed at specified Location..");
-
+			
+			sftpChannel.cd(finalDestinationPath);
+			sftpChannel.rename(destination+errorMovedFileName , finalDestinationPath+errorMovedFileName);
+			logger.info("Error File is Moved at Final Error Location..");
 		} catch (SftpException e) {
-			logger.info("Exception : "
-					+ e.getMessage()
-					+ " --> Error File cannot be placed at specified location..");
-			/**
-			 * Send mail
-			 */
-			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
-				EmailSender.sendMail(
-						"",
-						Configuration.getEmailSender(),
-						Configuration.getEmailRecipient(),
-						Configuration.getEmailCC(),
-						Configuration.getEmailBCC(),
-						Configuration.getEmailSubjectErrorFileFTPIssue(),
-						Configuration.getEmailBodyErrorFileFTPIssue().replace(
-								"<#FileName#>", errorFileName), null);
+			if (e.id == 4) {
+				/**
+				 * If a same file is already present then Exception is thrown
+				 * having ID: 4
+				 */
+				logger.info("Error File ->"
+						+ errorMovedFileName
+						+ " is already present in the Final Error Location. Hence not moving the error file.");
+			} else {
+				logger.info("SftpException : "
+						+ e.getMessage()
+						+ " --> Error File cannot be placed at specified location..");
+				/**
+				 * Send mail
+				 */
+				if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+					EmailSender.sendMail(
+									"",
+									Configuration.getEmailSender(),
+									Configuration.getEmailRecipient(),
+									Configuration.getEmailCC(),
+									Configuration.getEmailBCC(),
+									Configuration.getEmailSubjectErrorFileFTPIssue(),
+									Configuration.getEmailBodyErrorFileFTPIssue()
+											.replace("<#FileName#>",
+													errorMovedFileName), null);
+				}
 			}
 		} finally {
 			if (sftpChannel != null) {

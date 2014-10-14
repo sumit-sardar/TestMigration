@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -134,7 +133,7 @@ public class UploadFormUtils {
 			List<String> orgNodeList = new ArrayList<String>();
 			List<String> headerListFromTemplate = new ArrayList<String>();
 			List<String> demographicsHeaderListTemplate = new ArrayList<String>();
-			int count = 0;
+			//int count = 0;
 			String[] firstRow;
 			boolean firstRowProcessed = false;
 

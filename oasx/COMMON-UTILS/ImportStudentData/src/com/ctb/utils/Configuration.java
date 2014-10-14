@@ -16,6 +16,7 @@ public class Configuration {
 	static String archivePath = "";
 	static String customerId = "";
 	static String errorPath = "";
+	private static String finalErrorPath = "";
 	static String clientPrivateKeyPath = "";
 	static String demographics = "";
 	static String log4jFile = "";
@@ -57,6 +58,7 @@ public class Configuration {
 		ftpPort = ExtractUtil.getDetail("oas.importdata.ftp.port");
 		archivePath = ExtractUtil.getDetail("oas.importdata.ftp.archivepath");
 		errorPath = ExtractUtil.getDetail("oas.importdata.ftp.errorpath");
+		finalErrorPath = ExtractUtil.getDetail("oas.importdata.ftp.finalerrorpath");
 		customerId = ExtractUtil.getDetail("oas.customerId");
 		clientPrivateKeyPath = ExtractUtil.getDetail("oas.private.keyPath");
 		demographics = ExtractUtil.getDetail("oas.manual.demographics");
@@ -264,5 +266,10 @@ public class Configuration {
 	public static String getEmailAlias() {
 		return emailAlias;
 	}
+
+	public static String getFinalErrorPath() {
+		return finalErrorPath;
+	}
+	
 	
 }
