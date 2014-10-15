@@ -55,11 +55,11 @@ public class FileGenerator {
 	private static final DateFormat fileDateOutputFormat = new SimpleDateFormat(
 	"MMddyyHHmm");
 
-	private static String sql = "select org_node_mdr_number as mdr, category_name as categoryName,"
-		+ " org_node_code as nodeCode, node.org_node_name as nodeName, onc.category_level as categoryLevel"
-		+ " from org_node_ancestor ona, org_node_category onc, org_node node, org_node_student ons "
-		+ " where    ons.org_node_id = ona.org_node_id   and  ons.student_id =  ? "
-		+ " and onc.org_node_category_id = node.org_node_category_id   and node.org_node_id = ona.ancestor_org_node_id";
+	private static String sql = "SELECT NODE.ORG_NODE_MDR_NUMBER AS MDR, ONC.CATEGORY_NAME  AS CATEGORYNAME, " 
+		+ " ORG_NODE_CODE AS NODECODE, NODE.ORG_NODE_NAME  AS NODENAME, ONC.CATEGORY_LEVEL   AS CATEGORYLEVEL " 
+		+ " FROM ORG_NODE_ANCESTOR ONA, ORG_NODE_CATEGORY ONC, ORG_NODE  NODE, ORG_NODE_STUDENT  ONS, " 
+		+ " TEST_ROSTER  ROS WHERE ROS.TEST_ROSTER_ID = ? AND ONS.ORG_NODE_ID = ROS.ORG_NODE_ID AND ONS.STUDENT_ID = ROS.STUDENT_ID AND " 
+		+ " ONA.ORG_NODE_ID = ONS.ORG_NODE_ID AND ONC.ORG_NODE_CATEGORY_ID = NODE.ORG_NODE_CATEGORY_ID AND NODE.ORG_NODE_ID = ONA.ANCESTOR_ORG_NODE_ID";
 
 	// Defect Fix for 66423 and timeZobe defect
 	private static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,tad.time_zone as timezone,"
@@ -396,7 +396,7 @@ public class FileGenerator {
 					// System.out.println("roster id "+ roster.getTestRosterId()
 					// +" : : "+ roster.getTestAdminId());
 					// org node
-					createOrganization(oascon, tfil, roster.getStudentId(),
+					createOrganization(oascon, tfil, roster.getTestRosterId(),
 							districtMap, schoolMap, classMap, sectionMap, groupMap, divisionMap, levelMap, orderFile);
 					// create test Session
 					createTestSessionDetails(oascon, tfil, roster
@@ -1277,7 +1277,7 @@ public class FileGenerator {
 	}
 
 	private void createOrganization(Connection con, Tfil tfil,
-			Integer studentId, HashMap<String, Integer> districtMap,
+			Integer rosterId, HashMap<String, Integer> districtMap,
 			HashMap<String, Integer> schoolMap,
 			HashMap<String, Integer> classMap,
 			HashMap<String, Integer> sectionMap,
@@ -1293,7 +1293,7 @@ public class FileGenerator {
 		try {
 			ps = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
-			ps.setInt(1, studentId);
+			ps.setInt(1, rosterId);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				if (rs.getString(4).equalsIgnoreCase("root")
@@ -1322,14 +1322,14 @@ public class FileGenerator {
 								.toString())) {
 					tfil.setElementNameA(rs.getString(4).toString());
 					tfil.setElementALabel(rs.getString(2));
-					Integer integer = districtMap.get(rs.getString(4));
+					Integer integer = districtMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++districtElementNumber;
-						districtMap.put(rs.getString(4), integer);
+						districtMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberA(String.valueOf(districtMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesA(rs.getString(3));
 					tfil.setOrganizationId("XX" + rs.getString(1));
@@ -1346,14 +1346,14 @@ public class FileGenerator {
 								.toString())) {
 					tfil.setElementNameB(rs.getString(4));
 					tfil.setElementBLabel(rs.getString(2));
-					Integer integer = schoolMap.get(rs.getString(4));
+					Integer integer = schoolMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++schoolElementNumber;
-						schoolMap.put(rs.getString(4), integer);
+						schoolMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberB(String.valueOf(schoolMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesB(rs.getString(3));
 					tfil.setElementStructureLevelB("02");
@@ -1368,14 +1368,14 @@ public class FileGenerator {
 								.toString())) {
 					tfil.setElementNameC(rs.getString(4));
 					tfil.setElementCLabel(rs.getString(2));
-					Integer integer = classMap.get(rs.getString(4));
+					Integer integer = classMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++classElementNumber;
-						classMap.put(rs.getString(4), integer);
+						classMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberC(String.valueOf(classMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesC(rs.getString(3));
 					tfil.setElementStructureLevelC("03");
@@ -1390,14 +1390,14 @@ public class FileGenerator {
 								.toString())) {
 					tfil.setElementNameD(rs.getString(4));
 					tfil.setElementDLabel(rs.getString(2));
-					Integer integer = sectionMap.get(rs.getString(4));
+					Integer integer = sectionMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++sectionElementNumber;
-						sectionMap.put(rs.getString(4), integer);
+						sectionMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberD(String.valueOf(sectionMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesD(rs.getString(3));
 					tfil.setElementStructureLevelD("04");
@@ -1412,14 +1412,14 @@ public class FileGenerator {
 								.toString())) {
 					tfil.setElementNameE(rs.getString(4));
 					tfil.setElementELabel(rs.getString(2));
-					Integer integer = groupMap.get(rs.getString(4));
+					Integer integer = groupMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++groupElementNumber;
-						groupMap.put(rs.getString(4), integer);
+						groupMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberE(String.valueOf(groupMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesE(rs.getString(3));
 					tfil.setElementStructureLevelE("05");
@@ -1433,14 +1433,14 @@ public class FileGenerator {
 								.toString())) {
 					tfil.setElementNameF(rs.getString(4));
 					tfil.setElementFLabel(rs.getString(2));
-					Integer integer = divisionMap.get(rs.getString(4));
+					Integer integer = divisionMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++divisionElementNumber;
-						divisionMap.put(rs.getString(4), integer);
+						divisionMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberF(String.valueOf(divisionMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesF(rs.getString(3));
 					tfil.setElementStructureLevelF("06");
@@ -1452,14 +1452,14 @@ public class FileGenerator {
 								organizationMapSize.toString())) {
 					tfil.setElementNameG(rs.getString(4));
 					tfil.setElementGLabel(rs.getString(2));
-					Integer integer = levelMap.get(rs.getString(4));
+					Integer integer = levelMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++levelElementNumber;
-						levelMap.put(rs.getString(4), integer);
+						levelMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberG(String.valueOf(levelMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesG(rs.getString(3));
 					tfil.setElementStructureLevelG("07");

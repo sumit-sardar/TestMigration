@@ -61,7 +61,7 @@ public class FileGeneratorForLL2ND {
 	private static String TESTROSTER_WITH_STUDENT_BY_ROSTER_SQL = " select this_.TEST_ROSTER_ID   as TEST_ROSTER_ID,  this_.ACTIVATION_STATUS  as ACTIVATION_STATUS,  this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.STUDENT_ID   as STUDENT_ID,  this_.TEST_ADMIN_ID  as TEST_ADMIN_ID, student0_.FIRST_NAME   as FIRST_NAME,  student0_.LAST_NAME    as LAST_NAME,  student0_.MIDDLE_NAME  as MIDDLE_NAME,  student0_.BIRTHDATE    as BIRTHDATE,  decode(upper(student0_.GENDER), 'U', ' ', student0_.GENDER) as GENDER,  student0_.GRADE  as GRADE0,  student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1, tadmin_.product_id as PRODUCT_ID  from TEST_ROSTER this_ , student student0_ , test_admin tadmin_  where tadmin_.test_admin_id = this_.test_admin_id and this_.STUDENT_ID = student0_.STUDENT_ID  and this_.TEST_ROSTER_ID IN( <#ROSTER_ID_LIST#> )";
 	private static String STUDENT_CONTACT_SQL = " select studentcon0_.STUDENT_ID  as STUDENT_ID, studentcon0_.STUDENT_CONTACT_ID as STUDENT_CONTACT_ID, studentcon0_.CITY  as CITY,   studentcon0_.STATEPR  as STATEPR,   studentcon0_.STUDENT_ID  as STUDENT_ID  from STUDENT_CONTACT studentcon0_  where studentcon0_.STUDENT_ID = ?";
 	private static String STUDENT_DEMOGRAPHIC_SQL = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME, VALUE from student_demographic_data sdd where sdd.student_id = ? ";
-	private static String ORGANIZATION_SQL = "select org_node_mdr_number as mdr, category_name as categoryName, org_node_code as nodeCode, node.org_node_name as nodeName, onc.category_level as categoryLevel from org_node_ancestor ona, org_node_category onc, org_node node, org_node_student ons where    ons.org_node_id = ona.org_node_id   and  ons.student_id =  ? and onc.org_node_category_id = node.org_node_category_id   and node.org_node_id = ona.ancestor_org_node_id";
+	private static String ORGANIZATION_SQL = "SELECT NODE.ORG_NODE_MDR_NUMBER AS MDR, ONC.CATEGORY_NAME  AS CATEGORYNAME, ORG_NODE_CODE AS NODECODE, NODE.ORG_NODE_NAME  AS NODENAME, ONC.CATEGORY_LEVEL   AS CATEGORYLEVEL FROM ORG_NODE_ANCESTOR ONA, ORG_NODE_CATEGORY ONC, ORG_NODE  NODE, ORG_NODE_STUDENT  ONS, TEST_ROSTER  ROS WHERE ROS.TEST_ROSTER_ID = ? AND ONS.ORG_NODE_ID = ROS.ORG_NODE_ID AND ONS.STUDENT_ID = ROS.STUDENT_ID AND ONA.ORG_NODE_ID = ONS.ORG_NODE_ID AND ONC.ORG_NODE_CATEGORY_ID = NODE.ORG_NODE_CATEGORY_ID AND NODE.ORG_NODE_ID = ONA.ANCESTOR_ORG_NODE_ID";
 	private static String TEST_SESSION_SQL = "SELECT TAD.PREFERRED_FORM AS FORM, TC.TEST_LEVEL AS TESTLEVEL, TAD.TIME_ZONE AS TIMEZONE, TO_CHAR((ROSTER.START_DATE_TIME), 'MMDDYY HH24:MI:SS') AS TESTDATE, TO_CHAR(NVL(PRG.PROGRAM_START_DATE, ''), 'MMDDYYYY HH24:MI:SS') AS PROGRAMSTARTDATE FROM TEST_ADMIN TAD, TEST_ROSTER ROSTER, TEST_CATALOG TC, PROGRAM PRG WHERE PRG.PROGRAM_ID = TAD.PROGRAM_ID(+) AND TAD.TEST_ADMIN_ID = ROSTER.TEST_ADMIN_ID AND ROSTER.TEST_COMPLETION_STATUS IN ('CO', 'IS', 'IC') AND TC.TEST_CATALOG_ID = TAD.TEST_CATALOG_ID AND ROSTER.TEST_ROSTER_ID = ?"; 
 	private static String TEST_ROSTER_DETAILS_SQL = "SELECT DISTINCT SISS.VALIDATION_STATUS AS VALIDATIONSTATUS, SISS.ITEM_SET_ORDER AS ITEMSETORDER, SISS.EXEMPTIONS AS TESTEXEMPTIONS, SISS.ABSENT AS ABSENT, DECODE(ISS.ITEM_SET_NAME, 'HABLANDO', 'Speaking', 'ESCUCHANDO', 'Listening', 'LECTURA', 'Reading', 'ESCRITURA', 'Writing', ISS.ITEM_SET_NAME) AS ITEMSETNAME FROM STUDENT_ITEM_SET_STATUS SISS, TEST_ROSTER ROS, ITEM_SET ISS WHERE ISS.ITEM_SET_ID = SISS.ITEM_SET_ID AND SISS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID AND ROS.STUDENT_ID = ? AND ROS.TEST_ROSTER_ID = ? ORDER BY SISS.ITEM_SET_ORDER";
 	private static String SCORE_SKILL_AREA_OVERALL_SQL = "SELECT COMPFACT.SCALE_SCORE, COMPFACT.PROFICENCY_LEVEL, COMPFACT.NORMAL_CURVE_EQUIVALENT, COMPFACT.NATIONAL_PERCENTILE FROM LASLINK_COMPOSITE_FACT COMPFACT WHERE COMPFACT.STUDENTID = :STUDENTID AND COMPFACT.SESSIONID = :SESSIONID";
@@ -237,7 +237,7 @@ public class FileGeneratorForLL2ND {
 					setStudentList(tfil, st);
 					
 					// Organization
-					createOrganization(oascon, tfil, roster.getStudentId(),
+					createOrganization(oascon, tfil, roster.getTestRosterId(),
 							districtMap, schoolMap, classMap, sectionMap, groupMap, divisionMap, levelMap, orderFile);
 					
 					// Test Session Details
@@ -811,7 +811,7 @@ public class FileGeneratorForLL2ND {
 	}
 	
 	private void createOrganization(Connection con, TfilLL2ND tfil,
-			Integer studentId, HashMap<String, Integer> districtMap,
+			Integer rosterId, HashMap<String, Integer> districtMap,
 			HashMap<String, Integer> schoolMap,
 			HashMap<String, Integer> classMap,
 			HashMap<String, Integer> sectionMap,
@@ -826,7 +826,7 @@ public class FileGeneratorForLL2ND {
 		try {
 			ps = con.prepareStatement(ORGANIZATION_SQL, ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
-			ps.setInt(1, studentId);
+			ps.setInt(1, rosterId);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				if (rs.getString(4).equalsIgnoreCase("root")
@@ -853,14 +853,14 @@ public class FileGeneratorForLL2ND {
 								.toString())) {
 					tfil.setElementNameA(rs.getString(4).toString());
 					tfil.setElementLabelA(rs.getString(2));
-					Integer integer = districtMap.get(rs.getString(4));
+					Integer integer = districtMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++districtElementNumber;
-						districtMap.put(rs.getString(4), integer);
+						districtMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberA(String.valueOf(districtMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					tfil.setElementSpecialCodesA(rs.getString(3));
 					tfil.setMdrNumA(rs.getString(1));
 					tfil.setOrganizationId("XX" + rs.getString(1));
@@ -877,14 +877,14 @@ public class FileGeneratorForLL2ND {
 								.toString())) {
 					tfil.setElementNameB(rs.getString(4));
 					tfil.setElementLabelB(rs.getString(2));
-					Integer integer = schoolMap.get(rs.getString(4));
+					Integer integer = schoolMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++schoolElementNumber;
-						schoolMap.put(rs.getString(4), integer);
+						schoolMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberB(String.valueOf(schoolMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					tfil.setElementSpecialCodesB(rs.getString(3));
 					tfil.setMdrNumB(rs.getString(1));
 					tfil.setElementStructureLevelB("02");
@@ -899,14 +899,14 @@ public class FileGeneratorForLL2ND {
 								.toString())) {
 					tfil.setElementNameC(rs.getString(4));
 					tfil.setElementLabelC(rs.getString(2));
-					Integer integer = classMap.get(rs.getString(4));
+					Integer integer = classMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++classElementNumber;
-						classMap.put(rs.getString(4), integer);
+						classMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberC(String.valueOf(classMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					tfil.setElementSpecialCodesC(rs.getString(3));
 					tfil.setMdrNumC(rs.getString(1));
 					tfil.setElementStructureLevelC("03");
@@ -921,14 +921,14 @@ public class FileGeneratorForLL2ND {
 								.toString())) {
 					tfil.setElementNameD(rs.getString(4));
 					tfil.setElementLabelD(rs.getString(2));
-					Integer integer = sectionMap.get(rs.getString(4));
+					Integer integer = sectionMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++sectionElementNumber;
-						sectionMap.put(rs.getString(4), integer);
+						sectionMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberD(String.valueOf(sectionMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					tfil.setElementSpecialCodesD(rs.getString(3));
 					tfil.setMdrNumD(rs.getString(1));
 					tfil.setElementStructureLevelD("04");
@@ -943,14 +943,14 @@ public class FileGeneratorForLL2ND {
 								.toString())) {
 					tfil.setElementNameE(rs.getString(4));
 					tfil.setElementLabelE(rs.getString(2));
-					Integer integer = groupMap.get(rs.getString(4));
+					Integer integer = groupMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++groupElementNumber;
-						groupMap.put(rs.getString(4), integer);
+						groupMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberE(String.valueOf(groupMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					tfil.setElementSpecialCodesE(rs.getString(3));
 					tfil.setMdrNumE(rs.getString(1));
 					tfil.setElementStructureLevelE("05");
@@ -964,14 +964,14 @@ public class FileGeneratorForLL2ND {
 								.toString())) {
 					tfil.setElementNameF(rs.getString(4));
 					tfil.setElementLabelF(rs.getString(2));
-					Integer integer = divisionMap.get(rs.getString(4));
+					Integer integer = divisionMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++divisionElementNumber;
-						divisionMap.put(rs.getString(4), integer);
+						divisionMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberF(String.valueOf(divisionMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					tfil.setElementSpecialCodesF(rs.getString(3));
 					tfil.setMdrNumF(rs.getString(1));
 					tfil.setElementStructureLevelF("06");
@@ -983,14 +983,14 @@ public class FileGeneratorForLL2ND {
 								organizationMapSize.toString())) {
 					tfil.setElementNameG(rs.getString(4));
 					tfil.setElementLabelG(rs.getString(2));
-					Integer integer = levelMap.get(rs.getString(4));
+					Integer integer = levelMap.get(rs.getString(1));
 					if (integer == null) {
 						integer = ++levelElementNumber;
-						levelMap.put(rs.getString(4), integer);
+						levelMap.put(rs.getString(1), integer);
 	
 					}
 					tfil.setElementNumberG(String.valueOf(levelMap.get(rs
-							.getString(4))));
+							.getString(1))));
 					tfil.setElementSpecialCodesG(rs.getString(3));
 					tfil.setMdrNumG(rs.getString(1));
 					tfil.setElementStructureLevelG("07");
