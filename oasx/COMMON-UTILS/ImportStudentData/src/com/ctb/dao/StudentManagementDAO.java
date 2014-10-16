@@ -249,24 +249,25 @@ public class StudentManagementDAO implements IStudentManagementDAO {
 				StudentAccommodations std = uploadStudent
 						.getStudentAccommodations();
 				pstmt.setInt(1, std.getStudentId());
-				pstmt.setString(2, std.getScreenMagnifier());
-				pstmt.setString(3, std.getScreenReader());
-				pstmt.setString(4, std.getCalculator());
-				pstmt.setString(5, std.getTestPause());
-				pstmt.setString(6, std.getUntimedTest());
-				pstmt.setString(7, std.getHighlighter());
-				pstmt.setString(8, std.getQuestionBackgroundColor());
-				pstmt.setString(9, std.getQuestionFontColor());
-				pstmt.setString(10, std.getQuestionFontSize());
-				pstmt.setString(11, std.getAnswerBackgroundColor());
-				pstmt.setString(12, std.getAnswerFontColor());
-				pstmt.setString(13, std.getAnswerFontSize());
-				pstmt.setString(14, std.getMaskingRuler());
-				pstmt.setString(15, std.getMusicFile());
-				pstmt.setString(16, std.getMagnifyingGlass());
-				pstmt.setString(17, std.getExtendedTime());
-				pstmt.setString(18, std.getMaskingTool());
-				pstmt.setString(19, std.getMicrophoneHeadphone());
+				//Modified for defect #80711 : Populating accommodations for new student with default values 
+				pstmt.setString(2, ((std.getScreenMagnifier()== null) ? "" : std.getScreenMagnifier()));
+				pstmt.setString(3, ((std.getScreenReader() == null) ? "F" : std.getScreenReader()));
+				pstmt.setString(4, ((std.getCalculator() == null) ? "F" : std.getCalculator()));
+				pstmt.setString(5, ((std.getTestPause() == null) ? "T" : std.getTestPause()));
+				pstmt.setString(6, ((std.getUntimedTest() == null) ? "F" : std.getUntimedTest()));
+				pstmt.setString(7, ((std.getHighlighter() == null) ? "T" : std.getHighlighter()));
+				pstmt.setString(8, ((std.getQuestionBackgroundColor() == null) ? "" : std.getQuestionBackgroundColor()));
+				pstmt.setString(9, ((std.getQuestionFontColor() == null) ? "" : std.getQuestionFontColor()));
+				pstmt.setString(10, ((std.getQuestionFontSize() == null) ? "" : std.getQuestionFontSize()));
+				pstmt.setString(11, ((std.getAnswerBackgroundColor() == null) ? "" : std.getAnswerBackgroundColor()));
+				pstmt.setString(12, ((std.getAnswerFontColor() == null) ? "" : std.getAnswerFontColor()));
+				pstmt.setString(13, ((std.getAnswerFontSize() == null) ? "" : std.getAnswerFontSize()));
+				pstmt.setString(14, ((std.getMaskingRuler() == null) ? "F" : std.getMaskingRuler()));
+				pstmt.setString(15, ((std.getMusicFile() == null) ? "" : std.getMusicFile()));
+				pstmt.setString(16, ((std.getMagnifyingGlass() == null) ? "F" : std.getMagnifyingGlass()));
+				pstmt.setString(17, ((std.getExtendedTime() == null) ? "F" : std.getExtendedTime()));
+				pstmt.setString(18, ((std.getMaskingTool() == null) ? "F" : std.getMaskingTool()));
+				pstmt.setString(19, ((std.getMicrophoneHeadphone() == null) ? "F" : std.getMicrophoneHeadphone()));
 
 				pstmt.addBatch();
 				count++;

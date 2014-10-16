@@ -68,7 +68,7 @@ public class StudentManagementControl {
 		studentManagement.insertStudentDetails(newStdRecordCacheImpl);
 		studentManagement.createOrgnodeStudent(newStdRecordCacheImpl);
 		/** Commented out because of story : OAS-636 & OAS-637 **/
-		// studentManagement.createStudentAccommodations(newStdRecordCacheImpl);
+		studentManagement.createStudentAccommodations(newStdRecordCacheImpl);//Uncommented for defect #80711 : Populating accommodations for new student with default values
 		studentManagement.createStudentDemographicData(newStdRecordCacheImpl);
 
 	}
