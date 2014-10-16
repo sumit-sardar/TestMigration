@@ -128,7 +128,8 @@ public class LTIValidation {
 
 	public boolean validateRequest(HttpServletRequest request, String secretKey) {
 		boolean result = false;
-
+		System.out.println("Request URI>> "+request.getRequestURI());
+		System.out.println("Request URL>> "+request.getRequestURL());
 		Map<String, String> oauthMap = new TreeMap<String, String>();
 		// read all oauth_ parameters
 		Map<java.lang.String, java.lang.String[]> reqParams = (Map<java.lang.String, java.lang.String[]>) request
@@ -153,7 +154,7 @@ public class LTIValidation {
 		baseString
 				.append("POST&"
 						+ URLEncoder
-								.encode("https://oastest.ctb.com/SessionWeb/LTIAuthentication")
+								.encode(request.getRequestURL().toString())
 						+ "&");
 		for (Map.Entry<String, String> oauthParam : oauthMap.entrySet()) {
 			baseString.append(URLEncoder.encode(oauthParam.getKey() + "="
