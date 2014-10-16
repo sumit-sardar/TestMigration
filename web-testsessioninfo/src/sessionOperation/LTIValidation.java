@@ -151,10 +151,14 @@ public class LTIValidation {
 
 		}
 		StringBuilder baseString = new StringBuilder();
+		String requestURL = request.getRequestURL().toString();
+		requestURL = requestURL.substring(0, requestURL.lastIndexOf(":")) + request.getRequestURI();
+		System.out.println("Modified requestURL >> "+requestURL);
+		
 		baseString
 				.append("POST&"
 						+ URLEncoder
-								.encode(request.getRequestURL().toString())
+								.encode(requestURL)
 						+ "&");
 		for (Map.Entry<String, String> oauthParam : oauthMap.entrySet()) {
 			baseString.append(URLEncoder.encode(oauthParam.getKey() + "="
