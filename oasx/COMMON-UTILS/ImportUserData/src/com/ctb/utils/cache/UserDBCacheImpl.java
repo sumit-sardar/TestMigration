@@ -73,4 +73,20 @@ public class UserDBCacheImpl {
 
 		return null;
 	}
+	
+	/**
+	 * Clear Cache Contents
+	 */
+	public void clearCacheContents() {
+		userCache.flush();
+		userCache.removeAll();
+	}
+	
+	/**
+	 * Clear the cache manager
+	 */
+	public static void removeCache(){
+		if(cacheManager.cacheExists("userFileRows"))
+		cacheManager.removeCache("userFileRows");
+	}
 }

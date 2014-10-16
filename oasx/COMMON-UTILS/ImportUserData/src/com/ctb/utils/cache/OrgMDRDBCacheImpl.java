@@ -69,4 +69,20 @@ public class OrgMDRDBCacheImpl {
 		}
 		return null;
 	}
+	
+	/**
+	 * Clear Cache Contents
+	 */
+	public void clearCacheContents() {
+		orgCache.flush();
+		orgCache.removeAll();
+	}
+	
+	/**
+	 * Clear the cache manager
+	 */
+	public static void removeCache(){
+		if(cacheManager.cacheExists("orgRows"))
+		cacheManager.removeCache("orgRows");
+	}
 }

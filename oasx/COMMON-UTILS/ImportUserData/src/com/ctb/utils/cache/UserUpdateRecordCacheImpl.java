@@ -78,6 +78,7 @@ public class UserUpdateRecordCacheImpl {
 	 * Clear Cache Contents
 	 */
 	public void clearCacheContents() {
+		updateUserCache.flush();
 		updateUserCache.removeAll();
 	}
 
@@ -89,6 +90,14 @@ public class UserUpdateRecordCacheImpl {
 	@SuppressWarnings("unchecked")
 	public List<String> getKeys() {
 		return (List<String>) updateUserCache.getKeys();
+	}
+	
+	/**
+	 * Clear the cache manager
+	 */
+	public static void removeCache(){
+		if(cacheManager.cacheExists("updateUserCache"))
+		cacheManager.removeCache("updateUserCache");
 	}
 
 }

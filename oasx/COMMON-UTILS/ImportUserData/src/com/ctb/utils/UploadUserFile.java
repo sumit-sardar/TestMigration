@@ -193,43 +193,46 @@ public class UploadUserFile {
 							|| !this.userTopOrgNode[0].getOrgNodeName()
 									.equalsIgnoreCase(topOrgName)) {
 						ArrayList<String> logicalErrorList = new ArrayList<String>();
-						logicalErrorList.add(rowHeader[loginUserPosition]);
+						logicalErrorList.add(rowHeader[loginUserPosition].toLowerCase());
 						logicalErrorMap.put(new Integer(rowIndex),
 								logicalErrorList);
 						continue;
-					} else if (this.userTopOrgNode[0].getOrgNodeCode() != null
+					}
+					if ("".equals(topOrgMDRNumber)
+							|| !this.userTopOrgNode[0].getMdrNumber()
+									.equalsIgnoreCase(topOrgMDRNumber)) {
+						ArrayList<String> logicalErrorList = new ArrayList<String>();
+						logicalErrorList.add(rowHeader[loginUserPosition + 2].toLowerCase());
+						logicalErrorMap.put(new Integer(rowIndex),
+								logicalErrorList);
+						continue;
+					}
+					if (this.userTopOrgNode[0].getOrgNodeCode() != null
 							&& !"".equalsIgnoreCase(this.userTopOrgNode[0]
 									.getOrgNodeCode())) {
 						if (!this.userTopOrgNode[0].getOrgNodeCode()
 								.equalsIgnoreCase(topOrgCode)) {
 							ArrayList<String> logicalErrorList = new ArrayList<String>();
 							logicalErrorList
-									.add(rowHeader[loginUserPosition + 1]);
+									.add(rowHeader[loginUserPosition + 1].toLowerCase());
 							logicalErrorMap.put(new Integer(rowIndex),
 									logicalErrorList);
 							continue;
 						}
-					} else if (this.userTopOrgNode[0].getOrgNodeCode() == null
+					}
+					if (this.userTopOrgNode[0].getOrgNodeCode() == null
 							|| "".equalsIgnoreCase(this.userTopOrgNode[0]
 									.getOrgNodeCode())) {
 						if (!"".equals(topOrgCode)) {
 
 							ArrayList<String> logicalErrorList = new ArrayList<String>();
 							logicalErrorList
-									.add(rowHeader[loginUserPosition + 1]);
+									.add(rowHeader[loginUserPosition + 1].toLowerCase());
 							logicalErrorMap.put(new Integer(rowIndex),
 									logicalErrorList);
 							continue;
 						}
 
-					} else if ("".equals(topOrgMDRNumber)
-							|| !this.userTopOrgNode[0].getMdrNumber()
-									.equalsIgnoreCase(topOrgMDRNumber)) {
-						ArrayList<String> logicalErrorList = new ArrayList<String>();
-						logicalErrorList.add(rowHeader[loginUserPosition + 2]);
-						logicalErrorMap.put(new Integer(rowIndex),
-								logicalErrorList);
-						continue;
 					}
 
 					/**
@@ -277,7 +280,7 @@ public class UploadUserFile {
 						if (strCellName.equals("") && hasOrganization(j, row)
 								&& !strCellId.equals("")) {
 							ArrayList<String> requiredList = new ArrayList<String>();
-							requiredList.add(strCellHeaderName);
+							requiredList.add(strCellHeaderName.toLowerCase());
 							requiredMap
 									.put(new Integer(rowIndex), requiredList);
 							break;
@@ -285,14 +288,14 @@ public class UploadUserFile {
 								&& hasOrganization(j - orgPosFact, row)
 								&& !strCellId.equals("")) {
 							ArrayList<String> requiredList = new ArrayList<String>();
-							requiredList.add(strCellHeaderName);
+							requiredList.add(strCellHeaderName.toLowerCase());
 							requiredMap
 									.put(new Integer(rowIndex), requiredList);
 							break;
 						} else if (strCellName.equals("")
 								&& !strCellMdr.equals("")) {
 							ArrayList<String> requiredList = new ArrayList<String>();
-							requiredList.add(strCellHeaderName);
+							requiredList.add(strCellHeaderName.toLowerCase());
 							requiredMap
 									.put(new Integer(rowIndex), requiredList);
 							break;
@@ -309,7 +312,7 @@ public class UploadUserFile {
 								// OrgCode invalid char check
 								if (!validString(strCellId)) {
 									ArrayList<String> invalidList = new ArrayList<String>();
-									invalidList.add(strCellHeaderId);
+									invalidList.add(strCellHeaderId.toLowerCase());
 									invalidCharMap.put(new Integer(rowIndex),
 											invalidList);
 									break;
@@ -318,14 +321,14 @@ public class UploadUserFile {
 									boolean flag = false;
 									if (!isMaxLength50(strCellName)) {
 										ArrayList<String> maxLengthList = new ArrayList<String>();
-										maxLengthList.add(strCellHeaderName);
+										maxLengthList.add(strCellHeaderName.toLowerCase());
 										maxLengthMap.put(new Integer(rowIndex),
 												maxLengthList);
 										flag = true;
 									}
 									if (!isMaxLength32(strCellId)) {
 										ArrayList<String> maxLengthList = new ArrayList<String>();
-										maxLengthList.add(strCellHeaderId);
+										maxLengthList.add(strCellHeaderId.toLowerCase());
 										maxLengthMap.put(new Integer(rowIndex),
 												maxLengthList);
 										flag = true;
@@ -336,7 +339,7 @@ public class UploadUserFile {
 								}
 							} else {
 								ArrayList<String> invalidList = new ArrayList<String>();
-								invalidList.add(strCellHeaderName);
+								invalidList.add(strCellHeaderName.toLowerCase());
 								invalidCharMap.put(new Integer(rowIndex),
 										invalidList);
 								break;
@@ -379,6 +382,27 @@ public class UploadUserFile {
 			System.gc();
 
 			/**
+			 * Send mail
+			 */
+			String successBody = "The successful record counts are : "
+					+ this.dataFileAudit.getUploadFileRecordCount()
+					+ " and erroneous record counts are : "
+					+ this.dataFileAudit.getFailedRecordCount() + ".";
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail(
+						"",
+						Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectImportSuccess(),
+						Configuration.getEmailBodyImportSuccess()
+								.replace("<#FileName#>", inFile.getName())
+								.replace("<#CustomMessage#>", successBody),
+						null);
+			}
+			
+			/**
 			 * Archiving Process
 			 * */
 			logger.info("ArchiveProcessedFiles Start Time:"
@@ -391,11 +415,16 @@ public class UploadUserFile {
 			logger.info("User Upload Process Completed Time "
 					+ new Date(System.currentTimeMillis()));
 
+			
+
 		} catch (Exception e) {
 			logger.error("UploadUserFile Error.. startProcessing() Block..."
 					+ e.getMessage());
 			e.printStackTrace();
 			throw e;
+		} finally{
+			orgMDRImpl.clearCacheContents();
+			dbCacheImpl.clearCacheContents();
 		}
 
 	}
@@ -416,25 +445,25 @@ public class UploadUserFile {
 
 			if (!validMdrNo(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toLowerCase());
 				requiredMap.put(new Integer(cellPos), requiredList);
 				return false;
 
 			} else if (!validMdrNoLength(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toLowerCase());
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 
 			} else if (!validMdrNoNumeric(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toLowerCase());
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 
 			} else if (!isUniqueMdr(strCellMdr, newMDRList, orgMDRImpl)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toLowerCase());
 				logicalErrorMap.put(new Integer(cellPos), requiredList);
 				return false;
 			}
@@ -443,17 +472,17 @@ public class UploadUserFile {
 			// Update Organization
 			if (!validMdrNo(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toLowerCase());
 				requiredMap.put(new Integer(cellPos), requiredList);
 				return false;
 			} else if (!validMdrNoLength(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toLowerCase());
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 			} else if (!validMdrNoNumeric(strCellMdr)) {
 				ArrayList<String> requiredList = new ArrayList<String>();
-				requiredList.add(strCellHeaderMdr);
+				requiredList.add(strCellHeaderMdr.toLowerCase());
 				invalidCharMap.put(new Integer(cellPos), requiredList);
 				return false;
 			}
@@ -737,7 +766,7 @@ public class UploadUserFile {
 												mdrCorrect = false;
 												ArrayList<String> requiredList = new ArrayList<String>();
 												requiredList
-														.add(rowHeader[ii + 2]);
+														.add(rowHeader[ii + 2].toLowerCase());
 												logicalErrorMap.put(
 														new Integer(rowIndex),
 														requiredList);
@@ -793,7 +822,7 @@ public class UploadUserFile {
 													mdrCorrect = false;
 													ArrayList<String> requiredList = new ArrayList<String>();
 													requiredList
-															.add(rowHeader[ii + 2]);
+															.add(rowHeader[ii + 2].toLowerCase());
 													logicalErrorMap.put(
 															new Integer(
 																	rowIndex),
@@ -850,7 +879,7 @@ public class UploadUserFile {
 												mdrCorrect = false;
 												ArrayList<String> requiredList = new ArrayList<String>();
 												requiredList
-														.add(rowHeader[ii + 2]);
+														.add(rowHeader[ii + 2].toLowerCase());
 												logicalErrorMap.put(
 														new Integer(rowIndex),
 														requiredList);
@@ -895,7 +924,7 @@ public class UploadUserFile {
 										if (organization.getOrgNodeId() == -99) {
 											mdrCorrect = false;
 											ArrayList<String> requiredList = new ArrayList<String>();
-											requiredList.add(rowHeader[ii + 2]);
+											requiredList.add(rowHeader[ii + 2].toLowerCase());
 											logicalErrorMap.put(new Integer(
 													rowIndex), requiredList);
 											break;
@@ -946,7 +975,7 @@ public class UploadUserFile {
 												mdrCorrect = false;
 												ArrayList<String> requiredList = new ArrayList<String>();
 												requiredList
-														.add(rowHeader[ii + 2]);
+														.add(rowHeader[ii + 2].toLowerCase());
 												logicalErrorMap.put(
 														new Integer(rowIndex),
 														requiredList);
@@ -982,11 +1011,11 @@ public class UploadUserFile {
 						String bodyCell = row[j];
 						String strHeaderValue = getCellValue(headerCell);
 						String strBodyValue = getCellValue(bodyCell);
-						if (strHeaderValue.equals(Constants.REQUIREDFIELD_ROLE)) {
-							userDataMap.put(strHeaderValue,
+						if (strHeaderValue.equalsIgnoreCase(Constants.REQUIREDFIELD_ROLE)) {
+							userDataMap.put(strHeaderValue.toLowerCase(),
 									initCap(strBodyValue));
 						} else {
-							userDataMap.put(strHeaderValue, strBodyValue);
+							userDataMap.put(strHeaderValue.toLowerCase(), strBodyValue);
 						}
 					}
 
@@ -1017,7 +1046,6 @@ public class UploadUserFile {
 			}
 
 			this.userNewCacheImpl.clearCacheContents();
-			this.userNewCacheImpl = null;
 
 			/**
 			 * User Update Execution Process
@@ -1035,7 +1063,6 @@ public class UploadUserFile {
 			}
 
 			this.userUpdateCacheImpl.clearCacheContents();
-			this.userUpdateCacheImpl = null;
 
 			if (this.dataFileAudit.getFailedRecordCount() == null
 					|| this.dataFileAudit.getFailedRecordCount().intValue() == 0) {
@@ -1227,14 +1254,14 @@ public class UploadUserFile {
 		UserFileRow user = new UserFileRow();
 
 		// Set address details
-		user.setAddress1((String) userDataMap.get(Constants.ADDRESS_LINE_1));
-		user.setAddress2((String) userDataMap.get(Constants.ADDRESS_LINE_2));
-		user.setCity((String) userDataMap.get(Constants.CITY));
-		if (userDataMap.get(Constants.STATE_NAME) != null) {
+		user.setAddress1((String) userDataMap.get(Constants.ADDRESS_LINE_1.toLowerCase()));
+		user.setAddress2((String) userDataMap.get(Constants.ADDRESS_LINE_2.toLowerCase()));
+		user.setCity((String) userDataMap.get(Constants.CITY.toLowerCase()));
+		if (userDataMap.get(Constants.STATE_NAME.toLowerCase()) != null) {
 			user.setState((String) stateMap.get(initCap((String) userDataMap
-					.get(Constants.STATE_NAME))));
+					.get(Constants.STATE_NAME.toLowerCase()))));
 		}
-		String zipCode = (String) userDataMap.get(Constants.ZIP);
+		String zipCode = (String) userDataMap.get(Constants.ZIP.toLowerCase());
 		if (zipCode != null && !"".equals(zipCode)) {
 			user.setZip(zipCode.substring(0, 5).trim());
 			if (zipCode.length() > 6) {
@@ -1245,35 +1272,35 @@ public class UploadUserFile {
 		}
 
 		String primaryPhoneNumber = (String) userDataMap
-				.get(Constants.PRIMARY_PHONE);
+				.get(Constants.PRIMARY_PHONE.toLowerCase());
 		primaryPhoneNumber = getPhoneFax(primaryPhoneNumber);
 		user.setPrimaryPhone(primaryPhoneNumber);
 
 		String secondaryPhoneNumber = (String) userDataMap
-				.get(Constants.SECONDARY_PHONE);
+				.get(Constants.SECONDARY_PHONE.toLowerCase());
 		secondaryPhoneNumber = getPhoneFax(secondaryPhoneNumber);
 		user.setSecondaryPhone(secondaryPhoneNumber);
-		String faxNumber = (String) userDataMap.get(Constants.FAX);
+		String faxNumber = (String) userDataMap.get(Constants.FAX.toLowerCase());
 		faxNumber = getPhoneFax(faxNumber);
 		user.setFaxNumber(faxNumber);
 		// User personal details
 		user.setFirstName(initStringCap((String) userDataMap
-				.get(Constants.REQUIREDFIELD_FIRST_NAME)));
+				.get(Constants.REQUIREDFIELD_FIRST_NAME.toLowerCase())));
 		user.setMiddleName(initStringCap((String) userDataMap
-				.get(Constants.MIDDLE_NAME)));
+				.get(Constants.MIDDLE_NAME.toLowerCase())));
 		user.setLastName(initStringCap((String) userDataMap
-				.get(Constants.REQUIREDFIELD_LAST_NAME)));
-		user.setEmail((String) userDataMap.get(Constants.EMAIL));
+				.get(Constants.REQUIREDFIELD_LAST_NAME.toLowerCase())));
+		user.setEmail((String) userDataMap.get(Constants.EMAIL.toLowerCase()));
 		user.setTimeZone((String) timeZoneMap.get(initCap((String) userDataMap
-				.get(Constants.REQUIREDFIELD_TIME_ZONE))));
+				.get(Constants.REQUIREDFIELD_TIME_ZONE.toLowerCase()))));
 
 		// Set role Details
 		user.setRoleId((Integer) roleMap.get((String) userDataMap
-				.get(Constants.REQUIREDFIELD_ROLE)));
-		user.setRoleName((String) userDataMap.get(Constants.REQUIREDFIELD_ROLE));
+				.get(Constants.REQUIREDFIELD_ROLE.toLowerCase())));
+		user.setRoleName((String) userDataMap.get(Constants.REQUIREDFIELD_ROLE.toLowerCase()));
 
 		// Set External User Id for CR
-		user.setExtSchoolId((String) userDataMap.get(Constants.EXT_SCHOOL_ID));
+		user.setExtSchoolId((String) userDataMap.get(Constants.EXT_SCHOOL_ID.toLowerCase()));
 
 		/**
 		 * Key for identifying User is User-name
@@ -1382,8 +1409,10 @@ public class UploadUserFile {
 		UploadFileDao dao = new UploadFileDaoImpl();
 
 		String errorFileName = Configuration.getLocalFilePath()
-				+ Constants.FILE_SEPARATOR + this.inFile.getName() + ".errors";
-
+				+ Constants.FILE_SEPARATOR + this.inFile.getName() + ".error";
+		
+		String errorMovedFileName = this.inFile.getName() + ".error";
+		
 		BufferedWriter bWriter = new BufferedWriter(new FileWriter(
 				errorFileName, true), ',');
 		CSVWriter csvOutput = new CSVWriter(bWriter);
@@ -1431,7 +1460,7 @@ public class UploadUserFile {
 									ArrayList<String> requiredList = requiredMap
 											.get(new Integer(rowNumber));
 									if (requiredList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toLowerCase())) {
 										/*
 										 * rowDataList
 										 * .add(rowHeaderData[cellPosition]);
@@ -1454,7 +1483,7 @@ public class UploadUserFile {
 									ArrayList<String> invalidCharList = invalidCharMap
 											.get(new Integer(rowNumber));
 									if (invalidCharList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toLowerCase())) {
 										rowDataList
 												.add(Constants.INVALID_FIELD_ERROR
 														+ " - "
@@ -1473,7 +1502,7 @@ public class UploadUserFile {
 									ArrayList<String> maxLengthList = maxLengthMap
 											.get(new Integer(rowNumber));
 									if (maxLengthList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toLowerCase())) {
 										rowDataList
 												.add(Constants.MAXIMUM_FIELD_ERROR
 														+ " - "
@@ -1492,7 +1521,7 @@ public class UploadUserFile {
 									ArrayList<String> logicalErrorList = logicalErrorMap
 											.get(new Integer(rowNumber));
 									if (logicalErrorList
-											.contains(rowHeaderData[cellPosition])) {
+											.contains(rowHeaderData[cellPosition].toLowerCase())) {
 										rowDataList
 												.add(Constants.LOGICAL_FIELD_ERROR
 														+ " - "
@@ -1547,8 +1576,7 @@ public class UploadUserFile {
 			if (errorCount > 0) {
 				logger.info("Total error records present are : " + errorCount);
 				new FtpSftpUtil().sendfilesSFTP(Configuration.getErrorPath(),
-						errorFileName);
-				logger.info("Error File is Created and Placed at specified Location..");
+						errorFileName , this.inFile.getName() , errorMovedFileName);
 			}
 
 		} catch (Exception e) {
@@ -1722,15 +1750,15 @@ public class UploadUserFile {
 			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!strCell.equals("")) {
-				if (cellHeader.equals(Constants.REQUIREDFIELD_TIME_ZONE)
+				if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_TIME_ZONE)
 						&& !isTimeZoneSame(strCell)) {
-					logicalErrorList.add(Constants.REQUIREDFIELD_TIME_ZONE);
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_ROLE)
+					logicalErrorList.add(Constants.REQUIREDFIELD_TIME_ZONE.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_ROLE)
 						&& !isRoleNameSame(strCell)) {
-					logicalErrorList.add(Constants.REQUIREDFIELD_ROLE);
-				} else if (cellHeader.equals(Constants.STATE_NAME)
+					logicalErrorList.add(Constants.REQUIREDFIELD_ROLE.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.STATE_NAME)
 						&& !isStateSame(strCell)) {
-					logicalErrorList.add(Constants.STATE_NAME);
+					logicalErrorList.add(Constants.STATE_NAME.toLowerCase());
 				}
 			}
 		}
@@ -1953,20 +1981,18 @@ public class UploadUserFile {
 			strCellValue = getCellValue(cell);
 			// Required field checking
 			if (strCellValue.equals("")) {
-				if (cellHeader.equals(Constants.REQUIREDFIELD_FIRST_NAME)) {
-					requiredList.add(Constants.REQUIREDFIELD_FIRST_NAME);
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_LAST_NAME)) {
-					requiredList.add(Constants.REQUIREDFIELD_LAST_NAME);
+				if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_FIRST_NAME)) {
+					requiredList.add(Constants.REQUIREDFIELD_FIRST_NAME.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_LAST_NAME)) {
+					requiredList.add(Constants.REQUIREDFIELD_LAST_NAME.toLowerCase());
 				}
-
-				else if (cellHeader.equals(Constants.REQUIREDFIELD_ROLE)) {
-					requiredList.add(Constants.REQUIREDFIELD_ROLE);
+				else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_ROLE)) {
+					requiredList.add(Constants.REQUIREDFIELD_ROLE.toLowerCase());
 				}
-
-				else if (cellHeader.equals(Constants.REQUIREDFIELD_TIME_ZONE)) {
-					requiredList.add(Constants.REQUIREDFIELD_TIME_ZONE);
-				} else if (cellHeader.equals(Constants.EXT_SCHOOL_ID)) {
-					requiredList.add(Constants.EXT_SCHOOL_ID);
+				else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_TIME_ZONE)) {
+					requiredList.add(Constants.REQUIREDFIELD_TIME_ZONE.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.EXT_SCHOOL_ID)) {
+					requiredList.add(Constants.EXT_SCHOOL_ID.toLowerCase());
 				}
 			}
 		}
@@ -1996,47 +2022,47 @@ public class UploadUserFile {
 			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!strCell.equals("")) {
-				if (cellHeader.equals(Constants.REQUIREDFIELD_FIRST_NAME)
+				if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_FIRST_NAME)
 						&& !validNameString(strCell)) {
-					invalidList.add(Constants.REQUIREDFIELD_FIRST_NAME);
-				} else if (cellHeader.equals(Constants.MIDDLE_NAME)
+					invalidList.add(Constants.REQUIREDFIELD_FIRST_NAME.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.MIDDLE_NAME)
 						&& !strCell.trim().equals("")
 						&& !validNameString(strCell)) {
-					invalidList.add(Constants.MIDDLE_NAME);
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_LAST_NAME)
+					invalidList.add(Constants.MIDDLE_NAME.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_LAST_NAME)
 						&& !validNameString(strCell)) {
-					invalidList.add(Constants.REQUIREDFIELD_LAST_NAME);
-				} else if (cellHeader.equals(Constants.EXT_SCHOOL_ID)
+					invalidList.add(Constants.REQUIREDFIELD_LAST_NAME.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.EXT_SCHOOL_ID)
 						&& !validUserIdString(strCell)) {
-					invalidList.add(Constants.EXT_SCHOOL_ID);
-				} else if (cellHeader.equals(Constants.EMAIL)
+					invalidList.add(Constants.EXT_SCHOOL_ID.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.EMAIL)
 						&& !strCell.trim().equals("") && !validEmail(strCell)) {
-					invalidList.add(Constants.EMAIL);
-				} else if (cellHeader.equals(Constants.ADDRESS_LINE_1)
+					invalidList.add(Constants.EMAIL.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.ADDRESS_LINE_1)
 						&& !strCell.trim().equals("")
 						&& !validAddressString(strCell)) {
-					invalidList.add(Constants.ADDRESS_LINE_1);
-				} else if (cellHeader.equals(Constants.ADDRESS_LINE_2)
+					invalidList.add(Constants.ADDRESS_LINE_1.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.ADDRESS_LINE_2)
 						&& !strCell.trim().equals("")
 						&& !validAddressString(strCell)) {
-					invalidList.add(Constants.ADDRESS_LINE_2);
-				} else if (cellHeader.equals(Constants.CITY)
+					invalidList.add(Constants.ADDRESS_LINE_2.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.CITY)
 						&& !strCell.trim().equals("")
 						&& !validNameString(strCell)) {
-					invalidList.add(Constants.CITY);
-				} else if (cellHeader.equals(Constants.ZIP)
+					invalidList.add(Constants.CITY.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.ZIP)
 						&& !strCell.trim().equals("")
 						&& !isValidZipFormat(strCell)) {
-					invalidList.add(Constants.ZIP);
-				} else if (cellHeader.equals(Constants.PRIMARY_PHONE)
+					invalidList.add(Constants.ZIP.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.PRIMARY_PHONE)
 						&& !strCell.trim().equals("") && !isValidPhone(strCell)) {
-					invalidList.add(Constants.PRIMARY_PHONE);
-				} else if (cellHeader.equals(Constants.SECONDARY_PHONE)
+					invalidList.add(Constants.PRIMARY_PHONE.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.SECONDARY_PHONE)
 						&& !strCell.trim().equals("") && !isValidPhone(strCell)) {
-					invalidList.add(Constants.SECONDARY_PHONE);
-				} else if (cellHeader.equals(Constants.FAX)
+					invalidList.add(Constants.SECONDARY_PHONE.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.FAX)
 						&& !strCell.trim().equals("") && !isValidFax(strCell)) {
-					invalidList.add(Constants.FAX);
+					invalidList.add(Constants.FAX.toLowerCase());
 				}
 			}
 		}
@@ -2076,54 +2102,54 @@ public class UploadUserFile {
 			String cell = row[i];
 			strCell = getCellValue(cell);
 			if (!strCell.equals("")) {
-				if (cellHeader.equals(Constants.REQUIREDFIELD_FIRST_NAME)
+				if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_FIRST_NAME)
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.REQUIREDFIELD_FIRST_NAME);
-				} else if (cellHeader.equals(Constants.MIDDLE_NAME)
+					maxLengthList.add(Constants.REQUIREDFIELD_FIRST_NAME.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.MIDDLE_NAME)
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.MIDDLE_NAME);
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_LAST_NAME)
+					maxLengthList.add(Constants.MIDDLE_NAME.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_LAST_NAME)
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.REQUIREDFIELD_LAST_NAME);
-				} else if (cellHeader.equals(Constants.EMAIL)
+					maxLengthList.add(Constants.REQUIREDFIELD_LAST_NAME.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.EMAIL)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength64(strCell)) {
-					maxLengthList.add(Constants.EMAIL);
-				} else if (cellHeader.equals(Constants.EXT_SCHOOL_ID)
+					maxLengthList.add(Constants.EMAIL.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.EXT_SCHOOL_ID)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.EXT_SCHOOL_ID);
-				} else if (cellHeader.equals(Constants.REQUIREDFIELD_TIME_ZONE)
+					maxLengthList.add(Constants.EXT_SCHOOL_ID.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.REQUIREDFIELD_TIME_ZONE)
 						&& !isMaxLength255(strCell)) {
-					maxLengthList.add(Constants.REQUIREDFIELD_TIME_ZONE);
-				} else if (cellHeader.equals(Constants.ADDRESS_LINE_1)
+					maxLengthList.add(Constants.REQUIREDFIELD_TIME_ZONE.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.ADDRESS_LINE_1)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength64(strCell)) {
-					maxLengthList.add(Constants.ADDRESS_LINE_1);
-				} else if (cellHeader.equals(Constants.ADDRESS_LINE_2)
+					maxLengthList.add(Constants.ADDRESS_LINE_1.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.ADDRESS_LINE_2)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength64(strCell)) {
-					maxLengthList.add(Constants.ADDRESS_LINE_2);
-				} else if (cellHeader.equals(Constants.CITY)
+					maxLengthList.add(Constants.ADDRESS_LINE_2.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.CITY)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength64(strCell)) {
-					maxLengthList.add(Constants.CITY);
-				} else if (cellHeader.equals(Constants.ZIP)
+					maxLengthList.add(Constants.CITY.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.ZIP)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength15(strCell)) {
-					maxLengthList.add(Constants.ZIP);
-				} else if (cellHeader.equals(Constants.PRIMARY_PHONE)
+					maxLengthList.add(Constants.ZIP.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.PRIMARY_PHONE)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.PRIMARY_PHONE);
-				} else if (cellHeader.equals(Constants.SECONDARY_PHONE)
+					maxLengthList.add(Constants.PRIMARY_PHONE.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.SECONDARY_PHONE)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.SECONDARY_PHONE);
-				} else if (cellHeader.equals(Constants.FAX)
+					maxLengthList.add(Constants.SECONDARY_PHONE.toLowerCase());
+				} else if (cellHeader.equalsIgnoreCase(Constants.FAX)
 						&& !strCell.trim().equals("")
 						&& !isMaxLength32(strCell)) {
-					maxLengthList.add(Constants.FAX);
+					maxLengthList.add(Constants.FAX.toLowerCase());
 				}
 			}
 		}
@@ -2253,6 +2279,7 @@ public class UploadUserFile {
 
 	/**
 	 * The UserId field can have Alpha-Numeric Values only.
+	 * 
 	 * @param str
 	 * @return boolean
 	 */
@@ -2277,7 +2304,7 @@ public class UploadUserFile {
 				|| (ch == ')') || (ch == '&') || (ch == '+') || (ch == ',') || (ch == ' '));
 		return (zero_nine || A_Z || a_z || validChar);
 	}
-	
+
 	/**
 	 * 
 	 * @param ch

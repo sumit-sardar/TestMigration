@@ -28,7 +28,7 @@ public class Constants {
 	public static final String PRIMARY_PHONE = "Primary Phone";
 	public static final String SECONDARY_PHONE = "Secondary Phone";
 	public static final String FAX = "Fax Number";
-	public static final String EXT_SCHOOL_ID = "Engrade User Id";
+	public static final String EXT_SCHOOL_ID = "External User Id";
 
 	public static final String ACTIVATION_STATUS_ACTIVE = "AC";
 
@@ -64,4 +64,7 @@ public class Constants {
 	public static final String MINIMUM_FIELD_ERROR = "Minimum Length Error";
 	public static final String MAXIMUM_FIELD_ERROR = "Maximum Length Error";
 	public static final String INVALID_FIELD_ERROR = "Invalid Field";
+	
+	//static thread count should be 1 always
+	public static final int THREADCOUNT = 1;
 }

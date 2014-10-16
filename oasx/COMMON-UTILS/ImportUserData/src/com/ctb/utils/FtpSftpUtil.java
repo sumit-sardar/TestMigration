@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -16,8 +17,8 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 /**
@@ -45,18 +46,23 @@ public class FtpSftpUtil {
 			/*
 			 * Key authentication
 			 */
-			jsch.addIdentity(Configuration.getClientPrivateKeyPath(),
-					"engrade-auth");
+			jsch.addIdentity(Configuration.getClientPrivateKeyPath());
 			session = jsch.getSession(Configuration.getFtpUser(),
 					Configuration.getFtpHost(),
 					Integer.parseInt(Configuration.getFtpPort()));
 			session.setConfig("StrictHostKeyChecking", "no");
 			session.connect();
 			return session;
-		} catch (JSchException e) {
-			e.printStackTrace();
-			throw new Exception();
 		} catch (Exception e) {
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("", Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectFtpIssue(),
+						Configuration.getEmailBodyFtpIsuue(), null);
+			}
+			logger.info("FTP Session Connection error..");
 			throw new Exception();
 		}
 	}
@@ -82,8 +88,8 @@ public class FtpSftpUtil {
 	 *            - The Location from where the files are to be picked up
 	 * @throws Exception
 	 */
-	public void sendfilesSFTP(String destinationPath, String sourceFile)
-			throws Exception {
+	public void sendfilesSFTP(String destinationPath, String sourceFile,
+			String errorFileName , String errorMovedFileName) throws Exception {
 
 		Session session = null;
 		ChannelSftp sftpChannel = null;
@@ -95,10 +101,43 @@ public class FtpSftpUtil {
 			sftpChannel = (ChannelSftp) channel;
 
 			String destination = destinationPath;
+			String finalDestinationPath = Configuration.getFinalErrorPath();
+			sftpChannel.cd(destination);
 			sftpChannel.put(sourceFile, destination);
-
+			logger.info("Error File is Created and Placed at specified Location..");
+			
+			sftpChannel.cd(finalDestinationPath);
+			sftpChannel.rename(destination+errorMovedFileName , finalDestinationPath+errorMovedFileName);
+			logger.info("Error File is Moved at Final Error Location..");
 		} catch (SftpException e) {
-			logger.info("Exception : " + e.getMessage());
+			if (e.id == 4) {
+				/**
+				 * If a same file is already present then Exception is thrown
+				 * having ID: 4
+				 */
+				logger.info("Error File ->"
+						+ errorMovedFileName
+						+ " is already present in the Final Error Location. Hence not moving the error file.");
+			} else {
+				logger.info("SftpException : "
+						+ e.getMessage()
+						+ " --> Error File cannot be placed at specified location..");
+				/**
+				 * Send mail
+				 */
+				if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+					EmailSender.sendMail(
+									"",
+									Configuration.getEmailSender(),
+									Configuration.getEmailRecipient(),
+									Configuration.getEmailCC(),
+									Configuration.getEmailBCC(),
+									Configuration.getEmailSubjectErrorFileFTPIssue(),
+									Configuration.getEmailBodyErrorFileFTPIssue()
+											.replace("<#FileName#>",
+													errorMovedFileName), null);
+				}
+			}
 		} finally {
 			if (sftpChannel != null) {
 				sftpChannel.exit();
@@ -116,10 +155,11 @@ public class FtpSftpUtil {
 	 * @param session
 	 * @param sourceDir
 	 * @param targetDir
+	 * @param fileTimeMap 
 	 * @throws Exception
 	 */
 	public static void downloadFiles(Session session, String sourceDir,
-			String targetDir) throws Exception {
+			String targetDir, Map<String, Long> fileTimeMap) throws Exception {
 		logger.info("Download Start Time: "
 				+ new Date(System.currentTimeMillis()));
 		ChannelSftp sftpChannel = null;
@@ -133,21 +173,23 @@ public class FtpSftpUtil {
 			Vector fileList = sftpChannel.ls("*.csv");
 
 			if (fileList != null && fileList.size() > 0) {
-				if (fileList.size() > 1) {
-					logger.info("More than 1 files are present. System will exit.");
-					throw new Exception();
-				}
 				for (Iterator iterator = fileList.iterator(); iterator
 						.hasNext();) {
 					ChannelSftp.LsEntry entry = (ChannelSftp.LsEntry) iterator
 							.next();
 					try {
+						String remoteFile = sourceDir + File.separator
+								+ entry.getFilename();
+						SftpATTRS attrs = sftpChannel.lstat(remoteFile);
+						Date modDate = new Date(attrs.getMTime() * 1000L);
 						inStream = sftpChannel.get(entry.getFilename());
 						File filename = new File(targetDir);
 						if (!filename.exists())
 							filename.mkdir();
-						outStream = new FileOutputStream(new File(targetDir
-								+ File.separator + entry.getFilename()));
+						String localFile = targetDir + File.separator
+								+ entry.getFilename();
+						File downloadedFile = new File(localFile);
+						outStream = new FileOutputStream(downloadedFile);
 
 						if (inStream == null) {
 							logger.info("Could not retrieve file...."
@@ -160,6 +202,7 @@ public class FtpSftpUtil {
 						while ((read = inStream.read(bytes)) != -1) {
 							outStream.write(bytes, 0, read);
 						}
+						fileTimeMap.put(entry.getFilename(), modDate.getTime());
 						logger.info("File ->" + entry.getFilename()
 								+ " downloaded successfully...");
 					} catch (IOException e) {
@@ -188,11 +231,32 @@ public class FtpSftpUtil {
 			} else {
 				logger.info("******No Files Present:**** "
 						+ new Date(System.currentTimeMillis()));
+				/**
+				 * Send Mail
+				 */
+				if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+					EmailSender.sendMail("", Configuration.getEmailSender(),
+							Configuration.getEmailRecipient(), Configuration
+									.getEmailCC(), Configuration.getEmailBCC(),
+							Configuration.getEmailSubjectNoFileIssue(),
+							Configuration.getEmailBodyNoFileIssue(), null);
+				}
 			}
 			logger.info("Download End Time: "
 					+ new Date(System.currentTimeMillis()));
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch (Exception e) {
+			logger.info("**Downloading of Files Failed..**");
+			/**
+			 * Send Mail
+			 */
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail("", Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectDownloadFileIssue(),
+						Configuration.getEmailBodyDownloadFileIssue(), null);
+			}
 			throw e;
 
 		} finally {
@@ -238,6 +302,20 @@ public class FtpSftpUtil {
 			logger.info("File -> \"" + fileName
 					+ "\": archived successfully to " + targetDir + archiveDate);
 		} catch (Exception e) {
+			/**
+			 * Send mail
+			 */
+			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
+				EmailSender.sendMail(
+						"",
+						Configuration.getEmailSender(),
+						Configuration.getEmailRecipient(),
+						Configuration.getEmailCC(),
+						Configuration.getEmailBCC(),
+						Configuration.getEmailSubjectArchiveFTPIssue(),
+						Configuration.getEmailBodyArchiveFTPIssue().replace(
+								"<#FileName#>", fileName), null);
+			}
 			e.getMessage();
 			throw e;
 		} finally {

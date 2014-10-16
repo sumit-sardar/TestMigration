@@ -5,7 +5,10 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+import com.ctb.bean.DataFileAudit;
 import com.ctb.bean.UploadMoveData;
+import com.ctb.dao.UploadFileDao;
+import com.ctb.dao.UploadFileDaoImpl;
 
 /**
  * Thread for Uploading UserData for each uploaded File
@@ -40,6 +43,7 @@ public class UploadThread implements Runnable {
 
 	public void run() {
 		try {
+			System.out.println("\n");
 			logger.info("Actual Process Start Time for file :"
 					+ this.inFile.getName() + "-->"
 					+ new Date(System.currentTimeMillis()));
@@ -51,9 +55,23 @@ public class UploadThread implements Runnable {
 
 			userUpload.startProcessing();
 
+			logger.info("Import process is completed for file :"
+					+ this.inFile.getName() + "-->"
+					+ new Date(System.currentTimeMillis()));
 		} catch (Exception e) {
 			logger.error("Exception in run() of UploadThread.. Thread Error.");
-			System.exit(1);
+			logger.info("Import process is not completed for file :"
+					+ this.inFile.getName() + "-->"
+					+ new Date(System.currentTimeMillis()));
+			DataFileAudit dataFileAudit = new DataFileAudit();
+			dataFileAudit.setDataFileAuditId(uploadFileId);
+			dataFileAudit.setStatus("FL");
+			try {
+				UploadFileDao dao = new UploadFileDaoImpl();
+				dao.upDateAuditTable(dataFileAudit);
+			} catch (Exception se) {
+				se.printStackTrace();
+			}
 		}
 
 	}

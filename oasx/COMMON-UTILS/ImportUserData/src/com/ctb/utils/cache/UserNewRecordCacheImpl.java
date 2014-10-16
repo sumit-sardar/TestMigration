@@ -62,6 +62,7 @@ public class UserNewRecordCacheImpl {
 	 * Clear Cache Contents
 	 */
 	public void clearCacheContents() {
+		newUserCache.flush();
 		newUserCache.removeAll();
 	}
 
@@ -91,5 +92,13 @@ public class UserNewRecordCacheImpl {
 		}
 
 		return null;
+	}
+	
+	/**
+	 * Clear the cache manager
+	 */
+	public static void removeCache(){
+		if(cacheManager.cacheExists("insertUserCache"))
+		cacheManager.removeCache("insertUserCache");
 	}
 }
