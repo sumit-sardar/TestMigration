@@ -444,10 +444,10 @@ public class UploadStudentFile {
 
 			/**
 			 * Send mail
-			 */
+			 **/
 			String successBody = "The successful record counts are : "
 					+ this.dataFileAudit.getUploadFileRecordCount()
-					+ " and errorneous record counts are : "
+					+ " and erroneous record counts are : "
 					+ this.dataFileAudit.getFailedRecordCount() + ".";
 			if ("true".equalsIgnoreCase(Configuration.getEmailAlerts())) {
 				EmailSender.sendMail(
