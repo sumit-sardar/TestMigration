@@ -67,9 +67,10 @@ public class LasFileUtil {
 				success=FileUtil.writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,lasFrameWorkCode,lasProductDisplayName);
 				if(Product_type.equalsIgnoreCase("T")) {
 					product_id = "7502";
-				}
-				if(Product_type.equalsIgnoreCase("C")) {
+				}else if(Product_type.equalsIgnoreCase("C")) {
 					product_id = "7501";
+				}else if(Product_type.equalsIgnoreCase("D")) {
+					product_id = "7505";
 				}
 				
 				itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
