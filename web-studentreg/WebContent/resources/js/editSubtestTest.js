@@ -836,7 +836,12 @@
 	        if (isRowVisible(row)) {
 	            value = i + 1;
 	        }
-	        column.innerHTML = column.innerHTML.replace(/value=.*? /, 'value="' + value + '"');
+	        /* Fix for Defect 80679 :: To keep the earlier replace regex intact, we have just appended a space before '>' char in input tag.
+	        Because 'value=' attr of input tag can come at any place, at the end also.*/
+        	var str = column.innerHTML.split(">");
+			var str1 = str[0] + ' >' + str[1];
+			str1 = str1.replace(/value=.*? /, 'value="' + value + '"');
+			column.innerHTML = str1;
 	    }
 	}
 	
