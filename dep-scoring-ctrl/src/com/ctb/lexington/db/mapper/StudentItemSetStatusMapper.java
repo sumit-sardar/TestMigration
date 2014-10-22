@@ -45,8 +45,8 @@ public class StudentItemSetStatusMapper extends AbstractDBMapper {
         for (final Iterator it = validationSetStatuses.iterator(); it.hasNext();) {
             final ItemSetVO validationSetStatus = (ItemSetVO) it.next();
             valid = validationSetStatus.getValidationStatus().toString();
-            exemption = validationSetStatus.getExemptions().toString();
-            absent = validationSetStatus.getAbsent().toString();
+            exemption = (validationSetStatus.getExemptions() != null)?validationSetStatus.getExemptions().toString():null;
+            absent = (validationSetStatus.getAbsent() != null)?validationSetStatus.getAbsent().toString():null;
         }
         if(absent!= null && exemption != null) {
         	if(valid.equals("VA") && exemption.equals("N") && absent.equals("N"))
