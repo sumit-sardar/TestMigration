@@ -513,35 +513,40 @@ public class CurriculumCollector {
                      composites[0].setCompositeNumItems(new Long(100));
                      composites[0].setCompositePointsPossible(new Long(315));
                  }
-           }/*else if("D".equals(form)){
+           }else if("D".equals(form)){
 
-        	   if(level != null && "K-1".equals(level)) {
+        	   if(level != null && "K".equals(level)) {
             	composites[0].setAssessmentId(new Long(29364));
-                composites[0].setCompositeId(new Long(49));
+                composites[0].setCompositeId(new Long(74));
                 composites[0].setCompositeNumItems(new Long(100));
                 composites[0].setCompositePointsPossible(new Long(315));
               }else if("9-12".equals(level)) {
                 composites[0].setAssessmentId(new Long(29418));
-                composites[0].setCompositeId(new Long(50));
+                composites[0].setCompositeId(new Long(75));
                 composites[0].setCompositeNumItems(new Long(100));
                 composites[0].setCompositePointsPossible(new Long(315));
               } else if("6-8".equals(level)) {
                 composites[0].setAssessmentId(new Long(29502));
-                composites[0].setCompositeId(new Long(51));
+                composites[0].setCompositeId(new Long(76));
                 composites[0].setCompositeNumItems(new Long(100));
                 composites[0].setCompositePointsPossible(new Long(315));
               }else if("4-5".equals(level)) {
                 composites[0].setAssessmentId(new Long(29086));
-                composites[0].setCompositeId(new Long(52));
+                composites[0].setCompositeId(new Long(77));
                 composites[0].setCompositeNumItems(new Long(100));
                 composites[0].setCompositePointsPossible(new Long(315));
               }else if("2-3".equals(level)) {
                 composites[0].setAssessmentId(new Long(29382));
-                composites[0].setCompositeId(new Long(53));
+                composites[0].setCompositeId(new Long(78));
                 composites[0].setCompositeNumItems(new Long(100));
                 composites[0].setCompositePointsPossible(new Long(315));
+              }else if("1".equals(level)) {
+                  composites[0].setAssessmentId(new Long(29285));
+                  composites[0].setCompositeId(new Long(79));
+                  composites[0].setCompositeNumItems(new Long(100));
+                  composites[0].setCompositePointsPossible(new Long(315));
               }
-           } */
+           } 
         	return composites;
         } else if ("TA".equals(productType)) {
         	Composite [] composites = new Composite[2];
@@ -696,7 +701,7 @@ public class CurriculumCollector {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
         }
-        if(productId == 7501 || productId == 7502){
+        if(productId == 7501 || productId == 7502 || productId == 7505){
         	contentAreas = getVirtualContentAreaForLaslinkSecEdition(contentAreas, productId, subtestLevel, subtestForm);
         }
         return (ContentArea []) contentAreas.toArray(new ContentArea[0]);
@@ -1218,7 +1223,7 @@ public class CurriculumCollector {
                 primaryObjectives.add(primaryObjective);
                 objectiveIndex = primaryObjective.getPrimaryObjectiveIndex();
             }
-            if(productId == 7501 || productId == 7502){
+            if(productId == 7501 || productId == 7502 || productId == 7505){
             	primaryObjectives = getVirtualPrimaryObjectiveForLaslinkSecEdition(primaryObjectives, productId, subtestLevel, subtestForm, ++objectiveIndex);
             }
         } finally {
@@ -1804,7 +1809,7 @@ public class CurriculumCollector {
                 
                 secondaryObjectives.add(secondaryObjective);
             }
-            if(productId == 7501 || productId == 7502){
+            if(productId == 7501 || productId == 7502 || productId == 7505){
             	secondaryObjectives = calculateAcademicScore((SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]), oasRosterId);
             }
             
