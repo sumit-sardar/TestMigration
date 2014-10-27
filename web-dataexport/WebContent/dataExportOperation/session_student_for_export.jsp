@@ -14,6 +14,7 @@
 			Boolean isFormB = Boolean.parseBoolean(request.getAttribute("isFormB").toString());
 			Boolean isEspA = Boolean.parseBoolean(request.getAttribute("isEspA").toString());
 			Boolean isFormC = Boolean.parseBoolean(request.getAttribute("isFormC").toString());
+			Boolean isFormD = Boolean.parseBoolean(request.getAttribute("isFormD").toString());
 			Boolean isEspB = Boolean.parseBoolean(request.getAttribute("isEspB").toString());
 		%>
 	
@@ -38,6 +39,9 @@
 			<% } else if(frameworkProductId==7500) { %>
 				<% if(isFormC) { %>
 					<option id="7501" value="7501">Form C</option>
+				<% } %>
+				<% if(isFormD) { %>
+					<option id="7505" value="7505">Form D</option>
 				<% } %>
 				<% if(isEspB) { %>
 					<option id="7502" value="7502">Form Espa&#xf1;ol B</option>

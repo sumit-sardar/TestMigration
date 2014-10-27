@@ -613,6 +613,7 @@ public class DataExportOperationController extends PageFlowController {
 		boolean isFormB = false;
 		boolean isEspA = false;
 		boolean isFormC = false;
+		boolean isFormD = false;
 		boolean isEspB = false;
 		
 		if(frameworkProductId == 7000) {
@@ -631,6 +632,8 @@ public class DataExportOperationController extends PageFlowController {
 					isFormC = true;
 				} else if(x == 7502) {
 					isEspB = true;
+				} else if(x == 7505) {
+					isFormD = true;
 				}
 			}
 		}
@@ -640,6 +643,7 @@ public class DataExportOperationController extends PageFlowController {
 		this.getRequest().setAttribute("isFormB", new Boolean(isFormB));
 		this.getRequest().setAttribute("isEspA", new Boolean(isEspA));
 		this.getRequest().setAttribute("isFormC", new Boolean(isFormC));
+		this.getRequest().setAttribute("isFormD", new Boolean(isFormD));
 		this.getRequest().setAttribute("isEspB", new Boolean(isEspB));
 	}
 

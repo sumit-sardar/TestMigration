@@ -457,6 +457,8 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 		    			   sqlQuery+="7501) ";
 		    		   } else if(productId==7502) {
 		    			   sqlQuery+="7502) ";
+		    		   } else if(productId==7505) {
+		    			   sqlQuery+="7505) ";
 		    		   }
 	    		   }
 	    		   
