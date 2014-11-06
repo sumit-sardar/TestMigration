@@ -18,7 +18,7 @@
     <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.installSoftware']}"/>
     <netui-template:setAttribute name="helpLinkLinux" value="${bundle.help['help.topic.installClientLinux']}"/>
 <netui-template:section name="bodySection">
-
+<%! static String null_href = "location.href='null'"; %>
 <% 
 	Boolean isISTEPCustomer = (Boolean)request.getAttribute("isISTEPCustomer");
 	Boolean isLasLinkCustomer = (Boolean)request.getAttribute("isLasLinkCustomer");
@@ -234,7 +234,22 @@
     </tr>
 
 	
-
+    <% String href_PC = (String)request.getAttribute("downloadURI_PC");
+       String href_RUNPC = (String)request.getAttribute("runURI_PC");
+       String href_MAC = (String)request.getAttribute("downloadURI_MAC");
+       String href_RUNMAC = (String)request.getAttribute("runURI_MAC");
+       String href_LINUX = (String)request.getAttribute("downloadURI_LINUX");
+       String href_RUNLINUX = (String)request.getAttribute("runURI_LINUX");
+       boolean isStdPcInstallMissing = !(href_PC!=null && !href_PC.isEmpty()&& !null_href.equals(href_PC));
+       boolean isStdMacInstallMissing =!(href_MAC!=null && !href_MAC.isEmpty()&& !null_href.equals(href_MAC));
+       boolean isStdLinuxInstallMissing= !(href_LINUX!=null && !href_LINUX.isEmpty() && !null_href.equals(href_LINUX));
+       boolean isStandardInstallerPresent = !null_href.equals(href_PC) || !null_href.equals(href_MAC) || !null_href.equals(href_LINUX);
+       boolean isCustomInstallerPresent = !null_href.equals(href_RUNPC) || !null_href.equals(href_RUNMAC) || !null_href.equals(href_RUNLINUX);
+       boolean isInstallerPresent = isStandardInstallerPresent || isStandardInstallerPresent;
+       
+       if(isInstallerPresent)
+       {
+    %>
 	
    	<%-- Install Online Assessment Software --%>
     <tr class="transparent">
@@ -244,6 +259,7 @@
             <p><netui:content value="${bundle.web['installClient.title.message.Las']}"/></p>
         </td>
     </tr>
+    	<%} %>	
     <tr class="transparent">
         <td class="transparent-top">
         </td>
@@ -252,32 +268,49 @@
             <table class="transparent" width="100%">
 
                 <tr class="transparent">
+                <% if(isStandardInstallerPresent){ %>
                     <td class="transparent-top" width="5%">&nbsp;</td>
                     <td class="transparent" width="40%">
                     	<h2><netui:content value="${bundle.web['installClient.standardInstall.header']}"/></h2>
                     </td>
+                 <%} %>   
                     <td class="transparent-top" width="10%">&nbsp;</td>
-                     <% if (!isLasLinkCustomer.booleanValue()) { %>
+                    <% if (isCustomInstallerPresent){ 
+                     if (!isLasLinkCustomer.booleanValue()) { %>
                     <td class="transparent-top" width="5%">&nbsp;</td>
                     <td class="transparent" width="40%">
                     	<h2><netui:content value="${bundle.web['installClient.customInstall.header']}"/></h2>
                     </td>
-                     <% } %>
+                     <% }} %>
                 </tr>
             
             	<%-- PC --%>
                 <tr id="installPCClientRow" class="transparent">
+                <% 
+                   if(!isStdPcInstallMissing)
+                   { %>
                    <td class="transparent-top" width="5%">
                         <img class="transparent-top" src="../resources/images/legacy/icon_pc.gif" width="52" height="33"/>
                    </td>
                    <td class="transparent-top" width="40%">
                         <b><netui:content value="${bundle.web['installClient.windows.clientName']}"/></b><br>
                         <i><netui:content value="${bundle.web['installClient.windows.OS.Las']}"/></i><br>
-                        <% String href_PC = (String)request.getAttribute("downloadURI_PC"); %>                    
-	                	<a href="#" onclick="<%= href_PC %>" class="rounded {transparent} button" tabindex="1" >
+                        <a href="#" onclick="<%= href_PC %>" class="rounded {transparent} button" tabindex="1" >
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText']}"/>
 	                	</a>                	                                    
                     </td>
+                    <%}
+                    
+                     if(href_RUNPC!=null && !href_RUNPC.isEmpty() && !null_href.equals(href_RUNPC))
+                     { 
+                    	 if(isStdPcInstallMissing)
+                    	 {
+                     %>
+                      <td class="transparent-top" width="5%">
+                      <td class="transparent-top" width="40%">
+                      
+                      <%} %>
+                      
                     <td class="transparent-top" width="10%">&nbsp;</td>
                      <% if (!isLasLinkCustomer.booleanValue()) { %>
                     <td class="transparent-top" width="5%">
@@ -286,12 +319,12 @@
                    <td class="transparent-top" width="40%">
                         <b><netui:content value="${bundle.web['installClient.windows.clientName2']}"/></b><br>
                         <i><netui:content value="${bundle.web['installClient.windows.OS']}"/></i><br>
-                        <% String href_RUNPC = (String)request.getAttribute("runURI_PC"); %>                    
+                                            
 	                	<a href="#" onclick="<%= href_RUNPC %>" class="rounded {transparent} button" tabindex="1" >
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText2']}"/>
 	                	</a>                	                                    
                     </td>
-                    <% } %>
+                    <% } }%>
                 </tr>         
                 
                 <tr class="transparent">
@@ -300,18 +333,31 @@
                 
             	<%-- Mac OS --%>
 		        <tr id="installMacClientRow" class="transparent">
+		        <%  
+            	 if(!isStdMacInstallMissing)
+                 {
+            	%>
 		            <td class="transparent-top" width="5%">
 		                <img class="transparent" src="../resources/images/legacy/icon_macX.gif"/>
 		            </td>
 		            <td class="transparent-top" width="40%">
 		                <b><netui:content value="${bundle.web['installClient.mac.clientName']}"/></b><br>
 		                <i><netui:content value="${bundle.web['installClient.mac.OS.Las']}"/></i><br>
-                        <% String href_MAC = (String)request.getAttribute("downloadURI_MAC"); %>
-	                	<a href="#" onclick="<%= href_MAC %>" class="rounded {transparent} button" tabindex="2" >
+                        <a href="#" onclick="<%= href_MAC %>" class="rounded {transparent} button" tabindex="2" >
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText']}"/>
 	                	</a>                	                                    
 		            </td>
+		            <td class="transparent-top" width="10%">&nbsp;</td>
+		        <%}
+            	     
+            	      if(href_RUNMAC!=null && !href_RUNMAC.isEmpty() && !null_href.equals(href_RUNMAC))
+                      {
+            	    	  if(isStdMacInstallMissing){
+            	     %>            
+                    <td class="transparent-top" width="5%"></td>
+                    <td class="transparent-top" width="40%"></td>
                     <td class="transparent-top" width="10%">&nbsp;</td>
+                    <%} %> 
                      <% if (!isLasLinkCustomer.booleanValue()) { %>
 		            <td class="transparent-top" width="5%">
 		                <img class="transparent" src="../resources/images/legacy/icon_macX.gif"/>
@@ -319,12 +365,11 @@
 		            <td class="transparent-top" width="40%">
 		                <b><netui:content value="${bundle.web['installClient.mac.clientName2']}"/></b><br>
 		                <i><netui:content value="${bundle.web['installClient.mac.OS']}"/></i><br>
-                        <% String href_RUNMAC = (String)request.getAttribute("runURI_MAC"); %>
-	                	<a href="#" onclick="<%= href_RUNMAC %>" class="rounded {transparent} button" tabindex="2" >
+                        <a href="#" onclick="<%= href_RUNMAC %>" class="rounded {transparent} button" tabindex="2" >
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText2']}"/>
 	                	</a>                	                                    
 		            </td>
-		            <% } %>
+		            <% }} %>
 		        </tr>     
 
                 <tr class="transparent">
@@ -334,6 +379,9 @@
             	<%-- Linux --%>
     <% if (!isLasLinkCustomer.booleanValue()) { %>            	
 		        <tr id="installLinuxClientRow" class="transparent">
+		        <%if(!isStdLinuxInstallMissing)
+			             { 
+			             %>
 		            <td class="transparent-top" width="5%">
 		                <img class="transparent" src="../resources/images/legacy/icon_linux.png"/>
 		            </td>
@@ -341,8 +389,7 @@
 		                <b><netui:content value="${bundle.web['installClient.linux.clientName']}"/></b><br>
 		                <i><netui:content value="${bundle.web['installClient.linux.OS']}"/></i><br>
 <div id="allowDownload" style="display:none">		            
-                        <% String href_LINUX = (String)request.getAttribute("downloadURI_LINUX"); %>
-	                	<a href="#" onclick="<%= href_LINUX %>" class="rounded {transparent} button" tabindex="3" >
+                       <a href="#" onclick="<%= href_LINUX %>" class="rounded {transparent} button" tabindex="3" >
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText']}"/>
 	                	</a>                	                                    
 </div>		     
@@ -355,15 +402,24 @@
 Use <a href="<netui-template:attribute name="helpLinkLinux"/>" onClick="return showHelpWindow(this.href);">root / sudo access</a> to install.
 		            </td>
                     <td class="transparent-top" width="10%">&nbsp;</td>
+                    <%} 
+        	         if(href_RUNLINUX!=null && !href_RUNLINUX.isEmpty()&& !null_href.equals(href_RUNLINUX))
+        	         {
+        	        	 if(isStdLinuxInstallMissing){
+                    %>
+                    <td class="transparent-top" width="5%">
+                     <td class="transparent-top" width="40%">
+                    <td class="transparent-top" width="10%">&nbsp;</td>
+                    <%} %>
+                    
 		            <td class="transparent-top" width="5%">
 		                <img class="transparent" src="../resources/images/legacy/icon_linux.png"/>
 		            </td>
 		            <td class="transparent-top" width="40%">
 		                <b><netui:content value="${bundle.web['installClient.linux.clientName2']}"/></b><br>
 		                <i><netui:content value="${bundle.web['installClient.linux.OS']}"/></i><br>
-<div id="allowDownload2" style="display:none">		            
-                        <% String href_RUNLINUX = (String)request.getAttribute("runURI_LINUX"); %>
-	                	<a href="#" onclick="<%= href_RUNLINUX %>" class="rounded {transparent} button" tabindex="3" >
+                        <div id="allowDownload2" style="display:none">		            
+                        <a href="#" onclick="<%= href_RUNLINUX %>" class="rounded {transparent} button" tabindex="3" >
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText2']}"/>
 	                	</a>                	                                    
 </div>		     
@@ -374,6 +430,7 @@ Use <a href="<netui-template:attribute name="helpLinkLinux"/>" onClick="return s
 	                	</a>                	                                    
 </div>		     		                
 		            </td>
+		            <%} %>
 		        </tr>     
  <% } %>
 
