@@ -47,16 +47,63 @@ public class NetworkUpdateHelper {
 			preparedStatement.setString(4,network.getUpSpeed());
 		else
 			preparedStatement.setString(4, "--");
-		preparedStatement.setInt(5, this.surveyId);
-		preparedStatement.setString(6, network.getInternetConnectionType());
+		
+		preparedStatement.setString(5,network.getIspName());
+		preparedStatement.setString(6,network.getIspContact());
+		preparedStatement.setString(7,network.getIspPhone());
+		preparedStatement.setString(8,network.getFirewallVendor());
+		preparedStatement.setString(9,network.getProxyVendor());
+		preparedStatement.setString(10,network.getFilteringVendor());
+		if(!network.getConType().equals(""))
+			preparedStatement.setString(11,network.getConType());
+		else
+			preparedStatement.setString(11,"--");
+		if(!network.getConSpeed().equals(""))
+			preparedStatement.setString(12,network.getConSpeed());
+		else
+			preparedStatement.setString(12,"--");
+		if(!network.getConCount().equals(""))
+			preparedStatement.setString(13,network.getConCount());
+		else
+			preparedStatement.setString(13,"--");
+		preparedStatement.setString(14,network.getNetworkNotes());
+		
+		
+		
+		
+		
+		preparedStatement.setInt(15, this.surveyId);
+		preparedStatement.setString(16, network.getInternetConnectionType());
 		if (!network.getUpSpeed().equals(""))
-			preparedStatement.setString(7, network.getDownSpeed());
+			preparedStatement.setString(17, network.getDownSpeed());
 		else
-			preparedStatement.setString(7, "--");
+			preparedStatement.setString(17, "--");
 		if (!network.getDownSpeed().equals(""))
-			preparedStatement.setString(8, network.getUpSpeed());
+			preparedStatement.setString(18, network.getUpSpeed());
 		else
-			preparedStatement.setString(8, "--");
+			preparedStatement.setString(18, "--");
+		
+		preparedStatement.setString(19,network.getIspName());
+		preparedStatement.setString(20,network.getIspContact());
+		preparedStatement.setString(21,network.getIspPhone());
+		preparedStatement.setString(22,network.getFirewallVendor());
+		preparedStatement.setString(23,network.getProxyVendor());
+		preparedStatement.setString(24,network.getFilteringVendor());
+		if(!network.getConType().equals(""))
+			preparedStatement.setString(25,network.getConType());
+		else
+			preparedStatement.setString(25,"--");
+		
+		if(!network.getConSpeed().equals(""))
+			preparedStatement.setString(26,network.getConSpeed());
+		else
+			preparedStatement.setString(26,"--");
+		if(!network.getConCount().equals(""))
+			preparedStatement.setString(27,network.getConCount());
+		else
+			preparedStatement.setString(27,"--");
+		preparedStatement.setString(28,network.getNetworkNotes());
+		
 		
 		int flag = preparedStatement.executeUpdate();
 		if (flag == 0)

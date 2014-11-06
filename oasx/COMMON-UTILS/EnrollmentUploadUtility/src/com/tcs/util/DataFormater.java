@@ -3,12 +3,14 @@ package com.tcs.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.ctb.bean.Contects;
 import com.ctb.bean.Network;
 import com.ctb.bean.WorkStation;
+import com.sun.java.swing.plaf.windows.WindowsBorders;
 
 final public class DataFormater {
-
 	public DataFormater() {
 		// TODO Auto-generated constructor stub
 	}
@@ -46,7 +48,17 @@ final public class DataFormater {
 			network.setSchoolNumber(record[1]);	
 			network.setInternetConnectionType(record[2]);
 			network.setDownSpeed(record[3]);
-			network.setUpSpeed(record[4]);			
+			network.setUpSpeed(record[4]);	
+			network.setIspName(record[5]);
+			network.setIspContact(record[6]);
+			network.setIspPhone(record[7]);
+			network.setFirewallVendor(record[8]);
+			network.setProxyVendor(record[9]);
+			network.setFilteringVendor(record[10]);
+			network.setConType(record[11]);
+			network.setConSpeed(record[12]);
+			network.setConCount(record[13]);
+			network.setNetworkNotes(record[14]);
 			networkList.add(network);			
 		}// end of loop
 		return networkList;

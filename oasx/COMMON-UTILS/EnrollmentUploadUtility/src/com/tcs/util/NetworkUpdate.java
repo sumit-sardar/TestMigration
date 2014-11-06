@@ -24,8 +24,8 @@ public class NetworkUpdate {
 	private int rtsCustomerId;
 	private Connection connection;
 	private final String netWorkSql=" merge into site_survey_network t using (select 1 from DUAL) s on (t.SITE_SURVEY_ID = ?)  when matched then"+
-	" update set t.INET_CONN_TYPE = ?, t.INET_DOWN_SPEED = ? , t.INET_UP_SPEED = ? "+
-	 " when not matched then insert  (SITE_SURVEY_ID, INET_CONN_TYPE, INET_DOWN_SPEED , INET_UP_SPEED ) values (?, ?, ?, ?)";
+	" update set t.INET_CONN_TYPE = ?, t.INET_DOWN_SPEED = ? , t.INET_UP_SPEED = ?, t.ISP_NAME = ?, t.ISP_CONTACT = ?, t.ISP_PHONE = ?, t.FIREWALL_VENDOR = ?, t.PROXY_VENDOR = ?, t.FILTERING_VENDOR = ?, t.LOCAL_CONN_TYPE = ?, t.LOCAL_CONN_SPEED = ?, t.LOCAL_CONN_COUNT = ?, t.NOTES = ?"+
+	 " when not matched then insert  (SITE_SURVEY_ID, INET_CONN_TYPE, INET_DOWN_SPEED , INET_UP_SPEED , ISP_NAME , ISP_CONTACT , ISP_PHONE , FIREWALL_VENDOR , PROXY_VENDOR , FILTERING_VENDOR , LOCAL_CONN_TYPE , LOCAL_CONN_SPEED , LOCAL_CONN_COUNT , NOTES) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private final String workStationSql = "insert into site_survey_workstation sw (sw.site_survey_id, sw.workstation_count,sw.workstation_type,sw.operating_system,sw.processor,sw.physical_memory) values (?, ?, ?, ?, ?, ?)";	
 
 	public NetworkUpdate() {
