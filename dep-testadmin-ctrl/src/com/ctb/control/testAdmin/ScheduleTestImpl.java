@@ -2441,27 +2441,62 @@ public class ScheduleTestImpl implements ScheduleTest
 	        return map;
     }
     
-    private  Map <Integer, String>  getScreenReaderStudentAccommodations( SessionStudent [] scheduledStudents) throws SQLException{
-        Map <Integer, String> map = new HashMap<Integer, String>();
-            String studentIds = "";
-	        for (int s=0;s<scheduledStudents.length;s++)
-	        {
-	        	SessionStudent stu = scheduledStudents[s];	        
-	        	if (studentIds.length()>0)
-		        {
-	        		studentIds += ",";
-		        }
-	        	
-	        	studentIds += stu.getStudentId();
-	        }
-	        StudentAccommodations[] studentAccommo = accommodation.getScreenReaderStudentAccommodations(studentIds);
-	        for (int k=0;k<studentAccommo.length;k++){	        	 
-	        	map.put(studentAccommo[k].getStudentId(), studentAccommo[k].getScreenReader());
-	        }	        
-	        return map;
-    }
+    private Map<Integer, String> getScreenReaderStudentAccommodations(SessionStudent[] scheduledStudents) throws SQLException {
+		Map<Integer, String> map = new HashMap<Integer, String>();
+
+		//Changes for 999 limitation of SQL IN clause : Start
+		List<StudentAccommodations> accomGlobal = new ArrayList<StudentAccommodations>();
+		int inClauselimit = 999;
+		int loopCounters = scheduledStudents.length / inClauselimit;
+		if ((scheduledStudents.length % inClauselimit) > 0) {
+			loopCounters = loopCounters + 1;
+		}
+
+		for (int counter = 0; counter < loopCounters; counter++) {
+			SessionStudent[] newselectedStudents = null;
+			String searchbyStudentIds = "";
+			if ((counter + 1) != loopCounters) {
+				newselectedStudents = new SessionStudent[inClauselimit];
+				System.arraycopy(scheduledStudents, (counter * inClauselimit),
+						newselectedStudents, 0, inClauselimit);
+			} else {
+				int count = scheduledStudents.length % inClauselimit;
+				newselectedStudents = new SessionStudent[count];
+				System.arraycopy(scheduledStudents,
+						((loopCounters - 1) * inClauselimit),
+						newselectedStudents, 0, count);
+			}
+			searchbyStudentIds = generateSQLCriteria("ACCOM.STUDENT_ID IN ", newselectedStudents);
+			StudentAccommodations[] studentAccommo = accommodation.getScreenReaderStudentAccommodations(searchbyStudentIds);
+			accomGlobal.addAll(Arrays.asList(studentAccommo));
+		}
+		//End 
+
+		for (StudentAccommodations studentAccomo : accomGlobal) {
+			map.put(studentAccomo.getStudentId(), studentAccomo.getScreenReader());
+		}
+		
+		System.out.println("Total generated Map size ::"+ map.size());
+		return map;
+	}
     
-    private Map <String, List<String>> getTestletFormsByLevels(Integer itemSetId) throws SQLException{
+    private String generateSQLCriteria(String columnName, SessionStudent[] newselectedStudents) {
+    	StringBuilder temp = new StringBuilder("");
+		String tempString = "";
+
+		for (SessionStudent ss : newselectedStudents) {
+			if(ss != null)
+			temp.append(ss.getStudentId().intValue()).append(",");
+		}
+		tempString = temp.toString();
+		if(tempString.length()>0){
+			tempString = tempString.substring(0, temp.length() - 1);
+			tempString = columnName + "( "+ tempString+")";
+		}
+		return tempString;
+	}
+
+	private Map <String, List<String>> getTestletFormsByLevels(Integer itemSetId) throws SQLException{
     	Map <String, List<String>> map = new HashMap<String, List<String>>();
     	TestletLevelForm[] levelForms = siss.getTestletLevelFormsByItemSetId(itemSetId);
     	for(int l=0;l<levelForms.length;l++){
@@ -2584,6 +2619,7 @@ public class ScheduleTestImpl implements ScheduleTest
     private void createTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Double extendedTimeValue) throws CTBBusinessException {
         try{
             Integer productId = newSession.getTestSession().getProductId();
+            String testName = newSession.getTestSession().getTestName().toUpperCase();
             TestProduct testProduct = product.getProduct(productId);
             boolean overrideUsingStudentManifest = false;
             if ("F".equalsIgnoreCase(testProduct.getStaticManifest())
@@ -2641,12 +2677,22 @@ public class ScheduleTestImpl implements ScheduleTest
             ArrayList<FormAssignmentCount>  srformCounts =new ArrayList<FormAssignmentCount>(); 
             if(scheduledStudents.length>0 && productId.intValue() == 32){ //new GA winter 
                  studentAccommo = getScreenReaderStudentAccommodations(scheduledStudents);  
-                 for(int h=0; h<formCounts.length; h++){ 
-                      FormAssignmentCount obj = formCounts[h]; 
-                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
-                           srformCounts.add(obj); 
-                      } 
-                 } 
+                 //Changes for story : OAS-933 :: Considering the catalog name "GM EOC Winter 2014 Coordinate Algebra" as original content is not yet available
+                 if(testName.endsWith("2014 COORDINATE ALGEBRA")){
+                	 for(int h=0; h<formCounts.length; h++){ 
+	                      FormAssignmentCount obj = formCounts[h]; 
+	                      if (!obj.getForm().equalsIgnoreCase("B")){ 
+	                           srformCounts.add(obj); 
+	                      } 
+	                 }
+                 }else{
+	                 for(int h=0; h<formCounts.length; h++){ 
+	                      FormAssignmentCount obj = formCounts[h]; 
+	                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
+	                           srformCounts.add(obj); 
+	                      } 
+	                 }
+                 }
             }
             
             ArrayList subtestAssignments = new ArrayList();
@@ -2859,7 +2905,8 @@ public class ScheduleTestImpl implements ScheduleTest
     
     private void updateTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Integer itemSetId, Double extendedTimeValue) throws CTBBusinessException {
         try {
-            Integer productId = newSession.getTestSession().getProductId();
+        	Integer productId = newSession.getTestSession().getProductId();
+        	String testName = newSession.getTestSession().getTestName().toUpperCase();
             TestProduct testProduct = product.getProduct(productId);
             boolean overrideUsingStudentManifest = false;
             if ("F".equalsIgnoreCase(testProduct.getStaticManifest())
@@ -2934,12 +2981,22 @@ public class ScheduleTestImpl implements ScheduleTest
             ArrayList<FormAssignmentCount>  srformCounts =new ArrayList<FormAssignmentCount>(); 
             if(newUnits.length>0 && productId.intValue() == 32){ //new GA winter 
                  studentAccommo = getScreenReaderStudentAccommodations(newUnits);  
-                 for(int h=0; h<formCounts.length; h++){ 
-                      FormAssignmentCount obj = formCounts[h]; 
-                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
-                           srformCounts.add(obj); 
-                      } 
-                 } 
+                 //Changes for story : OAS-933 :: Considering the catalog name "GM EOC Winter 2014 Coordinate Algebra" as original content is not yet available
+                 if(testName.endsWith("2014 COORDINATE ALGEBRA")){
+                	 for(int h=0; h<formCounts.length; h++){ 
+	                      FormAssignmentCount obj = formCounts[h]; 
+	                      if (!obj.getForm().equalsIgnoreCase("B")){ 
+	                           srformCounts.add(obj); 
+	                      } 
+	                 }
+                 }else {
+	                 for(int h=0; h<formCounts.length; h++){ 
+	                      FormAssignmentCount obj = formCounts[h];
+	                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
+	                           srformCounts.add(obj); 
+	                      } 
+	                 }
+                 }
             }            
             
             
