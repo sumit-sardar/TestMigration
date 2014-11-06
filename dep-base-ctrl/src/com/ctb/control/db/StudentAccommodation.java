@@ -142,7 +142,7 @@ public interface StudentAccommodation extends JdbcControl
      *      student_accommodation accom      
      * where accom.student_id in ({sql : studentIds})
      */
-    @JdbcControl.SQL(statement = "select  distinct accom.STUDENT_ID as studentId,  accom.SCREEN_READER as screenReader from  student_accommodation accom where  accom.student_id IN ({sql: studentIds})")
+    @JdbcControl.SQL(statement = "select  accom.STUDENT_ID as studentId,  accom.SCREEN_READER as screenReader from  student_accommodation accom where  {sql: studentIds}")
     StudentAccommodations[] getScreenReaderStudentAccommodations(String studentIds) throws SQLException;
     
     
