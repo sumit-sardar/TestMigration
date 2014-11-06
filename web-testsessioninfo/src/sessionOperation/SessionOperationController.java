@@ -7145,6 +7145,14 @@ public class SessionOperationController extends PageFlowController {
 	            return false;
 	    }
 	    
+	    private boolean isTabeCCSSSession(String productType)
+	    {
+	        if (productType.equalsIgnoreCase("TC"))
+	            return true;   
+	        else             
+	            return false;
+	    }
+	    
 	    private TestProduct getProductForTestAdmin(Integer testAdminId)
 	    {
 	        TestProduct tp = null;
@@ -7866,7 +7874,8 @@ public class SessionOperationController extends PageFlowController {
 		        boolean isTabeSession = isTabeSession(testProduct.getProductType());
 		        boolean isTabeLocatorSession = isTabeLocatorSession(testProduct.getProductType());
 		        boolean isTabeAdaptiveSession = isTabeAdaptiveSession(testProduct.getProductType());
-		       
+		        boolean isTabeCCSSSession = isTabeCCSSSession(testProduct.getProductType());
+		        
 		        // START- Added for LLO-109 
 		        isLasLinkCustomer();
 		        boolean isLaslinkSession  = this.isLasLinkCustomer;
@@ -7918,6 +7927,7 @@ public class SessionOperationController extends PageFlowController {
 		        base.setNumberColumn(numberColumn);
 		        base.setSubtestValidationAllowed(this.subtestValidationAllowed);
 		        base.setTabeSession(isTabeSession);
+		        base.setTabeCCSSSession(isTabeCCSSSession);
 		        base.setLaslinkSession(isLaslinkSession);
 		        return base;
 		    }

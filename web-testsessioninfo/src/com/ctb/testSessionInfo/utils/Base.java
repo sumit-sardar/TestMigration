@@ -41,6 +41,7 @@ public class Base {
 	private String response;
 	private boolean isShowScores;
 	private boolean isTabeSession;
+	private boolean isTabeCCSSSession;
 	private int numberColumn;
 	private boolean subtestValidationAllowed;
 	private boolean isLaslinkSession;
@@ -388,6 +389,12 @@ public class Base {
 	}
 	public void setTopLevelUser(boolean isTopLevelUser) {
 		this.isTopLevelUser = isTopLevelUser;
+	}
+	public boolean isTabeCCSSSession() {
+		return isTabeCCSSSession;
+	}
+	public void setTabeCCSSSession(boolean isTabeCCSSSession) {
+		this.isTabeCCSSSession = isTabeCCSSSession;
 	}
 
 	

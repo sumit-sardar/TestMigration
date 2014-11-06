@@ -5327,17 +5327,19 @@ function registerDelegate(tree){
                				html += '&nbsp;&nbsp;<span>'+$("#completionDateLbl").val()+'</span>';
            					html += '</th>';
            					if(data.isShowScores) {
-            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
-                				html += '&nbsp;&nbsp;<span>'+$("#totalItemsLbl").val()+'</span>';
-            					html += '</th>';
-            					
-            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
-                				html += '&nbsp;&nbsp;<span>'+$("#itemsCorrectLbl").val()+'</span>';
-            					html += '</th>';
-            					
-            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
-                				html += '&nbsp;&nbsp;<span>'+$("#itemsScoredLbl").val()+'</span>';
-            					html += '</th>';
+           						if(!data.isTabeCCSSSession){
+	            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+	                				html += '&nbsp;&nbsp;<span>'+$("#totalItemsLbl").val()+'</span>';
+	            					html += '</th>';
+	            					
+	            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+	                				html += '&nbsp;&nbsp;<span>'+$("#itemsCorrectLbl").val()+'</span>';
+	            					html += '</th>';
+	            					
+	            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+	                				html += '&nbsp;&nbsp;<span>'+$("#itemsScoredLbl").val()+'</span>';
+	            					html += '</th>';
+            					}
            					}
            					if(data.subtestValidationAllowed && data.isLaslinkSession) {
 			           			if(data.hasTopLevelInvalidationOnlyConfig) {
@@ -5421,20 +5423,22 @@ function registerDelegate(tree){
 										html += '<td class="sortable alignCenter"> <span>--</span></td>';
 									}
 									if(data.isShowScores) {
-										if(row.maxScore == null || row.maxScore === "" || row.maxScore == undefined) {
-											html += '<td class="sortable alignCenter"> <span>--</span></td>';
-										} else {
-											html += '<td class="sortable alignCenter"> <span>'+row.maxScore+'</span></td>';
-										}
-										if(row.rawScore == null || row.rawScore === "" || row.rawScore == undefined) {
-											html += '<td class="sortable alignCenter"> <span>--</span></td>';
-										} else {
-											html += '<td class="sortable alignCenter"> <span>'+row.rawScore+'</span></td>';
-										}
-										if(row.unScored == null || row.unScored === "" || row.unScored == undefined) {
-											html += '<td class="sortable alignCenter"> <span>--</span></td>';
-										} else {
-											html += '<td class="sortable alignCenter"> <span>'+row.unScored+'</span></td>';
+										if(!data.isTabeCCSSSession){
+											if(row.maxScore == null || row.maxScore === "" || row.maxScore == undefined) {
+												html += '<td class="sortable alignCenter"> <span>--</span></td>';
+											} else {
+												html += '<td class="sortable alignCenter"> <span>'+row.maxScore+'</span></td>';
+											}
+											if(row.rawScore == null || row.rawScore === "" || row.rawScore == undefined) {
+												html += '<td class="sortable alignCenter"> <span>--</span></td>';
+											} else {
+												html += '<td class="sortable alignCenter"> <span>'+row.rawScore+'</span></td>';
+											}
+											if(row.unScored == null || row.unScored === "" || row.unScored == undefined) {
+												html += '<td class="sortable alignCenter"> <span>--</span></td>';
+											} else {
+												html += '<td class="sortable alignCenter"> <span>'+row.unScored+'</span></td>';
+											}
 										}
 									}
 									
