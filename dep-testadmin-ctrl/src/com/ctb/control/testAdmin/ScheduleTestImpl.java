@@ -2476,7 +2476,7 @@ public class ScheduleTestImpl implements ScheduleTest
 			map.put(studentAccomo.getStudentId(), studentAccomo.getScreenReader());
 		}
 		
-		System.out.println("Total generated Map size ::"+ map.size());
+		// System.out.println("Total generated Map size ::"+ map.size());
 		return map;
 	}
     
@@ -2619,7 +2619,7 @@ public class ScheduleTestImpl implements ScheduleTest
     private void createTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Double extendedTimeValue) throws CTBBusinessException {
         try{
             Integer productId = newSession.getTestSession().getProductId();
-            String testName = newSession.getTestSession().getTestName().toUpperCase();
+            //String testName = newSession.getTestSession().getTestName().toUpperCase();
             TestProduct testProduct = product.getProduct(productId);
             boolean overrideUsingStudentManifest = false;
             if ("F".equalsIgnoreCase(testProduct.getStaticManifest())
@@ -2676,23 +2676,21 @@ public class ScheduleTestImpl implements ScheduleTest
             Map <Integer, String> studentAccommo = null;  
             ArrayList<FormAssignmentCount>  srformCounts =new ArrayList<FormAssignmentCount>(); 
             if(scheduledStudents.length>0 && productId.intValue() == 32){ //new GA winter 
-                 studentAccommo = getScreenReaderStudentAccommodations(scheduledStudents);  
-                 //Changes for story : OAS-933 :: Considering the catalog name "GM EOC Winter 2014 Coordinate Algebra" as original content is not yet available
-                 if(testName.endsWith("2014 COORDINATE ALGEBRA")){
-                	 for(int h=0; h<formCounts.length; h++){ 
-	                      FormAssignmentCount obj = formCounts[h]; 
-	                      if (!obj.getForm().equalsIgnoreCase("B")){ 
-	                           srformCounts.add(obj); 
-	                      } 
-	                 }
-                 }else{
-	                 for(int h=0; h<formCounts.length; h++){ 
-	                      FormAssignmentCount obj = formCounts[h]; 
-	                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
-	                           srformCounts.add(obj); 
-	                      } 
-	                 }
+            	studentAccommo = getScreenReaderStudentAccommodations(scheduledStudents);  
+                for(int h=0; h<formCounts.length; h++){ 
+                      FormAssignmentCount obj = formCounts[h]; 
+                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
+                           srformCounts.add(obj); 
+                      } 
                  }
+            }else if(scheduledStudents.length>0 && productId.intValue() == 35){ //Changes for story : OAS-933 :: For actual product "GA EOC Spring Mid-Month 2015"
+            	studentAccommo = getScreenReaderStudentAccommodations(scheduledStudents);  
+               	for (int h = 0; h < formCounts.length; h++) {
+					FormAssignmentCount obj = formCounts[h];
+					if (!obj.getForm().equalsIgnoreCase("B3")) {
+						srformCounts.add(obj);
+					}
+				}
             }
             
             ArrayList subtestAssignments = new ArrayList();
@@ -2728,7 +2726,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         		Integer studentId = scheduledStudents[j].getStudentId();
                         		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                         		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                        	}else if(productId.intValue() == 32){ 
+                        	}else if(productId.intValue() == 32 || productId.intValue() == 35){ 
                                 String sr = studentAccommo.get(student.getStudentId()); 
                                 FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                                 srformCounts.toArray(fc); 
@@ -2906,7 +2904,7 @@ public class ScheduleTestImpl implements ScheduleTest
     private void updateTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Integer itemSetId, Double extendedTimeValue) throws CTBBusinessException {
         try {
         	Integer productId = newSession.getTestSession().getProductId();
-        	String testName = newSession.getTestSession().getTestName().toUpperCase();
+        	//String testName = newSession.getTestSession().getTestName().toUpperCase();
             TestProduct testProduct = product.getProduct(productId);
             boolean overrideUsingStudentManifest = false;
             if ("F".equalsIgnoreCase(testProduct.getStaticManifest())
@@ -2981,23 +2979,21 @@ public class ScheduleTestImpl implements ScheduleTest
             ArrayList<FormAssignmentCount>  srformCounts =new ArrayList<FormAssignmentCount>(); 
             if(newUnits.length>0 && productId.intValue() == 32){ //new GA winter 
                  studentAccommo = getScreenReaderStudentAccommodations(newUnits);  
-                 //Changes for story : OAS-933 :: Considering the catalog name "GM EOC Winter 2014 Coordinate Algebra" as original content is not yet available
-                 if(testName.endsWith("2014 COORDINATE ALGEBRA")){
-                	 for(int h=0; h<formCounts.length; h++){ 
-	                      FormAssignmentCount obj = formCounts[h]; 
-	                      if (!obj.getForm().equalsIgnoreCase("B")){ 
-	                           srformCounts.add(obj); 
-	                      } 
-	                 }
-                 }else {
-	                 for(int h=0; h<formCounts.length; h++){ 
-	                      FormAssignmentCount obj = formCounts[h];
-	                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
-	                           srformCounts.add(obj); 
-	                      } 
-	                 }
+                 for(int h=0; h<formCounts.length; h++){ 
+                      FormAssignmentCount obj = formCounts[h];
+                      if (!obj.getForm().equalsIgnoreCase("A3") && !obj.getForm().equalsIgnoreCase("B3")){ 
+                           srformCounts.add(obj); 
+                      } 
                  }
-            }            
+            }else if(newUnits.length>0 && productId.intValue() == 35){
+            	studentAccommo = getScreenReaderStudentAccommodations(newUnits);  //Changes for story : OAS-933 :: For actual product "GA EOC Spring Mid-Month 2015"
+            	for (int h = 0; h < formCounts.length; h++) {
+					FormAssignmentCount obj = formCounts[h];
+					if (!obj.getForm().equalsIgnoreCase("B3")) {
+						srformCounts.add(obj);
+					}
+				}
+            }
             
             
             for(int j=0;newUnits!=null && j<newUnits.length;j++) {
@@ -3054,7 +3050,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     		Integer studentId = newUnit.getStudentId();
                     		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                     		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                    	}else if(productId.intValue() == 32){ 
+                    	}else if(productId.intValue() == 32 || productId.intValue() == 35){ 
                             String sr = studentAccommo.get(newUnit.getStudentId()); 
                             FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                             srformCounts.toArray(fc); 
