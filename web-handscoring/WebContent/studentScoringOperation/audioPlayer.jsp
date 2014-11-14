@@ -34,7 +34,7 @@
 	
 	function stopAudio() {
 		try {
-			document.myApplet.stopAudio();
+			document.audioPlayer.stopAudio();
 		} catch(e) {
 		}
 	}
