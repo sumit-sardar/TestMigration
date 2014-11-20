@@ -1,37 +1,18 @@
 package util; 
 
-import com.ctb.bean.testAdmin.SubtestAccessCodeDetail;
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Cell;
-import com.lowagie.text.Chunk;
-import data.TestRosterVO;
-import data.TestAdminVO;
 import java.io.IOException;
-import java.util.List;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfTable;
-import com.lowagie.text.pdf.PdfWriter;
-import data.ImageVO;
-import data.TableVO;
-import java.awt.Color;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.servlet.ServletOutputStream;
-//import weblogic.webservice.tools.pagegen.result;
+
+import com.ctb.bean.testAdmin.SubtestAccessCodeDetail;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+
+import data.ImageVO;
+import data.TableVO;
+import data.TestAdminVO;
+import data.TestRosterVO;
 
 public class IndividualTestTicketsReportUtils extends ReportUtils
 { 
@@ -60,6 +41,19 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private static final float KEYBOARD_SHORTCUTS_TEXT_2_Y = 398f;
     private static final float KEYBOARD_SHORTCUTS_TEXT_3_Y = 358f;
     private static final float KEYBOARD_SHORTCUTS_TABLE_Y = 317f;
+    
+    
+    // Added for TABE Adaptive Story : OAS-831 - TABE Adaptive - Add text to individual test ticket
+    private static final float LOGIN_INFO_TA = 473f;
+    private static final float LOGIN_INSTRUCTIONS_TA = 459f;
+    private static final float KEYBOARD_SHORTCUTS_Y_TA = 430f;
+    private static final float KEYBOARD_SHORTCUTS_TEXT_1_Y_TA = 408f;
+    private static final float KEYBOARD_SHORTCUTS_TEXT_2_Y_TA = 364f;
+    private static final float KEYBOARD_SHORTCUTS_TEXT_3_Y_TA = 324f;
+    private static final float KEYBOARD_SHORTCUTS_TABLE_Y_TA = 283f;
+    private static final float ADDITIONAL_Y_COPYWRITE = 370f;
+    
+    
     private static final float FOOTER_Y = 72f;
     private static final float WAVING_MAN_Y = 488f;
     private static final float WATERMARK_Y = 30f;
@@ -98,6 +92,8 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
 	private static final String PASSWORD_LABEL = "Password:";
     private static final String TEST_ACCESS_CODE_LABEL = "Test Access Code:";
     private static final String LOGIN_INSTRUCTIONS = "Wait for the teacher or test proctor to give you the Test Access Code.";
+    private static final String INFO_FOR_TA_LABEL = "Note:";
+    private static final String TA_INSTRUCTIONS_FOR_INDIVIDUAL_MULTIPLE = "You must view each item in the test to receive a final score.";
     private static final String KEYBOARD_SHORTCUTS_LABEL = "Keyboard Shortcuts";
     private static final String KEYBOARD_SHORTCUTS_TEXT_1 = "To move through the test, use the buttons on each screen, or you may use these keyboard shortcuts.";
     private static final String KEYBOARD_SHORTCUTS_TEXT_2 = "If two keys are used together, a + sign is shown between them.  You don't need to press the + key.";
@@ -133,6 +129,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private TableVO pauseKeyboards = null;
     //START - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
     private boolean isMultiIndividualTkt = false;
+    private boolean isTabeAdaptive = false;
     //END - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
     
     private String accessAllow = null; // Changed for TABE BAUM - 028
@@ -152,12 +149,12 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         return true;
     }
     protected boolean createStaticBelowTables() throws DocumentException, IOException {
-    	addFooter(ADDITIONAL_Y);
-        addWatermark(ADDITIONAL_Y);
+    	addFooter((this.isTabeAdaptive)?ADDITIONAL_Y_COPYWRITE:ADDITIONAL_Y);
+        addWatermark((this.isTabeAdaptive)?ADDITIONAL_Y_COPYWRITE:ADDITIONAL_Y);
     	addDottedLine();
-        addTitle(ADDITIONAL_Y);
-        addStaticGeneralInformation(ADDITIONAL_Y);
-        addStaticLoginInformation(ADDITIONAL_Y);
+        addTitle((this.isTabeAdaptive)?ADDITIONAL_Y_COPYWRITE:ADDITIONAL_Y);
+        addStaticGeneralInformation((this.isTabeAdaptive)?ADDITIONAL_Y_COPYWRITE:ADDITIONAL_Y);
+        addStaticLoginInformation((this.isTabeAdaptive)?ADDITIONAL_Y_COPYWRITE:ADDITIONAL_Y);
         return true;
     }
     //END - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
@@ -188,6 +185,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         
       	this.multipleAccessAllow = (Boolean)args[12];
       	this.subtestAccessList = (SubtestAccessCodeDetail[])args[13];
+      	this.isTabeAdaptive = (Boolean)args[14];
       	
         if(!isMultiIndividualTkt) {
         	this.getKeyboardShortcutsTables();
@@ -195,14 +193,10 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         	addWavingMan();
         	this.createStaticAboveTables();
         	this.createPages();
-        }
-        else {
-        	
+        }else {
         	 this.createStaticAboveTables();
         	 this.createStaticBelowTables();
         	 this.createMultiTktPages();
-        	 
-         	
         }	
         //END - Changed for  CR ISTEP2011CR007 (Multiple Test Ticket)
         
@@ -242,7 +236,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
             tables.add(getLoginTable(student, yValue));
            if(flag){
             	//this.createStaticAboveTables();
-            	yValue = ADDITIONAL_Y;
+            	yValue = (this.isTabeAdaptive)?ADDITIONAL_Y_COPYWRITE:ADDITIONAL_Y;
             	flag =false;	
             	
             	}
@@ -263,7 +257,6 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     }
     
     private void addTitleText(float yValue) throws DocumentException{
-    	System.out.println("TITLE_Y+yValue====>"+(TITLE_Y-yValue));
          this.staticTables.add(
             tableUtils.getTitleTable(PAGE_NAME_LABEL,
                                      PAGE_WIDTH,
@@ -392,6 +385,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private void addStaticLoginInformation(float yValue) throws DocumentException, IOException{
         addLoginLabel(yValue);
         addLoginInstructions(yValue);
+        if(this.isTabeAdaptive)addStaticInfoForTA(yValue);// Added for TABE Adaptive Story : OAS-831 - TABE Adaptive - Add text to individual test ticket
     }
  
     private void addLoginInstructions(float yValue) throws DocumentException{
@@ -403,6 +397,27 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
                                         (LOGIN_INSTRUCTIONS_Y-yValue),
                                         LOGIN_INSTRUCTIONS_BORDER));
         }
+    }
+    
+    private void addStaticInfoForTA(float yValue) throws DocumentException, IOException{
+    	addLabelInfoForTA(yValue);
+    	addInstructionsForTA(yValue);
+    }
+    
+    private void addLabelInfoForTA(float yValue) throws DocumentException{
+        this.staticTables.add( 
+             tableUtils.getLabelTable(INFO_FOR_TA_LABEL,
+                                      PAGE_WIDTH,
+                                      LEFT_X,
+                                     (LOGIN_INFO_TA-yValue)));
+    }
+    
+    private void addInstructionsForTA(float yValue) throws DocumentException{
+        	this.staticTables.add( 
+                    tableUtils.getInfoTable(TA_INSTRUCTIONS_FOR_INDIVIDUAL_MULTIPLE,
+				                            LOGIN_WIDTH,
+				                            LEFT_X,
+				                            (LOGIN_INSTRUCTIONS_TA-yValue)));
     }
     
     private void addWavingMan() throws DocumentException, IOException{
@@ -449,8 +464,13 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         return result;
     }
     private void addKeyboardShortcuts() throws DocumentException{
-        addKeyboardShortcutsTitle();
-        addKeyboardShortcutsText();
+    	if (this.isTabeAdaptive){
+    		addKeyboardShortcutsTitleForTA();
+    		addKeyboardShortcutsTextForTA();    		
+    	}else{
+    		addKeyboardShortcutsTitle();
+    		addKeyboardShortcutsText();
+    	}
     }
     
     private void addKeyboardShortcutsTitle() throws DocumentException{
@@ -462,12 +482,27 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     }
     
     private void addKeyboardShortcutsText() throws DocumentException{
-        addKeyboardShortcutsText1();
-        addKeyboardShortcutsText2();
-        addKeyboardShortcutsText3();
+        addKeyboardShortcutsText1(KEYBOARD_SHORTCUTS_TEXT_1_Y);
+        addKeyboardShortcutsText2(KEYBOARD_SHORTCUTS_TEXT_2_Y);
+        addKeyboardShortcutsText3(KEYBOARD_SHORTCUTS_TEXT_3_Y);
     }
     
-    private void addKeyboardShortcutsText1() throws DocumentException{
+    private void addKeyboardShortcutsTitleForTA() throws DocumentException{
+        this.staticKeyboardTables.add( 
+             tableUtils.getLabelTable(KEYBOARD_SHORTCUTS_LABEL,
+                                      PAGE_WIDTH,
+                                      LEFT_X,
+                                      KEYBOARD_SHORTCUTS_Y_TA));
+    }
+    
+    private void addKeyboardShortcutsTextForTA() throws DocumentException{
+        addKeyboardShortcutsText1(KEYBOARD_SHORTCUTS_TEXT_1_Y_TA);
+        addKeyboardShortcutsText2(KEYBOARD_SHORTCUTS_TEXT_2_Y_TA);
+        addKeyboardShortcutsText3(KEYBOARD_SHORTCUTS_TEXT_3_Y_TA);
+    }
+    
+    
+    private void addKeyboardShortcutsText1(float KEYBOARD_SHORTCUTS_TEXT_1_Y) throws DocumentException{
         this.staticKeyboardTables.add( 
              tableUtils.getInfoTable(KEYBOARD_SHORTCUTS_TEXT_1,
                                      PAGE_WIDTH,
@@ -475,7 +510,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
                                      KEYBOARD_SHORTCUTS_TEXT_1_Y));
     }
     
-    private void addKeyboardShortcutsText2() throws DocumentException{
+    private void addKeyboardShortcutsText2(float KEYBOARD_SHORTCUTS_TEXT_2_Y) throws DocumentException{
         this.staticKeyboardTables.add( 
              tableUtils.getInfoTable(KEYBOARD_SHORTCUTS_TEXT_2,
                                      PAGE_WIDTH,
@@ -483,7 +518,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
                                      KEYBOARD_SHORTCUTS_TEXT_2_Y));
       }
      
-     private void addKeyboardShortcutsText3() throws DocumentException{
+     private void addKeyboardShortcutsText3(float KEYBOARD_SHORTCUTS_TEXT_3_Y) throws DocumentException{
         this.staticKeyboardTables.add( 
              tableUtils.getInfoTable(KEYBOARD_SHORTCUTS_TEXT_3,
                                      PAGE_WIDTH,
@@ -501,19 +536,20 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     }
     
      private void getKeyboardShortcutsTables() throws DocumentException{
+    	float TABLE_Y = (this.isTabeAdaptive)? KEYBOARD_SHORTCUTS_TABLE_Y_TA : KEYBOARD_SHORTCUTS_TABLE_Y ;
         this.pauseKeyboards =  
              tableUtils.getHeaderBorderTable(getKeyboardShortcutsTexts(true),
                                              KEYBOARD_WIDTH,
                                              KEYBOARD_WIDTHS,
                                              KEYBOARD_X,
-                                             KEYBOARD_SHORTCUTS_TABLE_Y,
+                                             TABLE_Y,
                                              KEYBOARD_BORDER);
         this.noPauseKeyboards =  
              tableUtils.getHeaderBorderTable(getKeyboardShortcutsTexts(false),
                                              KEYBOARD_WIDTH,
                                              KEYBOARD_WIDTHS,
                                              KEYBOARD_X,
-                                             KEYBOARD_SHORTCUTS_TABLE_Y,
+                                             TABLE_Y,
                                              KEYBOARD_BORDER);
     }
     

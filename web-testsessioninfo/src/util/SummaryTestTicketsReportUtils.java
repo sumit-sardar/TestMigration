@@ -1,54 +1,33 @@
 package util; 
 
-import com.ctb.bean.testAdmin.TestProduct;
-import com.lowagie.text.Chunk;
-import data.TestRosterVO;
-import data.TestAdminVO;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfTable;
-import com.lowagie.text.pdf.PdfWriter;
-import data.SubtestVO;
-import data.TableVO;
-import data.TestSummaryVO;
-import data.TestVO;
-import java.awt.Color;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.TreeMap;
-
-import javax.servlet.ServletOutputStream;
-//import weblogic.webservice.tools.pagegen.result;
 
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.hssf.util.Region;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+
+import com.ctb.bean.testAdmin.TestProduct;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+
+import data.SubtestVO;
+import data.TableVO;
+import data.TestAdminVO;
+import data.TestRosterVO;
+import data.TestSummaryVO;
+import data.TestVO;
 
 public class SummaryTestTicketsReportUtils extends ReportUtils
 { 
@@ -70,7 +49,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     
     // static y page coordinates
     private static final float TITLE_Y = 580f;
-    private static final float PAGE_MIN_Y = 80f;
+    private static float PAGE_MIN_Y = 80f;
     private static final float FOOTER_Y = 73f;
     private static final float PAGE_NUMBER_Y = 70f;
     private static final float WATERMARK_Y = 50f;
@@ -132,6 +111,10 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private static final float TAC_BORDER = 1f;
     private static final float STUDENT_BORDER = 1f;
     
+    // Added for TABE Adaptive Story : OAS-831 - TABE Adaptive - Add text to individual test ticket
+    private static final float TA_INFO_LABEL_Y = 115f;  
+    private static final float TA_INFO_Y = 100f;
+    
     // page text
     private static final String PAGE_NAME_LABEL = "Summary Test Ticket:";
 	private static final String TEST_NAME_LABEL = "Test Name:";
@@ -167,6 +150,8 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private static final String ACCESS_CODE_LABEL = "Test Access Code";
     private static final String WATERMARK_TEXT = "TTS";
     private static final String SUPPORT_CONTACT_LABEL = "For customer support, please call ";
+    private static final String TA_NOTE_LABEL = "Note";
+    private static final String TA_NOTE_INFO = "Please remind examinees to view each item in order to receive a final score.";
     private static final String HIGHLIGHTER_LABEL = "Highlighter:"; /* 51931 Deferred Defect For HighLighter*//* 55815 solution for defect*/
    // Start: For MQC defect 66844
     private static final String MASKING_RULAR_LABEL = "Blocking Ruler:";
@@ -210,6 +195,8 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private TreeMap<Integer,String> rosterHeaderMap ;
     //END - Changed for CR GA2011CR001 
     private String printClassName = null;
+    private Boolean isTabeAdaptiveProduct = Boolean.FALSE;
+    
     /**
      * initialize globals passed into method
      * create static tables
@@ -222,6 +209,11 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         this.testAdmin = (TestAdminVO)args[1];
         this.testSummary = (TestSummaryVO)args[3];
         this.test = (TestVO)args[4];
+        
+        // Added for TABE Adaptive Story : OAS-831 - TABE Adaptive - Add text to individual test ticket
+        this.isTabeAdaptiveProduct = (Boolean)args[14];
+        if(this.isTabeAdaptiveProduct)PAGE_MIN_Y = 110f;
+        
         this.setDynamicGlobals();
         this.isTabeProduct = (Boolean)args[9];
         this.testProduct = (TestProduct)args[10];
@@ -261,6 +253,8 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
             addLevel();
         }
         addSessionInfo();
+        if(this.isTabeAdaptiveProduct)
+        	addTabeAdaptiveInfo();
         addFooter();
         addWatermark();
     }
@@ -809,6 +803,27 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
                                         SESSION_BORDER));
     }
     
+    private void addTabeAdaptiveInfo() throws DocumentException{
+    	addLabelInfoForTA();
+    	addInstructionsForTA();
+    }
+    
+    private void addLabelInfoForTA() throws DocumentException{
+        this.staticTables.add( 
+             tableUtils.getLabelTable(TA_NOTE_LABEL,
+                                      PAGE_WIDTH,
+                                      LEFT_X,
+                                      TA_INFO_LABEL_Y));
+    }
+    
+    private void addInstructionsForTA() throws DocumentException{
+        	this.staticTables.add( 
+                    tableUtils.getInfoTable(TA_NOTE_INFO,
+                    						PAGE_WIDTH,
+				                            LEFT_X,
+				                            TA_INFO_Y));
+    }
+    
     private void createPages() throws DocumentException{
         createTacPages();
         createRosterPages();
@@ -1205,6 +1220,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         this.isStudentIdConfigurable = (Boolean)args[11];
         this.studentIdLabelName = (String)args[12];
         this.printClassName = (String)args[13];
+        this.isTabeAdaptiveProduct  = (Boolean)args[14];
         populateRosterHeader();
     }
     
@@ -1224,21 +1240,24 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         }
     	
     	rowno = appendSessionInfo(summarySheet,rowno );
-    	//rowno ++;
     	
     	rowno = createTacRecords(summarySheet, rowno);
-    	rowno ++;
-    	createStudentSummaryInformation(summarySheet, rowno);
+    	
+    	rowno = createStudentSummaryInformation(summarySheet, ++rowno);
+    	
     	// setting column auto size
     	for( int i =0; i<5;i++) {
     		summarySheet.autoSizeColumn(i);
     	}
     	summarySheet.setColumnWidth(5, summarySheet.getColumnWidth(3));
     	
+    	if (this.isTabeAdaptiveProduct.booleanValue()) {
+    		appendNoteForTabeAdaptive( summarySheet, ++rowno );
+    	}
     }
     
   
-	private void createStudentSummaryInformation(Sheet summarySheet, int rowno) {
+	private int createStudentSummaryInformation(Sheet summarySheet, int rowno) {
 		PoiUtils.appendTitleNameValueWithDiffColor(summarySheet,TOTAL_STUDENTS_LABEL , getTotalStudents(), ++rowno, (short)0, true); 
 		String[] accomodation = null;
 		Row row = null;
@@ -1271,7 +1290,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         	}
         	
         }
-		
+        return rowno;
 	}
 
 	private String[] getAllAccomodation() {
@@ -1572,6 +1591,23 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
             result[7] = ACCOMMODATION_LABEL;
         }
         return result;
+    }
+    
+    private void appendNoteForTabeAdaptive(Sheet summarySheet, int rowno) { 
+    
+	    // added Note TITLE
+		PoiUtils.appendTitleNameValueWithSameColor(summarySheet, TA_NOTE_LABEL , "", ++rowno, (short)12, true);
+		
+		// added Note INFO
+		Row header = PoiUtils.getRow(summarySheet, ++rowno);
+		
+		CellStyle titleStyle = summarySheet.getWorkbook().createCellStyle();
+		org.apache.poi.ss.usermodel.Font boldFont = PoiUtils.getFont(summarySheet.getWorkbook(), true, HSSFColor.BLACK.index, (short)0);
+		titleStyle.setFont(boldFont);
+	
+		PoiUtils.addCell(header, 0 , TA_NOTE_INFO, titleStyle);
+		
+		summarySheet.addMergedRegion(new CellRangeAddress(rowno, rowno, (short)0, (short)5));
     }
     
 } 

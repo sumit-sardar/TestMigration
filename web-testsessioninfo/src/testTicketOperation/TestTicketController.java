@@ -190,7 +190,7 @@ public class TestTicketController extends PageFlowController
             Integer sessionId = new Integer(testAdminId); 
             TestSessionData tsd = getTestSessionDetails(sessionId);
             ScheduledSession session = this.getScheduledSession(sessionId);
-            
+            boolean isTabeAdaptive = "TA".equalsIgnoreCase(tsd.getTestSessions()[0].getProductType())? true : false;
             //START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
             if(ticketType != null){
             	
@@ -250,7 +250,8 @@ public class TestTicketController extends PageFlowController
                                 accessAllow,
                                 printClassName,
                                 new Boolean(multipleAccessAllow),                                
-                                subtestAccessList
+                                subtestAccessList,
+                                isTabeAdaptive
                                 }); // Changed for TABE BAUM - 028
         }
         catch (IOException ie)
@@ -399,7 +400,8 @@ public class TestTicketController extends PageFlowController
                                 testproduct,
                                 this.isStudentIdConfigurable,
                                 this.studentIdLabelName,
-                                printClassName});
+                                printClassName,
+                                isTabeAdaptiveProduct});
         }
         catch(IOException ie){
             ie.printStackTrace();
@@ -492,7 +494,8 @@ public class TestTicketController extends PageFlowController
                                 testproduct,
                                 this.isStudentIdConfigurable,
                                 this.studentIdLabelName,
-                                printClassName});
+                                printClassName,
+                                isTabeAdaptiveProduct});
         }
         catch(IOException ie){
             ie.printStackTrace();
