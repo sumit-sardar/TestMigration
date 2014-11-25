@@ -221,11 +221,8 @@ function enableHotKeys(arg) {
 	}
 	
 $(document).ready(function() {
-	if($.browser.mozilla){
-		$("head").append("<link rel='stylesheet' href='css/moz-font.css' type='text/css' />");
-	}else{
-		$("head").append("<link rel='stylesheet' href='css/tdc-font.css' type='text/css' />");
-	}
+	//Fix Defect 81159 : Items are getting shown in svg font also in Firefox
+	$("head").append("<link rel='stylesheet' href='css/tdc-font.css' type='text/css' />");
 });
 </SCRIPT>
 
