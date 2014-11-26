@@ -145,8 +145,15 @@ img { border: 0 none;}
 .lzswftext{
 				font-family: CTB!important;
 			}
-			.lzswfinputtext{
+.lzswfinputtext{
 				font-family: CTB!important;
+			}
+.micFrameWrapper{
+				position: absolute;
+				width:100%; 
+				height:100%; 
+				background:transparent; 
+				z-index:0;
 			}
 </style>
 <!--[if IE]>
@@ -171,6 +178,8 @@ var xscalefactorjs;
 var yscalefactorjs;
 var LASAssetPath = "/ContentReviewWeb/ContentReviewPageFlow/items/"; 
 var TEAssetPath = "/ContentReviewWeb/ContentReviewPageFlow/items/";
+var isPreviewer = true;
+var isCD = true;
 
 function getTEAssetPath(){
 	lz.embed.setCanvasAttribute("TEAssetPath", TEAssetPath);
@@ -224,6 +233,14 @@ function load() {
 function isMac(){
 	return (window.navigator.platform.indexOf("Mac") != -1);
 }
+
+
+//fix for defect #80963.
+function reloadFlashPopup(){
+	document.getElementById("micDetFrame").contentDocument.location.reload(true);
+	$('#micFrameWrapper').css( "zIndex", 0 );
+}
+
 
 function closeBrowser()
 {
@@ -697,6 +714,11 @@ function checkForAssetArea()
 	
 }
 
+function checkFlashCrashedLogin(){
+$('#micDetFrame')[0].contentWindow.checkFlashCrashed();
+}
+
+
 function checkTextDragging(){
 	//jQuery("textarea").attr('disabled','disabled');
 	jQuery("textarea").on("dragstart", function(e) {
@@ -930,6 +952,46 @@ function isAnswered(){
 
 //-->
 </script>
+ <script type="text/javascript" src="swfobject.js"></script>
+        <!-- script type="text/javascript" src="js/Miccash cleaDetector.js"></script-->
+        <script type="text/javascript" src="js/microphone_events.js"></script>
+       
+          <script type="text/javascript">
+            
+            function callbackFromSWF(s) {
+            	console.log(s);
+            }
+            function updateActivityLevel(maxLevel,currLevel) {
+                //document.getElementById('maxActLevel').innerHTML = "Max level: " + newLevel;
+                //console.log("activity level for mic---->>>>",currLevel);
+                gController.setAttribute("microphoneLevel",currLevel);
+                //MicDetector.stopTracking();
+            }
+            
+            function getActivityLevel(){
+            
+            if(!isPreviewer){
+				 try{
+				 	$('#micDetFrame')[0].contentWindow.MicDetector.startTracking();
+				 }catch(exception){
+			     	console.warn(exception);
+			     }
+			   }
+			}
+			 function stopTracking(){
+				$('#micDetFrame')[0].contentWindow.MicDetector.stopTracking();		
+			}
+			
+			function doLoadFrame() {
+		        $('#micDetFrame')[0].setAttribute('src', '');
+		        $('#micDetFrame')[0].setAttribute('src', 'microphone-frame.html');
+		    }
+		    function reloadIFrame() {
+		    	$('#micDetFrame')[0].contentWindow.sendFrameToBack();
+	            setTimeout(function() { doLoadFrame(); }, 500);
+		    }
+		    
+        </script>
 <style type="text/css">
 body {
 	background-color: #6691B4;
@@ -944,6 +1006,9 @@ body {
 
 <BODY onload="load()" onkeydown="disableShortcuts()" oncontextmenu="javascript:return false;">
 <button id="mybutton" style="visibility:hidden; width:0px; height:0px; display:none;">clickMe </button>
+<div class="micFrameWrapper" id="micFrameWrapper" >
+	<iframe id="micDetFrame" src="microphone-frame.html" frameBorder="0" width="100%" height="100%"></iframe>
+</div>
 <div id="needFlash9" style="display: none">
 <table height="100%" width="100%">
 	<tr>
