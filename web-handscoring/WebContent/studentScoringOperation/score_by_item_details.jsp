@@ -132,7 +132,7 @@
 		</tr>
 	</table>
 	<br>
-		<div id="backButtonItem" style="float:left;" align="left">
+		<div id="backButtonItem" align="left">
 			<input type="button"  id="popupBackBtnItem" value=<lb:label key="common.button.back" prefix="'" suffix="'" /> onclick="javascript:toggleScoreByItem(); return false;" class="ui-widget-header" style="width:60px">
 		</div>
 </div>

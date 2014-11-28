@@ -118,7 +118,7 @@
 			</tr>
 		</table>
 		<br>
-		<div id="backButton" style="float:left;" align="left">
+		<div id="backButton" align="left">
 			<input type="button"  id="popupBackBtn" value=<lb:label key="common.button.back" prefix="'" suffix="'" /> onclick="javascript:toggleScoreByStudent(); return false;" class="ui-widget-header" style="width:60px">
 		</div>
 	</div>
