@@ -10,6 +10,7 @@ import com.bea.control.annotations.TransactionAttribute;
 import com.bea.control.annotations.TransactionAttributeType;
 import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.Program;
+import com.ctb.bean.testAdmin.SessionStudentData;
 import com.ctb.bean.testAdmin.StudentManifest;
 import org.apache.beehive.controls.api.bean.ControlInterface;
 import com.ctb.bean.testAdmin.ScheduledSession;
@@ -669,7 +670,14 @@ public interface ScheduleTest
 	 */
 	Program[] getCustomerExpiredPrograms(Integer customerId,java.util.Date now)throws com.ctb.exception.CTBBusinessException;
 	
-	com.ctb.bean.testAdmin.StudentTestletInfo[] getStudentCompletedTabe9Or10(java.lang.String studentIds, java.lang.Integer testItemSetId) throws com.ctb.exception.CTBBusinessException;
+	/**
+	 * Returns the completion status of TABE 9or10 battery test for students in the selected org
+	 * @param sessionStudentData
+	 * @param testItemSetId
+	 * @return StudentTestletInfo
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+	com.ctb.bean.testAdmin.StudentTestletInfo[] getStudentCompletedTabe9Or10(SessionStudentData sessionStudentData , java.lang.Integer testItemSetId) throws com.ctb.exception.CTBBusinessException;
 	com.ctb.bean.testAdmin.TestletLevelForm[] getTestletLevelForms(java.lang.String subject) throws com.ctb.exception.CTBBusinessException;
 	
 	void updateLicenseCountEditSessionCatalogChange(ScheduledSession session, Integer customerId) throws com.ctb.exception.CTBBusinessException;

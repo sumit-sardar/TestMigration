@@ -3413,39 +3413,23 @@ public class SessionOperationController extends PageFlowController {
 	        //** Story: TABE Adaptive FT - 06 - Modify TABE Scheduling – Logic
 	        //** If we are scheduling a testlet
 	        //** 4201 = TABE Adult Common Core Experience 
-	        if (getRequest().getParameter("productSelected").equalsIgnoreCase("4201") && ssd.getSessionStudents().length >0)
-	        {
-		        String studentIds = "";
-		        for (int i=0;i<ssd.getSessionStudents().length;i++)
-		        {
-		        	if (ssd.getSessionStudents()[i].getOutOfSchool()!="Yes")
-		        	{
-		        		if (studentIds.length()>0)
-			        	{
-		        			studentIds += ",";
-			        	}
-		        		studentIds += ssd.getSessionStudents()[i].getStudentId();
-		        	}
-		        }
-		        //studentIds = "2560299, 11875051";
-		        //selectedTestId = 296061;
-		        StudentTestletInfo[] sti = this.scheduleTest.getStudentCompletedTabe9Or10(studentIds, selectedTestId);
-		        for (int i=0;i<ssd.getSessionStudents().length;i++)
-		        {
-		        	if (ssd.getSessionStudents()[i].getOutOfSchool()!="Yes")
-		        	{
-		        		//** fixed defec#78764
-		        		if (sti.length>0 && !hasStudentCompletedTabe9Or10(ssd.getSessionStudents()[i].getStudentId(), sti))
-			        	{
-			        		ssd.getSessionStudents()[i].setOutOfSchool("Yes");
-			        	}
-		        		else if (sti.length == 0)
-		        		{
-		        			ssd.getSessionStudents()[i].setOutOfSchool("Yes");
-		        		}
-		        	}
-		        }
-	        }
+	        if (getRequest().getParameter("productSelected").equalsIgnoreCase(
+					"4201") && ssd.getSessionStudents().length > 0) {
+	        	//Changes for Production QC Defect #81134
+				StudentTestletInfo[] sti = this.scheduleTest.getStudentCompletedTabe9Or10(ssd, selectedTestId);	
+				//End of Changes for Production QC Defect #81134
+				
+				for (int i = 0; i < ssd.getSessionStudents().length; i++) {
+					if (ssd.getSessionStudents()[i].getOutOfSchool() != "Yes") {
+						// ** fixed defec#78764
+						if (sti.length > 0 && !hasStudentCompletedTabe9Or10(ssd.getSessionStudents()[i].getStudentId(), sti)) {
+							ssd.getSessionStudents()[i].setOutOfSchool("Yes");
+						} else if (sti.length == 0) {
+							ssd.getSessionStudents()[i].setOutOfSchool("Yes");
+						}
+					}
+				}
+			}
 	        
 	        List<SessionStudent> studentNodes = buildStudentList(ssd.getSessionStudents(),accomodationMap);
 			Base base = new Base();
@@ -3508,7 +3492,7 @@ public class SessionOperationController extends PageFlowController {
 				}
 			}
 		} catch (Exception e) {
-			System.err.println("Exception while processing CR response.");
+			System.err.println("Exception while processing getStudentForList response.");
 			e.printStackTrace();
 		}
 

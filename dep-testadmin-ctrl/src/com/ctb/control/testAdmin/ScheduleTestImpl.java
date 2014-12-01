@@ -2411,35 +2411,63 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
-    private  Map <Integer, List<String>>  getAssignedTestletForms( SessionStudent [] scheduledStudents,Integer testAdminId ) throws SQLException{
-        Map <Integer, List<String>> map = new HashMap<Integer, List<String>>();
-            String studentIds = "";
-	        for (int s=0;s<scheduledStudents.length;s++)
-	        {
-	        	SessionStudent stu = scheduledStudents[s];
-	        	map.put(stu.getStudentId(), new ArrayList<String>());
-	        	if (studentIds.length()>0)
-		        {
-	        		studentIds += ",";
-		        }
-	        	
-	        	studentIds += stu.getStudentId();
-	        }
-	        StudentTestletInfo[] sti = siss.getAssignedTestletForms(studentIds,  testAdminId);
-	        for (int k=0;k<sti.length;k++){
-	        	Integer stuId = sti[k].getStudentId();
-	        	if (sti[k].getRosterActivationStatus().equalsIgnoreCase("IN")) {
-					String rosCompStatus = sti[k].getTestCompletionStatus();
-					if (!rosCompStatus.equalsIgnoreCase("SC") && !rosCompStatus.equalsIgnoreCase("NT")) {
-						map.get(stuId).add(sti[k].getItemSetForm());
-					}
-				} else {
+    private Map<Integer, List<String>> getAssignedTestletForms(
+			SessionStudent[] scheduledStudents, Integer testAdminId)
+			throws SQLException {
+		Map<Integer, List<String>> map = new HashMap<Integer, List<String>>();
+		List<StudentTestletInfo> studentTestletList = new ArrayList<StudentTestletInfo>();
+		int inClauseLimit = 999;
+		int loopCounters = scheduledStudents.length / inClauseLimit;
+		if ((scheduledStudents.length % inClauseLimit) > 0) {
+			loopCounters = loopCounters + 1;
+		}
+		for (int counter = 0; counter < loopCounters; counter++) {
+			SessionStudent[] newselectedStudents = null;
+			String searchbyStudentIds = "", tempString = "";
+			StringBuilder temp = new StringBuilder("");
+			if ((counter + 1) != loopCounters) {
+				newselectedStudents = new SessionStudent[inClauseLimit];
+				System.arraycopy(scheduledStudents, (counter * inClauseLimit),
+						newselectedStudents, 0, inClauseLimit);
+			} else {
+				int count = scheduledStudents.length % inClauseLimit;
+				newselectedStudents = new SessionStudent[count];
+				System.arraycopy(scheduledStudents,
+						((loopCounters - 1) * inClauseLimit),
+						newselectedStudents, 0, count);
+			}
+			for (SessionStudent ss : newselectedStudents) {
+				if (ss != null) {
+					temp.append(ss.getStudentId().intValue()).append(",");
+					map.put(ss.getStudentId(), new ArrayList<String>());
+				}
+			}
+			tempString = temp.toString();
+			if (tempString.length() > 0) {
+				searchbyStudentIds = tempString.substring(0, temp.length() - 1);
+			}
+			StudentTestletInfo[] obj = siss.getAssignedTestletForms(
+					searchbyStudentIds, testAdminId);
+			studentTestletList.addAll(Arrays.asList(obj));
+		}
+		StudentTestletInfo[] sti = studentTestletList
+				.toArray(new StudentTestletInfo[studentTestletList.size()]);
+
+		for (int k = 0; k < sti.length; k++) {
+			Integer stuId = sti[k].getStudentId();
+			if (sti[k].getRosterActivationStatus().equalsIgnoreCase("IN")) {
+				String rosCompStatus = sti[k].getTestCompletionStatus();
+				if (!rosCompStatus.equalsIgnoreCase("SC")
+						&& !rosCompStatus.equalsIgnoreCase("NT")) {
 					map.get(stuId).add(sti[k].getItemSetForm());
 				}
-	        }
-	        
-	        return map;
-    }
+			} else {
+				map.get(stuId).add(sti[k].getItemSetForm());
+			}
+		}
+
+		return map;
+	}
     
     private Map<Integer, String> getScreenReaderStudentAccommodations(SessionStudent[] scheduledStudents) throws SQLException {
 		Map<Integer, String> map = new HashMap<Integer, String>();
@@ -2573,28 +2601,54 @@ public class ScheduleTestImpl implements ScheduleTest
        	return subject;
     }
     
-    private  Map <Integer, List<StudentTestletInfo>>  getStudentCompletedLevels( SessionStudent [] scheduledStudents,Integer itemSetId ) throws SQLException{
-        Map <Integer, List<StudentTestletInfo>> map = new HashMap<Integer, List<StudentTestletInfo>>();
-            String studentIds = "";
-	        for (int s=0;s<scheduledStudents.length;s++)
-	        {
-	        	SessionStudent stu = scheduledStudents[s];
-	        	map.put(stu.getStudentId(), new ArrayList<StudentTestletInfo>());
-	        	if (studentIds.length()>0)
-		        {
-	        		studentIds += ",";
-		        }
-	        	
-	        	studentIds += stu.getStudentId();
-	        }
-	        StudentTestletInfo[] sti = siss.getTabe9Or10CompletedFormLevel(studentIds,  itemSetId);
-	        for (int k=0;k<sti.length;k++){
-	        	Integer stuId = sti[k].getStudentId();
-	        	map.get(stuId).add(sti[k]);
-	        }
-	        
-	        return map;
-    }
+    private Map<Integer, List<StudentTestletInfo>> getStudentCompletedLevels (SessionStudent[] scheduledStudents, Integer itemSetId)	throws SQLException {
+		Map<Integer, List<StudentTestletInfo>> map = new HashMap<Integer, List<StudentTestletInfo>>();
+		
+		List<StudentTestletInfo> studentTestletList = new ArrayList<StudentTestletInfo>();
+		int inClauseLimit = 999;
+		int loopCounters = scheduledStudents.length / inClauseLimit;
+		if ((scheduledStudents.length % inClauseLimit) > 0) {
+			loopCounters = loopCounters + 1;
+		}
+		for (int counter = 0 ; counter<loopCounters ; counter++){
+			SessionStudent[] newselectedStudents = null;
+			String searchbyStudentIds = "",tempString = "";
+			StringBuilder temp = new StringBuilder("");
+			if ((counter + 1) != loopCounters) {
+				newselectedStudents = new SessionStudent[inClauseLimit];
+				System.arraycopy(scheduledStudents, (counter * inClauseLimit),
+						newselectedStudents, 0, inClauseLimit);
+			} else {
+				int count = scheduledStudents.length % inClauseLimit;
+				newselectedStudents = new SessionStudent[count];
+				System.arraycopy(scheduledStudents,
+						((loopCounters - 1) * inClauseLimit),
+						newselectedStudents, 0, count);
+			}			
+			for (SessionStudent ss : newselectedStudents) {
+				if(ss != null){
+					temp.append(ss.getStudentId().intValue()).append(",");
+					map.put(ss.getStudentId(), new ArrayList<StudentTestletInfo>());
+				}
+			}
+			tempString = temp.toString();
+			if(tempString.length()>0){
+				searchbyStudentIds = tempString.substring(0, temp.length() - 1);
+			}
+			StudentTestletInfo[] obj = siss.getTabe9Or10CompletedFormLevel(searchbyStudentIds, itemSetId);
+			studentTestletList.addAll(Arrays.asList(obj));
+		}
+		
+		StudentTestletInfo[] sti = studentTestletList.toArray(new StudentTestletInfo[studentTestletList.size()]);
+		
+		for (int k = 0; k < sti.length; k++) {
+			Integer stuId = sti[k].getStudentId();
+			map.get(stuId).add(sti[k]);
+		}
+
+		return map;
+	}
+    
     
     private void disablePreviousLvlTestletRosters(Integer userId,Integer studentId, List<StudentTestletInfo> studentTestletInfo) throws SQLException{
     	if(studentTestletInfo.size()>1){
@@ -4998,15 +5052,55 @@ public class ScheduleTestImpl implements ScheduleTest
         return null;
     }
     
-    public StudentTestletInfo[] getStudentCompletedTabe9Or10 (String studentIds, Integer testItemSetId) throws com.ctb.exception.CTBBusinessException{
-    	try
-    	{
-    		StudentTestletInfo[] obj = siss.getStudentCompletedTabe9Or10(studentIds, testItemSetId);
-	        return obj;
-    	} catch (SQLException e) {
-    		e.printStackTrace(); 
-    	}
-        return null;
+    public StudentTestletInfo[] getStudentCompletedTabe9Or10(
+			SessionStudentData sessionStudentData, Integer testItemSetId)
+			throws com.ctb.exception.CTBBusinessException {
+		try {
+			SessionStudent [] sessionStudent = sessionStudentData.getSessionStudents();
+			//Code for 999 limitation of SQL IN clause : Start
+			List<StudentTestletInfo> studentTestletList = new ArrayList<StudentTestletInfo>();
+			int inClauseLimit = 999;
+			int loopCounters = sessionStudent.length / inClauseLimit;
+			if ((sessionStudent.length % inClauseLimit) > 0) {
+				loopCounters = loopCounters + 1;
+			}
+			for (int counter = 0 ; counter<loopCounters ; counter++){
+				SessionStudent[] newselectedStudents = null;
+				String searchbyStudentIds = "";
+				if ((counter + 1) != loopCounters) {
+					newselectedStudents = new SessionStudent[inClauseLimit];
+					System.arraycopy(sessionStudent, (counter * inClauseLimit),
+							newselectedStudents, 0, inClauseLimit);
+				} else {
+					int count = sessionStudent.length % inClauseLimit;
+					newselectedStudents = new SessionStudent[count];
+					System.arraycopy(sessionStudent,
+							((loopCounters - 1) * inClauseLimit),
+							newselectedStudents, 0, count);
+				}
+				searchbyStudentIds = generateStudentIdList(newselectedStudents);
+				StudentTestletInfo[] obj = siss.getStudentCompletedTabe9Or10(searchbyStudentIds, testItemSetId);
+				studentTestletList.addAll(Arrays.asList(obj));
+			}			
+			return studentTestletList.toArray(new StudentTestletInfo[studentTestletList.size()]);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+    
+    private String generateStudentIdList(SessionStudent[] newselectedStudents){
+    	StringBuilder temp = new StringBuilder("");
+		String tempString = "";
+		for (SessionStudent ss : newselectedStudents) {
+			if(ss != null && !"Yes".equalsIgnoreCase(ss.getOutOfSchool()))
+				temp.append(ss.getStudentId().intValue()).append(",");
+		}
+		tempString = temp.toString();
+		if(tempString.length()>0){
+			tempString = tempString.substring(0, temp.length() - 1);
+		}
+		return tempString;
     }
     
     public TestletLevelForm[] getTestletLevelForms (String subject) throws com.ctb.exception.CTBBusinessException{

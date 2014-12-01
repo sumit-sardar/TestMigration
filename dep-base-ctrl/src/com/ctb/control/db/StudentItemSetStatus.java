@@ -696,7 +696,7 @@ public interface StudentItemSetStatus extends JdbcControl
 	//+"and ros.activation_status='AC'\n"
 	+"and ta.activation_status='AC'\n"
 	+"and ii.activation_status='AC'\n"
-	+"order by studentId, ordr, completionDateTime desc, itemSetForm", arrayMaxLength = 100000)	
+	+"order by studentId, ordr, completionDateTime desc, itemSetForm", arrayMaxLength = 0, fetchSize=10000)	
 	StudentTestletInfo[] getStudentCompletedTabe9Or10(String studentIds, Integer testItemSetId) throws SQLException;
 	
 	@JdbcControl.SQL(statement= "SELECT ros.student_id as studentId, siss.item_set_id as itemSetId, \n" 
@@ -714,7 +714,7 @@ public interface StudentItemSetStatus extends JdbcControl
 		+"AND siss.COMPLETION_STATUS in ('CO','IN') \n"
 		+"AND ta.test_admin_id=ros.test_admin_id \n"
 		+"AND ta.test_catalog_id IN (select test_catalog_id from test_catalog where product_id in (4010,4009,4012,4011)) \n"
-		+"ORDER BY siss.COMPLETION_DATE_TIME DESC ", arrayMaxLength = 100000)	
+		+"ORDER BY siss.COMPLETION_DATE_TIME DESC ", arrayMaxLength = 0, fetchSize=10000)	
 	StudentTestletInfo[] getTabe9Or10CompletedFormLevel(String studentIds , Integer itemSetId) throws SQLException;
 
 	@JdbcControl.SQL(statement= "SELECT ros.student_id AS studentId,siss.item_set_id AS itemSetId,subject,siss.completion_status AS completionStatus, \n" 
@@ -729,7 +729,7 @@ public interface StudentItemSetStatus extends JdbcControl
 		   +"and ii.item_set_level != 'L' \n"
 		   +"and ros.student_id IN ({sql: studentIds}) \n" 
 		   +"and ta.activation_status='AC' \n"
-	       +"and ii.activation_status='AC'", arrayMaxLength = 100000)	
+	       +"and ii.activation_status='AC'", arrayMaxLength = 0, fetchSize=10000)	
 	StudentTestletInfo[] getAssignedTestletForms(String studentIds,  Integer testAdminId) throws SQLException;
 	
 	@JdbcControl.SQL(statement= "SELECT SUBJECT, TABE_LEVEL as TABELevel, TESTLET_FORM as TestletForm from TESTLET_FORMS_BY_SUBJECT_LEVEL \n" 
