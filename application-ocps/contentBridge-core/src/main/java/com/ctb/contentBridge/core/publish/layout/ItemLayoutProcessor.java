@@ -775,6 +775,19 @@ public class ItemLayoutProcessor {
 
 		}
 	}
+	
+	//Changes for Story OAS-1131
+	public void doCalcFormulaCard(Element accommodation) throws Exception {
+		List formulaCard = extractAllElement(".//CalcFormulaCard", itemElement);
+		if (formulaCard != null && formulaCard.size() > 0) {
+			Element thisElement = (Element) formulaCard.get(0);
+			String thisResource = thisElement.getAttributeValue("resource");
+			if (thisResource != null && !thisResource.equals("")) {
+				accommodation.setAttribute("calc_formula_card_resource",
+						thisResource);
+			}
+		}
+	}
 
 	public void doStem() throws Exception {
 		if (stem != null) { // only do height
@@ -3061,8 +3074,10 @@ public class ItemLayoutProcessor {
 						.get(key));
 		}
 
-		doFormulaCard(accommodation);
 
+		doFormulaCard(accommodation);
+		//Changes for Story OAS-1131
+		doCalcFormulaCard(accommodation);
 		Element item_model = new Element("item_model");
 		item_model.setAttribute("iid", getAttributeValue(itemElement, "ID"));
 		item_model.setAttribute("eid", String.valueOf(order));

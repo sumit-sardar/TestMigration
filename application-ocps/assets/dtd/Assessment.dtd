@@ -100,7 +100,7 @@ CHANGE HISTORY:
 	Author 		CDATA #IMPLIED
 >
 
-<!ELEMENT Item (TEAsset?, StudentDirections?, Stimulus?, LeadIn?, Stem*, (ConstructedResponse | SelectedResponse)?, ThinkCode?, Manipulative*, Comments?, FormulaCard?)>
+<!ELEMENT Item (TEAsset?, StudentDirections?, Stimulus?, LeadIn?, Stem*, (ConstructedResponse | SelectedResponse)?, ThinkCode?, Manipulative*, Comments?, FormulaCard?, CalcFormulaCard?)>
 <!ATTLIST Item
 	ID 		CDATA #REQUIRED
 	Grade		(K | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Adult | EOC) "3"
@@ -363,6 +363,11 @@ answer -->
 
 <!ELEMENT FormulaCard EMPTY>
 <!ATTLIST FormulaCard 
+    	resource CDATA #REQUIRED
+>
+
+<!ELEMENT CalcFormulaCard EMPTY>
+<!ATTLIST CalcFormulaCard 
     	resource CDATA #REQUIRED
 >
 
