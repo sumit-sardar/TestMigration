@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:orcl="http://www.springframework.org/schema/data/orcl"
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:util="http://www.springframework.org/schema/util" 
+    
+    
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/data/orcl
+        http://www.springframework.org/schema/data/orcl/spring-data-orcl-1.0.xsd
+        http://www.springframework.org/schema/jms
+       	http://www.springframework.org/schema/jms/spring-jms-3.0.xsd
+       	http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd
+    ">
+
+
+
+
+	<import resource="spring-jdbc-qa.xml"/>
+
+        
+	<!-- Setup the JMS Connection -->
+	<orcl:aq-jms-connection-factory id="jmsConnectionFactory"
+		use-local-data-source-transaction="true" 
+		native-jdbc-extractor="dbcpNativeJdbcExtractor"
+		data-source="oasDataSource" />
+
+	<bean id="dbcpNativeJdbcExtractor"
+		class="org.springframework.jdbc.support.nativejdbc.CommonsDbcpNativeJdbcExtractor" />
+
+	<!--  Register our custom JMS converters for properties -->
+	<bean id="conversionService" class="com.mhe.ctb.oas.BMTSync.spring.converter.CustomConversionService">
+	    <property name="converters">
+        	<set>
+           		<bean class="com.mhe.ctb.oas.BMTSync.spring.converter.SqlDateConverter"/>
+        		<bean class="com.mhe.ctb.oas.BMTSync.spring.converter.SqlTimestampConverter"/>
+        	</set>
+   		</property>
+	</bean>
+
+	<!-- Initialize the message converter -->
+	<bean id="messageConverter-STUDENT_MESSAGE_TYP"
+		class="org.springframework.data.jdbc.jms.support.converter.oracle.MappingAdtMessageConverter">
+		<constructor-arg> 
+			<bean
+				class="org.springframework.data.jdbc.jms.support.oracle.StructDatumMapper">
+				<constructor-arg index="0" value="OAS.STUDENT_MESSAGE_TYP" />
+				<constructor-arg index="1">
+					<bean class="com.mhe.ctb.oas.BMTSync.spring.converter.CustomBeanPropertyStructMapper">
+						<constructor-arg value="com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType"/>
+						<property name="conversionService" ref="conversionService"></property>
+					</bean>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<!-- Route the message on receiving -->
+	<bean id="messageDelegate-STUDENT_MESSAGE_TYP" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler" />	
+	<jms:listener-container connection-factory="jmsConnectionFactory"
+		concurrency="${jms.bmt.threads:1-4}"
+		destination-type="queue"
+		transaction-manager="transactionManager"
+		message-converter="messageConverter-STUDENT_MESSAGE_TYP"
+		container-class="org.springframework.data.jdbc.jms.listener.oracle.AdtMessageListenerContainer"
+		>
+		<jms:listener destination="${jms.bmt.publishQueue}" ref="messageDelegate-STUDENT_MESSAGE_TYP" method="handleMessage" />
+	</jms:listener-container>
+
+
+	<!--  Setup the configuration to send the message -->
+    <bean id="aqStudentTemplate" class="org.springframework.jms.core.JmsTemplate">
+	  <property name="connectionFactory" ref="jmsConnectionFactory"/> 
+      <property name="sessionTransacted" value="true"/>
+	  <property name="messageConverter" ref="messageConverter-STUDENT_MESSAGE_TYP"/>
+	</bean>
+
+	<!--  ==[ END JMS Setup ]================================================================== -->
+
+</beans>

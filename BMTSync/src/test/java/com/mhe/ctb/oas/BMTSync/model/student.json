@@ -1,0 +1,17 @@
+{  
+   "oasCustomerId":1234,
+   "oasStudentId":456,
+   "firstName":"first name",
+   "middleName":"middle name",
+   "lastName":"last name",
+
+   "loginName":"login",
+
+   "birthDate":"2014-09-24",
+   "gender":"male",
+   "grade":"3",
+   "studentIds":[  
+      "ID1",
+      "ID2"
+   ]
+}
