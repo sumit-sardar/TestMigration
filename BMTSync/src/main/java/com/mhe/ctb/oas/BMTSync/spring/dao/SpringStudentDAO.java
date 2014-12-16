@@ -37,10 +37,10 @@ public class SpringStudentDAO {
 	private JdbcTemplate _jdbcTemplate;
 
 	// The hierarchy reader
-	private SimpleJdbcCall _studentDetailsCall;
+	private SimpleJdbcCall _getStudentDetailsCall;
 	
 	// The hierarchy reader
-	private SimpleJdbcCall _uuustudentCall;
+	private SimpleJdbcCall _updateStudentAPIStatusCall;
 	
 	private SpringOrgNodeDAO _orgNodeDao;
 	
@@ -55,7 +55,7 @@ public class SpringStudentDAO {
 	public Student getStudent(long studentId) throws UnknownStudentException
 	{
 		// call the sproc
-		Map<String, Object> result = _studentDetailsCall.execute(studentId);
+		Map<String, Object> result = _getStudentDetailsCall.execute(studentId);
 		
 		// See if we got a response
 		if ((result == null) || (!result.containsKey(OUTPUT_STUDENT)))
@@ -89,9 +89,9 @@ public class SpringStudentDAO {
 			.addValue("pErrorCode",  success ? "" : "999")
 			.addValue("pErrorMessage", success ? "" : errorMessage);
 			
-		_uuustudentCall.compile();
+		_updateStudentAPIStatusCall.compile();
 		
-		int rowsUpdated = _uuustudentCall.executeFunction(int.class, paramMap);
+		int rowsUpdated = _updateStudentAPIStatusCall.executeFunction(int.class, paramMap);
 		if (rowsUpdated != 1) {
 			throw new SQLException("One row expected to be updated! Rows updated: " + rowsUpdated);
 		}
@@ -108,7 +108,7 @@ public class SpringStudentDAO {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 		
-		_studentDetailsCall = new SimpleJdbcCall(_jdbcTemplate)
+		_getStudentDetailsCall = new SimpleJdbcCall(_jdbcTemplate)
 				.withCatalogName("PK_Students")
 				.withProcedureName("StudentDetails")
 				.useInParameterNames("pStudentId", "pResultCursor")
@@ -117,7 +117,7 @@ public class SpringStudentDAO {
 						new SqlOutParameter(OUTPUT_STUDENT,  OracleTypes.CURSOR, new StudentDetailsRowMapper())
 				);
 
-		_uuustudentCall = new SimpleJdbcCall(_jdbcTemplate)
+		_updateStudentAPIStatusCall = new SimpleJdbcCall(_jdbcTemplate)
 				.withCatalogName("PK_Students")
 				.withProcedureName("updateStudentAPIStatus")
 				.useInParameterNames("pStudentID", "pAppName", "pExportStatus", "pErrorCode", "pErrorMessage")
