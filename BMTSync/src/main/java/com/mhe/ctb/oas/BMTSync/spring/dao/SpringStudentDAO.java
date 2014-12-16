@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mhe.ctb.oas.BMTSync.exception.UnknownStudentException;
 import com.mhe.ctb.oas.BMTSync.model.Student;
+import com.mhe.ctb.oas.BMTSync.model.Student.Accomodations;
 
 @Repository
 public class SpringStudentDAO {
@@ -141,6 +142,7 @@ public class SpringStudentDAO {
 				throws SQLException {
 
 			Student student = new Student();
+						Accomodations studentAccom = new Accomodations();
 			
 			student.setOasStudentId(rs.getInt("oasStudentID"));
 	    	student.setOasCustomerId(rs.getInt("oasCustomerId"));
@@ -152,6 +154,29 @@ public class SpringStudentDAO {
 	    	student.setGender(rs.getString("Gender"));
 	    	student.setGrade(rs.getString("Grade"));
 	    	student.setCustomerStudentId(rs.getString("Ext_Pin1"));
+	    	
+	    	// Set Student Accomodation
+			studentAccom.setScreen_Magnifier(rs.getString("SCREEN_MAGNIFIER"));
+			studentAccom.setScreen_Reader(rs.getString("Screen_Reader"));
+			studentAccom.setCalculator(rs.getString("Calculator"));
+			studentAccom.setTest_Pause(rs.getString("Test_Pause"));
+			studentAccom.setUntimed_Test(rs.getString("Untimed_Test"));
+			studentAccom.setQuestion_background_color(rs.getString("Question_Background_Color"));
+			studentAccom.setQuestion_font_color(rs.getString("Question_Font_Color"));
+			studentAccom.setQuestion_font_size(rs.getString("Question_Font_Size"));
+			studentAccom.setAnswer_background_color(rs.getString("Answer_Background_Color"));
+			studentAccom.setAnswer_font_color(rs.getString("Answer_Font_Color"));
+			studentAccom.setAnswer_font_size(rs.getString("Answer_Font_Size"));
+			studentAccom.setHighlighter(rs.getString("Highlighter"));
+			studentAccom.setMusic_File_Id(rs.getString("Music_File_Id"));
+			studentAccom.setMasking_ruler(rs.getString("Masking_Ruler"));
+			studentAccom.setMagnifying_glass(rs.getString("Magnifying_Glass"));
+			studentAccom.setExtended_time(rs.getString("Extended_Time"));
+			studentAccom.setMasking_tool(rs.getString("Masking_Tool"));
+			studentAccom.setMicrophone_headphone(rs.getString("Microphone_Headphone"));
+			studentAccom.setExtended_time_factor(rs.getFloat("Extended_Time_Factor"));				
+
+			student.setAccomodation(studentAccom);	    	
 	    	
 	    	return student;
 		}
