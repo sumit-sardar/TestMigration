@@ -164,14 +164,39 @@
 	</plugins>
 	</build>
 
-    <repositories>
-        <repository>
-            <id>spring-releases</id>
-            <url>http://repo.spring.io/libs-release</url>
-        </repository>
-    </repositories>
-    
-    <pluginRepositories>
+   
+  <distributionManagement>
+    <repository>
+      <id>internal</id>
+      <url>http://EW2CTBW6147.mhe.mhc:8081/repository/internal/</url>
+    </repository>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>internal</id>
+      <name>Archiva Managed Internal Repository</name>
+      <url>http://EW2CTBW6147.mhe.mhc:8081/repository/internal/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>internal</id>
+      <name>Archiva Managed Internal Repository</name>
+      <url>http://EW2CTBW6147.mhe.mhc:8081/repository/internal/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
         <pluginRepository>
             <id>spring-releases</id>
             <url>http://repo.spring.io/libs-release</url>
