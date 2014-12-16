@@ -69,7 +69,15 @@
 
 
 	<!-- Initialize the message handler -->
-	<bean id="messageDelegate" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler" />
+	<bean id="bmtBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
+		<constructor-arg index="0" value="100"/>
+		<constructor-arg index="1" value="1000"/>
+	</bean>
+	
+	<bean id="messageDelegate" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
+		<constructor-arg ref="bmtBlockingQueue" />
+	</bean>
+	
 	<bean id="messageConverter"
 		class="org.springframework.data.jdbc.jms.support.converter.oracle.MappingAdtMessageConverter">
 		<constructor-arg>
@@ -99,6 +107,11 @@
 	  <property name="connectionFactory" ref="jmsConnectionFactory"/> 
       <!-- <property name="sessionTransacted" value="true"/>  -->
 	  <property name="messageConverter" ref="messageConverter"/>
+	</bean>
+
+	<!-- Instantiate a poller to read from the queue and post messages to BMT. -->
+	<bean id="bmtBlockingQueuePoller" class="com.mhe.ctb.oas.BMTSync.spring.poller.BMTBlockingQueuePoller" depends-on="bmtBlockingQueue">
+		<constructor-arg ref="bmtBlockingQueue" /> 
 	</bean>
 
 	<!--  ==[ END JMS Setup ]================================================================== -->

@@ -1,13 +1,11 @@
 package com.mhe.ctb.oas.BMTSync.spring.jms;
 
-
 import javax.jms.JMSException;
 
-import org.apache.jasper.compiler.JspUtil.ValidAttribute;
 import org.apache.log4j.Logger;
 import org.springframework.jms.support.converter.MessageConversionException;
 
-import com.mhe.ctb.oas.BMTSync.controller.StudentRestClient;
+import com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue;
 
 /**
  * Handles a message from the Student Update Queue
@@ -17,10 +15,10 @@ import com.mhe.ctb.oas.BMTSync.controller.StudentRestClient;
  */
 public class NotificationMessageHandler {
 	private static Logger LOGGER = Logger.getLogger(NotificationMessageHandler.class);
-	private final StudentRestClient restClient;
+	private final BMTBlockingQueue queue;
 	
-	public NotificationMessageHandler() {
-		restClient = new StudentRestClient();
+	public NotificationMessageHandler(final BMTBlockingQueue queue) {
+		this.queue = queue;
 	}
 	
     public void handleMessage(final StudentMessageType message) 
@@ -40,12 +38,7 @@ public class NotificationMessageHandler {
     		invalidMessage = true;
     		msgBldr.append("[studentId=null]");
     	}
-    	/*	
-    	if (message.getUpdatedDateTime() == null) {
-    		invalidMessage = true;
-    		msgBldr.append("[updatedDateTime=null]");
-    	}
-    	*/
+
     	if (invalidMessage) {
     		throw new MessageConversionException("Content of message cannot be null. " + msgBldr.toString());
     	}
@@ -53,7 +46,13 @@ public class NotificationMessageHandler {
     	LOGGER.debug(String.format("Received Update: customerId(%s) studentId(%s) updateDateTime(%s)",
     			message.getCustomerId(), message.getStudentId(), message.getUpdatedDateTime())
     	);
-    	restClient.postStudentList(message.getCustomerId(), message.getStudentId(), message.getUpdatedDateTime());
+
+    	// Queue isn't null, so add it to the queue to post.
+    	try {
+    		queue.enqueueWithTimeout(message);
+    	} catch (MessageConversionException mce) {
+    		throw mce;
+    	}
     }
 
 

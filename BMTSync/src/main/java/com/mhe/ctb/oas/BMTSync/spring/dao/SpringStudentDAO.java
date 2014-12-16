@@ -29,7 +29,7 @@ public class SpringStudentDAO {
 
 	// Return map names
 	private static final String OUTPUT_STUDENT = "PRESULTCURSOR";
-	
+
 	// The data source
 	private DataSource _dataSource;
 
@@ -38,13 +38,12 @@ public class SpringStudentDAO {
 
 	// The hierarchy reader
 	private SimpleJdbcCall _getStudentDetailsCall;
-	
+
 	// The hierarchy reader
 	private SimpleJdbcCall _updateStudentAPIStatusCall;
-	
+
 	private SpringOrgNodeDAO _orgNodeDao;
-	
-	
+
 	/**
 	 * Returns a student based on the student ID
 	 * 
@@ -52,82 +51,84 @@ public class SpringStudentDAO {
 	 * @return
 	 * @throws UnknownStudentException
 	 */
-	public Student getStudent(long studentId) throws UnknownStudentException
-	{
+	public Student getStudent(long studentId) throws UnknownStudentException {
 		// call the sproc
 		Map<String, Object> result = _getStudentDetailsCall.execute(studentId);
-		
+
 		// See if we got a response
-		if ((result == null) || (!result.containsKey(OUTPUT_STUDENT)))
-		{
+		if ((result == null) || (!result.containsKey(OUTPUT_STUDENT))) {
 			throw new UnknownStudentException(studentId);
 		}
-		
+
 		// Get the response
-		Collection<Student> returnList = (Collection<Student>) result.get(OUTPUT_STUDENT);
+		Collection<Student> returnList = (Collection<Student>) result
+				.get(OUTPUT_STUDENT);
 
 		// Check if the list has a student (we will ignore the multiple)
-		if (returnList.size() == 0)
-		{
+		if (returnList.size() == 0) {
 			throw new UnknownStudentException(studentId);
 		}
-		
+
 		// TODO: fix this
 		Student student = returnList.iterator().next();
-		
+
 		student.setHeirarchySet(_orgNodeDao.getStudentHeirarchy(studentId));
 		// TODO Get accommodations
-		
+
 		return student;
 	}
-	
-	public void updateStudentAPIStatus(final Integer studentId, final boolean success, final String errorMessage) throws SQLException {
+
+	public void updateStudentAPIStatus(final Integer studentId,
+			final boolean success, final String errorMessage)
+			throws SQLException {
 		final SqlParameterSource paramMap = new MapSqlParameterSource()
-			.addValue("pStudentID", studentId.toString())
-			.addValue("pAppName", "BMT")
-			.addValue("pExportStatus", success ? "Success" : "Failed")
-			.addValue("pErrorCode",  success ? "" : "999")
-			.addValue("pErrorMessage", success ? "" : errorMessage);
-			
+				.addValue("pStudentID", studentId.toString())
+				.addValue("pAppName", "BMT")
+				.addValue("pExportStatus", success ? "Success" : "Failed")
+				.addValue("pErrorCode", success ? "" : "999")
+				.addValue("pErrorMessage", success ? "" : errorMessage);
+
 		_updateStudentAPIStatusCall.compile();
-		
-		int rowsUpdated = _updateStudentAPIStatusCall.executeFunction(int.class, paramMap);
+
+		int rowsUpdated = _updateStudentAPIStatusCall.executeFunction(
+				int.class, paramMap);
 		if (rowsUpdated != 1) {
-			throw new SQLException("One row expected to be updated! Rows updated: " + rowsUpdated);
+			throw new SQLException(
+					"One row expected to be updated! Rows updated: "
+							+ rowsUpdated);
 		}
 	}
-	
+
 	/**
 	 * Setup the datasource, autowired if context is applied
 	 * 
 	 * @param ds
 	 */
 	@Autowired
-	public void setDataSource(DataSource ds)
-	{
+	public void setDataSource(DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
-		
+
 		_getStudentDetailsCall = new SimpleJdbcCall(_jdbcTemplate)
 				.withCatalogName("PK_Students")
 				.withProcedureName("StudentDetails")
 				.useInParameterNames("pStudentId", "pResultCursor")
 				.declareParameters(
 						new SqlParameter("pStudentID", Types.BIGINT),
-						new SqlOutParameter(OUTPUT_STUDENT,  OracleTypes.CURSOR, new StudentDetailsRowMapper())
-				);
+						new SqlOutParameter(OUTPUT_STUDENT, OracleTypes.CURSOR,
+								new StudentDetailsRowMapper()));
 
 		_updateStudentAPIStatusCall = new SimpleJdbcCall(_jdbcTemplate)
 				.withCatalogName("PK_Students")
 				.withProcedureName("updateStudentAPIStatus")
-				.useInParameterNames("pStudentID", "pAppName", "pExportStatus", "pErrorCode", "pErrorMessage")
+				.useInParameterNames("pStudentID", "pAppName", "pExportStatus",
+						"pErrorCode", "pErrorMessage")
 				.declareParameters(
 						new SqlParameter("pStudentID", Types.VARCHAR),
 						new SqlParameter("pAppName", Types.VARCHAR),
 						new SqlParameter("pExportStatus", Types.VARCHAR),
 						new SqlParameter("pErrorCode", Types.VARCHAR),
-						new SqlParameter("pErrorMessage", Types.VARCHAR)
-				);
+						new SqlParameter("pErrorMessage", Types.VARCHAR));
 	}
 
 	/**
@@ -135,37 +136,40 @@ public class SpringStudentDAO {
 	 * 
 	 * @author cparis
 	 */
-	private class StudentDetailsRowMapper implements RowMapper<Student>
-	{
+	private class StudentDetailsRowMapper implements RowMapper<Student> {
 
-		public Student mapRow(ResultSet rs, int rowNum)
-				throws SQLException {
+		public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
 
 			Student student = new Student();
-						Accomodations studentAccom = new Accomodations();
-			
+			Accomodations studentAccom = new Accomodations();
+
 			student.setOasStudentId(rs.getInt("oasStudentID"));
-	    	student.setOasCustomerId(rs.getInt("oasCustomerId"));
-	    	student.setStudentusername(rs.getString("StudentUserName"));
-	    	student.setFirstName(rs.getString("FirstName"));
-	    	student.setMiddleName(rs.getString("MiddleName"));
-	    	student.setLastName(rs.getString("LastName"));
-	    	student.setBirthdate(rs.getString("BirthDate"));
-	    	student.setGender(rs.getString("Gender"));
-	    	student.setGrade(rs.getString("Grade"));
-	    	student.setCustomerStudentId(rs.getString("Ext_Pin1"));
-	    	
-	    	// Set Student Accomodation
+			student.setOasCustomerId(rs.getInt("oasCustomerId"));
+			student.setStudentusername(rs.getString("StudentUserName"));
+			student.setFirstName(rs.getString("FirstName"));
+			student.setMiddleName(rs.getString("MiddleName"));
+			student.setLastName(rs.getString("LastName"));
+			student.setBirthdate(rs.getString("BirthDate"));
+			student.setGender(rs.getString("Gender"));
+			student.setGrade(rs.getString("Grade"));
+			student.setCustomerStudentId(rs.getString("Ext_Pin1"));
+
+			// Set Student Accomodation
 			studentAccom.setScreen_Magnifier(rs.getString("SCREEN_MAGNIFIER"));
 			studentAccom.setScreen_Reader(rs.getString("Screen_Reader"));
 			studentAccom.setCalculator(rs.getString("Calculator"));
 			studentAccom.setTest_Pause(rs.getString("Test_Pause"));
 			studentAccom.setUntimed_Test(rs.getString("Untimed_Test"));
-			studentAccom.setQuestion_background_color(rs.getString("Question_Background_Color"));
-			studentAccom.setQuestion_font_color(rs.getString("Question_Font_Color"));
-			studentAccom.setQuestion_font_size(rs.getString("Question_Font_Size"));
-			studentAccom.setAnswer_background_color(rs.getString("Answer_Background_Color"));
-			studentAccom.setAnswer_font_color(rs.getString("Answer_Font_Color"));
+			studentAccom.setQuestion_background_color(rs
+					.getString("Question_Background_Color"));
+			studentAccom.setQuestion_font_color(rs
+					.getString("Question_Font_Color"));
+			studentAccom.setQuestion_font_size(rs
+					.getString("Question_Font_Size"));
+			studentAccom.setAnswer_background_color(rs
+					.getString("Answer_Background_Color"));
+			studentAccom
+					.setAnswer_font_color(rs.getString("Answer_Font_Color"));
 			studentAccom.setAnswer_font_size(rs.getString("Answer_Font_Size"));
 			studentAccom.setHighlighter(rs.getString("Highlighter"));
 			studentAccom.setMusic_File_Id(rs.getString("Music_File_Id"));
@@ -173,17 +177,17 @@ public class SpringStudentDAO {
 			studentAccom.setMagnifying_glass(rs.getString("Magnifying_Glass"));
 			studentAccom.setExtended_time(rs.getString("Extended_Time"));
 			studentAccom.setMasking_tool(rs.getString("Masking_Tool"));
-			studentAccom.setMicrophone_headphone(rs.getString("Microphone_Headphone"));
-			studentAccom.setExtended_time_factor(rs.getFloat("Extended_Time_Factor"));				
+			studentAccom.setMicrophone_headphone(rs
+					.getString("Microphone_Headphone"));
+			studentAccom.setExtended_time_factor(rs
+					.getFloat("Extended_Time_Factor"));
 
-			student.setAccomodation(studentAccom);	    	
-	    	
-	    	return student;
+			student.setAccomodation(studentAccom);
+
+			return student;
 		}
 
 	}
-	
-	
 
 	public SpringOrgNodeDAO getOrgNodeDao() {
 		return _orgNodeDao;

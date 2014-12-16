@@ -16,7 +16,6 @@
 
 package com.mhe.ctb.oas.BMTSync.jsp;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;

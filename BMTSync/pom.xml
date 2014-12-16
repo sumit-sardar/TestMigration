@@ -14,6 +14,7 @@
 		<spring.version>4.1.2.RELEASE</spring.version>
 		<main.basedir>${basedir}/../..</main.basedir>
 		<m2eclipse.wtp.contextRoot>/</m2eclipse.wtp.contextRoot>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
@@ -139,8 +140,7 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
-				
-		
+
 	</dependencies>
 	
 
