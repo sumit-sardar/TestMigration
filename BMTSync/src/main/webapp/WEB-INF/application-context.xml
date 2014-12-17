@@ -71,7 +71,7 @@
 	<!-- Initialize the message handler -->
 	<bean id="bmtBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
 		<constructor-arg index="0" value="100"/>
-		<constructor-arg index="1" value="1000"/>
+		<constructor-arg index="1" value="15000"/>
 	</bean>
 	
 	<bean id="messageDelegate" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
