@@ -1,7 +1,7 @@
 package com.mhe.ctb.oas.BMTSync.util;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -47,20 +47,22 @@ public class BMTBlockingQueue extends LinkedBlockingQueue<StudentMessageType> {
 	
 	public List<StudentMessageType> dequeue() {
 		final List<StudentMessageType> messageList = new ArrayList<StudentMessageType>();
-		long countdown = timeout;
-		while (countdown > 0) {
-			Calendar start = Calendar.getInstance();
-			try {
-				final StudentMessageType message = super.poll(countdown,  TimeUnit.MILLISECONDS);
-				messageList.add(message);
-			} catch (InterruptedException ie) {
-				logger.error("Interrupted while waiting to dequeue additional messages. Returning current list.");
-				countdown = 0;
-			}
-			Calendar end = Calendar.getInstance();
-			long diff = end.getTimeInMillis() - start.getTimeInMillis();
-			countdown -= diff;
+		logger.info("Attempting to dequeue message from the queue....");
+		StudentMessageType message = null;
+		try {
+			message = super.poll(timeout, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException ie) {
+			logger.error("Interrupted while waiting to dequeue additional messages.");
 		}
+		if (message == null) {
+			logger.info("No messages in queue. Returning empty.");
+			return Collections.emptyList();
+		}
+		logger.debug("One message dequeued from the queue; draining the queue up to queue size.");
+		messageList.add(message);
+		// We got one; pull whatever's in the queue up to the limit of the return size.
+		super.drainTo(messageList, queueSize - 1);
+		logger.info("Returning " + Integer.valueOf(messageList.size()).toString() + " messages from queue.");
 		return messageList;
 	}
 }
