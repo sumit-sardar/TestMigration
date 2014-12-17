@@ -85,7 +85,7 @@
 				class="org.springframework.data.jdbc.jms.support.oracle.StructDatumMapper">
 				<constructor-arg index="0" value="OAS.STUDENT_MESSAGE_TYP" />
 				<constructor-arg index="1"
-					value="com.mhe.ctb.oas.BMTSync.spring.dao.StudentMessageType" />
+					value="com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType" />
 			</bean>
 		</constructor-arg>
 	</bean>
