@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.mhe.ctb.oas.BMTSync.exception.UnknownStudentException;
 import com.mhe.ctb.oas.BMTSync.model.Student;
+import com.mhe.ctb.oas.BMTSync.model.Student.Accomodations;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:com/mhe/ctb/oas/BMTSync/dao/spring-jdbc-qa.xml")
@@ -24,18 +25,23 @@ public class DAOTest {
 	@Autowired
 	private SpringStudentDAO _studentDao;
 	
-	private Logger LOGGER = Logger.getLogger(DAOTest.class);
+	private Logger logger = Logger.getLogger(DAOTest.class);
 	
 	private static final int STUDENT_ID = 413595;
 
 	@Test
 	public void testStudentDAO_getStudent_success() throws SQLException {
+		Student student = null;
 		try {
-			final Student student = _studentDao.getStudent(STUDENT_ID);
+			student = _studentDao.getStudent(STUDENT_ID);
 			assertEquals("Student ID should match", Integer.valueOf(STUDENT_ID), student.getOasStudentId());
 		} catch (UnknownStudentException use) {
 			fail();
 		}
+		
+		assertNotNull(student);
+		Accomodations accommodations = student.getAccomodations();
+		assertNotNull(accommodations);
 	}
 	
 	@Test(expected = UnknownStudentException.class)
