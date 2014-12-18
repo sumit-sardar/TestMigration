@@ -1,12 +1,10 @@
 package com.mhe.ctb.oas.BMTSync.controller;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,9 +18,6 @@ import com.mhe.ctb.oas.BMTSync.rest.CreateStudentsResponse;
 import com.mhe.ctb.oas.BMTSync.spring.dao.SpringStudentDAO;
 import com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType;
 
-
-//@Component("consumeService")
-//@Controller
 public class StudentRestClient {
 
 	private static final Logger logger = Logger.getLogger(StudentRestClient.class);
