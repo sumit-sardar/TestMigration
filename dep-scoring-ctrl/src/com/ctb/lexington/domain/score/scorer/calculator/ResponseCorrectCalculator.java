@@ -76,7 +76,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 			if (ItemVO.ITEM_TYPE_CR.equals(sicEvent.getType(itemId))) {
 				// TODO: how do we handle GR item responses?
 				if (null != sicEvent.getProductType()
-						&& "TS".equals(sicEvent.getProductType())) {
+						&& ("TS".equals(sicEvent.getProductType()) || "TR".equals(sicEvent.getProductType()))) {
 
 					if(null != sicEvent.getAnswerArea(itemId)
 						&& "GRID".equals(sicEvent.getAnswerArea(itemId))) {

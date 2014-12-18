@@ -19,6 +19,7 @@ public final class ProductType extends StringConstant {
     public static final ProductType TABE_ADAPTIVE = new ProductType("TA", "TABE Adaptive");
     public static final ProductType TASC = new ProductType("TS", "TASC"); //Changes for TASC
     public static final ProductType TABE_CCSS = new ProductType("TC", "TABECCSS"); //Changes for TABE CCSS
+    public static final ProductType TASC_READINESS = new ProductType("TR","TASC READINESS");// Changes for TASC Readiness
     
     //Need to add one entry for Laslink
     

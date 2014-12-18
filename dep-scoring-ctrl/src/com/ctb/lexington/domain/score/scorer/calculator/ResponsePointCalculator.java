@@ -38,7 +38,7 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 	public void onEvent(ResponseReceivedEvent event) {
 		validateItemSetId(event.getItemSetId());
 		
-		if ("TS".equals(sicEvent.getProductType())){
+		if ("TS".equals(sicEvent.getProductType()) || "TR".equals(sicEvent.getProductType())){
 			if (ItemVO.ITEM_TYPE_CR.equals(sicEvent.getType(event.getItemId()))) {
 				if (null != sicEvent.getAnswerArea(event.getItemId())
 						&& "GRID".equals(sicEvent.getAnswerArea(event.getItemId()))) {
@@ -175,7 +175,8 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 			} else if (ItemVO.ITEM_TYPE_CR.equals(itemType)) {
 				// Point calculation for GR items
 				if (null != sicEvent.getProductType()
-						&& "TS".equals(sicEvent.getProductType())) {
+						&& ("TS".equals(sicEvent.getProductType()) || "TR"
+								.equals(sicEvent.getProductType()))) {
 						
 					if(null != sicEvent.getAnswerArea(event.getItemId())
 						&& "GRID".equals(sicEvent.getAnswerArea(event.getItemId()))) {

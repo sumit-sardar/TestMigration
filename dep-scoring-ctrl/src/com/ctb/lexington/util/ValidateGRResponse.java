@@ -31,7 +31,7 @@ public class ValidateGRResponse {
 		int ruleInt=0; 
 		String ruleSetString = grItemRules;
 		try{
-			System.out.println("Resposne is : " + response);
+			//System.out.println("Resposne is : " + response);
 			sanitizedString=new String(response);
 			if(ruleSetString==null||"".equals(ruleSetString)){
 				System.out.println("No rules defined for item:"+itemId);
@@ -43,77 +43,77 @@ public class ValidateGRResponse {
 						ruleInt = Integer.parseInt(rule);
 						switch (ruleInt) {
 						case 0:
-							System.out.println("Dummy Rule Executed");
+							//System.out.println("Dummy Rule Executed");
 							sanitizedString = RuleSet.Rule1(sanitizedString);
-							System.out.println("Rule 1 Applied");
+							//System.out.println("Rule 1 Applied");
 							break;
 						case 1:
 							sanitizedString = RuleSet.Rule1(sanitizedString);
-							System.out.println("Rule 1 Applied");
+							//System.out.println("Rule 1 Applied");
 							break;
 			
 						case 2:
 							sanitizedString = RuleSet.Rule2(sanitizedString);
-							System.out.println("Rule 2 Applied");
+							//System.out.println("Rule 2 Applied");
 							break;
 			
 						case 3:
 							sanitizedString = RuleSet.Rule3(sanitizedString);
-							System.out.println("Rule 3 Applied");
+							//System.out.println("Rule 3 Applied");
 							break;
 						case 4:
 							sanitizedString = RuleSet.Rule4(sanitizedString);
-							System.out.println("Rule 4 Applied");
+							//System.out.println("Rule 4 Applied");
 							break;
 						case 5:
 							sanitizedString = RuleSet.Rule5(sanitizedString);
-							System.out.println("Rule 5 Applied");
+							//System.out.println("Rule 5 Applied");
 							break;
 			
 						case 6:
 							sanitizedString = RuleSet.Rule6(sanitizedString);
-							System.out.println("Rule 6 Applied");
+							//System.out.println("Rule 6 Applied");
 							break;
 			
 						case 7:
 							sanitizedString = RuleSet.Rule7(sanitizedString);
-							System.out.println("Rule 7 Applied");
+							//System.out.println("Rule 7 Applied");
 							break;
 			
 						case 8:
 							sanitizedString = RuleSet.Rule8(sanitizedString);
-							System.out.println("Rule 8 Applied");
+							//System.out.println("Rule 8 Applied");
 							break;
 			
 						case 9:
 							sanitizedString = RuleSet.Rule9(sanitizedString);
-							System.out.println("Rule 9 Applied");
+							//System.out.println("Rule 9 Applied");
 							break;
 						case 10:
 							sanitizedString = RuleSet.Rule10(sanitizedString);
-							System.out.println("Rule 10 Applied");
+							//System.out.println("Rule 10 Applied");
 							break;
 						case 11:
 							sanitizedString = RuleSet.Rule11(sanitizedString);
-							System.out.println("Rule 11 Applied");
+							//System.out.println("Rule 11 Applied");
 							break;
 						case 12:
 							sanitizedString = RuleSet.Rule12(sanitizedString);
-							System.out.println("Rule 12 Applied");
+							//System.out.println("Rule 12 Applied");
 							break;
 						case 14:
 							rawScore = RuleSet.Rule14(itemId, sanitizedString, grItemCorrectAnswer);
-							System.out.println("Rule 14 Applied");
+							//System.out.println("Rule 14 Applied");
 							return rawScore;
 						case 15:
 							boolean status = RuleSet.Rule15(sanitizedString);
-							System.out.println("Rule 15 Applied");
+							//System.out.println("Rule 15 Applied");
 							if(status==false)
 								return "0";
 							break;
 						case 16:
 							sanitizedString = RuleSet.Rule16(sanitizedString);
-							System.out.println("Rule 16 Applied");
+							//System.out.println("Rule 16 Applied");
 							break;
 						}
 					}
@@ -126,7 +126,7 @@ public class ValidateGRResponse {
 			System.out.println("Error in rule module");
 			e.printStackTrace();
 		}
-		System.out.println("Sanitized Reesponse:" + sanitizedString);
+		//System.out.println("Sanitized Reesponse:" + sanitizedString);
         
 		
 		// If response is fraction then round off to nearest 5 decimal places
@@ -141,7 +141,7 @@ public class ValidateGRResponse {
 				System.out.println("No correct answer for the item" + itemId);
 			} else {
 				answerSet = answerSetString.split(",");
-				System.out.println("Correct Answer:" + answerSetString);
+				//System.out.println("Correct Answer:" + answerSetString);
 				for (String answer : answerSet) {
 //					if (sanitizedString.equals(answer)){
 //						return "1";

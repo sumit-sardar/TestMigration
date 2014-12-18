@@ -198,7 +198,7 @@ public class SubtestValidationCalculator extends Calculator {
         }
         
         // Added for TASC Product (Type TS)
-        if("TS".equalsIgnoreCase(productType)) {
+        if("TS".equalsIgnoreCase(productType) || "TR".equalsIgnoreCase(productType)) {
         	String valid = "IN";
         	Connection conn = null;
             try {

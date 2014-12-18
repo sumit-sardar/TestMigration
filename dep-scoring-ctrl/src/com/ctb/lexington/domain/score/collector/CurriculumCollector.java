@@ -33,7 +33,7 @@ public class CurriculumCollector {
         	data.setPrimaryObjectives(getPrimaryObjectivesForTabeCat(oasRosterId));   
         }
         // Condition applied for TASC Product Suppression check
-        else if("TS".equalsIgnoreCase(productType)) {
+        else if("TS".equalsIgnoreCase(productType) || "TR".equalsIgnoreCase(productType)) {
         	data.setContentAreas(getContentAreasForTASC(oasRosterId));	  
         	data.setPrimaryObjectives(getPrimaryObjectivesForTASC(oasRosterId));
         }
@@ -47,7 +47,7 @@ public class CurriculumCollector {
         	data.setContentAreas(getContentAreas(oasRosterId));	  
         	data.setPrimaryObjectives(getPrimaryObjectives(oasRosterId));
         }
-        if("TS".equalsIgnoreCase(productType)) {
+        if("TS".equalsIgnoreCase(productType) || "TR".equalsIgnoreCase(productType)) {
         	data.setSecondaryObjectives(getSecondaryObjectivesForTASC(oasRosterId));
             data.setItems(getItemsForTASC(oasRosterId));
         }

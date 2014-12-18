@@ -63,14 +63,14 @@ public class SubtestItemCollectionCalculator extends Calculator {
      	                    .getItemSetId()));
             	 }
             	
-            } else if ("TS".equals(scorer.getResultHolder().getAdminData().getAssessmentType())) {
+            } else if ("TS".equals(scorer.getResultHolder().getAdminData().getAssessmentType()) || 
+            			"TR".equals(scorer.getResultHolder().getAdminData().getAssessmentType())) {
             	items = new ItemMapper(oasConnection).findItemByItemSetId(DatabaseHelper.asLong(event
                         .getItemSetId()), DatabaseHelper.asLong(this.productId));
             } else {
             	items = new ItemMapper(oasConnection).findItemByItemSetId(DatabaseHelper.asLong(event
                         .getItemSetId()));
             }
-            System.out.println("this.subtestIdCA -> " + this.subtestIdCA);
             
             //Added for webservice based terra nova third edition test
             //This will retrieve all the itemids and the corresponding peids for the content area.

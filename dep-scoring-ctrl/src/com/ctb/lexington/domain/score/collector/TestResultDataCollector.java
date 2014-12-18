@@ -66,7 +66,7 @@ public class TestResultDataCollector {
 
         CurriculumData cachedCurriculumData = null;
         String productType = data.getAdminData().getAssessmentType();
-        if(!"TS".equals(productType) && !"TC".equals(productType)) {
+        if(!"TS".equals(productType) && !"TC".equals(productType) &&  !"TR".equals(productType)) {
 	        String key = String.valueOf(data.getAdminData().getAssessmentId());
 	        cachedCurriculumData = (CurriculumData) SimpleCache.checkCache("curriculumData", key, "scoringUser");
 	        if(cachedCurriculumData == null) {
@@ -74,14 +74,14 @@ public class TestResultDataCollector {
 				SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
 	        }
         }
-        else if("TS".equals(productType)) {
+        else if("TS".equals(productType) || "TR".equals(productType)) {
         	String key = String.valueOf(data.getAdminData().getAssessmentId()) + data.getStudentData().getAssignedTestFormName();
 	        cachedCurriculumData = (CurriculumData) SimpleCache.checkCache("curriculumData", key, "scoringUser");
 	        if(cachedCurriculumData == null) {
 	        	cachedCurriculumData = getCurriculumData(data.getAdminData().getAssessmentType());
 	        	SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
 	        }
-	        System.out.println("***** SCORING: TestResultDataCollector: collect: CurriculumData for TASC Cached or Retrieved with key :: " + key);
+	        System.out.println("***** SCORING: TestResultDataCollector: collect: CurriculumData for TASC ->"+ productType +" Cached or Retrieved with key :: " + key);
         }
         else if("TC".equals(productType)){
         	data.setRosterLevel(getRosterLevel());

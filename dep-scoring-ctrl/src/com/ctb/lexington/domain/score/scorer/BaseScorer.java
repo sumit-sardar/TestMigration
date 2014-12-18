@@ -37,6 +37,7 @@ import com.ctb.lexington.domain.score.controller.llcontroller.LLTestResultContro
 import com.ctb.lexington.domain.score.controller.tacontroller.TATestResultController;
 import com.ctb.lexington.domain.score.controller.tbcontroller.TBTestResultController;
 import com.ctb.lexington.domain.score.controller.tccontroller.TCTestResultController;
+import com.ctb.lexington.domain.score.controller.trcontroller.TRTestResultController;
 import com.ctb.lexington.domain.score.controller.tscontroller.TSTestResultController;
 import com.ctb.lexington.domain.score.controller.tvcontroller.TVTestResultController;
 import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
@@ -263,6 +264,14 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                     controller.run(getRosterValidationStatus(event.getTestRosterId()));
                 }
                 //END-  For TABE CCSS Framework Scoring
+                
+                //START- For TASC Readiness
+                else if(this instanceof TRScorer) {
+                	controller = new TRTestResultController(getIRSConnection(), resultHolder, getReportingLevels(event.getTestRosterId()));
+                    controller.run(getRosterValidationStatus(event.getTestRosterId()));
+                }
+                //END- For TASC Readiness
+                
                 System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: finished persistence");
                 forceCloseAllConnections(false);
             } catch (Exception e) {

@@ -180,8 +180,8 @@ public class RuleSet {
 		} else{
 //			return str.indexOf(".") < 0 ? str : str.replaceAll("0*$", "");
 		// Implementation includes % signs as well.
-			System.out.println("Index of .:"+str.indexOf("."));
-			System.out.println("Replace All:"+str.replaceAll("0*$", ""));
+			//System.out.println("Index of .:"+str.indexOf("."));
+			//System.out.println("Replace All:"+str.replaceAll("0*$", ""));
 			return str.indexOf(".") < 0 ? (str.indexOf("%")<0?str:str.replaceAll("0*$", "")) : str.replaceAll("0*$", "");
 		}
 //		
@@ -331,8 +331,8 @@ public class RuleSet {
 			} else {
 				answerSet = answerSetString.split(",");
 				rangeSet = answerSet[0].split(";");
-				System.out.println("Correct Answer Range is " + rangeSet[0]
-						+ " to " + rangeSet[1]);
+				/*System.out.println("Correct Answer Range is " + rangeSet[0]
+						+ " to " + rangeSet[1]);*/
 
 				if (!(rangeSet.length > 1)) {
 					System.out.println("Not a valid range");
