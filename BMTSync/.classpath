@@ -22,7 +22,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="C:/Users/kristy_tracer/Downloads/sqldeveloper-4.0.3.16.84-x64/sqldeveloper/jdk/lib/tools.jar"/>
 	<classpathentry kind="lib" path="3rdparty/aqapi.jar"/>
 	<classpathentry kind="lib" path="3rdparty/ojdbc6.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">

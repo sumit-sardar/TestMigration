@@ -30,7 +30,7 @@ public class StudentResponse {
 	private String _gender;
 	private String _grade;
 	//private String[] _extStudentId;
-	private List<HeirarchyNode> _heirarchySet;
+	private List<HierarchyNode> _heirarchySet;
 	//private StudentAccomodation _accomodations;
 	private Accomodations accomodations;
 	private String _customerStudentId;
@@ -122,12 +122,12 @@ public class StudentResponse {
 	}
 
 
-	public List<HeirarchyNode> getHeirarchySet() {
+	public List<HierarchyNode> getHeirarchySet() {
 		return _heirarchySet;
 	}
 	
 	@JsonProperty("heirarchySet")
-	public void setHeirarchySet(List<HeirarchyNode> heirarchySet) {
+	public void setHeirarchySet(List<HierarchyNode> heirarchySet) {
 		_heirarchySet = heirarchySet;
 	}
 

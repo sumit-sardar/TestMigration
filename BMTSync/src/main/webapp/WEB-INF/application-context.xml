@@ -52,6 +52,16 @@
 		<property name="password" value="${jdbc.password}" />
 	</bean>
 
+	<!-- Set up the DAOs. -->
+	<bean id="springStudentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.SpringStudentDAO">
+		<constructor-arg index="0" ref="oasDataSource" />
+	</bean>
+
+	<!-- Set up the Student ReST client. -->
+	<bean id="studentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.StudentRestClient">
+		<constructor-arg index="0" ref="springStudentDAO" />
+	</bean>
+	
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true">
 		<property name="dataSource" ref="oasDataSource" />
@@ -67,6 +77,15 @@
 	<bean id="dbcpNativeJdbcExtractor"
 		class="org.springframework.jdbc.support.nativejdbc.CommonsDbcpNativeJdbcExtractor" />
 
+	<!--  Register our custom JMS converters for properties -->
+	<bean id="conversionService" class="com.mhe.ctb.oas.BMTSync.spring.converter.CustomConversionService">
+	    <property name="converters">
+        	<set>
+           		<bean class="com.mhe.ctb.oas.BMTSync.spring.converter.SqlDateConverter"/>
+        		<bean class="com.mhe.ctb.oas.BMTSync.spring.converter.SqlTimestampConverter"/>
+        	</set>
+   		</property>
+	</bean>
 
 	<!-- Initialize the message handler -->
 	<bean id="bmtBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
@@ -84,8 +103,12 @@
 			<bean
 				class="org.springframework.data.jdbc.jms.support.oracle.StructDatumMapper">
 				<constructor-arg index="0" value="OAS.STUDENT_MESSAGE_TYP" />
-				<constructor-arg index="1"
-					value="com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType" />
+				<constructor-arg index="1">
+					<bean class="com.mhe.ctb.oas.BMTSync.spring.converter.CustomBeanPropertyStructMapper">
+						<constructor-arg value="com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType"/>
+						<property name="conversionService" ref="conversionService"></property>
+					</bean>
+				</constructor-arg>
 			</bean>
 		</constructor-arg>
 	</bean>
@@ -105,13 +128,14 @@
 	<!--  Setup the configuration to send the message -->
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 	  <property name="connectionFactory" ref="jmsConnectionFactory"/> 
-      <!-- <property name="sessionTransacted" value="true"/>  -->
+      <property name="sessionTransacted" value="true"/>
 	  <property name="messageConverter" ref="messageConverter"/>
 	</bean>
 
 	<!-- Instantiate a poller to read from the queue and post messages to BMT. -->
 	<bean id="bmtBlockingQueuePoller" class="com.mhe.ctb.oas.BMTSync.spring.poller.BMTBlockingQueuePoller" depends-on="bmtBlockingQueue">
-		<constructor-arg ref="bmtBlockingQueue" /> 
+		<constructor-arg index="0" ref="bmtBlockingQueue" /> 
+		<constructor-arg index="1" ref="studentRestClient" />
 	</bean>
 
 	<!--  ==[ END JMS Setup ]================================================================== -->

@@ -5,11 +5,13 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
 import oracle.jdbc.OracleTypes;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -43,69 +45,10 @@ public class SpringStudentDAO {
 	private SimpleJdbcCall _updateStudentAPIStatusCall;
 
 	private SpringOrgNodeDAO _orgNodeDao;
+	
+	private static final Logger logger = Logger.getLogger(SpringStudentDAO.class);
 
-	/**
-	 * Returns a student based on the student ID
-	 * 
-	 * @param studentId
-	 * @return
-	 * @throws UnknownStudentException
-	 */
-	public Student getStudent(long studentId) throws UnknownStudentException {
-		// call the sproc
-		Map<String, Object> result = _getStudentDetailsCall.execute(studentId);
-
-		// See if we got a response
-		if ((result == null) || (!result.containsKey(OUTPUT_STUDENT))) {
-			throw new UnknownStudentException(studentId);
-		}
-
-		// Get the response
-		Collection<Student> returnList = (Collection<Student>) result
-				.get(OUTPUT_STUDENT);
-
-		// Check if the list has a student (we will ignore the multiple)
-		if (returnList.size() == 0) {
-			throw new UnknownStudentException(studentId);
-		}
-
-		// TODO: fix this
-		Student student = returnList.iterator().next();
-
-		student.setHeirarchySet(_orgNodeDao.getStudentHeirarchy(studentId));
-		// TODO Get accommodations
-
-		return student;
-	}
-
-	public void updateStudentAPIStatus(final Integer studentId,
-			final boolean success, final String errorMessage)
-			throws SQLException {
-		final SqlParameterSource paramMap = new MapSqlParameterSource()
-				.addValue("pStudentID", studentId.toString())
-				.addValue("pAppName", "BMT")
-				.addValue("pExportStatus", success ? "Success" : "Failed")
-				.addValue("pErrorCode", success ? "" : "999")
-				.addValue("pErrorMessage", success ? "" : errorMessage);
-
-		_updateStudentAPIStatusCall.compile();
-
-		int rowsUpdated = _updateStudentAPIStatusCall.executeFunction(
-				int.class, paramMap);
-		if (rowsUpdated != 1) {
-			throw new SQLException(
-					"One row expected to be updated! Rows updated: "
-							+ rowsUpdated);
-		}
-	}
-
-	/**
-	 * Setup the datasource, autowired if context is applied
-	 * 
-	 * @param ds
-	 */
-	@Autowired
-	public void setDataSource(DataSource ds) {
+	public SpringStudentDAO(DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 
@@ -117,18 +60,65 @@ public class SpringStudentDAO {
 						new SqlParameter("pStudentID", Types.BIGINT),
 						new SqlOutParameter(OUTPUT_STUDENT, OracleTypes.CURSOR,
 								new StudentDetailsRowMapper()));
+		_getStudentDetailsCall.compile();
 
 		_updateStudentAPIStatusCall = new SimpleJdbcCall(_jdbcTemplate)
 				.withCatalogName("PK_Students")
 				.withProcedureName("updateStudentAPIStatus")
-				.useInParameterNames("pStudentID", "pAppName", "pExportStatus",
-						"pErrorCode", "pErrorMessage")
+				.useInParameterNames("pStudentID", "pAppName", "pExportStatus",	"pErrorCode", "pErrorMessage")
 				.declareParameters(
 						new SqlParameter("pStudentID", Types.VARCHAR),
 						new SqlParameter("pAppName", Types.VARCHAR),
 						new SqlParameter("pExportStatus", Types.VARCHAR),
 						new SqlParameter("pErrorCode", Types.VARCHAR),
 						new SqlParameter("pErrorMessage", Types.VARCHAR));
+		_updateStudentAPIStatusCall.compile();
+	}
+	
+	/**
+	 * Returns a student based on the student ID
+	 * 
+	 * @param studentId
+	 * @return
+	 * @throws UnknownStudentException
+	 */
+	public Student getStudent(long studentId) throws UnknownStudentException {
+		Map<String, Object> result = _getStudentDetailsCall.execute(studentId);
+
+		// See if we got a response
+		if ((result == null) || (!result.containsKey(OUTPUT_STUDENT))) {
+			throw new UnknownStudentException(studentId);
+		}
+
+		// Get the response
+		Collection<Student> returnList = (Collection<Student>) result.get(OUTPUT_STUDENT);
+
+		// Check if the list has a student (we will ignore the multiple)
+		if (returnList.size() == 0) {
+			throw new UnknownStudentException(studentId);
+		}
+
+		// TODO: fix this
+		Student student = returnList.iterator().next();
+
+		student.setHeirarchySet(_orgNodeDao.getStudentHeirarchy(studentId));
+
+		return student;
+	}
+
+	public void updateStudentAPIStatus(final Integer studentId,
+			final boolean success, final String errorMessage)
+			throws SQLException {
+
+		_updateStudentAPIStatusCall.execute(studentId.toString(), "BMT", 
+				success ? "Success" : "Failed",
+				success ? "" : "999",
+				success ? "" : errorMessage);
+		
+		/* int numRowsUpdated = Integer.valueOf((Integer) results.get("#update-count-1"));
+		if (numRowsUpdated != 1) {
+			throw new SQLException("One row expected to be updated! Rows updated: "	+ numRowsUpdated);
+		} */
 	}
 
 	/**
@@ -154,22 +144,17 @@ public class SpringStudentDAO {
 			student.setGrade(rs.getString("Grade"));
 			student.setCustomerStudentId(rs.getString("Ext_Pin1"));
 
-			// Set Student Accomodation
+			// Set Student Accommodation
 			studentAccom.setScreen_Magnifier(rs.getString("SCREEN_MAGNIFIER"));
 			studentAccom.setScreen_Reader(rs.getString("Screen_Reader"));
 			studentAccom.setCalculator(rs.getString("Calculator"));
 			studentAccom.setTest_Pause(rs.getString("Test_Pause"));
 			studentAccom.setUntimed_Test(rs.getString("Untimed_Test"));
-			studentAccom.setQuestion_background_color(rs
-					.getString("Question_Background_Color"));
-			studentAccom.setQuestion_font_color(rs
-					.getString("Question_Font_Color"));
-			studentAccom.setQuestion_font_size(rs
-					.getString("Question_Font_Size"));
-			studentAccom.setAnswer_background_color(rs
-					.getString("Answer_Background_Color"));
-			studentAccom
-					.setAnswer_font_color(rs.getString("Answer_Font_Color"));
+			studentAccom.setQuestion_background_color(rs.getString("Question_Background_Color"));
+			studentAccom.setQuestion_font_color(rs.getString("Question_Font_Color"));
+			studentAccom.setQuestion_font_size(rs.getString("Question_Font_Size"));
+			studentAccom.setAnswer_background_color(rs.getString("Answer_Background_Color"));
+			studentAccom.setAnswer_font_color(rs.getString("Answer_Font_Color"));
 			studentAccom.setAnswer_font_size(rs.getString("Answer_Font_Size"));
 			studentAccom.setHighlighter(rs.getString("Highlighter"));
 			studentAccom.setMusic_File_Id(rs.getString("Music_File_Id"));
@@ -177,10 +162,8 @@ public class SpringStudentDAO {
 			studentAccom.setMagnifying_glass(rs.getString("Magnifying_Glass"));
 			studentAccom.setExtended_time(rs.getString("Extended_Time"));
 			studentAccom.setMasking_tool(rs.getString("Masking_Tool"));
-			studentAccom.setMicrophone_headphone(rs
-					.getString("Microphone_Headphone"));
-			studentAccom.setExtended_time_factor(rs
-					.getFloat("Extended_Time_Factor"));
+			studentAccom.setMicrophone_headphone(rs.getString("Microphone_Headphone"));
+			studentAccom.setExtended_time_factor(rs.getFloat("Extended_Time_Factor"));
 
 			student.setAccomodation(studentAccom);
 

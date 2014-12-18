@@ -15,9 +15,9 @@ public class BMTBlockingQueueWorker implements Runnable {
 	private final StudentRestClient restClient;
 	private static final Logger logger = Logger.getLogger(BMTBlockingQueueWorker.class);
 
-	public BMTBlockingQueueWorker(final BMTBlockingQueue queue) {
+	public BMTBlockingQueueWorker(final BMTBlockingQueue queue, final StudentRestClient restClient) {
 		this.queue = queue;
-		restClient = new StudentRestClient();
+		this.restClient = restClient;
 	}
 	
 	public void run() {

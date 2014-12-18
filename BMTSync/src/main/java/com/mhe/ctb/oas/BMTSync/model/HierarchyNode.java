@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"oasHeirarchyId", "heirarchyCategoryName", "code","name"  } )
-public class HeirarchyNode {
+public class HierarchyNode {
 	private Integer _oasHeirarchyId;
 	private String _heirarchyCategoryName;
 	private String _code;

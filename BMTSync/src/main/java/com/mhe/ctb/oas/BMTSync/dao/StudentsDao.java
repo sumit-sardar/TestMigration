@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import oracle.jdbc.OracleTypes;
 
 import com.mhe.ctb.oas.BMTSync.controller.StudentController;
-import com.mhe.ctb.oas.BMTSync.model.HeirarchyNode;
+import com.mhe.ctb.oas.BMTSync.model.HierarchyNode;
 import com.mhe.ctb.oas.BMTSync.model.Student;
 
 //import com.mhe.ctb.oas.BMTSync.util.ReadPropertyFile;
@@ -82,7 +82,7 @@ public class StudentsDao  extends DatabaseManager {
 		String[] extStudentIds = new String[2];
 		
 		
-		List<HeirarchyNode> heirarchyList = new ArrayList<HeirarchyNode>();
+		List<HierarchyNode> heirarchyList = new ArrayList<HierarchyNode>();
 		
 		Connection conn = null;
 		CallableStatement cstmt = null;
@@ -206,8 +206,8 @@ public class StudentsDao  extends DatabaseManager {
 		return true;
 	}
 	
-	public List<HeirarchyNode> getHierarchy(Integer pStudentID) throws Exception {
-		List <HeirarchyNode> heirarchyList = new ArrayList<HeirarchyNode>();		
+	public List<HierarchyNode> getHierarchy(Integer pStudentID) throws Exception {
+		List <HierarchyNode> heirarchyList = new ArrayList<HierarchyNode>();		
 
 		Connection conn = null;
 		CallableStatement cstmt = null;
@@ -225,7 +225,7 @@ public class StudentsDao  extends DatabaseManager {
 			rs = (ResultSet) cstmt.getObject(2);
 
 			while (rs.next()) {
-				HeirarchyNode heirarchy = new HeirarchyNode();
+				HierarchyNode heirarchy = new HierarchyNode();
 				
 				heirarchy.setHeirarchyCategoryName(rs.getString("CATEGORY_NAME"));				
 				//heirarchy.setOasHeirarchyId(rs.getInt("ANCESTOR_ORG_NODE_ID"));

@@ -43,7 +43,7 @@ public class NotificationMessageHandler {
     		throw new MessageConversionException("Content of message cannot be null. " + msgBldr.toString());
     	}
     	
-    	LOGGER.debug(String.format("Received Update: customerId(%s) studentId(%s) updateDateTime(%s)",
+    	LOGGER.info(String.format("Received update. [customerId=%s][studentId=%s][updateDateTime=%s]",
     			message.getCustomerId(), message.getStudentId(), message.getUpdatedDateTime())
     	);
 

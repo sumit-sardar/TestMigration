@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,14 +29,12 @@ public class StudentRestClient {
 	
 	private SpringStudentDAO studentDAO;
 	
+	public StudentRestClient(final SpringStudentDAO studentDAO) {
+		this.studentDAO = studentDAO;
+	}
 	
 	String errorMsg;
 
-	//Constructor
-	public StudentRestClient() {
-		studentDAO = new SpringStudentDAO();
-	}
-	
 	/*
 	 * Method to consume a students web service
 	 */
@@ -50,10 +49,9 @@ public class StudentRestClient {
 			for (final StudentMessageType studentMessage : messages) {
 				// Connects to OAS DB and return students related data 
 				final Student student = studentDAO.getStudent(studentMessage.getStudentId());
-				logger.info("Transmitting student. [studentId=" + studentMessage.getStudentId().toString() + "]");
+				logger.info("Transmitting student. [studentId=" + student.getOasStudentId() + "]");
 				studentListRequest.addStudent(student);
 			}
-			System.out.println("Size"+studentListRequest.toString());
 	
 	        studentListResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_STUDENTS,
 	        		studentListRequest, CreateStudentsResponse.class);
@@ -67,18 +65,15 @@ public class StudentRestClient {
 				// in Student_API_Status table
 				processResponses(studentListRequest, studentListResponse, false);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				System.out.println(e.getMessage());
-				logger.error("Exception Error attempting to process student responses.", e);
+				logger.error("Error attempting to process student responses.", e);
 			}
 			
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
-			logger.error("Exception Error attempting to process student responses.", e);
+			logger.error("Error attempting to process student responses.", e);
 		} 
 		return studentListResponse;
-		//return new ModelAndView("StudentResponse", "studentListResponse", studentListResponse);
 	}
 
 	/*

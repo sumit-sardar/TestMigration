@@ -35,6 +35,11 @@
 		<property name="password" value="${jdbc.password}" />
 	</bean>
 
+	<!-- Set up the DAOs. -->
+	<bean id="springStudentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.SpringStudentDAO">
+		<constructor-arg index="0" ref="oasDataSource" />
+	</bean>
+
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true">
 		<property name="dataSource" ref="oasDataSource" />

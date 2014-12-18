@@ -3,7 +3,6 @@ package com.mhe.ctb.oas.BMTSync.spring.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import com.mhe.ctb.oas.BMTSync.exception.UnknownStudentException;
-import com.mhe.ctb.oas.BMTSync.model.HeirarchyNode;
+import com.mhe.ctb.oas.BMTSync.model.HierarchyNode;
 
 @Repository
 public class SpringOrgNodeDAO {
@@ -34,25 +33,24 @@ public class SpringOrgNodeDAO {
 	private JdbcTemplate _jdbcTemplate;
 
 	// The hierarchy reader
-	private SimpleJdbcCall _heirarchyReader;
+	private SimpleJdbcCall _hierarchyReader;
 
 	/**
-	 * Returns a list of the student heirarchies
+	 * Returns a list of the student hierarchies
 	 * 
 	 * @param studentId
 	 * @return
 	 * @throws UnknownStudentException
 	 */
-	public List<HeirarchyNode> getStudentHeirarchy(long studentId)
+	public List<HierarchyNode> getStudentHeirarchy(long studentId)
 			throws UnknownStudentException {
-		Map<String, Object> result = _heirarchyReader.execute(studentId);
+		Map<String, Object> result = _hierarchyReader.execute(studentId);
 
 		if ((result == null) || (!result.containsKey(OUTPUT_HEIRARCHY_LIST))) {
 			throw new UnknownStudentException(studentId);
 		}
 
-		List<HeirarchyNode> returnList = (List<HeirarchyNode>) result
-				.get(OUTPUT_HEIRARCHY_LIST);
+		List<HierarchyNode> returnList = (List<HierarchyNode>) result.get(OUTPUT_HEIRARCHY_LIST);
 		return returnList;
 	}
 
@@ -66,7 +64,7 @@ public class SpringOrgNodeDAO {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 
-		_heirarchyReader = new SimpleJdbcCall(_jdbcTemplate)
+		_hierarchyReader = new SimpleJdbcCall(_jdbcTemplate)
 				.withCatalogName("PK_Students")
 				.withProcedureName("Heirarchy")
 				.useInParameterNames("pStudentID", "pResultCursor")
@@ -83,15 +81,15 @@ public class SpringOrgNodeDAO {
 	 * 
 	 * @author cparis
 	 */
-	private class HeirarchyParentsRowMapper implements RowMapper<HeirarchyNode> {
+	private class HeirarchyParentsRowMapper implements RowMapper<HierarchyNode> {
 
-		public HeirarchyNode mapRow(ResultSet rs, int rowNum)
+		public HierarchyNode mapRow(ResultSet rs, int rowNum)
 				throws SQLException {
-			HeirarchyNode heirarchy = new HeirarchyNode();
+			HierarchyNode heirarchy = new HierarchyNode();
 
 			// TODO Fix this. We likely also will want to sort the list based on
 			// this laster
-			// heirarchy,setHeirarchyCategoryLevel(rs.getString("CATEGORY_LEVEL"));
+			// hierarchy,setHeirarchyCategoryLevel(rs.getString("CATEGORY_LEVEL"));
 			heirarchy.setHeirarchyCategoryName(rs.getString("CATEGORY_NAME"));
 			heirarchy.setOasHeirarchyId(rs.getInt("OAS_Heirarchy_ID"));
 			heirarchy.setCode(rs.getString("ORG_NODE_CODE"));
