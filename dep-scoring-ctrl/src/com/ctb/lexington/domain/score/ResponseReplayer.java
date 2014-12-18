@@ -598,7 +598,7 @@ public class ResponseReplayer {
     private static void addResponseEvents(final Long testRosterId, final List events, final ItemSetVO itemSet,
             final ItemResponseMapper itemResponseMapper) {
     	
-    	if("TS".equals(productType)) {
+    	if("TS".equals(productType) || "TR".equals(productType)) {
 	        events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASCOrg(
 	        		asLong(itemSet.getItemSetId()), testRosterId)));
     	}else if("TC".equals(productType)) {
@@ -641,7 +641,7 @@ public class ResponseReplayer {
 		                itemSet.getItemSetLevel(), itemSet.getRecommendedLevel(), null, null));
     		}
         }
-    	else if("TS".equals(productType)) {
+    	else if("TS".equals(productType) || "TR".equals(productType)) {
     		//System.out.println("Scoring Validation Status "  + itemSet.getSubtestScoringStatus());
     		events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
 	        		itemSet.getItemSetId(),

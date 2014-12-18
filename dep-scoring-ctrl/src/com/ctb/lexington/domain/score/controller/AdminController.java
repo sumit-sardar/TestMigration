@@ -51,7 +51,7 @@ public class AdminController {
 	  
     public void run() throws SQLException {
     	
-    	if("TS".equals(data.getAssessmentType()) || "TC".equals(data.getAssessmentType())) {
+    	if("TS".equals(data.getAssessmentType()) || "TC".equals(data.getAssessmentType()) || "TR".equals(data.getAssessmentType())) {
 	    	this.irsFormDimMapper = new IrsFormDimMapper(conn);
 	    	IrsFormDimData newForm = getIrsFormBean(data);
 	    	IrsFormDimData form = irsFormDimMapper.findByFormNameAndProductTypeId(newForm); // Find formid by Form Name and Product Type Id (6)
@@ -162,7 +162,7 @@ public class AdminController {
         }
         form.setName(formName);
         form.setProductTypeId(("TC").equals(data.getAssessmentType())
-        		? new Long(1): new Long(6));
+        		? new Long(1): new Long(6));// Not changing as TASC and TASC readiness have same Parent-Product-id:4500
         return form;
     }
     
@@ -181,7 +181,7 @@ public class AdminController {
     	programData.setProgStartDate(data.getProgStartDate());
     	programData.setProgEndDate(data.getProgEndDate());
     	programData.setCustomerid(data.getCustomerId());
-        programData.setAgeCategory(studentGradeId.longValue()==1?"AD":"JV");
+        programData.setAgeCategory(studentGradeId.longValue()==1?"AD":"N/A");
     	programData.setProductTypeid(new Long(
             "TB".equals(data.getAssessmentType())?1:
             "TL".equals(data.getAssessmentType())?1:
@@ -190,7 +190,8 @@ public class AdminController {
             "LL".equals(data.getAssessmentType())?4: // For Laslink Scoring
             "TA".equals(data.getAssessmentType())?5: // For Tabe Adaptive Scoring
     		"TS".equals(data.getAssessmentType())?6: // For TASC Scoring
-    		"TC".equals(data.getAssessmentType())?1:3)); // For TABE CCSS Scoring
+    		"TC".equals(data.getAssessmentType())?1: // For TABE CCSS Scoring
+    		"TR".equals(data.getAssessmentType())?6:3)); // For TASC Readiness Scoring
         programData.setNormsGroup(
             "6".equals(data.getNormsGroup())?"Fall":
             "18".equals(data.getNormsGroup())?"Winter":
@@ -235,7 +236,8 @@ public class AdminController {
             "LL".equals(data.getAssessmentType())?4:
             "TA".equals(data.getAssessmentType())?5: // For Laslink Scoring
             "TS".equals(data.getAssessmentType())?6: // For TASC Scoring
-            "TC".equals(data.getAssessmentType())?1:3)); // For TABE CCSS Scoring
+            "TC".equals(data.getAssessmentType())?1: // For TABE CCSS Scoring
+            "TR".equals(data.getAssessmentType())?6:3)); // For TASC Readiness Scoring
     	return productData;
     }
     
@@ -253,7 +255,8 @@ public class AdminController {
             "LL".equals(data.getAssessmentType())?4:
             "TA".equals(data.getAssessmentType())?5: // For Laslink Scoring
         	"TS".equals(data.getAssessmentType())?6: // For TASC Scoring
-        	"TC".equals(data.getAssessmentType())?1:3)); // For TABE CCSS Scoring
+    		"TC".equals(data.getAssessmentType())?1: // For TABE CCSS Scoring
+        	"TR".equals(data.getAssessmentType())?6:3)); // For TASC Readiness Scoring
         
         // this is WRONG!!! what if they didn't complete any content area?
         String form = "N/A";
@@ -276,6 +279,8 @@ public class AdminController {
         	assessmentData.setFormid(data.getFormId());
         }else if ("TC".equals(data.getAssessmentType())){ // For TABE CCSS Scoring
         	assessmentData.setFormid(new Long(3));
+        }else if("TR".equals(data.getAssessmentType())){
+        	assessmentData.setFormid(data.getFormId());
         }
         if("TV".equals(data.getAssessmentType())) {
             assessmentData.setLevelid(                                  
@@ -310,6 +315,10 @@ public class AdminController {
        }
        // For TASC Scoring
        else if("TS".equals(data.getAssessmentType())) {
+    	   assessmentData.setLevelid(                                  
+    			   new Long(
+    					   "21-22".equals(level)?34:35 ));
+       }else if("TR".equals(data.getAssessmentType())) {
     	   assessmentData.setLevelid(                                  
     			   new Long(
     					   "21-22".equals(level)?34:35 ));

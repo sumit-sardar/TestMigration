@@ -93,7 +93,7 @@ public class CurriculumController {
         	contentAreas = getIrsContentAreaBeans(data);
         }
         
-        if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){
+        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType()))){
         	SqlMapClient insertSubjectClient = null;
         	SqlMapClient insertContentClient = null;
             SqlMapClient updateContentClient = null;
@@ -162,7 +162,7 @@ public class CurriculumController {
         // handle primary objectives
         IrsPrimObjDimData [] primaryObjectives = getIrsPrimObjBeans(data);
         
-        if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){ // Changes for iBatis Batch Process implementation
+        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType()))){ // Changes for iBatis Batch Process implementation
         	Long objectiveIndex = new Long(0);
         	SqlMapClient insertPrimClient = null;
             SqlMapClient updatePrimClient = null;
@@ -229,7 +229,7 @@ public class CurriculumController {
         	secondaryObjectives = getIrsSecObjBeans(data);
         }
         
-        if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){ // Changes for iBatis Batch Process implementation
+        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType()))){ // Changes for iBatis Batch Process implementation
         	SqlMapClient insertObjClient = null;
             SqlMapClient updateObjClient = null;
             Map<Long, IrsSecObjDimData> existSecObjMap = new HashMap<Long, IrsSecObjDimData>();
@@ -283,7 +283,7 @@ public class CurriculumController {
         IrsItemDimData [] items = getIrsItemBeans(data);
         
         // Changes for iBatis Batch Process implementation
-        if(null != adminData && "TC".equalsIgnoreCase(adminData.getAssessmentType())){
+        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType()))){
         	SqlMapClient insertItemClient = null;
             SqlMapClient updateItemClient = null;
             Map<String, IrsItemDimData> existItemMap = new HashMap<String, IrsItemDimData>();
