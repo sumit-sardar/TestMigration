@@ -137,15 +137,19 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
-
+<!--
     		<dependency>
     			<groupId>javax</groupId>
     			<artifactId>javaee-api</artifactId>
-    			<version>7.0</version>
-    			<scope>provided</scope>
+    			<version>6.0</version>
     		</dependency>
+-->
 
-
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.0.1B</version>
+        </dependency>
 	</dependencies>
 	
 
