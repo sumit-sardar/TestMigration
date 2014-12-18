@@ -89,12 +89,21 @@ public class StudentRestClient {
 		logger.debug("Students post total count: " + req.getStudents().size());
 		logger.debug("Students post success count: "+resp.getSuccessCount());
 		logger.debug("Students post failure count: "+resp.getFailureCount());
-
-		for (final StudentResponse failedUpdate : resp.getFailures()) {
-			updateStatuses.put(failedUpdate.getOasStudentId(), false);
-			updateMessages.put(failedUpdate.getOasStudentId(), failedUpdate.getErrorMessage());
+		List<StudentResponse> failures = resp.getFailures();
+		final StringBuilder failedStudentIds = new StringBuilder();
+		failedStudentIds.append("Students failed:");
+		if (failures == null) {
+			failedStudentIds.append(" none");
+		} else {
+			for (final StudentResponse failedUpdate : resp.getFailures()) {
+				failedStudentIds.append(" ");
+				failedStudentIds.append(failedUpdate.getOasCustomerId().toString());				
+				updateStatuses.put(failedUpdate.getOasStudentId(), false);
+				updateMessages.put(failedUpdate.getOasStudentId(), failedUpdate.getErrorMessage());
+			}
 		}
-		
+		logger.debug(failedStudentIds.toString());
+
 		List<Student> requests = req.getStudents();
 		for (final Student student : requests) {
 			if (!updateMessages.containsKey(student.getOasStudentId())) {
@@ -105,6 +114,9 @@ public class StudentRestClient {
 
 		for (final Integer studentId : updateMessages.keySet()) {
 			studentDAO.updateStudentAPIStatus(studentId, updateStatuses.get(studentId), updateMessages.get(studentId));
+			logger.debug(String.format("Updating student API status in OAS. [studentId=%d][updateSuccess=%b][updateMessage=%s]",
+					studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
+					
 		}
 	}
 	

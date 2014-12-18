@@ -14,7 +14,7 @@ import com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue;
  *
  */
 public class NotificationMessageHandler {
-	private static Logger LOGGER = Logger.getLogger(NotificationMessageHandler.class);
+	private static Logger logger = Logger.getLogger(NotificationMessageHandler.class);
 	private final BMTBlockingQueue queue;
 	
 	public NotificationMessageHandler(final BMTBlockingQueue queue) {
@@ -43,12 +43,12 @@ public class NotificationMessageHandler {
     		throw new MessageConversionException("Content of message cannot be null. " + msgBldr.toString());
     	}
     	
-    	LOGGER.info(String.format("Received update. [customerId=%s][studentId=%s][updateDateTime=%s]",
+    	logger.info(String.format("Received update. [customerId=%s][studentId=%s][updateDateTime=%s]",
     			message.getCustomerId(), message.getStudentId(), message.getUpdatedDateTime())
     	);
 
     	// Queue isn't null, so add it to the queue to post.
-    	try {
+    	try {    		
     		queue.enqueueWithTimeout(message);
     	} catch (MessageConversionException mce) {
     		throw mce;
