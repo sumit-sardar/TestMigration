@@ -21,7 +21,7 @@ public class TASCFileUtil {
 	
 	private static final String tascProductDisplayName = "TASC";
 	private static final String tascFrameWorkCode = "TASC";
-	
+	private static final String normYear = "2015";
 	private static final Map<String,String> tascContentArea = new HashMap<String, String>();
 	static{
 		tascContentArea.put("MA", "Mathematics");
@@ -114,9 +114,12 @@ public class TASCFileUtil {
 					forms.add("C3");
 					/*forms.add("C4");*/
 					/*forms.add("C1-S");*/
-				}else {
-					System.out.println("Form value is not correct..Exit Called..");
-					System.exit(0);
+				}else if ("D".equalsIgnoreCase(test_form)){
+					forms.add("D1");
+				}else{
+					System.out.println("Content Code :"+ Content_area_initial +" Form value :"+ test_form + " ... Break the loop ... Processing next file.");
+					// System.exit(0);
+					continue;
 				}
 				for(String formValue:forms){
 					test_form = formValue;
@@ -125,7 +128,7 @@ public class TASCFileUtil {
 					contentOfFile=FileUtil.readFileData(file_location);
 					grade ="AD";
 					Test_Level = "21-22";
-					score_lookup_id	= tascFrameWorkCode+"_2013_"+test_form+"_"+Content_area_initial+"_"+sourceFileType;				
+					score_lookup_id	= tascFrameWorkCode+"_"+normYear+"_"+test_form+"_"+Content_area_initial+"_"+sourceFileType;				
 					success=writeInSCORE_LOOKUP_TASC(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,tascFrameWorkCode,tascProductDisplayName,grade);
 					itemSetIdList=getItemSetID(product_id,Content_area,Test_Level,Objective_code,test_form);
 					successInScore_lookup_item_set=FileUtil.writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
@@ -171,9 +174,13 @@ public class TASCFileUtil {
 					forms.add("C3");
 					/*forms.add("C4");*/
 					/*forms.add("C1-S");*/
+				}else if("D".equalsIgnoreCase(test_form)){
+					forms.add("D1");
 				}else {
-					System.out.println("Form value is not correct..Exit Called..");
-					System.exit(0);
+					// System.out.println("Form value is not correct..Exit Called..");
+					// System.exit(0);
+					System.out.println("Content Code :"+ Content_area_initial +" Form value :"+ test_form + " ... Break the loop ... Processing next file.");
+					continue;
 				}
 				for(String formValue:forms){
 					test_form = formValue;
@@ -186,7 +193,7 @@ public class TASCFileUtil {
 						//Test_Level = "10";
 						grade = firstLine.split("Grade:")[1].substring(0,2);
 					}
-					score_lookup_id	= tascFrameWorkCode+"_2013_NCE_"+test_form+"_"+Content_area_initial+"_"+sourceFileType;
+					score_lookup_id	= tascFrameWorkCode+"_"+normYear+"_NCE_"+test_form+"_"+Content_area_initial+"_"+sourceFileType;
 					contentOfFile=FileUtil.readFileData(file_location);
 					success = writeInSCORE_LOOKUP_NCE(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,tascFrameWorkCode,tascProductDisplayName);
 				}
@@ -227,9 +234,13 @@ public class TASCFileUtil {
 					forms.add("C3");
 					/*forms.add("C4");*/
 					/*forms.add("C1-S");*/
+				}else if("D".equalsIgnoreCase(test_form)){
+					forms.add("D1");
 				}else {
-					System.out.println("Form value is not correct..Exit Called..");
-					System.exit(0);
+					// System.out.println("Form value is not correct..Exit Called..");
+					// System.exit(0);
+					System.out.println("Content Code :"+ Content_area_initial +" Form value :"+ test_form + " ... Break the loop ... Processing next file.");
+					continue;
 				}
 				for(String formValue:forms){
 					test_form = formValue;
@@ -242,7 +253,7 @@ public class TASCFileUtil {
 						//Test_Level = "10";
 						grade = firstLine.split("Grade:")[1].substring(0,2);
 					}
-					score_lookup_id	= tascFrameWorkCode+"_2013_NP_"+test_form+"_"+Content_area_initial+"_"+sourceFileType;
+					score_lookup_id	= tascFrameWorkCode+"_"+normYear+"_NP_"+test_form+"_"+Content_area_initial+"_"+sourceFileType;
 					contentOfFile=FileUtil.readFileData(file_location);
 					success = writeInSCORE_LOOKUP_NCE(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,tascFrameWorkCode,tascProductDisplayName);
 				}
@@ -260,8 +271,9 @@ public class TASCFileUtil {
 					System.out.println("File extension is not E or S..Exit Called..");
 					System.exit(0);
 				}
-				forms.add("C2");
-				forms.add("C3");
+				forms.add("D1");
+				//forms.add("C2");
+				//forms.add("C3");
 				/*forms.add("A4");
 				forms.add("B2");
 				forms.add("B3");*/
@@ -275,7 +287,7 @@ public class TASCFileUtil {
 				for(String formValue:forms){
 					Source_score_type_code = "SCL";
 					dest_Score_type_code = "PL";
-					score_lookup_id	= tascFrameWorkCode+"_2013_PL"+formValue+"_"+sourceFileType;
+					score_lookup_id	= tascFrameWorkCode+"_"+normYear+"_PL"+formValue+"_"+sourceFileType;
 					contentOfFile=FileUtil.readFileData(file_location);
 					success = writeInSCORE_LOOKUP_PL(contentOfFile,Source_score_type_code,dest_Score_type_code,
 								score_lookup_id,formValue,tascFrameWorkCode,
@@ -296,8 +308,9 @@ public class TASCFileUtil {
 					System.out.println("File extension is not E or S..Exit Called..");
 					System.exit(0);
 				}
-				forms.add("C2");
-				forms.add("C3");
+				forms.add("D1");
+				//forms.add("C2");
+				//forms.add("C3");
 				/*forms.add("A4");
 				forms.add("B2");
 				forms.add("B3");*/
@@ -311,7 +324,7 @@ public class TASCFileUtil {
 				for (String formValue :forms){
 					Source_score_type_code = "SCL";
 					dest_Score_type_code = "PL";
-					score_lookup_id	= tascFrameWorkCode+"_2013_PL"+formValue+"_"+sourceFileType;
+					score_lookup_id	= tascFrameWorkCode+"_"+normYear+"_PL"+formValue+"_"+sourceFileType;
 					contentOfFile=FileUtil.readFileData(file_location);
 					success = writeInSCORE_LOOKUP_PL_For_Objectives(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,formValue,tascFrameWorkCode,
@@ -374,7 +387,7 @@ public class TASCFileUtil {
 		int save=0;
 		String contentArea = null;
 		String grade = null;
-		String normYear = "2013";
+//		String normYear = "2013";
 		String test_level="";
 		try{
 		con=SqlUtil.openOASDBcon();
@@ -446,7 +459,7 @@ public class TASCFileUtil {
 		String contentArea = null;
 		String grade = null;
 		String objectiveCode = null;
-		String normYear = "2013";
+//		String normYear = "2013";
 		String test_level="";
 		try{
 		con=SqlUtil.openOASDBcon();
@@ -550,7 +563,7 @@ public class TASCFileUtil {
 				ps.setString(6, test_form);
 				ps.setString(7, Test_Level);
 				ps.setString(8, Content_area);
-				ps.setString(9, "2013");
+				ps.setString(9, normYear);
 				ps.setString(10, framework_code);
 				ps.setString(11,product_internal_display_name);
 				ps.setString(12,"AD");
@@ -656,7 +669,7 @@ public class TASCFileUtil {
 			ps.setString(6, test_form);
 			ps.setString(7, Test_Level);
 			ps.setString(8, Content_area);
-			ps.setString(9, "2013");
+			ps.setString(9, normYear);
 			ps.setString(10, framework_code);
 			ps.setString(11,product_internal_display_name);
 			ps.setString(12,grade);
