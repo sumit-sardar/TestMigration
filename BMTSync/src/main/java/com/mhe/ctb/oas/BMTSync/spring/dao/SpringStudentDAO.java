@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mhe.ctb.oas.BMTSync.exception.UnknownStudentException;
 import com.mhe.ctb.oas.BMTSync.model.Student;
-import com.mhe.ctb.oas.BMTSync.model.Student.Accomodations;
+import com.mhe.ctb.oas.BMTSync.model.Student.Accommodations;
 
 @Repository
 public class SpringStudentDAO {
@@ -131,7 +131,7 @@ public class SpringStudentDAO {
 		public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
 
 			Student student = new Student();
-			Accomodations studentAccom = new Accomodations();
+			Accommodations studentAccom = new Accommodations();
 
 			student.setOasStudentId(rs.getInt("oasStudentID"));
 			student.setOasCustomerId(rs.getInt("oasCustomerId"));

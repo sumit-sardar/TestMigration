@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.mhe.ctb.oas.BMTSync.exception.UnknownStudentException;
 import com.mhe.ctb.oas.BMTSync.model.Student;
-import com.mhe.ctb.oas.BMTSync.model.Student.Accomodations;
+import com.mhe.ctb.oas.BMTSync.model.Student.Accommodations;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:com/mhe/ctb/oas/BMTSync/dao/spring-jdbc-qa.xml")
@@ -40,7 +40,7 @@ public class DAOTest {
 		}
 		
 		assertNotNull(student);
-		Accomodations accommodations = student.getAccomodations();
+		Accommodations accommodations = student.getAccomodations();
 		assertNotNull(accommodations);
 	}
 	

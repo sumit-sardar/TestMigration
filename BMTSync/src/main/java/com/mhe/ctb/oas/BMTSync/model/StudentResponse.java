@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mhe.ctb.oas.BMTSync.model.Student.Accomodations;
+import com.mhe.ctb.oas.BMTSync.model.Student.Accommodations;
 
 /**
  * A Student represented in JSON
@@ -32,7 +32,7 @@ public class StudentResponse {
 	//private String[] _extStudentId;
 	private List<HierarchyNode> _heirarchySet;
 	//private StudentAccomodation _accomodations;
-	private Accomodations accomodations;
+	private Accommodations accomodations;
 	private String _customerStudentId;
 	private Integer _errorCode;
 	private String _errorMessage; 
@@ -131,12 +131,12 @@ public class StudentResponse {
 		_heirarchySet = heirarchySet;
 	}
 
-	public Accomodations getAccomodations() {
+	public Accommodations getAccomodations() {
 		return accomodations;
 	}
 	
 	@JsonProperty("accomodations")
-	public void setAccomodations(Accomodations accomodations) {
+	public void setAccomodations(Accommodations accomodations) {
 		this.accomodations = accomodations;
 	}
 	

@@ -2,10 +2,12 @@ package com.mhe.ctb.oas.BMTSync.model;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A Student represented in JSON
@@ -14,6 +16,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Student {
+	// This isn't a property so there's no getter or setter.
+	private static final Logger logger = Logger.getLogger(Student.class);
+	
 	private Integer _oasStudentId;
 	private Integer _oasCustomerId;
 	private String _studentusername;
@@ -24,13 +29,12 @@ public class Student {
 	private String _gender;
 	private String _grade;
 	private List<HierarchyNode> _heirarchySet;
-	//private StudentAccomodation _accomodations;
 	private String _customerStudentId;
-	private Accomodations accomodations;
+	private Accommodations accomodations;
 	//private int _errorCode;
 	//private String _errorMessage; 
 	
-	public static class Accomodations {
+	public static class Accommodations {
 		private String screen_magnifier;	
 		private String screen_reader;
 		private String calculator;
@@ -221,11 +225,11 @@ public class Student {
 	
 
 	/* Getter and Setter Methods */
-	public Accomodations getAccomodations() {
+	public Accommodations getAccomodations() {
 		return accomodations;
 	}	
 	@JsonProperty(value="accomodations", required=true)
-	public void setAccomodation(Accomodations accomodations) {
+	public void setAccomodation(Accommodations accomodations) {
 		this.accomodations = accomodations;
 	}	
 
@@ -358,4 +362,13 @@ public class Student {
 	 * "Class": [ {"OasHierarchyId":"89089", "Name":"Mrs Jones"},
 	 * {"OasHierarchyId":"89065", "Name":"Mrs Smith"} ] }
 	 */
+	public String toJson() {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			logger.error("Failure to serialize Student object! [studentId=" + _oasStudentId + "]");
+			return null;
+		}
+	}
 }

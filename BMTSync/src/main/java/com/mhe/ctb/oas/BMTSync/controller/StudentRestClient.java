@@ -35,7 +35,6 @@ public class StudentRestClient {
 	 */
 	@RequestMapping(value="/api/v1/oas/addUpdateStudent", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody CreateStudentsResponse postStudentList(final List<StudentMessageType> messages) {
-		System.out.println("Start");		
 		final RestTemplate restTemplate = new RestTemplate(); 
 		final CreateStudentsRequest studentListRequest = new CreateStudentsRequest();
 		CreateStudentsResponse studentListResponse = null;
@@ -48,12 +47,12 @@ public class StudentRestClient {
 				studentListRequest.addStudent(student);
 			}
 	
+			logger.info("JSON blob for BMT: " + studentListRequest.toJson());
 	        studentListResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_STUDENTS,
-	        		studentListRequest, CreateStudentsResponse.class);
+	        		studentListRequest.toJson(), CreateStudentsResponse.class);
 			
 			processResponses(studentListRequest, studentListResponse, true);			
 		} catch (HttpClientErrorException he) {
-			System.out.println("HTTP Error:"+he.getMessage());
 			logger.error("Http Client Error: " + he.getMessage(), he);			
 			try {
 				// On Error Mark the Student ID status as Failed
@@ -65,7 +64,6 @@ public class StudentRestClient {
 			
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
 			logger.error("Error attempting to process student responses.", e);
 		} 
 		return studentListResponse;
