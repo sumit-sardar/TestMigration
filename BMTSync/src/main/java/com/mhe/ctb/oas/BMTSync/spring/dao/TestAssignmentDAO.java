@@ -54,7 +54,7 @@ public class TestAssignmentDAO {
 	 * @param ds
 	 */
 	
-	public TestAssignmentDAO(DataSource ds) {
+	public void setDataSource(DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 		System.out.println(_jdbcTemplate);
@@ -116,10 +116,12 @@ public class TestAssignmentDAO {
 		TestAssignment testAssignment = new TestAssignment();
 		TestAssignment.DeliveryWindow deliveryWindow = new  TestAssignment.DeliveryWindow();
 		TestAssignment.Parameters parameters = new  TestAssignment.Parameters();
+		TestDelivery.EnforceTimeLimit enforceTimeLimit = new TestDelivery.EnforceTimeLimit();
 
 	    List<TestDelivery> testDeliveryList = new ArrayList<TestDelivery>();
 	    StudentRoster studentRoster = new StudentRoster();
         List<StudentRoster> studentRoasterList = new ArrayList<StudentRoster>();
+        
 
 		int recordCtr;
 		
@@ -154,8 +156,9 @@ public class TestAssignmentDAO {
 	    	testDelivery.setAccessCode(rs.getString("Access_Code"));
 	    	testDelivery.setOasTestId(rs.getString("OasTestId"));
 	    	testDelivery.setOasSubTestName(rs.getString("oasSubTestName"));
-	    	testDelivery.setIsRequired(rs.getString("Enforce_Time_Limit"));
-	    	testDelivery.setTimeLimitInMins(rs.getInt("TimeLimitInMins"));
+	    	enforceTimeLimit.setIsRequired(rs.getString("Enforce_Time_Limit"));
+	    	enforceTimeLimit.setTimeLimitInMins(rs.getInt("TimeLimitInMins"));
+	    	testDelivery.setEnforceTimeLimit(enforceTimeLimit);
 	    	testDelivery.setOrder(rs.getInt("Item_Order"));
 	    	
 	    	System.out.println(rs.getString("OasTestId"));

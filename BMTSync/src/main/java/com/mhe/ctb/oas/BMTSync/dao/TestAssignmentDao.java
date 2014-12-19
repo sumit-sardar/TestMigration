@@ -21,6 +21,7 @@ public class TestAssignmentDao extends DatabaseManager {
 		TestAssignment testAssignment = new TestAssignment();
 		TestAssignment.DeliveryWindow deliveryWindow = new  TestAssignment.DeliveryWindow();
 		TestAssignment.Parameters parameters = new  TestAssignment.Parameters();
+		TestDelivery.EnforceTimeLimit enforceTimeLimit = new TestDelivery.EnforceTimeLimit();
 
 	    List<TestDelivery> testDeliveryList = new ArrayList<TestDelivery>();
 	    StudentRoster studentRoster = new StudentRoster();
@@ -74,8 +75,10 @@ public class TestAssignmentDao extends DatabaseManager {
 			    	testDelivery.setAccessCode(rs.getString("Access_Code"));
 			    	testDelivery.setOasTestId(rs.getString("OasTestId"));
 			    	testDelivery.setOasSubTestName(rs.getString("oasSubTestName"));
-			    	testDelivery.setIsRequired(rs.getString("Enforce_Time_Limit"));
-			    	testDelivery.setTimeLimitInMins(rs.getInt("TimeLimitInMins"));
+			    	enforceTimeLimit.setIsRequired(rs.getString("Enforce_Time_Limit"));
+			    	enforceTimeLimit.setTimeLimitInMins(rs.getInt("TimeLimitInMins"));
+			    	testDelivery.setEnforceTimeLimit(enforceTimeLimit);
+
 			    	testDelivery.setOrder(rs.getInt("Item_Order"));
 			    	
 			    	System.out.println(rs.getString("OasTestId"));

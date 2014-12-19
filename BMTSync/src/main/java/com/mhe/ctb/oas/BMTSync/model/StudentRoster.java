@@ -15,7 +15,7 @@ public class StudentRoster {
 	public Integer getOasRosterId() {
 		return oasRosterId;
 	}
-	@JsonProperty(value="oasRosterId", required=true)
+	@JsonProperty(value="oasRoasterId", required=true)
 	public void setOasRosterId(Integer oasRosterId) {
 		this.oasRosterId = oasRosterId;
 	}

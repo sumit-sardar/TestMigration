@@ -2,16 +2,42 @@ package com.mhe.ctb.oas.BMTSync.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TestDelivery {
 
+public class TestDelivery {
 	private String deliverystatus;
 	private String accessCode;
 	private Integer oasItemSetId; 
 	private String oasTestId;
 	private String oasSubTestName;
-	private String isRequired;   // Time_Limit required
-	private Integer TimeLimitInMins;
+	//private String isRequired;   // Time_Limit required
+	//private Integer TimeLimitInMins;
 	private Integer order;
+	private EnforceTimeLimit enforceTimeLimit;
+	
+	
+	public static class EnforceTimeLimit {
+		private String isRequired;   // Time_Limit required
+		private Integer timeLimitInMins;
+
+		public String getIsRequired() {
+			return isRequired;
+		}
+		@JsonProperty(value="isRequired", required=true)
+		public void setIsRequired(String isRequired) {
+			this.isRequired = isRequired;
+		}
+
+		public Integer getTimeLimitInMins() {
+			return timeLimitInMins;
+		}
+		@JsonProperty(value="timeLimitInMins", required=true)
+		public void setTimeLimitInMins(Integer timeLimitInMins) {
+			this.timeLimitInMins = timeLimitInMins;
+		}
+		
+	}
+
+
 
 	
 	public String getDeliverystatus() {
@@ -58,25 +84,6 @@ public class TestDelivery {
 		this.oasSubTestName = oasSubTestName;
 	}
 	
-	
-	public String getIsRequired() {
-		return isRequired;
-	}
-	@JsonProperty(value="isRequired", required=true)
-	public void setIsRequired(String isRequired) {
-		this.isRequired = isRequired;
-	}
-	
-	
-	public Integer getTimeLimitInMins() {
-		return TimeLimitInMins;
-	}
-	@JsonProperty(value="timeLimitInMins", required=true)
-	public void setTimeLimitInMins(Integer timeLimitInMins) {
-		TimeLimitInMins = timeLimitInMins;
-	}
-	
-	
 	public Integer getOrder() {
 		return order;
 	}
@@ -84,5 +91,16 @@ public class TestDelivery {
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
+	
+
+	public EnforceTimeLimit getEnforceTimeLimit() {
+		return enforceTimeLimit;
+	}
+	@JsonProperty(value="enforceTimeLimit", required=true)	
+	public void setEnforceTimeLimit(EnforceTimeLimit enforceTimeLimit) {
+		this.enforceTimeLimit = enforceTimeLimit;
+	}
+	
+	
 	
 }
