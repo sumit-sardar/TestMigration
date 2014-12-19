@@ -41,7 +41,7 @@ public class StudentRoster {
 	public List<TestDelivery> getTestDelivery() {
 		return testDeliveryList;
 	}
-	@JsonProperty(value="testDelivery", required=true)
+	@JsonProperty(value="parts", required=true)
 	public void setTestDelivery(List<TestDelivery> testDeliveryList) {
 		this.testDeliveryList = testDeliveryList;
 	}

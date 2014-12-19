@@ -53,7 +53,7 @@ public class TestDelivery {
 	public String getOasSubTestName() {
 		return oasSubTestName;
 	}
-	@JsonProperty(value="oasSubTestName", required=true)
+	@JsonProperty(value="oasTestName", required=true)
 	public void setOasSubTestName(String oasSubTestName) {
 		this.oasSubTestName = oasSubTestName;
 	}
