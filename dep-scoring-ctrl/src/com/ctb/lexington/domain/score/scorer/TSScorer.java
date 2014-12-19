@@ -82,16 +82,10 @@ public class TSScorer extends STScorer {
         StsTestResultFactDetails factDetails = factData.get(event.getContentAreaName());
         if(event.getScaleScore() != null) 
         	factDetails.setScaleScore(event.getScaleScore());
-//        if(event.getStandardErrorMeasurement() != null) 
-//        	factDetails.setStandardErrorOfMeasurement(event.getStandardErrorMeasurement());
         if(event.getNormalCurveEquivalent() != null)
         	factDetails.setNormalCurveEquivalent(event.getNormalCurveEquivalent());
         if(event.getNationalPercentile() != null)
         	factDetails.setNationalPercentile(event.getNationalPercentile());
-//        if(event.getNationalStanine() != null)
-//        	factDetails.setNationalStanine(event.getNationalStanine());
-//        if(Stringx.hasContent(event.getGradeEquivalent()))
-//        	factDetails.setGradeEquivalent(event.getGradeEquivalent());
         factDetails.setNormGroup(event.getNormGroup());
         factDetails.setNormYear(event.getNormYear());
         factDetails.setSubtestScoringStatus(event.getSubtestScoringStatus());
@@ -116,11 +110,6 @@ public class TSScorer extends STScorer {
         	detail.setNationalPercentile(event.getNationalPercentile());
         if(event.getProficencyLevel() != null)
         	detail.setProficencyLevel(event.getProficencyLevel());
-        
-//        if(event.getNationalStanine() != null)
-//        	detail.setNationalStanine(event.getNationalStanine());
-//        if(event.getGradeEquivalent() != null)
-//        	detail.setGradeEquivalent(event.getGradeEquivalent());
         if (event.getPointsAttempted() != null)
             detail.setPointsAttempted(event.getPointsAttempted());
         if (event.getPointsObtained() != null)

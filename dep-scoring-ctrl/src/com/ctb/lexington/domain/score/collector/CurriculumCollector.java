@@ -581,15 +581,16 @@ public class CurriculumCollector {
         	 composites[1].setCompositeName("ELA (Composite of Reading and Writing)");
              composites[1].setCompositeType("TS COMPOSITE");
              composites[1].setSubject("TS ELA Score");
-             //composites[1].setSubject("TS ELA (Composite of Reading and Writing)");
              //composites[1].setCompositeNumItems(new Long(100));
              //composites[1].setCompositePointsPossible(new Long(315));
              
-             if ( null != form && ( form.startsWith("A") || form.startsWith("B") || form.startsWith("C") ) && form.endsWith("-S") ) { // Spanish Forms
+             if ( null != form && ( form.startsWith("A") || form.startsWith("B") || form.startsWith("C") 
+            		 || form.startsWith("D") || form.startsWith("E") || form.startsWith("F") ) && form.endsWith("-S") ) { // Spanish Forms
             	 composites[0].setCompositeId(new Long(72));
             	 composites[1].setCompositeId(new Long(73));
              }
-             else if ( null != form && ( form.startsWith("A") || form.startsWith("B") || form.startsWith("C") ) ) { // English Forms
+             else if ( null != form && ( form.startsWith("A") || form.startsWith("B") || form.startsWith("C") 
+            		 || form.startsWith("D") || form.startsWith("E") || form.startsWith("F") ) ) { // English Forms
             	 composites[0].setCompositeId(new Long(70));
             	 composites[1].setCompositeId(new Long(71));
              }

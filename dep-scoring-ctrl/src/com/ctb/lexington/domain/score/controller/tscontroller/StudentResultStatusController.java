@@ -9,13 +9,11 @@ import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData;
-import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCPredSubjectFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCPrimObjFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCCompositeFactMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCContentAreaFactMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCItemFactMapper;
-import com.ctb.lexington.db.mapper.tsmapper.IrsTASCPredSubjectFactMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCPrimObjFactMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCSecObjFactMapper;
 
@@ -31,11 +29,9 @@ public class StudentResultStatusController{
     private IrsTASCPrimObjFactMapper  irsTASCPrimObjFactMapper;
     private IrsTASCSecObjFactMapper irsTASCSecObjFactMapper;
     private IrsTASCItemFactMapper irsTASCItemFactMapper;
-    private IrsTASCPredSubjectFactMapper irsTASCPredSubjectFactMapper;
     
     public StudentResultStatusController(Connection conn, ContextData context){
         this.context = context;
-        irsTASCPredSubjectFactMapper = new IrsTASCPredSubjectFactMapper(conn);
         irsTASCCompositeFactMapper = new IrsTASCCompositeFactMapper(conn);
         irsTASCContentAreaFactMapper = new IrsTASCContentAreaFactMapper(conn);
         irsTASCPrimObjFactMapper = new IrsTASCPrimObjFactMapper(conn);
@@ -46,15 +42,6 @@ public class StudentResultStatusController{
     public void run() throws IOException, DataException, CTBSystemException, SQLException {
         Long priorResult = new Long(1).equals(context.getCurrentResultId())?new Long(2):new Long(1);
                 
-        /*IrsTASCPredSubjectFactData tabePredSubjectFactData = new IrsTASCPredSubjectFactData();
-        tabePredSubjectFactData.setStudentid(context.getStudentId());
-        tabePredSubjectFactData.setSessionid(context.getSessionId());
-        tabePredSubjectFactData.setCurrentResultid(priorResult);
-        tabePredSubjectFactData.setAssessmentid(context.getAssessmentId());
-        tabePredSubjectFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
-        tabePredSubjectFactData.setProgramid(context.getProgramId());
-        irsTASCPredSubjectFactMapper.updateCurrentResultStatus(tabePredSubjectFactData);*/
-        
         IrsTASCCompositeFactData tascCompositeFactdata = new IrsTASCCompositeFactData();
         tascCompositeFactdata.setStudentid(context.getStudentId());
         tascCompositeFactdata.setSessionid(context.getSessionId());
@@ -72,15 +59,6 @@ public class StudentResultStatusController{
         tascContentAreaFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
         tascContentAreaFactData.setProgramid(context.getProgramId());
         irsTASCContentAreaFactMapper.updateCurrentResultStatus(tascContentAreaFactData);
-        
-        /*IrsTASCPrimObjFactData tabePrimObjFactData = new IrsTASCPrimObjFactData();
-        tabePrimObjFactData.setStudentid(context.getStudentId());
-        tabePrimObjFactData.setSessionid(context.getSessionId());
-        tabePrimObjFactData.setCurrentResultid(priorResult);
-        tabePrimObjFactData.setAssessmentid(context.getAssessmentId());
-        tabePrimObjFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
-        tabePrimObjFactData.setProgramid(context.getProgramId());
-        irsTASCPrimObjFactMapper.updateCurrentResultStatus(tabePrimObjFactData);*/
         
         IrsTASCSecObjFactData tascSecObjFactData = new IrsTASCSecObjFactData();
         tascSecObjFactData.setStudentid(context.getStudentId());

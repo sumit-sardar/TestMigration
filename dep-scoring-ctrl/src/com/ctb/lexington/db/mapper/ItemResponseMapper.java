@@ -42,14 +42,11 @@ public class ItemResponseMapper extends AbstractDBMapper {
     	return findMany(FIND_MANY_BY_ITEM_SET_ID_TASC, map);
     }
     
-       
     public List findItemResponsesBySubtestForTASCOrg(final Long itemSetId, final Long testRosterId) {
         HashMap map = new HashMap();
         map.put("itemSetId", itemSetId);
         map.put("testRosterId", testRosterId);
-    	
-    	List result = findMany(FIND_MANY_BY_ITEM_SET_ID_TASC_ORG, map);
-    	return result;
+    	return findMany(FIND_MANY_BY_ITEM_SET_ID_TASC_ORG, map);
     }
     
     //Added for tabe adaptive

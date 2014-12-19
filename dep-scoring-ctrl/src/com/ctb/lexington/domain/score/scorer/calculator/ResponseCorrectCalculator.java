@@ -72,9 +72,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 				}
 			}
 		} else {
-			// TODO: how do we handle not SR namely GR and CR item responses?
 			if (ItemVO.ITEM_TYPE_CR.equals(sicEvent.getType(itemId))) {
-				// TODO: how do we handle GR item responses?
 				if (null != sicEvent.getProductType()
 						&& ("TS".equals(sicEvent.getProductType()) || "TR".equals(sicEvent.getProductType()))) {
 

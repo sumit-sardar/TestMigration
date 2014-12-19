@@ -64,7 +64,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
 				pTestLevel,
 				pGrade,
 				ScoreLookupCode.SUBTEST_NUMBER_CORRECT,
-				pointsObtained, // If it is wrong then we can use [new BigDecimal(event.getNumberCorrect())],
+				pointsObtained,
 				ScoreLookupCode.SCALED_SCORE,
 				null);
         
@@ -84,7 +84,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
     			pGrade,
     			pDupTestForm);
         
-        final BigDecimal proficencyLevelValue = getTASCPerformanceLevel(
+        final BigDecimal proficencyLevelValue = (scaleScore==null) ? new BigDecimal("0") : getTASCPerformanceLevel(
         		TASC_FRAMEWORK_CODE,
         		event.getContentAreaName(),
         		pTestLevel,
@@ -92,7 +92,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
 				pGrade,
 				pDupTestForm);
         
-        final String proficiencyRange = getTASCScaleScoreRangeForCutScore(
+        final String proficiencyRange = (scaleScore==null) ? null : getTASCScaleScoreRangeForCutScore(
         		TASC_FRAMEWORK_CODE,
         		event.getContentAreaName(),
         		pTestLevel,

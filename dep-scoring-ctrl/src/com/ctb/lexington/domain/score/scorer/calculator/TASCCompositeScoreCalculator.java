@@ -47,8 +47,6 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 
     private static final String TASC_FRAMEWORK_CODE = "TASC";
 
-    //private static final List<String> ALLOWED_TEST_LEVELS_FOR_GED_CALCS = Arrays.asList(new String[] {"A", "D"});
-
     private final Map<String,ContentAreaDerivedScoreEvent> contentAreaDerivedScoreEvents = new SafeHashMap(String.class, ContentAreaDerivedScoreEvent.class);
     private final Map<String,ContentAreaRawScoreEvent> contentAreaRawScoreEvents = new SafeHashMap(String.class, ContentAreaRawScoreEvent.class);
     private final Map<String,String> contentAreaSubtestId = new SafeHashMap(String.class,String.class);

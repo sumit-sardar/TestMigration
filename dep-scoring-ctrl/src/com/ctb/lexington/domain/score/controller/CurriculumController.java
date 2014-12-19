@@ -332,12 +332,12 @@ public class CurriculumController {
 	            if(item == null) {
 	                 // insert new item record
 	                 // For Laslink Scoring
-	            	if(newItem.getItemType().equals("CR"))
+	            	if("CR".equals(newItem.getItemType()) || "IN".equals(newItem.getItemType()))
 	            		newItem.setCorrectResponse("N/A");
 	            	item = iMapper.insert(newItem);
 	            } else {
 	                if(!newItem.equals(item)) {
-	                	if(newItem.getItemType().equals("CR"))
+	                	if("CR".equals(newItem.getItemType()) || "IN".equals(newItem.getItemType()))
 	                		newItem.setCorrectResponse("N/A");
 	                    // update existing item record
 	                    newItem.setItemid(item.getItemid());

@@ -247,7 +247,6 @@ public class ResponseReplayer {
 	              	}
 	              	
             	}
-            	//System.out.println("Scoring Validation Status "  + subtest.getSubtestScoringStatus());
             }
             
 
@@ -355,7 +354,6 @@ public class ResponseReplayer {
 					}
 				}
 				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
-					//if(null != tascResponse.getActualCrResponse() && !"A".equals(tascResponse.getConditionCode())){
 					if(null != tascResponse.getConditionCode() || null != tascResponse.getCrResponse()){
 						if(!"A".equals(tascResponse.getConditionCode())){
 							validResponseCount++;
@@ -642,7 +640,6 @@ public class ResponseReplayer {
     		}
         }
     	else if("TS".equals(productType) || "TR".equals(productType)) {
-    		//System.out.println("Scoring Validation Status "  + itemSet.getSubtestScoringStatus());
     		events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
 	        		itemSet.getItemSetId(),
 	                itemSet.getItemSetForm(), itemSet.getItemSetName(),

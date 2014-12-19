@@ -65,8 +65,8 @@ public class TSTestResultController implements TestResultController {
     }
 
     public void run(ValidationStatus rosterValidationStatus) throws IOException, DataException, CTBSystemException, SQLException {
-        // gather collected data
-    	//IrsDemographicData demographicData = getIrsDemographics(data.getDemographicData());
+        
+    	// gather collected data
         OrgNodeData orgNodeData = data.getOrgNodeData();
         StudentData studentData = data.getStudentData();
         AdminData adminData = data.getAdminData();
@@ -78,8 +78,8 @@ public class TSTestResultController implements TestResultController {
         StsTestResultFactData factData = data.getStsTestResultFactData();
         UserData userData = data.getUserData();
         StsTotalStudentScoreData totalStudentScoreData = data.getStsTotalStudentScoreData();
-        //StudentPredictedScoresData predictedData = data.getStudentPredictedScoresData();
         StudentItemResponseData studentItemResponseData = data.getStudentItemResponseData();
+        
         // persist context
         new OrgNodeController(conn, orgNodeData, adminData).run();
         new StudentController(conn, studentData).run();
@@ -104,15 +104,12 @@ public class TSTestResultController implements TestResultController {
         context.setAssessmentId(adminData.getAssessmentId());
         context.setAssessmentType(adminData.getAssessmentType());
         context.setProgramId(adminData.getProgramId());
-        //context.setDemographicData(demographicData);
         
         new CurriculumController(conn, curriculumData, adminData, context).run();
         System.out.println("***** SCORING: Persisted dimension data.");
         
         // persist scores
-        //new StudentPredictedScoresController(conn, predictedData, curriculumData, context).run();
-        //System.out.println("***** SCORING: TestResultController: Persisted predicted fact data.");
-        new StudentCompositeScoresController(conn, totalStudentScoreData, /*predictedData,*/ curriculumData, context).run();
+        new StudentCompositeScoresController(conn, totalStudentScoreData, curriculumData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted composite fact data.");
         new StudentContentAreaScoresController(conn, studentSubtestScoresData, factData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted content area fact data.");
@@ -136,100 +133,4 @@ public class TSTestResultController implements TestResultController {
     	final IrsDemographicData details = new IrsDemographicData();
     	return details;
     }
-    
-    /*public IrsDemographicData getIrsDemographics(StudentDemographicData data){
-    		final IrsDemographicData details = new IrsDemographicData();
-    		Map rd = data.getResearchData();
-        
-    		details.setAttr1Id(new Long(2));
-    		if(rd.containsKey("ELL")) {
-    		ArrayList<String> lell = (ArrayList<String>)rd.get("ELL");
-	    		String ELL = lell.get(0);
-	    		details.setAttr1Id(new Long(("Yes".equals(ELL) || ("Y".equals(ELL)))?1:
-	                                    ("True".equals(ELL) || ("T".equals(ELL)))?1:2));
-    		}
-    	 
-    		details.setAttr2Id(new Long(7));
-    		if(rd.containsKey("Ethnicity")) {
-    		ArrayList<String> lethnicity = (ArrayList<String>)rd.get("Ethnicity");
-	    		String ethnicity = lethnicity.get(0);
-	    		details.setAttr2Id(new Long(("Asian or Pacific Islander".equals(ethnicity))?1:
-	                                    ("Asian/Pacific Islander".equals(ethnicity))?1:
-	                                    ("American Indian or Alaska Native".equals(ethnicity))?2:
-	                                    ("African American or Black".equals(ethnicity))?3:
-	                                    ("Hispanic or Latino".equals(ethnicity))?4:
-	                                    ("Caucasian".equals(ethnicity))?5:
-	                                    ("Multi-ethnic".equals(ethnicity))?6:7));
-    		}
-        
-    		details.setAttr3Id(new Long(2));
-    		if(rd.containsKey("Free Lunch")) {
-    		ArrayList<String> lunch = (ArrayList<String>)rd.get("Free Lunch");
-	    		String freelunch = lunch.get(0);
-	    		details.setAttr3Id(new Long(("Yes".equals(freelunch) || ("Y".equals(freelunch)))?1:
-	                                    ("True".equals(freelunch) || ("T".equals(freelunch)))?1:2));
-    		}
-    		details.setAttr4Id(new Long(("Male".equals(data.getGender()))?1:
-    								("Female".equals(data.getGender()))?2:
-                                    ("M".equals(data.getGender()))?1:
-                                    ("F".equals(data.getGender()))?2:3));
-
-    	
-    		details.setAttr5Id(new Long(2));
-    		if(rd.containsKey("IEP")) {
-    		ArrayList<String> iepl = (ArrayList<String>)rd.get("IEP");
-	    			String iep = iepl.get(0);
-	    		details.setAttr5Id(new Long(("Yes".equals(iep) || ("Y".equals(iep)))?1:
-	                                    ("True".equals(iep) || ("T".equals(iep)))?1:2));
-    		}
-                                    
-    		details.setAttr6Id(new Long(4));
-    		if(rd.containsKey("Labor Force Status")) {
-    		ArrayList<String> labour = (ArrayList<String>)rd.get("Labor Force Status");
-    			String lfstat = labour.get(0);
-	    		details.setAttr6Id(new Long(("Employed".equals(lfstat))?1:
-	                                    ("Unemployed".equals(lfstat))?2:
-	                                    ("Not in Labor Force".equals(lfstat))?3:4));
-    		}
-    		System.out.println("Attr 6 Id " + details.getAttr6Id());
-    	
-    		details.setAttr7Id(new Long(2));
-    		if(rd.containsKey("LEP")) {
-    		ArrayList<String> llep = (ArrayList<String>)rd.get("LEP");
-    			String lep = llep.get(0);
-    			details.setAttr7Id(new Long(("Yes".equals(lep) || ("Y".equals(lep)))?1:
-                                    	("True".equals(lep) || ("T".equals(lep)))?1:2));
-    		}
-        
-    		details.setAttr8Id(new Long(2));
-    		if(rd.containsKey("Migrant")) {
-    		ArrayList<String> mig = (ArrayList<String>)rd.get("Migrant");
-    			String migrant = mig.get(0);
-    			details.setAttr8Id(new Long(("Yes".equals(migrant) || "Y".equals(migrant))?1:
-                                    	("True".equals(migrant) || "T".equals(migrant))?1:2));
-    		}
-        
-    		details.setAttr9Id(new Long(("Y".equals(data.getScreenMagnifier()))?1:
-            					("T".equals(data.getScreenMagnifier()))?1:2));
-    		details.setAttr11Id(new Long(("Y".equals(data.getScreenReader()))?1:
-								("T".equals(data.getScreenReader()))?1:2));
-    		details.setAttr12Id(new Long(("Y".equals(data.getCalculator()))?1:
-								("T".equals(data.getCalculator()))?1:2));
-    		details.setAttr13Id(new Long(("Y".equals(data.getTestPause()))?1:
-								("T".equals(data.getTestPause()))?1:2));
-    		details.setAttr14Id(new Long(("Y".equals(data.getUntimedTest()))?1:
-								("T".equals(data.getUntimedTest()))?1:2));
-    		details.setAttr15Id(new Long((data.getQuestionBGColor() != null || data.getQuestionFontColor() != null)?1:2));
-    		details.setAttr16Id(new Long((data.getQuestionFontSize() != null)?1:2));
-    	
-    		details.setAttr10Id(new Long(2));
-    		if(rd.containsKey("Section 504")) {
-    		ArrayList<String> section = (ArrayList<String>)rd.get("Section 504");
-    			String sec504 = section.get(0);
-    			details.setAttr10Id(new Long(("Yes".equals(sec504) || "Y".equals(sec504))?1:
-                                    	("True".equals(sec504) || "T".equals(sec504))?1:2));
-    		}
-         
-    	 return details;
-    }*/
 }

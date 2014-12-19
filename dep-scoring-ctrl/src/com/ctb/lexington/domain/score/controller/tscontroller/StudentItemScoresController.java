@@ -48,7 +48,6 @@ public class StudentItemScoresController {
             if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 ifMapper.insert(newFact);
             }
-            //System.out.println("***** SCORING: StudentItemScoresController: Persisted item fact: " + newFact.getItemid());
         }
     }
     
@@ -78,10 +77,6 @@ public class StudentItemScoresController {
 		                itemFact.setAssessmentid(contextData.getAssessmentId());
 		                itemFact.setCurrentResultid(contextData.getCurrentResultId());
 		                itemFact.setFormid(adminData.getFormId());
-		                /*itemFact.setFormid(new Long(
-		                                        "A1".equals(item.getSubtestForm())?18:
-		                                        "B1".equals(item.getSubtestForm())?19:
-		                                        "C1".equals(item.getSubtestForm())?20:21));*/
 		                itemFact.setGradeid(contextData.getGradeId());
 		                itemFact.setLevelid(new Long(
 		                                        "21-22".equals(item.getSubtestLevel())?34:35));
@@ -93,49 +88,6 @@ public class StudentItemScoresController {
 		                Timestamp subtestTime = testData.getBySubtestId(item.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
 	                    if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
 	                    itemFact.setTestCompletionTimestamp(subtestTime);
-	                    
-	                    /*itemFact.setAttr1id(contextData.getDemographicData().getAttr1Id());
-		                itemFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
-		                itemFact.setAttr3id(contextData.getDemographicData().getAttr3Id());
-		                itemFact.setAttr4id(contextData.getDemographicData().getAttr4Id());
-		                itemFact.setAttr5id(contextData.getDemographicData().getAttr5Id());
-		                itemFact.setAttr6id(contextData.getDemographicData().getAttr6Id());
-		                itemFact.setAttr7id(contextData.getDemographicData().getAttr7Id());
-		                itemFact.setAttr8id(contextData.getDemographicData().getAttr8Id());
-		                itemFact.setAttr9id(contextData.getDemographicData().getAttr9Id());
-		                itemFact.setAttr10id(contextData.getDemographicData().getAttr10Id());
-		                itemFact.setAttr11id(contextData.getDemographicData().getAttr11Id());
-		                itemFact.setAttr12id(contextData.getDemographicData().getAttr12Id());
-		                itemFact.setAttr13id(contextData.getDemographicData().getAttr13Id());
-		                itemFact.setAttr14id(contextData.getDemographicData().getAttr14Id());
-		                itemFact.setAttr15id(contextData.getDemographicData().getAttr15Id());
-		                itemFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
-		                itemFact.setAttr17id(contextData.getDemographicData().getAttr17Id());
-		                itemFact.setAttr18id(contextData.getDemographicData().getAttr28Id());
-		                itemFact.setAttr19id(contextData.getDemographicData().getAttr19Id());
-		                if(contextData.getDemographicData().getAttr20Id() != null) {
-		                	itemFact.setAttr20id(Long.parseLong(contextData.getDemographicData().getAttr20Id()));
-		                } else {
-		                	itemFact.setAttr20id(null);
-		                }
-		                if(contextData.getDemographicData().getAttr21Id() != null) {
-		                	itemFact.setAttr21id(Long.parseLong(contextData.getDemographicData().getAttr21Id()));
-		                } else {
-		                	itemFact.setAttr21id(null);
-		                }
-		                //itemFact.setAttr20id(Long.parseLong(contextData.getDemographicData().getAttr20Id()));
-		                //itemFact.setAttr21id(Long.parseLong(contextData.getDemographicData().getAttr21Id()));
-		                itemFact.setAttr22id(contextData.getDemographicData().getAttr22Id());
-		                itemFact.setAttr24id(contextData.getDemographicData().getAttr24Id());
-		                itemFact.setAttr25id(contextData.getDemographicData().getAttr25Id());
-		                itemFact.setAttr26id(contextData.getDemographicData().getAttr26Id());
-		                itemFact.setAttr27id(contextData.getDemographicData().getAttr27Id());
-		                itemFact.setAttr28id(contextData.getDemographicData().getAttr28Id());
-		                itemFact.setAttr29id(contextData.getDemographicData().getAttr29Id());
-		                itemFact.setAttr30id(contextData.getDemographicData().getAttr30Id());
-		                itemFact.setAttr36id(contextData.getDemographicData().getAttr36Id());
-		                itemFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
-		                
 		                itemFact.setSubtestName(item.getSubtestName());
 		                itemFacts.add(itemFact);
 	                }  else if(scoreDetails != null && scoreDetails.getAtsArchive()!= null && "F".equals(scoreDetails.getAtsArchive())) {
