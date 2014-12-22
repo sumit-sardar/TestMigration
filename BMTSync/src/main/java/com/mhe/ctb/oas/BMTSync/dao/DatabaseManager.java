@@ -10,8 +10,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.catalina.startup.Tomcat;
-
 import com.mhe.ctb.oas.BMTSync.util.ReadPropertyFile;
 
 public class DatabaseManager {
@@ -23,7 +21,6 @@ public class DatabaseManager {
 		//tomcat.enableNaming();
 		
 		Connection conn = null;
-		String serverName = null;
 		try {
 			//if (initContext == null) {
 				
