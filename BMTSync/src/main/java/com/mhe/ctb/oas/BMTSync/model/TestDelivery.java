@@ -1,12 +1,14 @@
 package com.mhe.ctb.oas.BMTSync.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-
+@JsonPropertyOrder({"deliverystatus", "accessCode", "oasItemSetId",
+	"oasTestId","oasSubTestName","enforceTimeLimit","order"})
 public class TestDelivery {
 	private String deliverystatus;
 	private String accessCode;
-	private Integer oasItemSetId; 
+	private String oasItemSetId; 
 	private String oasTestId;
 	private String oasSubTestName;
 	//private String isRequired;   // Time_Limit required
@@ -17,21 +19,21 @@ public class TestDelivery {
 	
 	public static class EnforceTimeLimit {
 		private String isRequired;   // Time_Limit required
-		private Integer timeLimitInMins;
+		private String timeLimitInMins;
 
 		public String getIsRequired() {
 			return isRequired;
 		}
-		@JsonProperty(value="isRequired", required=true)
+		@JsonProperty(value="IsRequiured", required=true)
 		public void setIsRequired(String isRequired) {
 			this.isRequired = isRequired;
 		}
 
-		public Integer getTimeLimitInMins() {
+		public String getTimeLimitInMins() {
 			return timeLimitInMins;
 		}
-		@JsonProperty(value="timeLimitInMins", required=true)
-		public void setTimeLimitInMins(Integer timeLimitInMins) {
+		@JsonProperty(value="TimeLimitInMins", required=true)
+		public void setTimeLimitInMins(String timeLimitInMins) {
 			this.timeLimitInMins = timeLimitInMins;
 		}
 		
@@ -58,11 +60,11 @@ public class TestDelivery {
 	}
 	
 	
-	public Integer getOasItemSetId() {
+	public String getOasItemSetId() {
 		return oasItemSetId;
 	}
 	@JsonProperty(value="oasItemSetId", required=true)
-	public void setOasItemSetId(Integer oasItemSetId) {
+	public void setOasItemSetId(String oasItemSetId) {
 		this.oasItemSetId = oasItemSetId;
 	}
 	

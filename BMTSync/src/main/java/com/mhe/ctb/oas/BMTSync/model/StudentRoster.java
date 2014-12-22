@@ -6,25 +6,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class StudentRoster {
 
-	private Integer oasRosterId;
-	private Integer oasStudentid; 
+	private String oasRosterId;
+	private String oasStudentid; 
 	private String studentpassword;
 	private List<TestDelivery>  testDeliveryList;
 
 	
-	public Integer getOasRosterId() {
+	public String getOasRosterId() {
 		return oasRosterId;
 	}
 	@JsonProperty(value="oasRoasterId", required=true)
-	public void setOasRosterId(Integer oasRosterId) {
+	public void setOasRosterId(String oasRosterId) {
 		this.oasRosterId = oasRosterId;
 	}
 	
-	public Integer getOasStudentid() {
+	public String getOasStudentid() {
 		return oasStudentid;
 	}
 	@JsonProperty(value="oasStudentid", required=true)
-	public void setOasStudentid(Integer oasStudentid) {
+	public void setOasStudentid(String oasStudentid) {
 		this.oasStudentid = oasStudentid;
 	}
 	

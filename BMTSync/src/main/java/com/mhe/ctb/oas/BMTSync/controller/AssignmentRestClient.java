@@ -1,5 +1,9 @@
 package com.mhe.ctb.oas.BMTSync.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,18 +12,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.mhe.ctb.oas.BMTSync.dao.TestAssignmentDao;
+import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
 import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
-import com.mhe.ctb.oas.BMTSync.rest.CreateAssignmentRequest;
 import com.mhe.ctb.oas.BMTSync.rest.CreateAssignmentResponse;
-import com.mhe.ctb.oas.BMTSync.rest.CreateStudentsResponse;
 import com.mhe.ctb.oas.BMTSync.spring.dao.TestAssignmentDAO;
 
 
 @Controller
 public class AssignmentRestClient {
-	static private Logger LOGGER = Logger.getLogger(AssignmentRestClient.class);
+	static private Logger logger = Logger.getLogger(AssignmentRestClient.class);
 	String errorMsg;
 	
 	/*
@@ -36,80 +39,119 @@ public class AssignmentRestClient {
 	 */	
 	@RequestMapping(value="/api/v1/oas/assignment", method=RequestMethod.POST, produces="application/json")	
 	public @ResponseBody CreateAssignmentResponse postStudentAssignment () {
-		LOGGER.info("Assigment Rest Client API called");
+		logger.info("Assigment Rest Client API called");
 		
 		final RestTemplate restTemplate = new RestTemplate();
 		
-		String jsonStr;
-		
 		TestAssignment testAssignment = new TestAssignment();
-		CreateAssignmentRequest assignmentRequest = new CreateAssignmentRequest();
 		CreateAssignmentResponse assignmentResponse = new CreateAssignmentResponse();
-		
+
 		try {
-			
+			long testAdminId = 209184;
+			long studentId = 15918790;
 			/*
+			// Connects to OAS DB using Spring JDBC bean and return students related data 
 			testAssignment = testAssignmentDAO.getTestAssignment(206743, 15351953);
 			assignmentRequest.setTestAssignment(testAssignment);
-			
-			ObjectMapper mapper = new ObjectMapper();
-			jsonStr = mapper.writeValueAsString(testAssignment);			
-			
-			System.out.println(jsonStr);
-			
-	        assignmentResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_ASSIGNMENTS,
-	        		assignmentRequest, CreateAssignmentResponse.class);
             */
+			
+			// Connects to OAS DB and return students related data 
+			TestAssignmentDao testAssignmentDao = new TestAssignmentDao();			
+			testAssignment = testAssignmentDao.getStudentAssignment(testAdminId, studentId);	
+			
+			
+			logger.info("Request json to BMT :"+testAssignment.toJson());
+	        assignmentResponse = restTemplate.postForObject("http://sync-gain-qa-elb.ec2-ctb.com"+"/api/v1/bmt/assignment",
+	        		testAssignment, CreateAssignmentResponse.class);
+	        
+	        
+	        //Updates the BMTSYN_Assignment_Status table, with success or failure
+	        processResponses(testAssignment, assignmentResponse, true);
 
+			
+		} catch (HttpClientErrorException he) {
+			logger.error("Http Client Error: " + he.getMessage(), he);			
 			try {
-				
-				// Connects to OAS DB and return students related data 
-				TestAssignmentDao testAssignmentDao = new TestAssignmentDao();			
-				testAssignment = testAssignmentDao.getStudentAssignment();	
-				assignmentRequest.setTestAssignment(testAssignment);
-				
-				ObjectMapper mapper = new ObjectMapper();
-				jsonStr = mapper.writeValueAsString(testAssignment);			
-				
-				System.out.println(jsonStr);
-				LOGGER.info("Request JSON :"+jsonStr);
-		        //assignmentResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_ASSIGNMENTS,
-		        		//assignmentRequest, CreateAssignmentResponse.class);
-		        assignmentResponse = restTemplate.postForObject("http://sync-gain-qa-elb.ec2-ctb.com"+"/api/v1/bmt/assignment",
-		        		assignmentRequest, CreateAssignmentResponse.class);		        
-
-				
-			} catch (HttpClientErrorException he) {
-				System.out.println("HTTP Error:"+he.getMessage());
-				LOGGER.error("Http Client Error: " + he.getMessage(), he);			
-				try {
-					// On Error Mark the Student ID status as Failed
-					// in Student_API_Status table
-					//processResponses(studentListRequest, studentListResponse, false);
-				} catch (Exception e) {
-					LOGGER.error("Error attempting to process assignement responses.", e);
-				}
-				
+				// On Error Mark the Student ID status as Failed
+				// in BMTSYN_ASSIGNMENT_STATUS table
+				processResponses(testAssignment, assignmentResponse, true);
 			} catch (Exception e) {
-				LOGGER.error("Excption error in AssignmentRestClient class : "+e.getMessage());
-				System.out.println("Exception in AssignmentRestClient = "+e.getMessage());
-				
+				logger.error("Error attempting to process assignement responses.", e);
 			}
-			ObjectMapper mapper = new ObjectMapper();
-	        jsonStr = mapper.writeValueAsString(assignmentResponse);
-	        LOGGER.info("Response JSON :"+jsonStr);
-			return assignmentResponse;			
-	        
-	        // TODO, Process the response received
-	        
 			
 		} catch (Exception e) {
-			LOGGER.error("Excption error in AssignmentRestClient class : "+e.getMessage());
+			logger.error("Excption error in AssignmentRestClient class : "+e.getMessage());
 			System.out.println("Exception in AssignmentRestClient = "+e.getMessage());
 			
 		}
 		
+		logger.info("Response json from BMT: "+assignmentResponse.toJson());
 		return assignmentResponse;
 		
 	}
+	
+	
+	
+	/*
+	 * Method to insert/record records in the Student_API_Status
+	 * with status 'Failed' for the Roster ID's that were not 
+	 * synched into BMT due to an error in data
+	 */
+	private void processResponses(final TestAssignment req, final CreateAssignmentResponse resp, final boolean success) throws Exception {
+		Map<Integer, Integer> updateTestAdmin = new HashMap<Integer, Integer>(req.getRoster().size());
+		Map<Integer, Boolean> updateStatuses = new HashMap<Integer, Boolean>(req.getRoster().size());
+		Map<Integer, String> updateErrorCode = new HashMap<Integer, String>(req.getRoster().size());
+		Map<Integer, String> updateMessages = new HashMap<Integer, String>(req.getRoster().size());
+		
+		TestAssignmentDao testAssignmentDao= new TestAssignmentDao();
+		Integer studentId = null;
+        Integer testAdminId = null;
+        
+		List<TestAssignment> failures = resp.getFailures();
+		
+		if (failures != null) {
+			for (final TestAssignment failedUpdate : resp.getFailures()) {
+				testAdminId = failedUpdate.getOasTestAdministrationID();
+				List<StudentRoster> srList = failedUpdate.getRoster();
+				for (final StudentRoster sr : srList) {
+				studentId = Integer.parseInt(sr.getOasStudentid());
+				System.out.println("response studentId"+studentId);
+				updateTestAdmin.put(studentId, testAdminId);
+				updateStatuses.put(studentId, false);
+				updateErrorCode.put(studentId, failedUpdate.getErrorCode().toString());
+				updateMessages.put(studentId, failedUpdate.getErrorMessage());
+				}
+			}
+		}
+
+
+		List<StudentRoster> requestRoster = req.getRoster();
+		if (requestRoster != null) {
+			for (final StudentRoster sr : requestRoster) {
+				studentId = Integer.parseInt(sr.getOasStudentid());
+				if (!updateMessages.containsKey(sr.getOasStudentid())) {
+					updateTestAdmin.put(studentId, testAdminId);
+					updateStatuses.put(studentId, success);
+					updateErrorCode.put(studentId, "");
+					updateMessages.put(studentId, "");
+				}
+			}
+		}
+		
+		for (final Integer student : updateMessages.keySet()) {
+			testAssignmentDao.updateAssignmentAPIstatus(
+					updateTestAdmin.get(student),
+					student.toString(), 
+					"BMT", updateStatuses.get(student).toString(),
+					updateErrorCode.get(student).toString(),
+					updateMessages.get(student));
+			
+			//testAssignmentSpringDAO.updateAssignmentAPIstatus(student, updateStatuses.get(studentId), updateErrorCode.get(student), updateMessages.get(studentId));
+			logger.debug(String.format("Updating assignment API status in OAS. [studentID=%d][updateSuccess=%b][updateMessage=%s]",
+					student, updateStatuses.get(student),updateErrorCode.get(student), updateMessages.get(student)));
+					
+		}
+	}
+	
+	
 }
