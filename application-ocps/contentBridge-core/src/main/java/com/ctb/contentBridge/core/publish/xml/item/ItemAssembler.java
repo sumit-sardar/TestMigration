@@ -116,6 +116,10 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
     }
 
     private void parseItemElement(Element element) {
+    	
+    	// Changes For Story OAS-1173 
+        String maxPointsValue = null;
+        String minPointsValue = null;
         item.setId(extractItemId(element));
 
         // the DTD specifies that SR is the default if no item type is specified
@@ -139,6 +143,24 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
         item.setDisplayId(StringUtils.isNotEmpty(displayId) ? displayId : item.getId());
 
         item.setFrameworkCode(getFrameworkName(element));
+     // Changes For Story OAS-1173 
+        System.out.println(item.getType());
+        System.out.println("ItemType"+element.getAttributeValue("ItemType"));
+        if(element.getAttributeValue("ItemType") != null && "IN".equals(element.getAttributeValue("ItemType")) )
+        {
+        	 maxPointsValue = element.getAttributeValue("MaxScorePts");
+             minPointsValue = element.getAttributeValue("MinScorePts");
+             if(maxPointsValue == null)
+             {
+            	  maxPointsValue="1";
+             }
+             if(minPointsValue == null)
+             {
+            	 minPointsValue="0";
+             }
+             item.setMaxPoints(Integer.parseInt(maxPointsValue));
+             item.setMinPoints(Integer.parseInt(minPointsValue));
+        }
     }
 
     /*private void parseHierarchy(Element element) {

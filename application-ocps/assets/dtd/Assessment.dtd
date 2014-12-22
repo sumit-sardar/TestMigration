@@ -46,6 +46,7 @@ CHANGE HISTORY:
 	ParallelForms 	(yes | no) "no"
 	MaxPanelWidth	CDATA #IMPLIED
 	IncludeAcknowledgment	(yes | no) "no"
+	Language  (English | Spanish) "English"
 >
 <!-- ===========================================================================
 	Element: SchedulableUnit
@@ -111,6 +112,8 @@ CHANGE HISTORY:
 	ExternalSystem  (PEID | Monarch| na) "na"
 	AllowRevisit (true | false) "true"
 	AllowRevisitOnRestart (true | false) "true"
+	MaxScorePts CDATA #IMPLIED
+	MinScorePts CDATA #IMPLIED
 >
 
 <!ELEMENT StudentDirections (Text|Graphic|Table)*>
