@@ -7,43 +7,39 @@ import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import org.apache.catalina.startup.Tomcat;
 
 import com.mhe.ctb.oas.BMTSync.util.ReadPropertyFile;
 
 public class DatabaseManager {
-	private static DataSource datasource = null; // holds the database object
-	private static Context initContext = null;  // used to lookup database connection
-	
-	public DatabaseManager() {
-		/*
-		try {
-			if (initContext == null) {
-				initContext = new InitialContext();
-			}
-			Context envContext = (Context)initContext.lookup("java:/comp/env");
-			datasource = (DataSource) envContext.lookup("oasDataSource");
-			System.out.println(datasource);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
-	}	
-	
+	//private static DataSource datasource = null; // holds the database object
+	//private static Context initContext = null;  // used to lookup database connection
 	
 	protected static Connection dbConnection_JNDI() {
+		//Tomcat tomcat = new Tomcat();
+		//tomcat.enableNaming();
 		
 		Connection conn = null;
+		String serverName = null;
 		try {
-			if (initContext == null) {
-				initContext = new InitialContext();
-			}
-			Context envContext = (Context)initContext.lookup("java:/comp/env");
-			datasource = (DataSource) envContext.lookup("oasDataSource");			
+			//if (initContext == null) {
+				
+			//}
+			//serverName = (String) initContext.lookup("java:/comp/env/oasDataSource");
+			//System.out.println(serverName);
+			Context initContext = new InitialContext();
+			initContext.addToEnvironment("enablenaming", true);
+			Context envContext = (Context)initContext.lookup("java:comp/env");
+			DataSource datasource = (DataSource) envContext.lookup("jdbc/oasDataSource");			
 			conn = datasource.getConnection();
-		}  catch (Exception e) {
+		}  catch (NamingException ne) {
+			ne.printStackTrace();
+		}catch (Exception e) {
 			e.printStackTrace();
-		}
+		} 
 		
 		return conn;
 	}
