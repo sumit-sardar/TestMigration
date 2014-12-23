@@ -50,7 +50,7 @@ public class StudentRestClient {
 			logger.info("JSON blob for BMT: " + studentListRequest.toJson());
 	        studentListResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_STUDENTS,
 	        		studentListRequest.toJson(), CreateStudentsResponse.class);
-			
+			logger.info("Response from BMT: " + studentListResponse.toJson());
 			processResponses(studentListRequest, studentListResponse, true);			
 		} catch (HttpClientErrorException he) {
 			logger.error("Http Client Error: " + he.getMessage(), he);			

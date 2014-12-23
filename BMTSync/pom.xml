@@ -19,12 +19,12 @@
 	</properties>
 
 	<dependencies>
-<dependency>
-	<groupId>org.eclipse.jetty</groupId>
-	<artifactId>jetty-server</artifactId>
-	<version>8.1.16.v20140903</version>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>8.1.16.v20140903</version>
 			<scope>provided</scope>
-</dependency>
+		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -77,15 +77,6 @@
 			<artifactId>spring-data-oracle</artifactId>
 			<version>1.1.0.RELEASE</version>
 		</dependency>
-				
-		
-		<!-- 
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-web-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
@@ -160,95 +151,63 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.1.0.M0</version>
-    <!-- 
-              <configuration>
-                <scanIntervalSeconds>10</scanIntervalSeconds>
-                <webApp>
-                  <contextPath>/</contextPath>
-                </webApp>
-              </configuration>
-     -->
             </plugin>		
-		      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.6</version>
-        <executions>
-          <execution>
-            <id>check-java16</id>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <signature>
-                <groupId>org.codehaus.mojo.signature</groupId>
-                <artifactId>java16</artifactId>
-                <version>1.1</version>
-              </signature>
-            </configuration>
-          </execution>
-      </executions>
-      </plugin>
- <!--     <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-enforcer-plugin</artifactId>
-	<version>1.0-beta-1</version>
-	<executions>
-		<execution>
-			<id>enforce-versions</id>
-			<phase>validate</phase>
-			<goals>
-				<goal>enforce</goal>
-			</goals>
-			<configuration>
-				<rules>
-					<requireJavaVersion>
-						<version>[1.6,1.7)</version>
-					</requireJavaVersion>
-				</rules>
-			</configuration>
-		</execution>
-	</executions>
-</plugin> -->
+	        <plugin>
+        		<groupId>org.codehaus.mojo</groupId>
+		        <artifactId>animal-sniffer-maven-plugin</artifactId>
+		        <version>1.6</version>
+		        <executions>
+        			<execution>
+			            <id>check-java16</id>
+            			<phase>test</phase>
+        			    <goals>
+     				        <goal>check</goal>
+        			    </goals>
+      				    <configuration>
+      				        <signature>
+                				<groupId>org.codehaus.mojo.signature</groupId>
+             				    <artifactId>java16</artifactId>
+                				<version>1.1</version>
+              				</signature>
+            			</configuration>
+          			</execution>
+      			</executions>
+      		</plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.3</version>
-
-      </plugin>
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>versions-maven-plugin</artifactId>
-            <version>2.1</version>
-        </plugin>
-        <plugin>
-            <artifactId>maven-scm-plugin</artifactId>
-            <version>1.8.1</version>
-            <configuration>
-                <tag>${project.artifactId}-${project.version}</tag>
-            </configuration>
-        </plugin>
-
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-                <manifest>
-                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                </manifest>
-                <archive>
-                    <manifestEntries>
-                        <Specification-Title>${project.name}</Specification-Title>
-                        <Specification-Version>${project.version}</Specification-Version>
-                        <Implementation-Version>${build.number}</Implementation-Version>
-                    </manifestEntries>
-                </archive>
-            </configuration>
-        </plugin>
-
-	</plugins>
+      		<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+       			<artifactId>maven-pmd-plugin</artifactId>
+        		<version>3.3</version>
+		    </plugin>
+      		<plugin>
+          		<groupId>org.codehaus.mojo</groupId>
+          		<artifactId>versions-maven-plugin</artifactId>
+          		<version>2.1</version>
+      		</plugin>
+      		<plugin>
+          		<artifactId>maven-scm-plugin</artifactId>
+          		<version>1.8.1</version>
+          		<configuration>
+              		<tag>${project.artifactId}-${project.version}</tag>
+          		</configuration>
+    		</plugin>
+    		<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-war-plugin</artifactId>
+        		<configuration>
+            		<manifest>
+                		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            		</manifest>
+            		<archive>
+                		<manifestEntries>
+                    		<Specification-Title>${project.name}</Specification-Title>
+                   			<Specification-Version>${project.version}</Specification-Version>
+                    		<Implementation-Version>${build.number}</Implementation-Version>
+                		</manifestEntries>
+            		</archive>
+        		</configuration>
+    		</plugin>
+		</plugins>
 	</build>
 
    
