@@ -5,20 +5,15 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
-
 import javax.sql.DataSource;
 
 import oracle.jdbc.OracleTypes;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
@@ -48,8 +43,9 @@ public class SpringStudentDAO {
 	
 	private static final Logger logger = Logger.getLogger(SpringStudentDAO.class);
 
-	public SpringStudentDAO(DataSource ds) {
+	public SpringStudentDAO(final DataSource ds, final SpringOrgNodeDAO nodeDAO) {
 		_dataSource = ds;
+		_orgNodeDao = nodeDAO;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 
 		_getStudentDetailsCall = new SimpleJdbcCall(_jdbcTemplate)
@@ -172,11 +168,6 @@ public class SpringStudentDAO {
 
 	}
 
-	public SpringOrgNodeDAO getOrgNodeDao() {
-		return _orgNodeDao;
-	}
-
-	@Autowired
 	public void setOrgNodeDao(SpringOrgNodeDAO orgNodeDao) {
 		_orgNodeDao = orgNodeDao;
 	}

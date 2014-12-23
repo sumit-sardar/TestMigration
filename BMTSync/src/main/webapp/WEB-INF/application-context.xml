@@ -52,8 +52,13 @@
 	</bean>
 
 	<!-- Set up the DAOs. -->
+	<bean id="springOrgNodeDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.SpringOrgNodeDAO">
+		<constructor-arg index="0" ref="oasDataSource" />
+	</bean>
+	
 	<bean id="springStudentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.SpringStudentDAO">
 		<constructor-arg index="0" ref="oasDataSource" />
+		<constructor-arg index="1" ref="springOrgNodeDAO" />
 	</bean>
 	
 	<bean id="testAssignmentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestAssignmentDAO">

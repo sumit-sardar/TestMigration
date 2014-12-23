@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 
 import oracle.jdbc.OracleTypes;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -27,13 +26,29 @@ public class SpringOrgNodeDAO {
 	private static final String OUTPUT_HEIRARCHY_LIST = "PRESULTCURSOR";
 
 	// The data source
-	private DataSource _dataSource;
+	private final DataSource _dataSource;
 
 	// The JDBC template
-	private JdbcTemplate _jdbcTemplate;
+	private final JdbcTemplate _jdbcTemplate;
 
 	// The hierarchy reader
-	private SimpleJdbcCall _hierarchyReader;
+	private final SimpleJdbcCall _hierarchyReader;
+	
+	public SpringOrgNodeDAO(final DataSource ds) {
+		_dataSource = ds;
+		_jdbcTemplate = new JdbcTemplate(_dataSource);
+
+		_hierarchyReader = new SimpleJdbcCall(_jdbcTemplate)
+				.withCatalogName("PK_Students")
+				.withProcedureName("Heirarchy")
+				.useInParameterNames("pStudentID", "pResultCursor")
+				.declareParameters(
+						new SqlParameter("pStudentID", Types.BIGINT),
+						new SqlOutParameter(OUTPUT_HEIRARCHY_LIST,
+								OracleTypes.CURSOR,
+								new HeirarchyParentsRowMapper()));
+		_hierarchyReader.compile();
+	}
 
 	/**
 	 * Returns a list of the student hierarchies
@@ -52,28 +67,6 @@ public class SpringOrgNodeDAO {
 
 		List<HierarchyNode> returnList = (List<HierarchyNode>) result.get(OUTPUT_HEIRARCHY_LIST);
 		return returnList;
-	}
-
-	/**
-	 * Setup the datasource, autowired if context is applied
-	 * 
-	 * @param ds
-	 */
-	@Autowired
-	public void setDataSource(DataSource ds) {
-		_dataSource = ds;
-		_jdbcTemplate = new JdbcTemplate(_dataSource);
-
-		_hierarchyReader = new SimpleJdbcCall(_jdbcTemplate)
-				.withCatalogName("PK_Students")
-				.withProcedureName("Heirarchy")
-				.useInParameterNames("pStudentID", "pResultCursor")
-				.declareParameters(
-						new SqlParameter("pStudentID", Types.BIGINT),
-						new SqlOutParameter(OUTPUT_HEIRARCHY_LIST,
-								OracleTypes.CURSOR,
-								new HeirarchyParentsRowMapper()));
-
 	}
 
 	/**
