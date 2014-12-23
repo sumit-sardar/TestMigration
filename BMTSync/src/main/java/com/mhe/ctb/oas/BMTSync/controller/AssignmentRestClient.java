@@ -25,14 +25,11 @@ public class AssignmentRestClient {
 	static private Logger logger = Logger.getLogger(AssignmentRestClient.class);
 	String errorMsg;
 	
-	/*
 	TestAssignmentDAO testAssignmentDAO;
 	
 	public AssignmentRestClient(final TestAssignmentDAO testAssignmentDAO) {
 		this.testAssignmentDAO = testAssignmentDAO;
 	}
-	*/
-	
 
 	/*
 	 * Method to consume a assignment web service

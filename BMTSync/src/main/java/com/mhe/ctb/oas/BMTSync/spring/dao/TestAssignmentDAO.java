@@ -119,17 +119,17 @@ public class TestAssignmentDAO {
 	    		testAssignment.setParameters(parameters);
 	    		
 	    		
-	    		studentRoster.setOasRosterId(rs.getInt("oasRosterId"));
-	    		studentRoster.setOasStudentid(rs.getInt("oasStudentid"));
+	    		studentRoster.setOasRosterId(Integer.valueOf(rs.getInt("oasRosterId")).toString());
+	    		studentRoster.setOasStudentid(Integer.valueOf(rs.getInt("oasStudentid")).toString());
 	    		studentRoster.setStudentpassword(rs.getString("password"));
     		}
-	    	testDelivery.setOasItemSetId(rs.getInt("ITEM_SET_ID"));
+	    	testDelivery.setOasItemSetId(Integer.valueOf(rs.getInt("ITEM_SET_ID")).toString());
 	    	testDelivery.setDeliverystatus(rs.getString("Delivery_Status"));
 	    	testDelivery.setAccessCode(rs.getString("Access_Code"));
 	    	testDelivery.setOasTestId(rs.getString("OasTestId"));
 	    	testDelivery.setOasSubTestName(rs.getString("oasSubTestName"));
 	    	enforceTimeLimit.setIsRequired(rs.getString("Enforce_Time_Limit"));
-	    	enforceTimeLimit.setTimeLimitInMins(rs.getInt("TimeLimitInMins"));
+	    	enforceTimeLimit.setTimeLimitInMins(Integer.valueOf(rs.getInt("TimeLimitInMins")).toString());
 	    	testDelivery.setEnforceTimeLimit(enforceTimeLimit);
 	    	testDelivery.setOrder(rs.getInt("Item_Order"));
 	    	
