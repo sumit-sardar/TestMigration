@@ -156,29 +156,29 @@
 	
 
 	<build>
-	<plugins>
-     	<plugin>
-        	<groupId>org.apache.maven.plugins</groupId>
-        	<artifactId>maven-compiler-plugin</artifactId>
-        	<version>3.2</version>
-        	<configuration>
-          		<source>${jdk.level}</source>
-          		<target>${jdk.level}</target>
-      		</configuration>
-    	</plugin>
-    	<plugin>
-		 	<groupId>org.eclipse.jetty</groupId>
-		 	<artifactId>jetty-maven-plugin</artifactId>
-		 	<version>9.1.0.M0</version>
-<!-- 
-		  <configuration>
-		    <scanIntervalSeconds>10</scanIntervalSeconds>
-		    <webApp>
-		      <contextPath>/</contextPath>
-		    </webApp>
-		  </configuration>
- -->
-		</plugin>		
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <source>${jdk.level}</source>
+                    <target>${jdk.level}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.1.0.M0</version>
+    <!-- 
+              <configuration>
+                <scanIntervalSeconds>10</scanIntervalSeconds>
+                <webApp>
+                  <contextPath>/</contextPath>
+                </webApp>
+              </configuration>
+     -->
+            </plugin>		
 		      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -198,7 +198,7 @@
               </signature>
             </configuration>
           </execution>
-          </executions>
+      </executions>
       </plugin>
  <!--     <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
@@ -221,6 +221,26 @@
 		</execution>
 	</executions>
 </plugin> -->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <linkXref>true</linkXref>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>1.6</targetJdk>
+          <excludes>
+            <exclude>**/generated/*.java</exclude>
+          </excludes>
+          <excludeRoots>
+            <excludeRoot>target/generated-sources/stubs</excludeRoot>
+          </excludeRoots>
+        </configuration>
+      </plugin>
+
+
 	</plugins>
 	</build>
 
@@ -254,6 +274,18 @@
     </repository>
 -->
   </repositories>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.3</version>
+      </plugin>
+    </plugins>
+  </reporting>
+
+
   <pluginRepositories>
     <pluginRepository>
       <id>internal</id>
