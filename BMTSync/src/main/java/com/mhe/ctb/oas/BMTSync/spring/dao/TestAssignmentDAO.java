@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 
 import oracle.jdbc.OracleTypes;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -65,11 +64,12 @@ public class TestAssignmentDAO {
 		Map<String, Object> result = _getTestAssignmentCall.execute(testAdminId, studentId);
 
 		// See if we got a response
-		if ((result == null) || (!result.containsKey(OUTPUT_ASSIGNMENT))) {
+		if (result == null || !result.containsKey(OUTPUT_ASSIGNMENT)) {
 			throw new UnknownTestAssignmentException(testAdminId, studentId);
 		}
 
 		// Get the response
+		@SuppressWarnings("unchecked")
 		Collection<TestAssignment> returnList = (Collection<TestAssignment>) result.get(OUTPUT_ASSIGNMENT);
 		
 		// Check if the list has a student (we will ignore the multiple)
@@ -95,8 +95,6 @@ public class TestAssignmentDAO {
 	    StudentRoster studentRoster = new StudentRoster();
         List<StudentRoster> studentRoasterList = new ArrayList<StudentRoster>();
         
-		int recordCtr;
-		
 		public TestAssignment mapRow(ResultSet rs, int rowNum) throws SQLException {
 
     		TestDelivery testDelivery  = new TestDelivery();

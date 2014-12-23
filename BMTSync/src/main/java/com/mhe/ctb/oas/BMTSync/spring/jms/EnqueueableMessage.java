@@ -1,15 +1,15 @@
 package com.mhe.ctb.oas.BMTSync.spring.jms;
 
 public interface EnqueueableMessage {
-	public Integer getCustomerId();
+	Integer getCustomerId();
 	
-	public String getPrimaryKeyName();
+	String getPrimaryKeyName();
 	
-	public String getPrimaryKeyValue();
+	String getPrimaryKeyValue();
 	
-	public String getSecondaryKeyName();
+	String getSecondaryKeyName();
 	
-	public String getSecondaryKeyValue();
+	String getSecondaryKeyValue();
 	
-	public String getErrorDetails();
+	String getErrorDetails();
 }

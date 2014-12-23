@@ -9,6 +9,8 @@ import com.mhe.ctb.oas.BMTSync.controller.StudentRestClient;
 import com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType;
 import com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue;
 
+
+
 public class BMTStudentBlockingQueueWorker implements Runnable {
 
 	private final BMTBlockingQueue<StudentMessageType> queue;

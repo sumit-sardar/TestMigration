@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.Map;
+
 import javax.sql.DataSource;
 
 import oracle.jdbc.OracleTypes;
@@ -41,7 +42,7 @@ public class SpringStudentDAO {
 
 	private SpringOrgNodeDAO _orgNodeDao;
 	
-	private static final Logger logger = Logger.getLogger(SpringStudentDAO.class);
+	private static final Logger LOGGER = Logger.getLogger(SpringStudentDAO.class);
 
 	public SpringStudentDAO(final DataSource ds, final SpringOrgNodeDAO nodeDAO) {
 		_dataSource = ds;
@@ -79,14 +80,17 @@ public class SpringStudentDAO {
 	 * @throws UnknownStudentException
 	 */
 	public Student getStudent(long studentId) throws UnknownStudentException {
+		LOGGER.debug(String.format("Retrieving Student %s", studentId));
+		
 		Map<String, Object> result = _getStudentDetailsCall.execute(studentId);
 
 		// See if we got a response
-		if ((result == null) || (!result.containsKey(OUTPUT_STUDENT))) {
+		if (result == null || !result.containsKey(OUTPUT_STUDENT)) {
 			throw new UnknownStudentException(studentId);
 		}
 
 		// Get the response
+		@SuppressWarnings("unchecked")
 		Collection<Student> returnList = (Collection<Student>) result.get(OUTPUT_STUDENT);
 
 		// Check if the list has a student (we will ignore the multiple)

@@ -61,10 +61,11 @@ public class SpringOrgNodeDAO {
 			throws UnknownStudentException {
 		Map<String, Object> result = _hierarchyReader.execute(studentId);
 
-		if ((result == null) || (!result.containsKey(OUTPUT_HEIRARCHY_LIST))) {
+		if (result == null || !result.containsKey(OUTPUT_HEIRARCHY_LIST)) {
 			throw new UnknownStudentException(studentId);
 		}
 
+		@SuppressWarnings("unchecked")
 		List<HierarchyNode> returnList = (List<HierarchyNode>) result.get(OUTPUT_HEIRARCHY_LIST);
 		return returnList;
 	}
