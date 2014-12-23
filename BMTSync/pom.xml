@@ -8,7 +8,7 @@
 	<packaging>war</packaging>
 	<name>BMT Synchronization</name>
 	<description>BMT Synchronization </description>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 	<url></url>
 	<properties>
 		<spring.version>4.1.2.RELEASE</spring.version>
@@ -138,12 +138,6 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
- 		<dependency>
-			<groupId>org.glassfish.extras</groupId>
-			<artifactId>glassfish-embedded-all</artifactId>
-			<version>3.1</version>
-			<scope>provided</scope>
-		</dependency>
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>jta</artifactId>
@@ -224,7 +218,35 @@
         <version>3.3</version>
 
       </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>versions-maven-plugin</artifactId>
+            <version>2.1</version>
+        </plugin>
+        <plugin>
+            <artifactId>maven-scm-plugin</artifactId>
+            <version>1.8.1</version>
+            <configuration>
+                <tag>${project.artifactId}-${project.version}</tag>
+            </configuration>
+        </plugin>
 
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+                <manifest>
+                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                </manifest>
+                <archive>
+                    <manifestEntries>
+                        <Specification-Title>${project.name}</Specification-Title>
+                        <Specification-Version>${project.version}</Specification-Version>
+                        <Implementation-Version>${build.number}</Implementation-Version>
+                    </manifestEntries>
+                </archive>
+            </configuration>
+        </plugin>
 
 	</plugins>
 	</build>
