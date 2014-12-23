@@ -1,7 +1,6 @@
 package com.mhe.ctb.oas.BMTSync.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
 
 public class HeirarchyNode1 {
 	private Integer _oasHeirarchyId;
