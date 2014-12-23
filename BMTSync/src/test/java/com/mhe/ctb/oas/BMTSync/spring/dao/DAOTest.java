@@ -6,8 +6,6 @@ import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ public class DAOTest {
 	@Autowired
 	private SpringStudentDAO _studentDao;
 	
-	private Logger logger = Logger.getLogger(DAOTest.class);
+	//private Logger logger = Logger.getLogger(DAOTest.class);
 	
 	private static final int STUDENT_ID = 413595;
 
