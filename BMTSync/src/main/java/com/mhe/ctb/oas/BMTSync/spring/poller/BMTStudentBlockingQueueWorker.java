@@ -9,13 +9,13 @@ import com.mhe.ctb.oas.BMTSync.controller.StudentRestClient;
 import com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType;
 import com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue;
 
-public class BMTBlockingQueueWorker implements Runnable {
+public class BMTStudentBlockingQueueWorker implements Runnable {
 
-	private final BMTBlockingQueue queue;
+	private final BMTBlockingQueue<StudentMessageType> queue;
 	private final StudentRestClient restClient;
-	private static final Logger logger = Logger.getLogger(BMTBlockingQueueWorker.class);
+	private static final Logger logger = Logger.getLogger(BMTStudentBlockingQueueWorker.class);
 
-	public BMTBlockingQueueWorker(final BMTBlockingQueue queue, final StudentRestClient restClient) {
+	public BMTStudentBlockingQueueWorker(final BMTBlockingQueue<StudentMessageType> queue, final StudentRestClient restClient) {
 		this.queue = queue;
 		this.restClient = restClient;
 	}

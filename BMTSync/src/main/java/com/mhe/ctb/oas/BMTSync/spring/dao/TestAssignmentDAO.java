@@ -1,6 +1,5 @@
 package com.mhe.ctb.oas.BMTSync.spring.dao;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -19,12 +18,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-
-
-
-
 
 import com.mhe.ctb.oas.BMTSync.exception.UnknownTestAssignmentException;
 import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
@@ -38,23 +32,16 @@ public class TestAssignmentDAO {
 	private static final String OUTPUT_ASSIGNMENT = "PRESULTCURSOR";
 	
 	// The data source
-	@Autowired
-	private DataSource _dataSource;
+	private final DataSource _dataSource;
 
 	// The JDBC template
-	private JdbcTemplate _jdbcTemplate;
+	private final JdbcTemplate _jdbcTemplate;
 
 	// The test assignment
-	private SimpleJdbcCall _getTestAssignmentCall;	
+	private final SimpleJdbcCall _getTestAssignmentCall;	
 
-	
-	/**
-	 * Setup the datasource, autowired if context is applied
-	 * 
-	 * @param ds
-	 */
-	
-	public void setDataSource(DataSource ds) {
+	// Constructor
+	public TestAssignmentDAO(final DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 		System.out.println(_jdbcTemplate);
@@ -68,20 +55,12 @@ public class TestAssignmentDAO {
 						new SqlParameter("pStudentID", Types.BIGINT),
 						new SqlOutParameter(OUTPUT_ASSIGNMENT, OracleTypes.CURSOR,
 								new TestAssignmentRowMapper()));
-		
+		_getTestAssignmentCall.compile();
 	}
-
 	
-	/*
-	 * returns studest test assignments
-	 * 
-	 * 
-	 */
-	
+	// returns student test assignments
 	public TestAssignment getTestAssignment(long testAdminId, long studentId) throws UnknownTestAssignmentException {
 
-		TestAssignment testAssignment = new TestAssignment();
-		
 		// call the sproc
 		Map<String, Object> result = _getTestAssignmentCall.execute(testAdminId, studentId);
 
@@ -98,15 +77,9 @@ public class TestAssignmentDAO {
 			throw new UnknownTestAssignmentException(testAdminId, studentId);
 		}
 
-		testAssignment = returnList.iterator().next();
-
-		
-		return testAssignment;
+		return returnList.iterator().next();
 	}
 
-	
-	
-	
 	/**
 	 * Maps a response from the PK_Students.HeirarchyParents stored procedure
 	 * 
@@ -122,7 +95,6 @@ public class TestAssignmentDAO {
 	    StudentRoster studentRoster = new StudentRoster();
         List<StudentRoster> studentRoasterList = new ArrayList<StudentRoster>();
         
-
 		int recordCtr;
 		
 		public TestAssignment mapRow(ResultSet rs, int rowNum) throws SQLException {

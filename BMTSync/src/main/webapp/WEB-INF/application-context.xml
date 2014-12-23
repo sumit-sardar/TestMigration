@@ -94,17 +94,27 @@
    		</property>
 	</bean>
 
-	<!-- Initialize the message handler -->
-	<bean id="bmtBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
+	<!-- Blocking queue beans to be used by notification handlers. -->
+	<bean id="bmtStudentBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
 		<constructor-arg index="0" value="100"/>
 		<constructor-arg index="1" value="15000"/>
 	</bean>
 	
-	<bean id="messageDelegate" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
-		<constructor-arg ref="bmtBlockingQueue" />
+	<bean id="bmtTestAssignmentBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
+		<constructor-arg index="0" value="100"/>
+		<constructor-arg index="1" value="15000"/>
+	</bean>
+		
+	<!-- Message delegates. -->
+	<bean id="studentMessageDelegate" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
+		<constructor-arg ref="bmtStudentBlockingQueue" />
+	</bean>
+
+	<bean id="testAssignmentMessageDelegate" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
+		<constructor-arg ref="bmtTestAssignmentBlockingQueue" />
 	</bean>
 	
-	<bean id="messageConverter"
+	<bean id="studentMessageConverter"
 		class="org.springframework.data.jdbc.jms.support.converter.oracle.MappingAdtMessageConverter">
 		<constructor-arg>
 			<bean
@@ -125,10 +135,10 @@
 		concurrency="${jms.bmt.threads:1-4}"
 		destination-type="queue"
 		transaction-manager="transactionManager"
-		message-converter="messageConverter"
+		message-converter="studentMessageConverter"
 		container-class="org.springframework.data.jdbc.jms.listener.oracle.AdtMessageListenerContainer"
 		>
-		<jms:listener destination="${jms.bmt.publishQueue}" ref="messageDelegate" method="handleMessage" />
+		<jms:listener destination="${jms.bmt.publishQueue}" ref="studentMessageDelegate" method="handleMessage" />
 	</jms:listener-container>
 
 
@@ -136,12 +146,13 @@
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 	  <property name="connectionFactory" ref="jmsConnectionFactory"/> 
       <property name="sessionTransacted" value="true"/>
-	  <property name="messageConverter" ref="messageConverter"/>
+	  <property name="messageConverter" ref="studentMessageConverter"/>
 	</bean>
 
 	<!-- Instantiate a poller to read from the queue and post messages to BMT. -->
-	<bean id="bmtBlockingQueuePoller" class="com.mhe.ctb.oas.BMTSync.spring.poller.BMTBlockingQueuePoller" depends-on="bmtBlockingQueue">
-		<constructor-arg index="0" ref="bmtBlockingQueue" /> 
+	<bean id="bmtStudentBlockingQueuePoller"
+			class="com.mhe.ctb.oas.BMTSync.spring.poller.BMTStudentBlockingQueuePoller" depends-on="bmtStudentBlockingQueue">
+		<constructor-arg index="0" ref="bmtStudentBlockingQueue" /> 
 		<constructor-arg index="1" ref="studentRestClient" />
 	</bean>
 

@@ -33,7 +33,7 @@ public class StudentRestClient {
 	/*
 	 * Method to consume a students web service
 	 */
-	@RequestMapping(value="/api/v1/oas/addUpdateStudent", method=RequestMethod.POST, produces="application/json")
+	@RequestMapping(value=" 1", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody CreateStudentsResponse postStudentList(final List<StudentMessageType> messages) {
 		final RestTemplate restTemplate = new RestTemplate(); 
 		final CreateStudentsRequest studentListRequest = new CreateStudentsRequest();

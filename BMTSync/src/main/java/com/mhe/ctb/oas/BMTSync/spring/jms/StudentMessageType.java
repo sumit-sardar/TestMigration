@@ -11,7 +11,7 @@ import java.util.Calendar;
  * @author cparis
  *
  */
-public class StudentMessageType {
+public class StudentMessageType implements EnqueueableMessage {
 
 	private Integer _studentId;
 	private Integer _customerId;
@@ -25,10 +25,6 @@ public class StudentMessageType {
 		_studentId = studentId;
 	}
 
-	public Integer getCustomerId() {
-		return _customerId;
-	}
-
 	public void setCustomerId(Integer customerId) {
 		_customerId = customerId;
 	}
@@ -39,6 +35,44 @@ public class StudentMessageType {
 
 	public void setUpdatedDateTime(Calendar updatedDateTime) {
 		_updatedDateTime = updatedDateTime;
+	}
+
+	@Override
+	public String getPrimaryKeyName() {
+		return "studentId";
+	}
+
+	@Override
+	public String getPrimaryKeyValue() {
+		if (_studentId == null) {
+			return null;
+		}
+		return _studentId.toString();
+	}
+
+	@Override
+	public String getSecondaryKeyName() {
+		return "customerId";
+	}
+
+	@Override
+	public String getSecondaryKeyValue() {
+		if (_customerId == null) {
+			return null;
+		}
+		return _customerId.toString();
+	}
+
+	@Override
+	public String getErrorDetails() {
+		return String.format(" [%s=%s,%s=%s]",
+				getPrimaryKeyName(), getPrimaryKeyValue(),
+				getSecondaryKeyName(), getSecondaryKeyValue());
+	}
+
+	@Override
+	public Integer getCustomerId() {
+		return _customerId;
 	}
 
 }

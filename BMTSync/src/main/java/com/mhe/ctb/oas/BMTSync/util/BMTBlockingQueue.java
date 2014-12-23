@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.springframework.jms.support.converter.MessageConversionException;
 
-import com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType;
+import com.mhe.ctb.oas.BMTSync.spring.jms.EnqueueableMessage;
 
-public class BMTBlockingQueue extends LinkedBlockingQueue<StudentMessageType> {	
+public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlockingQueue<T> {	
 
 	private static final long serialVersionUID = 4458659170047975987L;
 	
@@ -28,27 +28,26 @@ public class BMTBlockingQueue extends LinkedBlockingQueue<StudentMessageType> {
 	/**
 	 * Attempts to add a message to a queue with a rudimentary exception handling system.
 	 */
-	public void enqueueWithTimeout(final StudentMessageType message) throws MessageConversionException {
+	public void enqueueWithTimeout(final T message) throws MessageConversionException {
 
 		try {
 			if (super.offer(message, timeout, TimeUnit.MILLISECONDS)) {
-				logger.info("Message added to queue. [studentId=" + message.getStudentId().toString() + "]");
+				logger.info("Message added to queue." + message.getErrorDetails());
 				return;
 			}
 		} catch (InterruptedException ie) {
-			logger.error("Interrupted while waiting to add message to queue.", ie);
-			throw new MessageConversionException("Interrupted when waiting to add message to queue.", ie);
+			logger.error("Interrupted while waiting to add message to queue. " + message.getErrorDetails(), ie);
+			throw new MessageConversionException("Interrupted while waiting to add message to queue."
+					+ message.getErrorDetails(), ie);
 		}
-		logger.error("Failed to add message to queue; queue likely full. [studentId="
-				+ message.getStudentId().toString() + "]");
-		throw new MessageConversionException("Failed to add message to queue; queue likely full. [studentId="
-				+ message.getStudentId().toString() + "]");
+		logger.error("Failed to add message to queue; queue likely full." + message.getErrorDetails());
+		throw new MessageConversionException("Failed to add message to queue; queue likely full." + message.getErrorDetails());
 	}
 	
-	public List<StudentMessageType> dequeue() {
-		final List<StudentMessageType> messageList = new ArrayList<StudentMessageType>();
+	public List<T> dequeue() {
+		final List<T> messageList = new ArrayList<T>();
 		logger.info("Attempting to dequeue message from the queue....");
-		StudentMessageType message = null;
+		T message = null;
 		try {
 			message = super.poll(timeout, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException ie) {

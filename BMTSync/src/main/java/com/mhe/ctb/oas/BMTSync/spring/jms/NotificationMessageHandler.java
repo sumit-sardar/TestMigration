@@ -13,39 +13,25 @@ import com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue;
  * @author cparis
  *
  */
-public class NotificationMessageHandler {
+public class NotificationMessageHandler<T extends EnqueueableMessage> {
 	private static Logger logger = Logger.getLogger(NotificationMessageHandler.class);
-	private final BMTBlockingQueue queue;
+	private final BMTBlockingQueue<T> queue;
 	
-	public NotificationMessageHandler(final BMTBlockingQueue queue) {
+	public NotificationMessageHandler(final BMTBlockingQueue<T> queue) {
 		this.queue = queue;
 	}
 	
-    public void handleMessage(final StudentMessageType message) 
+    public void handleMessage(final T message) 
             throws MessageConversionException, JMSException {
-    	final StringBuilder msgBldr = new StringBuilder();
-    	boolean invalidMessage = false;
     	if (message == null) {
     		throw new JMSException("Message should not be null!");
     	}
     	
-    	if (message.getCustomerId() == null) {
-    		invalidMessage = true;
-    		msgBldr.append("[customerId=null]");
+    	if (message.getPrimaryKeyValue() == null || message.getSecondaryKeyValue() == null) {
+    		throw new MessageConversionException("Content of message cannot be null. " + message.getErrorDetails());
     	}
     	
-    	if (message.getStudentId() == null) {
-    		invalidMessage = true;
-    		msgBldr.append("[studentId=null]");
-    	}
-
-    	if (invalidMessage) {
-    		throw new MessageConversionException("Content of message cannot be null. " + msgBldr.toString());
-    	}
-    	
-    	logger.info(String.format("Received update. [customerId=%s][studentId=%s][updateDateTime=%s]",
-    			message.getCustomerId(), message.getStudentId(), message.getUpdatedDateTime())
-    	);
+    	logger.info("Received update." + message.getErrorDetails());
 
     	// Queue isn't null, so add it to the queue to post.
     	try {    		
@@ -54,7 +40,4 @@ public class NotificationMessageHandler {
     		throw mce;
     	}
     }
-
-
-	
 }

@@ -31,7 +31,7 @@ public class TestAssignmentDao extends DatabaseManager {
 
 	    List<TestDelivery> testDeliveryList = new ArrayList<TestDelivery>();
 	    StudentRoster studentRoster = new StudentRoster();
-        List<StudentRoster> studentRoasterList = new ArrayList<StudentRoster>();
+        List<StudentRoster> studentRosterList = new ArrayList<StudentRoster>();
 	    
 	    int recordCtr = 0;
 		
@@ -103,9 +103,9 @@ public class TestAssignmentDao extends DatabaseManager {
 		
 		
 		studentRoster.setTestDelivery(testDeliveryList);
-		studentRoasterList.add(studentRoster);
+		studentRosterList.add(studentRoster);
 		
-        testAssignment.setRoster(studentRoasterList);
+        testAssignment.setRoster(studentRosterList);
 		return testAssignment;
 	}
 
