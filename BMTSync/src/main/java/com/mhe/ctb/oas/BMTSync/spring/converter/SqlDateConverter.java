@@ -7,7 +7,7 @@ import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.Converter;
 
-public class SqlDateConverter implements Converter<java.sql.Date, java.util.Calendar>
+public class SqlDateConverter implements Converter<Date, Calendar>
 {
 
 	public Calendar convert(Date date) 

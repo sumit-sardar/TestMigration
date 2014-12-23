@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import oracle.jdbc.OracleTypes;
 
 import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
