@@ -46,11 +46,12 @@ public class AssignmentRestClient {
 		try {
 			long testAdminId = 209184;
 			long studentId = 15918790;
-			/*
-			// Connects to OAS DB using Spring JDBC bean and return students related data 
-			testAssignment = testAssignmentDAO.getTestAssignment(206743, 15351953);
-			assignmentRequest.setTestAssignment(testAssignment);
-            */
+			
+			
+			// Connects to OAS DB using Spring JDBC bean and return Test Assignment related data 
+			//testAssignment = testAssignmentDAO.getTestAssignment(206743, 15351953);
+			
+            
 			
 			// Connects to OAS DB and return students related data 
 			TestAssignmentDao testAssignmentDao = new TestAssignmentDao();			
@@ -58,7 +59,7 @@ public class AssignmentRestClient {
 			
 			
 			logger.info("Request json to BMT :"+testAssignment.toJson());
-	        assignmentResponse = restTemplate.postForObject("http://sync-gain-qa-elb.ec2-ctb.com"+"/api/v1/bmt/assignment",
+	        assignmentResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_ASSIGNMENTS,
 	        		testAssignment, CreateAssignmentResponse.class);
 	        
 	        
@@ -135,17 +136,25 @@ public class AssignmentRestClient {
 			}
 		}
 		
-		for (final Integer student : updateMessages.keySet()) {
-			testAssignmentDao.updateAssignmentAPIstatus(
-					updateTestAdmin.get(student),
-					student.toString(), 
-					"BMT", updateStatuses.get(student).toString(),
-					updateErrorCode.get(student).toString(),
-					updateMessages.get(student));
+		for (final Integer studentIdKey : updateMessages.keySet()) {
 			
-			//testAssignmentSpringDAO.updateAssignmentAPIstatus(student, updateStatuses.get(studentId), updateErrorCode.get(student), updateMessages.get(studentId));
+			testAssignmentDao.updateAssignmentAPIstatus(
+					updateTestAdmin.get(studentIdKey),
+					studentIdKey.toString(), 
+					"BMT", updateStatuses.get(studentIdKey).toString(),
+					updateErrorCode.get(studentIdKey).toString(),
+					updateMessages.get(studentIdKey));
+			
+
+			testAssignmentDAO.updateAssignmentAPIStatus(
+			        updateTestAdmin.get(studentIdKey),
+			        studentIdKey, 
+			        updateStatuses.get(studentIdKey), 
+			        updateErrorCode.get(studentIdKey), 
+			        updateMessages.get(studentIdKey));
+			
 			logger.debug(String.format("Updating assignment API status in OAS. [studentID=%d][updateSuccess=%b][updateMessage=%s]",
-					student, updateStatuses.get(student),updateErrorCode.get(student), updateMessages.get(student)));
+					studentIdKey, updateStatuses.get(studentIdKey),updateErrorCode.get(studentIdKey), updateMessages.get(studentIdKey)));
 					
 		}
 	}
