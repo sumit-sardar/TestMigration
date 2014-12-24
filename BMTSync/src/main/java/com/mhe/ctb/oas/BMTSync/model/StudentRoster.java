@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class StudentRoster {
 
 	private String oasRosterId;
-	private String oasStudentid; 
+	private String oasStudentId; 
 	private String studentpassword;
 	private List<TestDelivery>  testDeliveryList;
 
@@ -21,11 +21,11 @@ public class StudentRoster {
 	}
 	
 	public String getOasStudentid() {
-		return oasStudentid;
+		return oasStudentId;
 	}
-	@JsonProperty(value="oasStudentid", required=true)
-	public void setOasStudentid(String oasStudentid) {
-		this.oasStudentid = oasStudentid;
+	@JsonProperty(value="oasStudentId", required=true)
+	public void setOasStudentid(String oasStudentId) {
+		this.oasStudentId = oasStudentId;
 	}
 	
 	
