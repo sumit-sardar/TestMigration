@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 import oracle.jdbc.OracleTypes;
 
 import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
@@ -20,7 +22,7 @@ public class TestAssignmentDao extends DatabaseManager {
 	 * From the test_Admin, Test_Admin_Item_Set, 
 	 * Test_Rosster and Student_Item_set_Status
 	 */
-	public TestAssignment getStudentAssignment(long testAdminId, long studentId) {
+	public TestAssignment getStudentAssignment(long testAdminId, long studentId) throws SQLException {
 		
 		TestAssignment testAssignment = new TestAssignment();
 		TestAssignment.DeliveryWindow deliveryWindow = new  TestAssignment.DeliveryWindow();
@@ -91,12 +93,27 @@ public class TestAssignmentDao extends DatabaseManager {
 			    	testDeliveryList.add(testDelivery);
 			    	
 		    	}
-		    }			
+		    }
+		    
+		    rs.close();
+		    cstmt.close();
+		    conn.close();
 			
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (cstmt != null) {
+				cstmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+			
 		}
 		
 		
