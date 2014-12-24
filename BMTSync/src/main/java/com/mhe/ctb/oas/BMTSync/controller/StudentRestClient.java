@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.mhe.ctb.oas.BMTSync.model.Student;
@@ -35,7 +36,7 @@ public class StudentRestClient {
 	/*
 	 * Method to consume a students web service
 	 */
-	@RequestMapping(value=" 1", method=RequestMethod.POST, produces="application/json")
+	@RequestMapping(method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody CreateStudentsResponse postStudentList(final List<StudentMessageType> messages) {
 		final RestTemplate restTemplate = new RestTemplate(); 
 		final CreateStudentsRequest studentListRequest = new CreateStudentsRequest();
@@ -54,8 +55,8 @@ public class StudentRestClient {
 	        		studentListRequest, CreateStudentsResponse.class);
 			logger.info("Response from BMT: " + studentListResponse.toJson());
 			processResponses(studentListRequest, studentListResponse, true);			
-		} catch (HttpClientErrorException he) {
-			logger.error("Http Client Error: " + he.getMessage(), he);			
+		} catch (RestClientException rce) {
+			logger.error("Http Client Error: " + rce.getMessage(), rce);			
 			try {
 				// On Error Mark the Student ID status as Failed
 				// in Student_API_Status table
