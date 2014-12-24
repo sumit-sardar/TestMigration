@@ -107,12 +107,12 @@ public class SpringStudentDAO {
 	}
 
 	public void updateStudentAPIStatus(final Integer studentId,
-			final boolean success, final String errorMessage)
+			final boolean success, final String errorCode, final String errorMessage)
 			throws SQLException {
 
 		_updateStudentAPIStatusCall.execute(studentId.toString(), "BMT", 
 				success ? "Success" : "Failed",
-				success ? "" : "999",
+				success ? "" : errorCode,
 				success ? "" : errorMessage);
 		
 		/* int numRowsUpdated = Integer.valueOf((Integer) results.get("#update-count-1"));

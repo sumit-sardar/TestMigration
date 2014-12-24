@@ -21,22 +21,12 @@ public class CreateStudentsResponse extends BaseResponse {
 	// The logger shouldn't be included in the JSON.
 	private static final Logger logger = Logger.getLogger(CreateStudentsResponse.class);
 
-	boolean _isSuccessful;
 	int _successCount;
 	int _failureCount;
 	List<StudentResponse> _failures;
 	//int _serviceErrorCode;
 	//String _serviceErrorMessage;
 	
-	public boolean getIsSuccessful() {
-		return _isSuccessful;
-	}
-	
-	@JsonProperty("isSuccessful")
-	public void setIsSuccessful(final boolean isSuccessful) {
-		_isSuccessful = isSuccessful;
-	}
-
 	public int getSuccessCount() {
 		return _successCount;
 	}

@@ -20,6 +20,8 @@ import com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType;
 
 public class StudentRestClient {
 
+	private static final int ERROR_MESSAGE_LENGTH = 200;
+
 	private static final Logger logger = Logger.getLogger(StudentRestClient.class);
 	
 	private SpringStudentDAO studentDAO;
@@ -49,7 +51,7 @@ public class StudentRestClient {
 	
 			logger.info("JSON blob for BMT: " + studentListRequest.toJson());
 	        studentListResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_STUDENTS,
-	        		studentListRequest.toJson(), CreateStudentsResponse.class);
+	        		studentListRequest, CreateStudentsResponse.class);
 			logger.info("Response from BMT: " + studentListResponse.toJson());
 			processResponses(studentListRequest, studentListResponse, true);			
 		} catch (HttpClientErrorException he) {
@@ -78,6 +80,7 @@ public class StudentRestClient {
 
 		Map<Integer, Boolean> updateStatuses = new HashMap<Integer, Boolean>(req.getStudents().size());
 		Map<Integer, String> updateMessages = new HashMap<Integer, String>(req.getStudents().size());
+		Map<Integer, String> updateCodes = new HashMap<Integer, String>(req.getStudents().size());
 
 		logger.debug("Students post total count: " + req.getStudents().size());
 		logger.debug("Students post success count: "+resp.getSuccessCount());
@@ -90,9 +93,15 @@ public class StudentRestClient {
 		} else {
 			for (final StudentResponse failedUpdate : resp.getFailures()) {
 				failedStudentIds.append(" ");
-				failedStudentIds.append(failedUpdate.getOasCustomerId().toString());				
+				failedStudentIds.append(failedUpdate.getOasStudentId().toString());				
 				updateStatuses.put(failedUpdate.getOasStudentId(), false);
-				updateMessages.put(failedUpdate.getOasStudentId(), failedUpdate.getErrorMessage());
+				updateCodes.put(failedUpdate.getOasStudentId(), failedUpdate.getErrorCode().toString());
+				final String errorMessage = failedUpdate.getErrorMessage();
+				if (ERROR_MESSAGE_LENGTH < errorMessage.length()) {
+					updateMessages.put(failedUpdate.getOasStudentId(), errorMessage.substring(0, ERROR_MESSAGE_LENGTH));
+				} else {
+					updateMessages.put(failedUpdate.getOasStudentId(), errorMessage);
+				}
 			}
 		}
 		logger.debug(failedStudentIds.toString());
@@ -101,12 +110,14 @@ public class StudentRestClient {
 		for (final Student student : requests) {
 			if (!updateMessages.containsKey(student.getOasStudentId())) {
 				updateStatuses.put(student.getOasStudentId(), success);
+				updateCodes.put(student.getOasStudentId(), "");
 				updateMessages.put(student.getOasStudentId(), "");
 			}
 		}
 
 		for (final Integer studentId : updateMessages.keySet()) {
-			studentDAO.updateStudentAPIStatus(studentId, updateStatuses.get(studentId), updateMessages.get(studentId));
+			studentDAO.updateStudentAPIStatus(studentId, updateStatuses.get(studentId), updateCodes.get(studentId),
+					updateMessages.get(studentId));
 			logger.debug(String.format("Updating student API status in OAS. [studentId=%d][updateSuccess=%b][updateMessage=%s]",
 					studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
 					
