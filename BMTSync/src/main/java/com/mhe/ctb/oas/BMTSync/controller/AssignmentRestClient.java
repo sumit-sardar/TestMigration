@@ -9,8 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
 
 
 import com.mhe.ctb.oas.BMTSync.dao.TestAssignmentDao;
@@ -67,8 +68,8 @@ public class AssignmentRestClient {
 	        processResponses(testAssignment, assignmentResponse, true);
 
 			
-		} catch (HttpClientErrorException he) {
-			logger.error("Http Client Error: " + he.getMessage(), he);			
+		} catch (RestClientException rce) {
+			logger.error("Http Client Error: " + rce.getMessage(), rce);			
 			try {
 				// On Error Mark the Student ID status as Failed
 				// in BMTSYN_ASSIGNMENT_STATUS table
