@@ -38,6 +38,9 @@ public class TestAssignmentDAO {
 
 	// The test assignment
 	private final SimpleJdbcCall _getTestAssignmentCall;	
+	
+	// Update status in BMTSYNC_ASSIGNMENT_STATUS
+	private SimpleJdbcCall _updateAssignmentAPIStatusCall;
 
 	// Constructor
 	public TestAssignmentDAO(final DataSource ds) {
@@ -55,6 +58,19 @@ public class TestAssignmentDAO {
 						new SqlOutParameter(OUTPUT_ASSIGNMENT, OracleTypes.CURSOR,
 								new TestAssignmentRowMapper()));
 		_getTestAssignmentCall.compile();
+		
+		_updateAssignmentAPIStatusCall = new SimpleJdbcCall(_jdbcTemplate)
+		.withCatalogName("PKG_BMTSYNC_ASSIGNMENT")
+		.withProcedureName("updateAssignmentAPIStatus")
+		.useInParameterNames("pTestAdminID", "pStudentID", "pAppName", "pExportStatus",	"pErrorCode", "pErrorMessage")
+		.declareParameters(
+				new SqlParameter("pStudentID", Types.INTEGER),
+				new SqlParameter("pStudentID", Types.VARCHAR),
+				new SqlParameter("pAppName", Types.VARCHAR),
+				new SqlParameter("pExportStatus", Types.VARCHAR),
+				new SqlParameter("pErrorCode", Types.VARCHAR),
+				new SqlParameter("pErrorMessage", Types.VARCHAR));
+		_updateAssignmentAPIStatusCall.compile();		
 	}
 	
 	// returns student test assignments
@@ -140,9 +156,25 @@ public class TestAssignmentDAO {
 	        testAssignment.setRoster(studentRoasterList);
 			return testAssignment;		
 		}
-		
 
 	}
 	
+
+	
+	public void updateAssignmentAPIStatus(final Integer testAdminId, Integer studentId,
+			final boolean success, final String errorCode, final String errorMessage)
+			throws SQLException {
+
+		_updateAssignmentAPIStatusCall.execute(testAdminId,
+				studentId.toString(), "BMT", 
+				success ? "Success" : "Failed",
+				success ? "" : errorCode,
+				success ? "" : errorMessage);
+		
+		/* int numRowsUpdated = Integer.valueOf((Integer) results.get("#update-count-1"));
+		if (numRowsUpdated != 1) {
+			throw new SQLException("One row expected to be updated! Rows updated: "	+ numRowsUpdated);
+		} */
+	}
 	
 }
