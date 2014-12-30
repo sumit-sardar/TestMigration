@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import oracle.jdbc.OracleTypes;
 
+import com.mhe.ctb.oas.BMTSync.model.DeliveryWindow;
 import com.mhe.ctb.oas.BMTSync.model.TestAdmin;
 
 
@@ -20,7 +21,7 @@ public class TestAdminDao extends DatabaseManager {
 	public TestAdmin getTestAdmin(long testAdminId) throws SQLException {
 		
 		TestAdmin testAdmin = new TestAdmin();
-		TestAdmin.DeliveryWindow deliveryWindow = new  TestAdmin.DeliveryWindow();
+		DeliveryWindow deliveryWindow = new  DeliveryWindow();
 		//TestAssignment.Parameters parameters = new  TestAssignment.Parameters();
 
 		Connection conn = null;
@@ -78,4 +79,47 @@ public class TestAdminDao extends DatabaseManager {
 		
 		return testAdmin;
 	}
+	
+	
+	
+	/*
+	 * Method to update the Assignment API Status table
+	 */
+	public boolean updateTestAdminStatus(Integer pTestAdminId, String pAppName, String pExportStatus, String pErrorCode, String pErrorMessage) throws Exception {
+		
+		Connection conn = null;
+		CallableStatement cstmt = null;
+		//ResultSet rs = null;
+		
+		try {
+			if (pErrorMessage.length() > 200 )
+				pErrorMessage = pErrorMessage.substring(1, 200);
+			
+			conn = dbConnection();
+			cstmt = conn.prepareCall("BEGIN PKG_BMTSYNC_TESTADMIN.updateTestAdminAPIStatus(?, ?, ?, ?, ?); END;");
+			cstmt.setInt(1, pTestAdminId);
+			cstmt.setString(2, pAppName);
+			cstmt.setString(3, pExportStatus);			
+			cstmt.setString(4, pErrorCode);
+			cstmt.setString(5, pErrorMessage);
+			
+			cstmt.execute();
+		    
+			
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+			return false;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			//rs.close();
+			cstmt.close();
+			if (conn!= null) conn.close();				
+		}
+		return true;
+	}
+	
 }
