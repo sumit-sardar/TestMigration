@@ -1,11 +1,13 @@
 package com.mhe.ctb.oas.BMTSync.controller;
 
+
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.mhe.ctb.oas.BMTSync.dao.TestAdminDao;
@@ -29,9 +31,11 @@ public class TestAdminRestClient {
 		
 		TestAdminDao testAdminDao = new TestAdminDao();
 		CreateTestAdminResponse testAdminResponse = new CreateTestAdminResponse();
-
+		long testAdminId = 209184;
+		
 		try {
-			long testAdminId = 209184;
+
+			//29212 ;
 			/*
 			// Connects to OAS DB using Spring JDBC bean and return students related data 
 			testAssignment = testAssignmentDAO.getTestAssignment(206743, 15351953);
@@ -49,29 +53,52 @@ public class TestAdminRestClient {
 	        
 	        
 	        //Updates the BMTSYN_Assignment_Status table, with success or failure
-	        //processResponses(testAssignment, testAdminResponse, true);
+	        processResponses(testAdmin, testAdminResponse);
 
 			
-		} catch (HttpClientErrorException he) {
-			logger.error("Http Client Error: " + he.getMessage(), he);			
-			try {
-				logger.info("perform processing here on failed call.");
-				// On Error Mark the Student ID status as Failed
-				// in BMTSYN_ASSIGNMENT_STATUS table
-				//processResponses(testAssignment, assignmentResponse, true);
-			} catch (Exception e) {
-				logger.error("Error attempting to process assignement responses.", e);
-			}
-			
+		} catch (RestClientException rce) {
+			logger.error("Http Client Error: " + rce.getMessage(), rce);			
 		} catch (Exception e) {
 			logger.error("Excption error in AssignmentRestClient class : "+e.getMessage());
-			System.out.println("Exception in AssignmentRestClient = "+e.getMessage());
-			
 		}
 		
 		logger.info("Response json from BMT: "+testAdminResponse.toJson());
 		return testAdminResponse;
 		
-	}	
+	}
+	
+	
+	/*
+	 * Method to insert/record records in the Student_API_Status
+	 * with status 'Failed' for the Roster ID's that were not 
+	 * synched into BMT due to an error in data
+	 */
+	private void processResponses(final TestAdmin req, final CreateTestAdminResponse resp) throws Exception {
+
+		TestAdminDao testAdminDao= new TestAdminDao();
+        Integer testAdminId = null;
+        
+		if (resp.getSuccessCount() == 0) {
+			testAdminId = resp.getOasTestAdministrationID();
+			testAdminDao.updateTestAdminStatus(
+					testAdminId, 
+					"BMT", 
+					"Failed",
+					resp.getErrorCode().toString(),
+					resp.getErrorMessage()					
+                    );
+		} else {
+			testAdminId = req.getOasTestAdministrationID();
+			testAdminDao.updateTestAdminStatus(
+					testAdminId, 
+					"BMT", 
+					"Success",
+					"",
+					""					
+                    );			
+		}
+
+	}
+	
 	
 }
