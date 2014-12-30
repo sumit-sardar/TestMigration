@@ -10,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.mhe.ctb.oas.BMTSync.dao.TestAdminDao;
 import com.mhe.ctb.oas.BMTSync.model.TestAdmin;
-import com.mhe.ctb.oas.BMTSync.rest.CreateAssignmentResponse;
 import com.mhe.ctb.oas.BMTSync.rest.CreateTestAdminResponse;
 
 @Controller
@@ -56,6 +55,7 @@ public class TestAdminRestClient {
 		} catch (HttpClientErrorException he) {
 			logger.error("Http Client Error: " + he.getMessage(), he);			
 			try {
+				logger.info("perform processing here on failed call.");
 				// On Error Mark the Student ID status as Failed
 				// in BMTSYN_ASSIGNMENT_STATUS table
 				//processResponses(testAssignment, assignmentResponse, true);

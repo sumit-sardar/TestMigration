@@ -6,8 +6,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.mhe.ctb.oas.BMTSync.controller.AssignmentRestClient;
-import com.mhe.ctb.oas.BMTSync.controller.StudentRestClient;
-import com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType;
 import com.mhe.ctb.oas.BMTSync.spring.jms.TestAssignmentMessageType;
 import com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue;
 
