@@ -11,5 +11,5 @@ public interface EnqueueableMessage {
 	
 	String getSecondaryKeyValue();
 	
-	String getErrorDetails();
+	String getLogDetails();
 }

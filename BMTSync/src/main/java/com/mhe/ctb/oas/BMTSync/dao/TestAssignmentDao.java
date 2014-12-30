@@ -7,10 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import oracle.jdbc.OracleTypes;
 
+import com.mhe.ctb.oas.BMTSync.model.DeliveryWindow;
+import com.mhe.ctb.oas.BMTSync.model.EnforceTimeLimit;
+import com.mhe.ctb.oas.BMTSync.model.Parameters;
 import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
 import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
 import com.mhe.ctb.oas.BMTSync.model.TestDelivery;
@@ -25,9 +26,9 @@ public class TestAssignmentDao extends DatabaseManager {
 	public TestAssignment getStudentAssignment(long testAdminId, long studentId) throws SQLException {
 		
 		TestAssignment testAssignment = new TestAssignment();
-		TestAssignment.DeliveryWindow deliveryWindow = new  TestAssignment.DeliveryWindow();
-		TestAssignment.Parameters parameters = new  TestAssignment.Parameters();
-		TestDelivery.EnforceTimeLimit enforceTimeLimit = new TestDelivery.EnforceTimeLimit();
+		DeliveryWindow deliveryWindow = new  DeliveryWindow();
+		Parameters parameters = new  Parameters();
+		EnforceTimeLimit enforceTimeLimit = new EnforceTimeLimit();
 
 	    List<TestDelivery> testDeliveryList = new ArrayList<TestDelivery>();
 	    StudentRoster studentRoster = new StudentRoster();
@@ -128,7 +129,7 @@ public class TestAssignmentDao extends DatabaseManager {
 	/*
 	 * Method to update the Assignment API Status table
 	 */
-	public boolean updateAssignmentAPIstatus(Integer pTestAdminId, String pStudentID, String pAppName, String pExportStatus, String pErrorCode, String pErrorMessage) throws Exception {
+	public boolean updateAssignmentAPIstatus(Integer pTestAdminId, String pStudentID, String pExportStatus, String pErrorCode, String pErrorMessage) throws Exception {
 		
 		Connection conn = null;
 		CallableStatement cstmt = null;
@@ -142,7 +143,7 @@ public class TestAssignmentDao extends DatabaseManager {
 			cstmt = conn.prepareCall("BEGIN PKG_BMTSYNC_ASSIGNMENT.updateAssignmentAPIStatus(?, ?, ?, ?, ?, ?); END;");
 			cstmt.setInt(1, pTestAdminId);
 			cstmt.setString(2, pStudentID);
-			cstmt.setString(3, pAppName);
+			cstmt.setString(3, "BMT");
 			cstmt.setString(4, pExportStatus);			
 			cstmt.setString(5, pErrorCode);
 			cstmt.setString(6, pErrorMessage);

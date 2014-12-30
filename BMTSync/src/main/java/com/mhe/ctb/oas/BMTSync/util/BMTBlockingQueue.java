@@ -32,16 +32,16 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 
 		try {
 			if (super.offer(message, timeout, TimeUnit.MILLISECONDS)) {
-				logger.info("Message added to queue." + message.getErrorDetails());
+				logger.info("Message added to queue." + message.getLogDetails());
 				return;
 			}
 		} catch (InterruptedException ie) {
-			logger.error("Interrupted while waiting to add message to queue. " + message.getErrorDetails(), ie);
+			logger.error("Interrupted while waiting to add message to queue. " + message.getLogDetails(), ie);
 			throw new MessageConversionException("Interrupted while waiting to add message to queue."
-					+ message.getErrorDetails(), ie);
+					+ message.getLogDetails(), ie);
 		}
-		logger.error("Failed to add message to queue; queue likely full." + message.getErrorDetails());
-		throw new MessageConversionException("Failed to add message to queue; queue likely full." + message.getErrorDetails());
+		logger.error("Failed to add message to queue; queue likely full." + message.getLogDetails());
+		throw new MessageConversionException("Failed to add message to queue; queue likely full." + message.getLogDetails());
 	}
 	
 	public List<T> dequeue() {

@@ -64,7 +64,7 @@ public class StudentMessageType implements EnqueueableMessage {
 	}
 
 	@Override
-	public String getErrorDetails() {
+	public String getLogDetails() {
 		return String.format(" [%s=%s,%s=%s]",
 				getPrimaryKeyName(), getPrimaryKeyValue(),
 				getSecondaryKeyName(), getSecondaryKeyValue());

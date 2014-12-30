@@ -24,79 +24,11 @@ public class TestAssignment {
 	private Integer _errorCode;
 	private String _errorMessage; 	
 	
-	
-	/* Static Inner Classes */
-	public static class DeliveryWindow {
-		private String startDate;
-		private String startHour;
-		private String endDate;
-		private String endHour;
-		
-		public String getStartDate() {
-			return startDate;
-		}
-		@JsonProperty(value="startDate", required=true)
-		public void setStartDate(String startDate) {
-			this.startDate = startDate;
-		}
-		
-		public String getStartHour() {
-			return startHour;
-		}
-		@JsonProperty(value="startHour", required=true)
-		public void setStartHour(String startHour) {
-			this.startHour = startHour;
-		}
-		
-		
-		public String getEndDate() {
-			return endDate;
-		}
-		@JsonProperty(value="endDate", required=true)
-		public void setEndDate(String endDate) {
-			this.endDate = endDate;
-		}
-		
-		
-		public String getEndHour() {
-			return endHour;
-		}
-		@JsonProperty(value="endHour", required=true)
-		public void setEndHour(String endHour) {
-			this.endHour = endHour;
-		}
-	}
-	
-
-	public static class Parameters {
-		private String enforceBreak;
-		private String enforceTutorial; 
-
-		public String getEnforceBreak() {
-			return enforceBreak;
-		}
-		@JsonProperty(value="enforceBreak", required=true)
-		public void setEnforceBreak(String enforceBreak) {
-			this.enforceBreak = enforceBreak;
-		}
-
-		public String getEnforceTutorial() {
-			return enforceTutorial;
-		}
-		@JsonProperty(value="enforceTutorial", required=true)
-		public void setEnforceTutorial(String enforceTutorial) {
-			this.enforceTutorial = enforceTutorial;
-		}
-		
-	}
-
-
-	
     /* Getter and Setter Methods */
 	public DeliveryWindow getDeliveryWindow() {
 		return deliveryWindow;
 	}	
-	@JsonProperty(value="deliveryWindow", required=true)
+	@JsonProperty(value="deliveryWindow", required=false)
 	public void setDeliveryWindow(DeliveryWindow deliveryWindow) {
 		this.deliveryWindow = deliveryWindow;
 	}	
@@ -104,7 +36,7 @@ public class TestAssignment {
 	public Parameters getParameters() {
 		return parameters;
 	}
-	@JsonProperty(value="parameters", required=true)	
+	@JsonProperty(value="parameters", required=false)	
 	public void setParameters(Parameters parameters) {
 		this.parameters = parameters;
 	}
@@ -112,16 +44,16 @@ public class TestAssignment {
 	public Integer getOasTestAdministrationID() {
 		return oasTestAdministrationID;
 	}
-	@JsonProperty(value="oasTestAdministrationID", required=true)
+	@JsonProperty(value="oasTestAdministrationID", required=false)
 	public void setOasTestAdministrationID(Integer oasTestAdministrationID) {
 		this.oasTestAdministrationID = oasTestAdministrationID;
 	}
 	
-	
 	public Integer getOasCustomerId() {
 		return oasCustomerId;
 	}
-	@JsonProperty(value="oasCustomerId", required=true)
+	
+	@JsonProperty(value="oasCustomerId", required=false)
 	public void setOasCustomerId(Integer oasCustomerId) {
 		this.oasCustomerId = oasCustomerId;
 	}
@@ -129,16 +61,16 @@ public class TestAssignment {
 	public Integer getOasTestCatalogId() {
 		return oasTestCatalogId;
 	}
-	@JsonProperty(value="oasTestCatalogId", required=true)
+	@JsonProperty(value="oasTestCatalogId", required=false)
 	public void setOasTestCatalogId(Integer oasTestCatalogId) {
 		this.oasTestCatalogId = oasTestCatalogId;
 	}
 	
-	
 	public String getName() {
 		return name;
 	}
-	@JsonProperty(value="name", required=true)
+	
+	@JsonProperty(value="name", required=false)
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -147,7 +79,8 @@ public class TestAssignment {
 	public String getProductName() {
 		return productName;
 	}
-	@JsonProperty(value="productName", required=true)
+	
+	@JsonProperty(value="productName", required=false)
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
@@ -155,7 +88,8 @@ public class TestAssignment {
 	public List<StudentRoster> getRoster() {
 		return roster;
 	}
-	@JsonProperty(value="roaster", required=true)
+	
+	@JsonProperty(value="roaster", required=false)
 	public void setRoster(List<StudentRoster> rosterList) {
 		this.roster = rosterList;
 	}
@@ -163,7 +97,8 @@ public class TestAssignment {
 	public Integer getErrorCode() {
 		return _errorCode;
 	}
-	@JsonProperty(value="errorCode", required=true)
+	
+	@JsonProperty(value="errorCode", required=false)
 	public void setErrorCode(Integer errorCode) {
 		_errorCode = errorCode;
 	}
@@ -171,12 +106,11 @@ public class TestAssignment {
 	public String getErrorMessage() {
 		return _errorMessage;
 	}
+
 	@JsonProperty("errorMessage")
 	public void setErrorMessage(String errorMessage) {
 		_errorMessage = errorMessage;
 	}	
-	
-	
 
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();

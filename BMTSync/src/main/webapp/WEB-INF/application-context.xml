@@ -70,7 +70,7 @@
 		<constructor-arg index="0" ref="springStudentDAO" />
 	</bean>
 	
-	<bean id="assignmentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.AssignmentRestClient">
+	<bean id="testAssignmentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.AssignmentRestClient">
 		<constructor-arg index="0" ref="testAssignmentDAO" />
 	</bean>
 	
@@ -135,6 +135,21 @@
 		</constructor-arg>
 	</bean>
 
+	<bean id="testAssignmentMessageConverter"
+		class="org.springframework.data.jdbc.jms.support.converter.oracle.MappingAdtMessageConverter">
+		<constructor-arg>
+			<bean
+				class="org.springframework.data.jdbc.jms.support.oracle.StructDatumMapper">
+				<constructor-arg index="0" value="OAS.BMTSYNC_ASSIGNMENT_TYP" />
+				<constructor-arg index="1">
+					<bean class="org.springframework.data.jdbc.support.oracle.BeanPropertyStructMapper">
+						<constructor-arg value="com.mhe.ctb.oas.BMTSync.spring.jms.TestAssignmentMessageType"/>
+					</bean>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+	</bean>
+
 	<!-- Route the message on receiving -->
 	<jms:listener-container connection-factory="jmsConnectionFactory"
 		concurrency="${jms.bmt.threads:1-4}"
@@ -143,15 +158,23 @@
 		message-converter="studentMessageConverter"
 		container-class="org.springframework.data.jdbc.jms.listener.oracle.AdtMessageListenerContainer"
 		>
-		<jms:listener destination="${jms.bmt.publishQueue}" ref="studentMessageDelegate" method="handleMessage" />
+		<jms:listener destination="${jms.bmt.studentPublishQueue}" ref="studentMessageDelegate" method="handleMessage" />
 	</jms:listener-container>
 
+	<jms:listener-container connection-factory="jmsConnectionFactory"
+		concurrency="${jms.bmt.threads:1-4}"
+		destination-type="queue"
+		transaction-manager="transactionManager"
+		message-converter="testAssignmentMessageConverter"
+		container-class="org.springframework.data.jdbc.jms.listener.oracle.AdtMessageListenerContainer"
+		>
+		<jms:listener destination="${jms.bmt.testAssignmentPublishQueue}" ref="testAssignmentMessageDelegate" method="handleMessage" />
+	</jms:listener-container>
 
 	<!--  Setup the configuration to send the message -->
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 	  <property name="connectionFactory" ref="jmsConnectionFactory"/> 
       <property name="sessionTransacted" value="true"/>
-	  <property name="messageConverter" ref="studentMessageConverter"/>
 	</bean>
 
 	<!-- Instantiate a poller to read from the queue and post messages to BMT. -->
@@ -160,12 +183,16 @@
 		<constructor-arg index="0" ref="bmtStudentBlockingQueue" /> 
 		<constructor-arg index="1" ref="studentRestClient" />
 	</bean>
+	
+	<bean id="bmtTestAssignmentBlockingQueuePoller"
+			class="com.mhe.ctb.oas.BMTSync.spring.poller.BMTTestAssignmentBlockingQueuePoller" depends-on="bmtTestAssignmentBlockingQueue">
+		<constructor-arg index="0" ref="bmtTestAssignmentBlockingQueue" /> 
+		<constructor-arg index="1" ref="testAssignmentRestClient" />
+	</bean>
 
 	<!--  ==[ END JMS Setup ]================================================================== -->
 
 
     <context:component-scan base-package="com.mhe.ctb.oas"/>
 	<mvc:annotation-driven/>
-
-
 </beans>

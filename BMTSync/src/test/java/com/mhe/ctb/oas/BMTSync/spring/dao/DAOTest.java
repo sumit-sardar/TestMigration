@@ -49,7 +49,7 @@ public class DAOTest {
 	
 	
 	@Test
-	public void testStudentDAO_updateStudentAPIStatus() throws SQLException {
+	public void testStudentDAO_updateStudentAPIStatus_success() throws SQLException {
 		_studentDao.updateStudentAPIStatus(STUDENT_ID, true, "", "Testing query.");
 	}
 }

@@ -16,40 +16,13 @@ public class TestDelivery {
 	private Integer order;
 	private EnforceTimeLimit enforceTimeLimit;
 	
-	
-	public static class EnforceTimeLimit {
-		private String isRequired;   // Time_Limit required
-		private String timeLimitInMins;
-
-		public String getIsRequired() {
-			return isRequired;
-		}
-		@JsonProperty(value="IsRequiured", required=true)
-		public void setIsRequired(String isRequired) {
-			this.isRequired = isRequired;
-		}
-
-		public String getTimeLimitInMins() {
-			return timeLimitInMins;
-		}
-		@JsonProperty(value="TimeLimitInMins", required=true)
-		public void setTimeLimitInMins(String timeLimitInMins) {
-			this.timeLimitInMins = timeLimitInMins;
-		}
-		
-	}
-
-
-
-	
-	public String getDeliverystatus() {
+		public String getDeliverystatus() {
 		return deliverystatus;
 	}
 	@JsonProperty(value="deliverystatus", required=true)
 	public void setDeliverystatus(String deliverystatus) {
 		this.deliverystatus = deliverystatus;
 	}
-	
 	
 	public String getAccessCode() {
 		return accessCode;

@@ -28,10 +28,10 @@ public class NotificationMessageHandler<T extends EnqueueableMessage> {
     	}
     	
     	if (message.getPrimaryKeyValue() == null || message.getSecondaryKeyValue() == null) {
-    		throw new MessageConversionException("Content of message cannot be null. " + message.getErrorDetails());
+    		throw new MessageConversionException("Content of message cannot be null. " + message.getLogDetails());
     	}
     	
-    	logger.info("Received update." + message.getErrorDetails());
+    	logger.info("Received update." + message.getLogDetails());
 
     	// Queue isn't null, so add it to the queue to post.
     	try {    		

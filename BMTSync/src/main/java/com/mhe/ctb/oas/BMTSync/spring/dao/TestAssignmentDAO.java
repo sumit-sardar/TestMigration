@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import oracle.jdbc.OracleTypes;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -20,6 +21,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import com.mhe.ctb.oas.BMTSync.exception.UnknownTestAssignmentException;
+import com.mhe.ctb.oas.BMTSync.model.DeliveryWindow;
+import com.mhe.ctb.oas.BMTSync.model.EnforceTimeLimit;
+import com.mhe.ctb.oas.BMTSync.model.Parameters;
 import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
 import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
 import com.mhe.ctb.oas.BMTSync.model.TestDelivery;
@@ -27,6 +31,8 @@ import com.mhe.ctb.oas.BMTSync.model.TestDelivery;
 
 @Repository
 public class TestAssignmentDAO {
+	private static final Logger logger = Logger.getLogger(TestAssignmentDAO.class);
+	
 	// Return map names
 	private static final String OUTPUT_ASSIGNMENT = "PRESULTCURSOR";
 	
@@ -64,7 +70,7 @@ public class TestAssignmentDAO {
 		.withProcedureName("updateAssignmentAPIStatus")
 		.useInParameterNames("pTestAdminID", "pStudentID", "pAppName", "pExportStatus",	"pErrorCode", "pErrorMessage")
 		.declareParameters(
-				new SqlParameter("pStudentID", Types.INTEGER),
+				new SqlParameter("pTestAdminID", Types.INTEGER),
 				new SqlParameter("pStudentID", Types.VARCHAR),
 				new SqlParameter("pAppName", Types.VARCHAR),
 				new SqlParameter("pExportStatus", Types.VARCHAR),
@@ -103,9 +109,9 @@ public class TestAssignmentDAO {
 	 */
 	private class TestAssignmentRowMapper implements RowMapper<TestAssignment> {
 		TestAssignment testAssignment = new TestAssignment();
-		TestAssignment.DeliveryWindow deliveryWindow = new  TestAssignment.DeliveryWindow();
-		TestAssignment.Parameters parameters = new  TestAssignment.Parameters();
-		TestDelivery.EnforceTimeLimit enforceTimeLimit = new TestDelivery.EnforceTimeLimit();
+		DeliveryWindow deliveryWindow = new  DeliveryWindow();
+		Parameters parameters = new  Parameters();
+		EnforceTimeLimit enforceTimeLimit = new EnforceTimeLimit();
 
 	    List<TestDelivery> testDeliveryList = new ArrayList<TestDelivery>();
 	    StudentRoster studentRoster = new StudentRoster();
@@ -159,22 +165,23 @@ public class TestAssignmentDAO {
 
 	}
 	
-
-	
 	public void updateAssignmentAPIStatus(final Integer testAdminId, Integer studentId,
 			final boolean success, final String errorCode, final String errorMessage)
 			throws SQLException {
 
-		_updateAssignmentAPIStatusCall.execute(testAdminId,
-				studentId.toString(), "BMT", 
+		logger.info(String.format("DB CALL: [testAdminID=%d][studentId=%d][updateSuccess=%b][updateStatus=%s][updateMessage=%s]",
+				testAdminId,
+				studentId,
+				Boolean.valueOf(success),
+				errorCode,
+				errorMessage));	
+		_updateAssignmentAPIStatusCall.execute(
+				testAdminId,
+				studentId.toString(),
+				"BMT", 
 				success ? "Success" : "Failed",
 				success ? "" : errorCode,
 				success ? "" : errorMessage);
-		
-		/* int numRowsUpdated = Integer.valueOf((Integer) results.get("#update-count-1"));
-		if (numRowsUpdated != 1) {
-			throw new SQLException("One row expected to be updated! Rows updated: "	+ numRowsUpdated);
-		} */
 	}
 	
 }
