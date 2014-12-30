@@ -1,11 +1,15 @@
 package com.mhe.ctb.oas.BMTSync.model;
 
+//import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mhe.ctb.oas.BMTSync.model.DeliveryWindow;
+
 
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -18,10 +22,8 @@ public class TestAdmin {
 	private String name;
 	private String productName;
 	private DeliveryWindow deliveryWindow;
-	private Integer _errorCode;
-	private String _errorMessage;
 	
-	/* Static Inner Classes */
+	/* Static Inner Classes 
 	public static class DeliveryWindow {
 		private String startDate;
 		private String startHour;
@@ -62,6 +64,7 @@ public class TestAdmin {
 			this.endHour = endHour;
 		}
 	}
+	*/
 
     /* Getter and Setter Methods */
 	public DeliveryWindow getDeliveryWindow() {
@@ -114,22 +117,6 @@ public class TestAdmin {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-	
-	public Integer getErrorCode() {
-		return _errorCode;
-	}
-	@JsonProperty(value="errorCode", required=true)
-	public void setErrorCode(Integer errorCode) {
-		_errorCode = errorCode;
-	}
-	
-	public String getErrorMessage() {
-		return _errorMessage;
-	}
-	@JsonProperty("errorMessage")
-	public void setErrorMessage(String errorMessage) {
-		_errorMessage = errorMessage;
-	}	
 	
 	
 
