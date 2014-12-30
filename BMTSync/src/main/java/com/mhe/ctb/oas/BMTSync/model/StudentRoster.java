@@ -9,8 +9,7 @@ public class StudentRoster {
 	private String oasRosterId;
 	private String oasStudentId; 
 	private String studentpassword;
-	private List<TestDelivery>  testDeliveryList;
-
+	private List<TestDelivery> testDeliveryList;
 	
 	public String getOasRosterId() {
 		return oasRosterId;
@@ -45,7 +44,4 @@ public class StudentRoster {
 	public void setTestDelivery(List<TestDelivery> testDeliveryList) {
 		this.testDeliveryList = testDeliveryList;
 	}
-	
-
-	
 }

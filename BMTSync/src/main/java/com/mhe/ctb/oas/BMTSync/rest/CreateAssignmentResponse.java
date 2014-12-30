@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhe.ctb.oas.BMTSync.model.DeliveryWindow;
 import com.mhe.ctb.oas.BMTSync.model.Parameters;
-import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
+import com.mhe.ctb.oas.BMTSync.model.StudentRosterResponse;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 //@JsonPropertyOrder({"isSuccessful", "successCount", "failureCount", "errorCode", "errorMessage", "failures"})
@@ -30,7 +30,7 @@ public class CreateAssignmentResponse extends BaseResponse {
 	private Parameters parameters;
 	private int _successCount;
 	private int _failureCount;
-	private List<TestAssignment> _failures;
+	private List<StudentRosterResponse> _failures;
 
 	public Integer getOasTestAdministrationID() {
 		return oasTestAdministrationID;
@@ -113,12 +113,12 @@ public class CreateAssignmentResponse extends BaseResponse {
 		_failureCount = failureCount;
 	}
 
-	public List<TestAssignment> getFailures() {
+	public List<StudentRosterResponse> getFailures() {
 		return _failures;
 	}
 	
 	@JsonProperty(value="failures", required=false)
-	public void setFailures(List<TestAssignment> failures) {
+	public void setFailures(List<StudentRosterResponse> failures) {
 		_failures = failures;
 	}
 

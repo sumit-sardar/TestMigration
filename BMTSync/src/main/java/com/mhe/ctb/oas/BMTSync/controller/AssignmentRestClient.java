@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.mhe.ctb.oas.BMTSync.dao.TestAssignmentDao;
 import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
+import com.mhe.ctb.oas.BMTSync.model.StudentRosterResponse;
 import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
 import com.mhe.ctb.oas.BMTSync.rest.CreateAssignmentResponse;
 import com.mhe.ctb.oas.BMTSync.spring.dao.TestAssignmentDAO;
@@ -66,8 +67,6 @@ public class AssignmentRestClient {
 		} catch (Exception e) {
 			logger.error("Error in AssignmentRestClient class : "+e.getMessage(), e);
 		}
-		
-		logger.info("Response json from BMT: "+assignmentResponse.toJson());
 		return assignmentResponse;
 	}
 	
@@ -120,25 +119,20 @@ public class AssignmentRestClient {
 		
 		// if resp is not null and resp.getErrorCode is zero and getErrorMessage is null,
 		// 		process everything in the request as "error if it's in the failures, success otherwise."
-		List<TestAssignment> failures = resp.getFailures();
+		List<StudentRosterResponse> failures = resp.getFailures();
 		if (failures != null) {
-			for (final TestAssignment failedUpdate : failures) {
-				List<StudentRoster> srList = failedUpdate.getRoster();
-				if (srList != null) {
-					for (final StudentRoster sr : srList) {
-						try {
-							final Integer studentId = Integer.parseInt(sr.getOasStudentid());
-							updateAssignmentApiStatus(testAdminId, studentId, false,
-							        failedUpdate.getErrorCode().toString(), failedUpdate.getErrorMessage());
-							if (studentIds.contains(studentId)) {
-								studentIds.remove(studentId);
-							} else {
-								logger.error("Student ID in BMT response not in OAS request! [" + studentId + "]");
-							}
-						} catch (NumberFormatException nfe) {
-							logger.error("Invalid student ID. [studentId=" + sr.getOasStudentid() + "]");
-						}
+			for (final StudentRosterResponse failure : failures) {
+				try {
+					final Integer studentId = Integer.parseInt(failure.getOasStudentid());
+					updateAssignmentApiStatus(testAdminId, studentId, false,
+					        failure.getErrorCode().toString(), failure.getErrorMessage());
+					if (studentIds.contains(studentId)) {
+						studentIds.remove(studentId);
+					} else {
+						logger.error("Student ID in BMT response not in OAS request! [" + studentId + "]");
 					}
+				} catch (NumberFormatException nfe) {
+					logger.error("Invalid student ID. [studentId=" + failure.getOasStudentid() + "]");
 				}
 			}
 		}
