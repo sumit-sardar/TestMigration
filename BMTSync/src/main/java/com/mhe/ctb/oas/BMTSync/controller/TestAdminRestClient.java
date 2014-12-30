@@ -24,24 +24,16 @@ public class TestAdminRestClient {
 	 * Method to consume a assignment web service
 	 */	
 	@RequestMapping(value="/api/v1/oas/testadmin", method=RequestMethod.POST, produces="application/json")	
-	public @ResponseBody CreateTestAdminResponse postTestAdmin () {
+	public @ResponseBody CreateTestAdminResponse postTestAdmin (final long testAdminId) {
 		logger.info("Test Admin Rest Client API called");
 		
 		final RestTemplate restTemplate = new RestTemplate();
 		
 		TestAdminDao testAdminDao = new TestAdminDao();
 		CreateTestAdminResponse testAdminResponse = new CreateTestAdminResponse();
-		long testAdminId = 209184;
-		
+
 		try {
 
-			//29212 ;
-			/*
-			// Connects to OAS DB using Spring JDBC bean and return students related data 
-			testAssignment = testAssignmentDAO.getTestAssignment(206743, 15351953);
-			assignmentRequest.setTestAssignment(testAssignment);
-            */
-			
 			// Connects to OAS DB and return students related data 
 			TestAdmin testAdmin = new TestAdmin();
 			testAdmin = testAdminDao.getTestAdmin(testAdminId);	
