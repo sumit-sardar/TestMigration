@@ -1,7 +1,5 @@
 package com.mhe.ctb.oas.BMTSync.rest;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mhe.ctb.oas.BMTSync.model.TestAdmin;
 
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -24,9 +21,59 @@ public class CreateTestAdminResponse {
 	
 	int _successCount;
 	int _failureCount;
-	List<TestAdmin> _failures;
-	//int _serviceErrorCode;
-	//String _serviceErrorMessage;
+	private Integer oasTestAdministrationID; 
+	private Integer oasCustomerId;
+	private Integer oasTestCatalogId;
+	private String name;
+	private String productName;
+	private DeliveryWindow deliveryWindow;
+	private Integer _errorCode;
+	private String _errorMessage;	
+
+	
+	/* Static Inner Classes */
+	public static class DeliveryWindow {
+		private String startDate;
+		private String startHour;
+		private String endDate;
+		private String endHour;
+		
+		public String getStartDate() {
+			return startDate;
+		}
+		@JsonProperty(value="startDate", required=true)
+		public void setStartDate(String startDate) {
+			this.startDate = startDate;
+		}
+		
+		public String getStartHour() {
+			return startHour;
+		}
+		@JsonProperty(value="startHour", required=true)
+		public void setStartHour(String startHour) {
+			this.startHour = startHour;
+		}
+		
+		
+		public String getEndDate() {
+			return endDate;
+		}
+		@JsonProperty(value="endDate", required=true)
+		public void setEndDate(String endDate) {
+			this.endDate = endDate;
+		}
+		
+		
+		public String getEndHour() {
+			return endHour;
+		}
+		@JsonProperty(value="endHour", required=true)
+		public void setEndHour(String endHour) {
+			this.endHour = endHour;
+		}
+	}
+
+	
 
 	public int getSuccessCount() {
 		return _successCount;
@@ -46,15 +93,76 @@ public class CreateTestAdminResponse {
 		_failureCount = failureCount;
 	}
 
-	public List<TestAdmin> getFailures() {
-		return _failures;
-	}
 
-	
-	@JsonProperty("failures")
-	public void setFailures(List<TestAdmin> failures) {
-		_failures = failures;
+    /* Getter and Setter Methods */
+	public DeliveryWindow getDeliveryWindow() {
+		return deliveryWindow;
+	}	
+	@JsonProperty(value="deliveryWindow", required=true)
+	public void setDeliveryWindow(DeliveryWindow deliveryWindow) {
+		this.deliveryWindow = deliveryWindow;
+	}	
+
+	public Integer getOasTestAdministrationID() {
+		return oasTestAdministrationID;
 	}
+	@JsonProperty(value="oasTestAdministrationID", required=true)
+	public void setOasTestAdministrationID(Integer oasTestAdministrationID) {
+		this.oasTestAdministrationID = oasTestAdministrationID;
+	}
+	
+	
+	public Integer getOasCustomerId() {
+		return oasCustomerId;
+	}
+	@JsonProperty(value="oasCustomerId", required=true)
+	public void setOasCustomerId(Integer oasCustomerId) {
+		this.oasCustomerId = oasCustomerId;
+	}
+	
+	public Integer getOasTestCatalogId() {
+		return oasTestCatalogId;
+	}
+	@JsonProperty(value="oasTestCatalogId", required=true)
+	public void setOasTestCatalogId(Integer oasTestCatalogId) {
+		this.oasTestCatalogId = oasTestCatalogId;
+	}
+	
+	
+	public String getName() {
+		return name;
+	}
+	@JsonProperty(value="name", required=true)
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
+	public String getProductName() {
+		return productName;
+	}
+	@JsonProperty(value="productName", required=true)
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	
+
+	public Integer getErrorCode() {
+		return _errorCode;
+	}
+	@JsonProperty("errorCode")
+	public void setErrorCode(Integer errorCode) {
+		_errorCode = errorCode;
+	}
+	
+	public String getErrorMessage() {
+		return _errorMessage;
+	}
+	@JsonProperty("errorMessage")
+	public void setErrorMessage(String errorMessage) {
+		_errorMessage = errorMessage;
+	}	
+
 	
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
