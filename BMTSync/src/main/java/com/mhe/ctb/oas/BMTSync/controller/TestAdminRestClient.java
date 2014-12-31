@@ -84,7 +84,7 @@ public class TestAdminRestClient {
 			return;
 		}
 		
-		updateTestAdminStatus(req.getOasTestAdministrationID(), true, "", "");
+		updateTestAdminStatus(req.getOasTestAdministrationID(), success, "", "");
 	}
 	
 	private void updateTestAdminStatus(final Integer testAdminId, final boolean success, final String errorCode, final String errorMessage)
