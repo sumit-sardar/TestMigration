@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
+import com.ctb.bean.testAdmin.ItemResponseAndScore;
 import com.ctb.bean.testAdmin.StudentReportIrsScore;
 import java.sql.Clob;
 
@@ -48,4 +49,7 @@ public interface ImmediateReportingIrs extends JdbcControl{
 	
 	@JdbcControl.SQL(statement = "call wipeout_scoring_after_reset_ts({studentIds},{testAdminId},{contentAreaId}, {contentAreaName})")
     void wipeOutStudentsScoringForTASC(Clob studentIds, Long testAdminId, Long contentAreaId, String contentAreaName) throws SQLException;
+	
+	@JdbcControl.SQL(statement = "SELECT IDIM.OAS_ITEMID AS itemId, TIF.POINTS_OBTAINED AS rawScore, TIF.POINTS_POSSIBLE AS possibleScore FROM {sql: scoreTableName} TIF, ITEM_DIM IDIM WHERE IDIM.ITEMID = TIF.ITEMID AND TIF.SESSIONID = {testAdminId} AND TIF.STUDENTID = {studentId} AND TIF.POINTS_OBTAINED IS NOT NULL",arrayMaxLength = 0, fetchSize=10)
+	ItemResponseAndScore[] getObtainedScoreForItem(String scoreTableName, Integer studentId, Integer testAdminId) throws SQLException;
 }

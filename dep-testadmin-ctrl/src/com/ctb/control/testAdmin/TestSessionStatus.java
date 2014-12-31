@@ -526,4 +526,26 @@ public interface TestSessionStatus
 	com.ctb.bean.testAdmin.SubtestAccessCodeDetail[] getSubtestAccessCodeFromSession(Integer sessionId) throws com.ctb.exception.CTBBusinessException;
 	
 	boolean getLocatorCompletionStatus (Integer studentId , Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+	
+	/**
+	 * 
+	 * @param userName
+	 * @param testRosterId
+	 * @param itemSetIds
+	 * @return
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+	com.ctb.bean.testAdmin.ScoreDetails[] getAllItemSetForRoster(java.lang.String userName, java.lang.Integer testRosterId) throws com.ctb.exception.CTBBusinessException;
+	/**
+	 * 
+	 * @param userName
+	 * @param parentItemSetId
+	 * @param testRosterId
+	 * @param studentId
+	 * @param testAdminId
+	 * @return 
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+	com.ctb.bean.testAdmin.ItemResponseAndScore[]  getScoreElementsForTS(java.lang.String userName,java.lang.String parentItemSetId, java.lang.Integer testRosterId, java.lang.Integer studentId, java.lang.Integer testAdminId, java.lang.String productType) throws com.ctb.exception.CTBBusinessException;
+
 } 

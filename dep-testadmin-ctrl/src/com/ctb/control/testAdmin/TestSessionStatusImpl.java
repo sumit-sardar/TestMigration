@@ -1,14 +1,21 @@
 package com.ctb.control.testAdmin; 
 
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.naming.InitialContext;
@@ -37,6 +44,7 @@ import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.CustomerSDSData;
 import com.ctb.bean.testAdmin.CustomerTestResource;
 import com.ctb.bean.testAdmin.CustomerTestResourceData;
+import com.ctb.bean.testAdmin.ItemResponseAndScore;
 import com.ctb.bean.testAdmin.ItemResponseData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
@@ -45,6 +53,7 @@ import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.ProgramData;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.ScoreDetails;
 import com.ctb.bean.testAdmin.SessionNode;
 import com.ctb.bean.testAdmin.SessionNodeData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
@@ -59,6 +68,8 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.bean.testAdmin.UserParentProductResource;
+import com.ctb.bean.testAdmin.ScoreDetails.DeliveryUnitElement;
+import com.ctb.bean.testAdmin.ScoreDetails.OrderByItemSetOrder;
 import com.ctb.control.jms.QueueSend;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.CustomerConfigurationDataNotFoundException;
@@ -191,14 +202,29 @@ public class TestSessionStatusImpl implements TestSessionStatus
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.TestAdmin admins;
     
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.ImmediateReportingIrs reports;
+    
     static final long serialVersionUID = 1L;
-    
+    private static final Map<String, String> irsItemFactTableMap = new HashMap<String, String>();
+    static{
+    	irsItemFactTableMap.put("TA", "TABE_ITEM_FACT");
+    	irsItemFactTableMap.put("TB", "TABE_ITEM_FACT");
+    	irsItemFactTableMap.put("TC", "TABE_ITEM_FACT");
+    	irsItemFactTableMap.put("TR", "TASC_ITEM_FACT");
+    	irsItemFactTableMap.put("TS", "TASC_ITEM_FACT");
+    	irsItemFactTableMap.put("TV", "TV_ITEM_FACT");
+    	irsItemFactTableMap.put("LL", "LASLINK_ITEM_FACT");
+    }
     private static final int CTB_CUSTOMER_ID =2;
-    
+    private static final String BLANK_VALUE = "--";
     private static final String CUSTOMER_CONFIG_ALLOW_SUBTEST_INVALIDATION = "Allow_Subtest_Invalidation";
     private static final String CUSTOMER_CONFIG_PARTIALLY ="Partially ";
     public static final String CUSTOMER_CONFIG_UPLOAD_DOWNLOAD = "Allow_Upload_Download";
-
+    private String URL_ENCODING = "UTF-8";
     private String jndiFactory = "";
     private String jmsFactory = "";
     private String jmsURL = "";
@@ -2662,5 +2688,475 @@ public class TestSessionStatusImpl implements TestSessionStatus
     	return isAllLocatorCompleted; 
      }
      
+     public ItemResponseAndScore[] getScoreElementsForTS(String userName,String parentItemSetId, Integer testRosterId, Integer studentId,
+			Integer testAdminId, String productType) throws com.ctb.exception.CTBBusinessException
+    {       
+    	ItemResponseAndScore[] responseDetails = null;
+        try{
+        	//get customer query string for various shelf product
+        	String customerClause = getCustomQueryString(productType);
+        	if(customerClause== null) return null; 
+        	responseDetails = itemSet.getScoreElementsForTS(parentItemSetId,testRosterId, customerClause);
+        	if(responseDetails != null){
+        		//get the fact table name by product type
+        		String scoreTableName=getScoreTableName(productType);
+        		if(scoreTableName != null){
+        		ItemResponseAndScore[] scoreDetailList = reports.getObtainedScoreForItem(scoreTableName, studentId, testAdminId);
+        			//create a Map of ItemId and score
+        			Map<String, String> itemScoreMap = new HashMap<String, String>();
+        			if(scoreDetailList != null){
+	        			for(ItemResponseAndScore irs : scoreDetailList){
+	        				itemScoreMap.put(irs.getItemId(), irs.getRawScore());
+	        			}
+        			}
+        			//populate the final responseDetails
+    				for(ItemResponseAndScore res : responseDetails){
+    					String itemId = res.getItemId();
+    					if(("CR".equals(res.getItemType()) && null == res.getItemAnswerArea())
+    							|| "GR".equals(res.getItemType())){
+    						String crResponse;
+							try {
+								crResponse = readOracleClob(res.getCrResponse());
+								if("".equals(crResponse)){
+	        						res.setResponse(("CR".equals(res.getItemType()))?null:TestSessionStatusImpl.BLANK_VALUE);
+	        						res.setRawScore(TestSessionStatusImpl.BLANK_VALUE);
+	        					}else{
+	        						crResponse = java.net.URLDecoder.decode(crResponse, URL_ENCODING);
+	        						
+	        						if("GR".equals(res.getItemType())){
+	        							res.setResponse(crResponse);
+	        						}else{
+		        						String answer = removeXMLTags(crResponse);
+		        						res.setResponse(("".equals(answer))?null:answer);
+	        						}
+	        						
+	        						//set rawscore fetched from irs
+	        						if(itemScoreMap.containsKey(itemId)){
+	            						res.setRawScore(itemScoreMap.get(itemId));
+	            					}else{
+	            						res.setRawScore(TestSessionStatusImpl.BLANK_VALUE);
+	            					}
+	        					}
+							} catch (IOException se) {
+								CTBBusinessException cbe = new RosterDataNotFoundException("TestSessionStatusImpl: getScoreElementsForTS: " + se.getMessage());
+					            cbe.setStackTrace(se.getStackTrace());
+					            throw cbe; 
+							}
+    					}else{
+        					if(res.getResponse() == null || "".equals(res.getResponse())){
+        						res.setResponse(TestSessionStatusImpl.BLANK_VALUE);
+        						res.setRawScore(TestSessionStatusImpl.BLANK_VALUE);
+        					}else{
+        						if(itemScoreMap.containsKey(itemId)){
+            						res.setRawScore(itemScoreMap.get(itemId));
+            					}else{
+            						res.setRawScore(TestSessionStatusImpl.BLANK_VALUE);
+            					}
+        					}
+    					}
+    					
+    					//Arrange the content domain name -- [ Reading Informational Text: Integration of Knowledge and Ideas ] for TASC framework
+    					if("TS".equalsIgnoreCase(productType)||"TR".equalsIgnoreCase(productType)){
+    						String domainName = res.getContentDomain();
+    						if(null != domainName && domainName.contains(":")){
+    							String[] arr = domainName.split(":");
+    							String str="";
+    							for(int indx=0; indx<arr.length; indx++){
+    								if(null != arr[indx]){
+    									if(arr[indx].trim().startsWith("Reading")) domainName = arr[indx].trim();
+        								else str=str.concat(arr[indx].trim());
+    								}
+    							}
+    							domainName = domainName.concat(": "+str);
+    							res.setContentDomain(domainName);
+    						}
+    					}
+    				}
+        		}
+        	}
+            return responseDetails;                  
+        }catch(SQLException se){
+            CTBBusinessException cbe = new RosterDataNotFoundException("TestSessionStatusImpl: getScoreElementsForTS: " + se.getMessage());
+            cbe.setStackTrace(se.getStackTrace());
+            throw cbe;                
+        }        
+    }
+    
+    /**
+     * To append extra condition in query for different product ( Datapoint joining for Item Max Score & Test Form condition )
+     * @param productType
+     * @return
+     */
+    private String getCustomQueryString(String productType) {
+    	StringBuilder queryString = new StringBuilder();
+    	if ("TS".equalsIgnoreCase(productType)
+				|| "TR".equalsIgnoreCase(productType)){
+    		queryString.append(" AND (DP.ITEM_ID, DP.ITEM_SET_ID) IN  ((ITEM.ITEM_ID, OBJ.ITEM_SET_ID)) ");
+    		queryString.append(" AND TR.FORM_ASSIGNMENT = ISET.ITEM_SET_FORM ");
+    	} else if ("TC".equalsIgnoreCase(productType)
+				|| "LL".equalsIgnoreCase(productType)){
+    		queryString.append(" AND TR.FORM_ASSIGNMENT = ISET.ITEM_SET_FORM ");
+    		queryString.append(" AND DP.ITEM_ID = ITEM.ITEM_ID ");
+    	} else if ("TB".equalsIgnoreCase(productType)){
+    		queryString.append(" AND DP.ITEM_ID = ITEM.ITEM_ID ");
+    	} else if ("TA".equalsIgnoreCase(productType)){
+    		queryString.append(" AND DP.ITEM_ID = ITEM.ITEM_ID ");
+    		queryString.append(" AND EXISTS (SELECT 1 FROM ITEM_RESPONSE RES WHERE RES.TEST_ROSTER_ID = TR.TEST_ROSTER_ID AND RES.ITEM_SET_ID = ISET.ITEM_SET_ID AND RES.ITEM_ID = ITEM.ITEM_ID) ");
+    	}else return null;
+    	
+		return queryString.toString();
+	}
+
+	/**
+	 * Read the Clob data
+	 * @param clob
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	private static String readOracleClob(Clob clob) throws SQLException, IOException {
+    	if(clob==null){
+    		return "";
+    	}
+    	// get character stream to retrieve clob data
+        Reader instream = clob.getCharacterStream();
+        StringBuffer sb = new StringBuffer();
+        // create temporary buffer for read
+        char[] buffer = new char[1024];
+
+        // length of characters read
+        int length = 0;
+
+        // fetch data
+        while ((length = instream.read(buffer)) != -1)
+        {
+            sb.append(buffer, 0, length);
+        }
+
+        // Close input stream
+        instream.close();
+
+        return sb.toString();
+    }
+	
+	/**
+	 * Remove XML tags in Constructed Responses
+	 * @param sVal
+	 * @return
+	 */
+	public static String removeXMLTags(String sVal) {
+		String CDATA = "<![CDATA[";
+		String END_CDATA = "]]>";
+		String surveyValue = "";
+		if (sVal.indexOf(CDATA) > 0
+				&& sVal.lastIndexOf(END_CDATA) > 0) {
+			surveyValue = sVal.substring(sVal.indexOf(CDATA) + 9, sVal
+					.lastIndexOf(END_CDATA));
+		}
+		return forHTML(surveyValue);
+	}
+    
+    /**
+     * Get IRS item fact table name by product ID
+     * @param productType
+     * @return String 
+     */
+    private String getScoreTableName(String productType) {
+    	if(TestSessionStatusImpl.irsItemFactTableMap != null && TestSessionStatusImpl.irsItemFactTableMap.containsKey(productType)){
+    		return TestSessionStatusImpl.irsItemFactTableMap.get(productType);
+    	}
+    	return null;
+	}
+
+	
+    public ScoreDetails[]  getAllItemSetForRoster(String userName,Integer testRosterId) throws com.ctb.exception.CTBBusinessException
+    {     
+    	String productType = null;
+    	StringBuilder itemSetBuilder = new StringBuilder(); 
+    	//validator.validateRoster(userName, testRosterId, "TestSessionStatusImpl: getCompletedItemSetIdForRoster");
+    	Map<Integer, ScoreDetails> schedulableMap = new HashMap<Integer, ScoreDetails>();
+        try{
+        	ScoreDetails[] totalItemSets = itemSet.getAllItemSetForRoster(testRosterId);
+        	if(null != totalItemSets){
+        		for(ScoreDetails sd : totalItemSets){
+        			Integer itemSetId = sd.getItemSetId();
+        			if(!schedulableMap.containsKey(itemSetId)){
+        				if(null == productType)productType = sd.getProductType();
+        				ScoreDetails subtest = new ScoreDetails(sd
+								.getItemSetId(), sd.getItemSetName(), sd
+								.getItemSetType(), sd.getItemSetOrder(), sd
+								.getItemSetLevel(), sd.getAccessCode(), sd
+								.getTestSessionName(), sd.getTestName(), sd
+								.getProductType());
+        				List<DeliveryUnitElement> deliverableUnit = new ArrayList<DeliveryUnitElement>();
+        				deliverableUnit.add(new DeliveryUnitElement(sd.getItemSetIdTD(), sd.getItemSetNameTD(), sd.getCompletionStatusTD()));
+        				subtest.setDeliverableUnit(deliverableUnit);
+        				schedulableMap.put(itemSetId, subtest);
+        			}else{
+        				schedulableMap.get(itemSetId).getDeliverableUnit().add(
+								new DeliveryUnitElement(sd.getItemSetIdTD(), sd
+										.getItemSetNameTD(), sd
+										.getCompletionStatusTD()));
+        				
+        			}
+        		}
+        	}
+        	ScoreDetails[] scoreDetails = schedulableMap.values().toArray(new ScoreDetails[schedulableMap.values().size()]);
+			if(null != productType && "TB".equalsIgnoreCase(productType))
+				getSubtestIdsForTABE(itemSetBuilder, scoreDetails, testRosterId); // TABE Locator completion logic call
+			else {
+				for (int i = 0; i < scoreDetails.length; i++) {
+					ScoreDetails sd = scoreDetails[i];
+					if (itemSetBuilder.length() > 0)
+						itemSetBuilder.append(",");
+					itemSetBuilder.append(sd.getItemSetId());
+				}
+			}
+			scoreDetails[0].setTestIds(itemSetBuilder.toString());
+            return scoreDetails;
+        }catch(SQLException se){
+            CTBBusinessException cbe = new RosterDataNotFoundException("TestSessionStatusImpl: getCompletedItemSetIdForRoster: " + se.getMessage());
+            cbe.setStackTrace(se.getStackTrace());
+            throw cbe;                
+        }        
+    }
+    
+    /**
+     * Build a string of comma seperated completed locator sub test id. 
+     * [ If TABE Reading Locator is completed then TABE Reading & TABE Vocabulary sub test Ids will be added to string ] 
+     * @param itemSetIds
+     * @param sds
+     * @param testRosterId
+     */
+	private void getSubtestIdsForTABE(StringBuilder itemSetIds, ScoreDetails[] sds, Integer testRosterId) {
+		String subtestName = null;
+		boolean hasLocator = false;
+		boolean readingLocator = false;
+		boolean computationLocator = false;
+		boolean appliedLocator = false;
+		boolean languageLocator = false;
+		final String READING = "READING";
+		final String LANGUAGE = "LANGUAGE";
+		final String COMPUTATION = "COMPUTATION";
+		final String APPLIED = "APPLIED";
+		final String VOCABULARY = "VOCABULARY";
+		final String MECHANICS = "MECHANICS";
+		
+		Map<String, String> locatorMap = new HashMap<String, String>();
+		Arrays.sort(sds, new OrderByItemSetOrder());
+		for(ScoreDetails sd : sds){
+			subtestName = sd.getItemSetName();
+			
+			if(null != subtestName && subtestName.toUpperCase().contains("LOCATOR")){
+				append(itemSetIds, sd.getItemSetId());
+				hasLocator = true;
+				List<DeliveryUnitElement> locatorSubtestTD = sd.getDeliverableUnit();
+				for(DeliveryUnitElement de : locatorSubtestTD){
+					String locatorSubtestName = de.getItemSetNameTD().toUpperCase();
+					if(locatorSubtestName.contains(READING)){
+						locatorMap.put(READING, READING);
+						if("CO".equalsIgnoreCase(de.getCompletionStatus()))readingLocator = true;
+					}
+					else if(locatorSubtestName.contains(LANGUAGE)){
+						locatorMap.put(LANGUAGE, LANGUAGE);
+						if("CO".equalsIgnoreCase(de.getCompletionStatus()))languageLocator = true;
+					}
+					else if(locatorSubtestName.contains(COMPUTATION)){
+						locatorMap.put(COMPUTATION, COMPUTATION);
+						if("CO".equalsIgnoreCase(de.getCompletionStatus()))computationLocator = true;
+					}
+					else if(locatorSubtestName.contains(APPLIED)){
+						locatorMap.put(APPLIED, APPLIED);
+						if("CO".equalsIgnoreCase(de.getCompletionStatus()))appliedLocator = true;
+					}
+				}
+			}else{
+				if(hasLocator){
+					if(sd.getItemSetName().toUpperCase().contains(READING)|| sd.getItemSetName().toUpperCase().contains(VOCABULARY)){
+						if((locatorMap.containsKey(READING) && readingLocator))
+							append(itemSetIds, sd.getItemSetId());
+						else if (!locatorMap.containsKey(READING))
+							append(itemSetIds, sd.getItemSetId());
+					}
+					else if(sd.getItemSetName().toUpperCase().contains(LANGUAGE) || sd.getItemSetName().toUpperCase().contains(MECHANICS)){
+						if((locatorMap.containsKey(LANGUAGE) && languageLocator))
+							append(itemSetIds, sd.getItemSetId());
+						else if (!locatorMap.containsKey(LANGUAGE))
+							append(itemSetIds, sd.getItemSetId());
+					}
+					else if(computationLocator && sd.getItemSetName().toUpperCase().contains(COMPUTATION)){
+						if((locatorMap.containsKey(COMPUTATION) && computationLocator))
+							append(itemSetIds, sd.getItemSetId());
+						else if (!locatorMap.containsKey(COMPUTATION))
+							append(itemSetIds, sd.getItemSetId());
+					}
+					else if(appliedLocator && sd.getItemSetName().toUpperCase().contains(APPLIED)){
+						if((locatorMap.containsKey(APPLIED) && appliedLocator))
+							append(itemSetIds, sd.getItemSetId());
+						else if (!locatorMap.containsKey(APPLIED))
+							append(itemSetIds, sd.getItemSetId());
+					}
+				}else{
+					append(itemSetIds, sd.getItemSetId());
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Append to stringbuilder with comma separated
+	 * @param itemSetIds
+	 * @param itemSetID
+	 */
+	private void append(StringBuilder itemSetIds, Integer itemSetID){
+		if(itemSetIds.length()>0)itemSetIds.append(",");
+		itemSetIds.append(itemSetID);
+	}
+	
+	/**
+    Escape characters for text appearing in HTML markup.
+    
+    This method exists as a defence against Cross Site Scripting (XSS) hacks.
+    The idea is to neutralize control characters commonly used by scripts, such that
+    they will not be executed by the browser. This is done by replacing the control
+    characters with their escaped equivalents.
+    
+    <P>The following characters are replaced with corresponding 
+    HTML character entities :
+    <table border='1' cellpadding='3' cellspacing='0'>
+    <tr><th> Character </th><th>Replacement</th></tr>
+    <tr><td> < </td><td> &lt; </td></tr>
+    <tr><td> > </td><td> &gt; </td></tr>
+    <tr><td> & </td><td> &amp; </td></tr>
+    <tr><td> " </td><td> &quot;</td></tr>
+    <tr><td> \t </td><td> &#009;</td></tr>
+    <tr><td> ! </td><td> &#033;</td></tr>
+    <tr><td> # </td><td> &#035;</td></tr>
+    <tr><td> $ </td><td> &#036;</td></tr>
+    <tr><td> % </td><td> &#037;</td></tr>
+    <tr><td> ' </td><td> &#039;</td></tr>
+    <tr><td> ( </td><td> &#040;</td></tr> 
+    <tr><td> ) </td><td> &#041;</td></tr>
+    <tr><td> * </td><td> &#042;</td></tr>
+    <tr><td> + </td><td> &#043; </td></tr>
+    <tr><td> , </td><td> &#044; </td></tr>
+    <tr><td> - </td><td> &#045; </td></tr>
+    <tr><td> . </td><td> &#046; </td></tr>
+    <tr><td> / </td><td> &#047; </td></tr>
+    <tr><td> : </td><td> &#058;</td></tr>
+    <tr><td> ; </td><td> &#059;</td></tr>
+    <tr><td> = </td><td> &#061;</td></tr>
+    <tr><td> ? </td><td> &#063;</td></tr>
+    <tr><td> @ </td><td> &#064;</td></tr>
+    <tr><td> [ </td><td> &#091;</td></tr>
+    <tr><td> \ </td><td> &#092;</td></tr>
+    <tr><td> ] </td><td> &#093;</td></tr>
+    <tr><td> ^ </td><td> &#094;</td></tr>
+    <tr><td> _ </td><td> &#095;</td></tr>
+    <tr><td> ` </td><td> &#096;</td></tr>
+    <tr><td> { </td><td> &#123;</td></tr>
+    <tr><td> | </td><td> &#124;</td></tr>
+    <tr><td> } </td><td> &#125;</td></tr>
+    <tr><td> ~ </td><td> &#126;</td></tr>
+    </table>
+    
+    <P>Note that JSTL's {@code <c:out>} escapes <em>only the first 
+    five</em> of the above characters.
+   */
+   public static String forHTML(String aText) {
+		final StringBuilder result = new StringBuilder();
+		final StringCharacterIterator iterator = new StringCharacterIterator(
+				aText);
+		char character = iterator.current();
+		while (character != CharacterIterator.DONE) {
+			if (character == '<') {
+				result.append("&lt;");
+			} else if (character == '>') {
+				result.append("&gt;");
+			} else if (character == '&') {
+				result.append("&amp;");
+			} else if (character == '\"') {
+				result.append("&quot;");
+			} else if (character == '\t') {
+				addCharEntity(9, result);
+			} else if (character == '!') {
+				addCharEntity(33, result);
+			} else if (character == '#') {
+				addCharEntity(35, result);
+			} else if (character == '$') {
+				addCharEntity(36, result);
+			} else if (character == '%') {
+				addCharEntity(37, result);
+			} else if (character == '\'') {
+				addCharEntity(39, result);
+			} else if (character == '(') {
+				addCharEntity(40, result);
+			} else if (character == ')') {
+				addCharEntity(41, result);
+			} else if (character == '*') {
+				addCharEntity(42, result);
+			} else if (character == '+') {
+				addCharEntity(43, result);
+			} else if (character == ',') {
+				addCharEntity(44, result);
+			} else if (character == '-') {
+				addCharEntity(45, result);
+			} else if (character == '.') {
+				addCharEntity(46, result);
+			} else if (character == '/') {
+				addCharEntity(47, result);
+			} else if (character == ':') {
+				addCharEntity(58, result);
+			} else if (character == ';') {
+				addCharEntity(59, result);
+			} else if (character == '=') {
+				addCharEntity(61, result);
+			} else if (character == '?') {
+				addCharEntity(63, result);
+			} else if (character == '@') {
+				addCharEntity(64, result);
+			} else if (character == '[') {
+				addCharEntity(91, result);
+			} else if (character == '\\') {
+				addCharEntity(92, result);
+			} else if (character == ']') {
+				addCharEntity(93, result);
+			} else if (character == '^') {
+				addCharEntity(94, result);
+			} else if (character == '_') {
+				addCharEntity(95, result);
+			} else if (character == '`') {
+				addCharEntity(96, result);
+			} else if (character == '{') {
+				addCharEntity(123, result);
+			} else if (character == '|') {
+				addCharEntity(124, result);
+			} else if (character == '}') {
+				addCharEntity(125, result);
+			} else if (character == '~') {
+				addCharEntity(126, result);
+			} else {
+				// the char is not a special one
+				// add it to the result as is
+				result.append(character);
+			}
+			character = iterator.next();
+		}
+		return result.toString();
+	}
+   
+   private static void addCharEntity(Integer aIdx, StringBuilder aBuilder) {
+		String padding = "";
+		if (aIdx <= 9) {
+			padding = "00";
+		} else if (aIdx <= 99) {
+			padding = "0";
+		} else {
+			//no prefix
+		}
+		String number = padding + aIdx.toString();
+		aBuilder.append("&#" + number + ";");
+   }
+	
      
 } 
