@@ -61,7 +61,7 @@ public class AssignmentRestClient {
 				// in BMTSYN_ASSIGNMENT_STATUS table
 				processResponses(testAssignment, assignmentResponse, false);
 			} catch (Exception e) {
-				logger.error("Error attempting to process assignement responses.", e);
+				logger.error("Error attempting to process assignment responses.", e);
 			}
 		} catch (Exception e) {
 			logger.error("Error in AssignmentRestClient class : "+e.getMessage(), e);

@@ -49,8 +49,8 @@
 		<constructor-arg index="0" ref="oasDataSource" />
 	</bean>
 
-	<bean id="testAssignmentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.AssignmentRestClient">
-		<constructor-arg index="0" ref="testAssignmentDAO" />
+	<bean id="testAdminDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestAdminDAO">
+		<constructor-arg index="0" ref="oasDataSource" />
 	</bean>
 
 	<bean id="transactionManager"

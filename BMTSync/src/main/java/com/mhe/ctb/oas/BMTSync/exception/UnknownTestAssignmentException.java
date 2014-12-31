@@ -9,7 +9,7 @@ public class UnknownTestAssignmentException extends Exception {
 
 	public UnknownTestAssignmentException(long testAdminId, long studentId)
 	{
-		super(String.format("Unknown Test Assignment Exception for Test Admin id (%s), Student id(%s)",testAdminId, studentId));
+		super(String.format("Unknown Test Assignment. [testAdminId=%d,studentId=%d]",testAdminId, studentId));
 	}	
 
 }

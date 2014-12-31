@@ -64,6 +64,10 @@
 	<bean id="testAssignmentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestAssignmentDAO">
 		<constructor-arg index="0" ref="oasDataSource" />
 	</bean>
+	
+	<bean id="testAdminDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestAdminDAO">
+		<constructor-arg index="0" ref="oasDataSource" />
+	</bean>
 
 	<!-- Set up the REST clients. -->
 	<bean id="studentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.StudentRestClient">
@@ -74,11 +78,14 @@
 		<constructor-arg index="0" ref="testAssignmentDAO" />
 	</bean>
 	
+	<bean id="testAdminRestClient" class="com.mhe.ctb.oas.BMTSync.controller.TestAdminRestClient">
+		<constructor-arg index="0" ref="testAdminDAO" />
+	</bean>
+	
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true">
 		<property name="dataSource" ref="oasDataSource" />
 	</bean>
-
 
 	<!-- Setup the JMS Connection -->
 	<orcl:aq-jms-connection-factory id="jmsConnectionFactory"
@@ -109,6 +116,11 @@
 		<constructor-arg index="0" value="100"/>
 		<constructor-arg index="1" value="15000"/>
 	</bean>
+
+	<bean id="bmtTestAdminBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
+		<constructor-arg index="0" value="100"/>
+		<constructor-arg index="1" value="15000"/>
+	</bean>
 		
 	<!-- Message delegates. -->
 	<bean id="studentMessageDelegate" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
@@ -119,6 +131,10 @@
 		<constructor-arg ref="bmtTestAssignmentBlockingQueue" />
 	</bean>
 	
+	<bean id="testAdminMessageDelegate" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
+		<constructor-arg ref="bmtTestAdminBlockingQueue" />
+	</bean>
+
 	<bean id="studentMessageConverter"
 		class="org.springframework.data.jdbc.jms.support.converter.oracle.MappingAdtMessageConverter">
 		<constructor-arg>
@@ -150,6 +166,21 @@
 		</constructor-arg>
 	</bean>
 
+	<bean id="testAdminMessageConverter"
+		class="org.springframework.data.jdbc.jms.support.converter.oracle.MappingAdtMessageConverter">
+		<constructor-arg>
+			<bean
+				class="org.springframework.data.jdbc.jms.support.oracle.StructDatumMapper">
+				<constructor-arg index="0" value="OAS.BMTSYNC_TESTADMIN_TYP" />
+				<constructor-arg index="1">
+					<bean class="org.springframework.data.jdbc.support.oracle.BeanPropertyStructMapper">
+						<constructor-arg value="com.mhe.ctb.oas.BMTSync.spring.jms.TestAdminMessageType"/>
+					</bean>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+	</bean>
+
 	<!-- Route the message on receiving -->
 	<jms:listener-container connection-factory="jmsConnectionFactory"
 		concurrency="${jms.bmt.threads:1-4}"
@@ -171,6 +202,16 @@
 		<jms:listener destination="${jms.bmt.testAssignmentPublishQueue}" ref="testAssignmentMessageDelegate" method="handleMessage" />
 	</jms:listener-container>
 
+	<jms:listener-container connection-factory="jmsConnectionFactory"
+		concurrency="${jms.bmt.threads:1-4}"
+		destination-type="queue"
+		transaction-manager="transactionManager"
+		message-converter="testAdminMessageConverter"
+		container-class="org.springframework.data.jdbc.jms.listener.oracle.AdtMessageListenerContainer"
+		>
+		<jms:listener destination="${jms.bmt.testAdminPublishQueue}" ref="testAdminMessageDelegate" method="handleMessage" />
+	</jms:listener-container>
+
 	<!--  Setup the configuration to send the message -->
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 	  <property name="connectionFactory" ref="jmsConnectionFactory"/> 
@@ -188,6 +229,12 @@
 			class="com.mhe.ctb.oas.BMTSync.spring.poller.BMTTestAssignmentBlockingQueuePoller" depends-on="bmtTestAssignmentBlockingQueue">
 		<constructor-arg index="0" ref="bmtTestAssignmentBlockingQueue" /> 
 		<constructor-arg index="1" ref="testAssignmentRestClient" />
+	</bean>
+
+	<bean id="bmtTestAdminBlockingQueuePoller"
+			class="com.mhe.ctb.oas.BMTSync.spring.poller.BMTTestAdminBlockingQueuePoller" depends-on="bmtTestAdminBlockingQueue">
+		<constructor-arg index="0" ref="bmtTestAdminBlockingQueue" /> 
+		<constructor-arg index="1" ref="testAdminRestClient" />
 	</bean>
 
 	<!--  ==[ END JMS Setup ]================================================================== -->
