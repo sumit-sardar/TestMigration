@@ -8,6 +8,7 @@ import java.util.Map;
 import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
+import com.ctb.bean.testAdmin.ScoreDetails;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 import com.ctb.testSessionInfo.dto.UserProfileInformation;
 
@@ -60,6 +61,7 @@ public class Base {
 	private List assignFormList; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
 	private boolean hasShowRosterAccomAndHierarchyConfig;
 	private boolean  viewStatusForTABEAdult;
+	private List<ScoreDetails> subtestScoreElements;
 	
 	
 	public boolean isViewStatusForTABEAdult() {
@@ -396,6 +398,17 @@ public class Base {
 	public void setTabeCCSSSession(boolean isTabeCCSSSession) {
 		this.isTabeCCSSSession = isTabeCCSSSession;
 	}
-
+	/**
+	 * @return the subtestScoreDetails
+	 */
+	public List<ScoreDetails> getSsubtestScoreElements() {
+		return subtestScoreElements;
+	}
+	/**
+	 * @param subtestScoreDetails the subtestScoreDetails to set
+	 */
+	public void setSubtestScoreElements(List<ScoreDetails> subtestScoreElements) {
+		this.subtestScoreElements = subtestScoreElements;
+	}
 	
 }

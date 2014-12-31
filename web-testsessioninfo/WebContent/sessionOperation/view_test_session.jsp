@@ -1,10 +1,15 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="label.tld" prefix="lb" %>
 <lb:bundle baseName="testsessionApplicationResource" />
 <netui-data:declareBundle bundlePath="webResources" name="web" />
 
+<%
+	Boolean hasViewResponseResultConf = (Boolean)session.getAttribute("hasViewResponseResultConf");
+	System.out.println(">> hasViewResponseResultConf :: "+ hasViewResponseResultConf);
+%>
 <div id="viewTestSessionId"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 <br>
 
@@ -21,6 +26,14 @@
 			<jsp:include page="/sessionOperation/view_subtest_details.jsp" />
 		</div>
 	</div>
+	<c:if test="${hasViewResponseResultConf}">
+		<div id="scoreDetailsSectionId">
+			<h3 id="subtestSectionHeader"><a href="#"><lb:label key="viewStatus.score.title" /></a></h3>
+			<div id="View_Score" style="background-color: #FFFFFF; overflow-x: hidden !important; overflow-y: scroll !important;">
+				<jsp:include page="/sessionOperation/view_score_details.jsp" />
+			</div>
+		</div>
+	</c:if>
 	<div>
 		<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
 			<tbody>

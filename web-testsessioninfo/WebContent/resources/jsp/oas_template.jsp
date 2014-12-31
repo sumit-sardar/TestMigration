@@ -61,6 +61,7 @@ clear: both;
     <link href="<%=request.getContextPath()%>/resources/css/menu.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/popup_menu.css" rel="stylesheet" type="text/css" />
     <link href="<%=request.getContextPath()%>/resources/css/editSubtest.css" type="text/css" rel="stylesheet" />
+    <link href="<%=request.getContextPath()%>/resources/css/jquery.sliderTabs.css" type="text/css" rel="stylesheet" />
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.6.2.min.js"></script>
@@ -93,6 +94,7 @@ clear: both;
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/editSubtestTest.js"></script>  
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/modifyStudentManifest.js"></script>  
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/emetricfile.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.sliderTabs.js"></script>
   	
 	<script type="text/javascript">
 	var SelectedUserId;

@@ -48,6 +48,7 @@ import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.EditCopyStatus;
+import com.ctb.bean.testAdmin.ItemResponseAndScore;
 import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
@@ -59,6 +60,7 @@ import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.ScheduledStudentDetailsWithManifest;
+import com.ctb.bean.testAdmin.ScoreDetails;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.SessionStudentData;
 import com.ctb.bean.testAdmin.StudentManifest;
@@ -81,14 +83,15 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.bean.testAdmin.ScoreDetails.OrderByItemSetOrder;
+import com.ctb.bean.testAdmin.ScoreDetails.ResponseResultDetails;
+import com.ctb.control.db.OrgNode;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
 import com.ctb.exception.testAdmin.ManifestUpdateFailException;
 import com.ctb.exception.testAdmin.TransactionTimeoutException;
 import com.ctb.exception.validation.ValidationException;
-import com.ctb.util.HMACQueryStringEncrypter;
 import com.ctb.testSessionInfo.data.SubtestVO;
-import com.ctb.testSessionInfo.data.TestVO;
 import com.ctb.testSessionInfo.dto.Message;
 import com.ctb.testSessionInfo.dto.MessageInfo;
 import com.ctb.testSessionInfo.dto.PasswordInformation;
@@ -122,9 +125,10 @@ import com.ctb.util.ValidationFailedInfo;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
-import com.ctb.control.db.OrgNode;
-import com.ctb.control.db.StudentItemSetStatus;
+import com.google.gson.GsonBuilder;
 
 
 
@@ -269,6 +273,7 @@ public class SessionOperationController extends PageFlowController {
 	private boolean disableStudentIndividualAndMultipleTestTicket = false;
    /* Changes for DEX Story - Add intermediate screen : End */
 	private boolean hasDefaultTestingWindowConfig = false; //Added for user story : GA – TAS default new session duration to 5 days
+	private boolean hasViewResponseResultConf = false; //Added for user story : 
    
 	private boolean hasShowRosterAccomAndHierarchy = false;
 	public LinkedHashMap getTimeZoneOptions() {
@@ -5337,6 +5342,11 @@ public class SessionOperationController extends PageFlowController {
 				        	//do nothing
 				        }
 				}
+				if(cc.getCustomerConfigurationName().equalsIgnoreCase("View_Response_Result") && 
+						null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
+					this.hasViewResponseResultConf = true;
+					this.getSession().setAttribute("hasViewResponseResultConf", this.hasViewResponseResultConf);
+				}
 			}
 			this.isTASCCustomer = isTASCCustomer(customerConfigurations);		
 			this.isTASCReadinessCustomer = isTASCReadinessCustomer(customerConfigurations);
@@ -7314,6 +7324,35 @@ public class SessionOperationController extends PageFlowController {
 					e.printStackTrace();
 				}
 			}
+		
+		/**
+		 * Pass Gson object to create json data
+		 * @param base
+		 * @param gson
+		 */
+		private void createGson(Base base, Gson gson) {
+		OutputStream stream = null;
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+			try {
+				try {
+					String json = gson.toJson(base);
+					resp.setContentType("application/json");
+					resp.flushBuffer();
+					stream = resp.getOutputStream();
+					stream.write(json.getBytes());
+	
+				} finally {
+					if (stream != null) {
+						stream.close();
+					}
+				}
+	
+			} catch (Exception e) {
+				System.err.println("Exception while retrieving json data");
+				e.printStackTrace();
+			}
+		}
 		 
 		public List getStudentStatusSubtests() {
 			return studentStatusSubtests;
@@ -7819,8 +7858,118 @@ public class SessionOperationController extends PageFlowController {
 		    	this.getSession().setAttribute("tabeLocatorOnlyTest", this.isTABELocatorOnlyTest);
 		    	 // System.out.println("getSession().getAttribute"+getSession().getAttribute("isTABE"));
 		        return new Forward("success");
+		    }			
+		    
+		    
+		    /**
+		     * @jpf:action
+		     * @jpf:forward name="success" path="view_scores_detail.jsp"
+		     */ 
+		    @Jpf.Action(forwards = { 
+			        @Jpf.Forward(name = "success",
+			                     path = "view_score_details.jsp")
+			    })
+		    protected Forward getScoreDetails() {
+		    	Integer testRosterID = Integer.valueOf(getRequest().getParameter("testRosterId"));		    	
+		    	Base base = prepareScoreListDetailInformation(testRosterID);
+		    	//Create a Gson object with field exclusion strategy:
+		    	Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy(){
+					@Override
+					public boolean shouldSkipClass(Class<?> arg0) {
+						return false;
+					}
+					@Override
+					public boolean shouldSkipField(FieldAttributes arg0) {
+						return (arg0.getName() == "deliverableUnit" || arg0.getName() == "itemSetIdTD" ||
+								arg0.getName() == "itemSetNameTD" || arg0.getName() == "completionStatusTD" || arg0.getName() == "testIdsToBeShown");
+					}
+		    		
+		    	}).serializeNulls().create();
+		    	createGson(base, gson);
+		        return null;
 		    }
-			
+		    
+		    private Base prepareScoreListDetailInformation(Integer testRosterID) {
+		    	Base base = new Base();
+		        RosterElement re = getTestRosterDetails(testRosterID);
+		        List<ScoreDetails> sdForAllSubtests = buildStudentStatusScore(this.sessionId,re);
+		        base.setStudentName(re.getFirstName() + " " + re.getLastName());
+		        base.setLoginName(re.getUserName());
+		        base.setPassword(re.getPassword());
+		        base.setTestStatus(FilterSortPageUtils.testStatus_CodeToString(re.getTestCompletionStatus()));
+		        base.setTestName(sdForAllSubtests.get(0).getTestName());
+		        base.setTestSessionName(sdForAllSubtests.get(0).getTestSessionName());
+	            base.setTestLevel(sdForAllSubtests.get(0).getItemSetLevel());
+	            base.setSubtestScoreElements(sdForAllSubtests);
+		    	return base;
+			}
+		    
+		    private List<ScoreDetails> buildStudentStatusScore(Integer testAdminId,	RosterElement re) {
+				Integer testRosterId = re.getTestRosterId();
+				Integer studentId = re.getStudentId();
+				List<ScoreDetails> scoreList = new ArrayList<ScoreDetails>();
+				
+				ScoreDetails[] scoreDetails = getAllItemSetForRoster(this.userName,	testRosterId);
+				String itemSetIds = scoreDetails[0].getTestIds();
+				String productType = scoreDetails[0].getProductType();
+				if(null != itemSetIds && null != productType){
+					ItemResponseAndScore[] itemRespone = getScoreElementsForTS(
+							this.userName, itemSetIds, testRosterId, studentId,
+							testAdminId, productType);
+					if (itemRespone != null) {
+						for (int i = 0; i < scoreDetails.length; i++) {
+							ScoreDetails sd = scoreDetails[i];
+							int pointsObtained=0, pointsPossible=0;
+							List<ResponseResultDetails> responseList = new ArrayList<ResponseResultDetails>();
+							for (int j = 0; j < itemRespone.length; j++) {
+								ItemResponseAndScore obj = itemRespone[j];
+								if (sd.getItemSetId().intValue() == obj.getItemSetIdTS().intValue()) {
+									responseList.add(new ResponseResultDetails(obj));
+									if(null != obj.getRawScore() && !"--".equalsIgnoreCase(obj.getRawScore())){
+										pointsObtained+=Integer.valueOf(obj.getRawScore()).intValue();
+									}
+									if(null != obj.getPossibleScore()){
+										pointsPossible+=Integer.valueOf(obj.getPossibleScore()).intValue();
+									}
+								}
+							}
+							sd.setResponseStatus(pointsObtained, pointsPossible);
+							sd.setResponseList(responseList.toArray(new ResponseResultDetails[responseList.size()]));
+							scoreList.add(sd);
+						}
+					}
+				}
+				Collections.sort(scoreList, new OrderByItemSetOrder());
+				return scoreList;
+			}
+		
+
+			private ScoreDetails[] getAllItemSetForRoster(String userName, Integer testRosterId) {
+				ScoreDetails[] itemSetDetails = null;
+				try {
+					itemSetDetails = this.testSessionStatus.getAllItemSetForRoster(
+							userName, testRosterId);
+				} catch (CTBBusinessException be) {
+					be.printStackTrace();
+				}
+				return itemSetDetails;
+			}
+		
+			private ItemResponseAndScore[] getScoreElementsForTS(String userName,
+					String parentItemSetId, Integer testRosterId, Integer studentId,
+					Integer testAdminId, String productType) {
+		
+				ItemResponseAndScore[] scoreList = null;
+				try {
+					scoreList = this.testSessionStatus.getScoreElementsForTS(userName,
+							parentItemSetId, testRosterId, studentId, testAdminId, productType);
+				} catch (CTBBusinessException be) {
+					be.printStackTrace();
+				}
+				return scoreList;
+			}
+		    
+					    
 			/**
 		     * @jpf:action
 		     * @jpf:forward name="success" path="view_subtests_detail.jsp"

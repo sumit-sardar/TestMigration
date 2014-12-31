@@ -29,6 +29,8 @@ function JT_show(url,linkId,title){
 	$('#' + linkId).css('cursor','pointer');
 	}
 	
+	if(document.getElementById('JT') != undefined && document.getElementById('JT') != null)return false;	
+	
 	if(hasArea>((params['width']*1)+75)){
 		$("body").append("<div id='JT' style='width:"+params['width']*1+"px'><div id='JT_arrow_left'></div><div id='JT_close_left'>"+title+"</div><div id='JT_copy'><div class='JT_loader'><div></div></div>");//right side
 		var arrowOffset = getElementWidth(linkId) + 11;

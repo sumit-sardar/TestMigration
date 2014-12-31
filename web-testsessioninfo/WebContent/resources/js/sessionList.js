@@ -164,6 +164,7 @@ var reTime = "";
 var reTestLocation = "";
 var isReSetValue = true;
 var newProductLicenseEnabled;
+var itemCRResponseMap; // Added for item and CR response map in view status 
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -4770,7 +4771,24 @@ function registerDelegate(tree){
 					if($.trim(selectedTestRosterId) != "") {
 						viewSubtestDetails(index);
 					}
-				  } else {
+				  } else if($(this).parent().attr("id") == 'scoreDetailsSectionId') {
+				  	$("#scoreLoginName").text("");
+					$("#scorePassword").text("");					
+					$("#scoreTestAdminName_acco").text("");
+					$("#scoreTestName").text("");
+					$("#scoreTestStatus").text("");
+					$("#scoreTestGrade").text("");
+					$("#scoreTestLevel").text("");
+					$("#scoreTestGradeRow").hide();
+					$("#scoreTestLevelRow").hide();
+					$("#scoreToggleValidationSubTest").hide();
+					$("#scoreToggleExemtionSubTest").hide();
+					$("#scoreToggleAbsentSubTest").hide();
+					$("#scoreList").html("");
+					if($.trim(selectedTestRosterId) != "") {					
+						viewScoreDetails(index);
+					}
+				  }else {
 					statusWizard.accordion("activate", index);
 					$("#rosterList").closest(".ui-jqgrid-bdiv").scrollTop(scrollPosition);
 				  }
@@ -4806,6 +4824,7 @@ function registerDelegate(tree){
 	function setPopupPositionViewStatus(){
 		$("#View_Roster").css("height",'400px');
 		$("#View_Subtest").css("height",'400px');
+		$("#View_Score").css("height",'400px');
 		var toppos = ($(window).height() - 650) /2 + 'px';
 		var leftpos = ($(window).width() - 1024) /2 + 'px';
 		$("#viewTestSessionId").parent().css("top",toppos);
@@ -4833,6 +4852,7 @@ function registerDelegate(tree){
 		pageSizeSelected = 10;	
 		isPagesizeLabelpopulated = false;
 		rosterFormMapOld.clear();
+		if(itemCRResponseMap != undefined)itemCRResponseMap.clear();
 	}
 	
 	function populateRosterList() {
@@ -7002,4 +7022,169 @@ function validNumber(str){
 			}
 		}
 		return true;
+	}
+	
+	function viewScoreDetails(index) {
+    	var postDataObject = {};
+ 		postDataObject.testRosterId = selectedTestRosterId;
+ 		
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'getScoreDetails.do',
+			type:		'POST',
+			dataType:	'json',
+			data:		postDataObject,			
+			success:	function(data, textStatus, XMLHttpRequest){
+							var responseData = data.subtestScoreElements;
+							var productType;
+							$("#scoreLoginName").text(data.loginName);
+							$("#scorePassword").text(data.password);
+							$("#testAdminName").text(data.testSessionName);
+							$("#scoreTestAdminName_acco").text(data.testSessionName);
+							$("#scoreTestName").text(data.testName);
+							$("#scoreTestStatus").text(data.testStatus);
+							if(data.testLevel != null) {
+								$("#scoreTestLevelRow").show();
+								$("#scoreTestLevel").text(data.testLevel);
+							}
+							itemCRResponseMap = new Map();
+							var html ='';							
+            				var row = ""; 
+            				var unitList = "";
+            				var list = "";  
+            				var nullValue = "--";
+            				html = '<div id="subtestTabs"> <ul style="width:auto;">'
+            				for(var i=0; i<responseData.length; i++) {
+            					row = responseData[i];
+            					if(productType == undefined || productType == null)
+            						productType = row.productType;
+            					if(row != undefined && row != null){
+            						html += '<li style="float:left;white-space:nowrap;"><a href="#header'+row.itemSetId+'" targetID="#header'+row.itemSetId+'">'+row.itemSetName+'</a></li>';
+            					}
+            				}
+            				html += '</ul>';
+							for(var i=0; i<responseData.length; i++) {
+								row = responseData[i];															
+								html += '<div id="header'+row.itemSetId+'">';
+								html += '<span id="accessCode'+row.itemSetId+'" style="color: #2e6e9e; font-weight: bold;">Test access code: ( '+row.accessCode+' )</span>';
+								//html += '<span id="itemCount'+row.itemSetId+'" style="color: #2e6e9e; font-weight: bold; float:right;">Total items count: ( '+row.responseList.length+' )</span>';
+								html += '<span id="itemCount'+row.itemSetId+'" style="color: #2e6e9e; font-weight: bold; float:right;">'+row.responseStatus+'</span>';
+								html += '<table id="scoretable'+row.itemSetId+'" class="gridTable"></table>';
+								html += '<div id="scorePager'+row.itemSetId+'" class="gridTable"></div>';
+								html += '</div>';
+							}
+							html += '</div>';
+							$("#scoreListDetails").html(html);
+							$("#subtestTabs").sliderTabs();
+							
+							for(var i=0; i<responseData.length; i++){
+								row = responseData[i];
+								var rowData = row.responseList;
+								if(rowData != null && rowData != undefined){
+									var grid = '#scoretable'+row.itemSetId;
+    								var pagerid = '#scorePager'+row.itemSetId;
+    								createItemDetailsTable(grid, pagerid, rowData, productType);
+								}
+							}
+							statusWizard.accordion("activate", index);	
+							
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){			
+						$.unblockUI();
+						window.location.href="/SessionWeb/logout.do";
+						},
+			complete :  function(){							
+							$.unblockUI();
+						}
+		});
+		setPopupPositionViewStatus();
+    }
+    
+    function createItemDetailsTable(grid, pagerid, obj, productType){
+    	var mydata = obj;
+    	$(grid).jqGrid({   
+			data: mydata,   
+			datatype: "local",
+			colNames:[ $("#itemOrderLbl").val(), $("#itemTypeLbl").val(), $("#itemRowScoreLbl").val(), $("#itemResponseLbl").val(), $("#contentDomainLbl").val(),],
+			colModel:[
+				{name:"itemOrder",index:"itemOrder", width: 120, editable: false, align:"center",sorttype:'number', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+				{name:"itemType",index:"itemType", width: 100, editable: false, align:"center", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+				{name:"rawScore",index:"rawScore", width: 120, editable: false, align:"center",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+				{name:"response",index:"response", width: 120, editable: false, align:"center",sorttype:'text', sortable:true, formatter:crResponseFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+				{name:"contentDomain",index:"contentDomain", width: 370, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+					],
+			jsonReader: { 
+			    repeatitems : false,
+			    id: "itemId"			    
+			    },
+			rowNum:10,
+			pager: pagerid, 
+			sortname: "itemOrder",
+			viewrecords: true, 
+			sortorder: "asc",
+			caption: $("#scoreTableTitle").val(),
+			onSelectRow: function() {return false;},
+			height: 162,
+			width: 900,
+			loadonce : true,
+			onPaging: function() {
+				var reqestedPage = parseInt($(grid).getGridParam("page"));
+				var pageid = pagerid.replace('#','#sp_1_');
+				var maxPageSize = parseInt($(pageid).text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$(grid).setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$(grid).setGridParam({"page": minPageSize});
+				}
+			},
+			loadComplete: function () {
+				if ($(grid).getGridParam('records') === 0) {
+					$(grid).append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+					if(productType != undefined && productType == "TB")
+						$(grid).append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#locatorNotCompleted").val()+"</th></tr></tbody></table></td></tr>");
+					else if(productType != undefined && productType == "TA")
+						$(grid).append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#subtestNotCompleted").val()+"</th></tr></tbody></table></td></tr>");
+				}
+			}
+		});
+		//jQuery(grid).navGrid(pagerid,{del:false,add:false,edit:false,view:false,search:true,refresh:false});
+    }
+    
+    function crResponseFormatter(cellvalue, options, rowObject){
+		var val = cellvalue;
+		if('CR' == rowObject.itemType){
+			if(rowObject.response != undefined && rowObject.response != null){
+				var temp = rowObject.response.replace(/\n/g,'<br/>');
+				itemCRResponseMap.put(rowObject.itemId, temp);
+				val = "<a id='"+rowObject.itemId+"' href='#' style='color:blue; text-decoration:underline;' onClick = 'javascript:scoreResponsePopup(this); return false;'>Response</a>";
+			}else{
+				val = "<a href='#' style='color:#999999; text-decoration:underline; pointer-events: none; cursor: default;'>Response</a>";
+			}
+		}else{
+		    val = cellvalue;
+		}
+		return val;		
+	}
+	
+	function scoreResponsePopup(event){
+		$("#responseMessage").html(itemCRResponseMap.get(event.id));
+		$("#scoreResponsePopup").dialog({  
+				title:$("#scoreResponseTitle").val(),  
+				resizable:false,
+				autoOpen: true,
+				width: '800px',				
+				modal: true,
+				closeOnEscape: false,
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+			});	
+	}
+	
+	function closeScoreResponsePopup(){
+		closePopUp('scoreResponsePopup');
+		$("#responseMessage").text('');
 	}
