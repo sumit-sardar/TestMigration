@@ -18,7 +18,7 @@ import com.mhe.ctb.oas.BMTSync.model.Student.Accommodations;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:com/mhe/ctb/oas/BMTSync/dao/spring-jdbc-qa.xml")
-public class DAOTest {
+public class TestSpringStudentDAO {
 
 	@Autowired
 	private SpringStudentDAO _studentDao;

@@ -14,9 +14,6 @@ public class StudentTests {
 	private static final long EPOCH = 1411516800000L;
 	private static final Date TEST_DATE = new Date(EPOCH);
 	
-
-	
-	
 	private Student1 generateStudent()
 	{
 		String[] studentIds = {"ID1", "ID2"};

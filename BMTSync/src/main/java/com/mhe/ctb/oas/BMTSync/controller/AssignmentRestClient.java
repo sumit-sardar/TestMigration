@@ -2,9 +2,9 @@ package com.mhe.ctb.oas.BMTSync.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.mhe.ctb.oas.BMTSync.dao.TestAssignmentDao;
 import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
 import com.mhe.ctb.oas.BMTSync.model.StudentRosterResponse;
 import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
@@ -22,7 +21,8 @@ import com.mhe.ctb.oas.BMTSync.spring.dao.TestAssignmentDAO;
 
 public class AssignmentRestClient {
 	static private Logger logger = Logger.getLogger(AssignmentRestClient.class);
-	String errorMsg;
+	
+	private static final int ERROR_MESSAGE_LENGTH = 200;
 	
 	TestAssignmentDAO testAssignmentDAO;
 	
@@ -44,8 +44,7 @@ public class AssignmentRestClient {
 
 		try {
 			// Connects to OAS DB and return students related data 
-			TestAssignmentDao testAssignmentDao = new TestAssignmentDao();			
-			testAssignment = testAssignmentDao.getStudentAssignment(testAdminId, studentId);	
+			testAssignment = testAssignmentDAO.getTestAssignment(testAdminId, studentId);	
 				
 			logger.info("Request json to BMT: "+testAssignment.toJson());
 	        assignmentResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_ASSIGNMENTS,
@@ -90,10 +89,11 @@ public class AssignmentRestClient {
 		} else {
 			requestRoster = req.getRoster();
 		}
-		final Set<Integer> studentIds = new HashSet<Integer>(requestRoster.size());
+		Map<Integer, Boolean> processedStudentIds = new HashMap<Integer, Boolean>(requestRoster.size()); 
+		
 		for (final StudentRoster student : requestRoster) {
 			try {
-				studentIds.add(Integer.parseInt(student.getOasStudentid()));
+				processedStudentIds.put(Integer.parseInt(student.getOasStudentid()), Boolean.FALSE);
 			} catch (NumberFormatException nfe) {
 				logger.error("Invalid student ID. [studentId=" + student.getOasStudentid() + "]");
 			}
@@ -101,8 +101,9 @@ public class AssignmentRestClient {
 		
 		// if resp is null, process everything in the request as failure with a generic "something went wrong."
 		if (resp == null) {
-			for (final Integer studentIdKey : studentIds) {	
+			for (final Integer studentIdKey : processedStudentIds.keySet()) {	
 				updateAssignmentApiStatus(testAdminId, studentIdKey, false, "999", "Error from BMT sync API.");
+				processedStudentIds.put(studentIdKey, Boolean.TRUE);
 			}
 			return;
 		}
@@ -110,24 +111,29 @@ public class AssignmentRestClient {
 		// if resp is not null and resp.getErrorCode is non-zero and getErrorMessage is not null,
 		// 		process everything in the request as failure with the global error details.
 		if (resp.getServiceErrorCode() != null && resp.getServiceErrorMessage() != null) {
-			for (final Integer studentIdKey : studentIds) {	
+			for (final Integer studentIdKey : processedStudentIds.keySet()) {	
 				updateAssignmentApiStatus(testAdminId, studentIdKey, false, 
 				        resp.getServiceErrorCode(), resp.getServiceErrorMessage());
+				processedStudentIds.put(studentIdKey, Boolean.TRUE);
 			}
 			return;
 		}
 		
 		// if resp is not null and resp.getErrorCode is zero and getErrorMessage is null,
 		// 		process everything in the request as "error if it's in the failures, success otherwise."
-		List<StudentRosterResponse> failures = resp.getFailures();
+		final List<StudentRosterResponse> failures = resp.getFailures();
 		if (failures != null) {
 			for (final StudentRosterResponse failure : failures) {
 				try {
 					final Integer studentId = Integer.parseInt(failure.getOasStudentid());
-					updateAssignmentApiStatus(testAdminId, studentId, false,
-					        failure.getErrorCode().toString(), failure.getErrorMessage());
-					if (studentIds.contains(studentId)) {
-						studentIds.remove(studentId);
+					if (processedStudentIds.containsKey(studentId)) {
+						if (processedStudentIds.get(studentId).equals(Boolean.FALSE)) {
+							updateAssignmentApiStatus(testAdminId, studentId, false,
+							        failure.getErrorCode().toString(), failure.getErrorMessage());
+							processedStudentIds.put(studentId,  Boolean.TRUE);
+						} else {
+							logger.debug("Student ID returned multiple time for the same test assignment. [studentId=" + studentId + "]");
+						}
 					} else {
 						logger.error("Student ID in BMT response not in OAS request! [" + studentId + "]");
 					}
@@ -136,19 +142,30 @@ public class AssignmentRestClient {
 				}
 			}
 		}
-		for (final Integer studentIdKey : studentIds) {	
-			updateAssignmentApiStatus(testAdminId, studentIdKey, success, "", "");
+		for (final Integer studentIdKey : processedStudentIds.keySet()) {
+			if (processedStudentIds.get(studentIdKey).equals(Boolean.FALSE)) {
+				updateAssignmentApiStatus(testAdminId, studentIdKey, success, "", "");
+				processedStudentIds.put(studentIdKey, Boolean.TRUE);
+			}
 		}
 	}
 	
 	private void updateAssignmentApiStatus(final Integer testAdminId, final Integer studentId, final boolean success,
 			final String errorCode, final String errorMessage) throws SQLException {
+		
+		final String errMsg;
+		if (ERROR_MESSAGE_LENGTH < errorMessage.length()) {
+			errMsg = errorMessage.substring(0, ERROR_MESSAGE_LENGTH);
+		} else {
+			errMsg = errorMessage;
+		}
+		
 		testAssignmentDAO.updateAssignmentAPIStatus(
 				testAdminId,
 		        studentId, 
 		        success, 
 		        errorCode, 
-		        errorMessage);
+		        errMsg);
 		
 		logger.info(String.format("Updated assignment API status in OAS. "
 				+ "[testAdminID=%d][studentId=%d][updateSuccess=%b][updateStatus=%s][updateMessage=%s]",
@@ -156,7 +173,7 @@ public class AssignmentRestClient {
 		        studentId, 
 		        success, 
 		        errorCode, 
-		        errorMessage));
+		        errMsg));
 	}
 	
 }

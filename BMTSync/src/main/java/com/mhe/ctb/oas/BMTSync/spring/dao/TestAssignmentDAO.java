@@ -138,7 +138,6 @@ public class TestAssignmentDAO {
 	    		parameters.setEnforceTutorial(rs.getString("enForceTutorial"));
 	    		testAssignment.setParameters(parameters);
 	    		
-	    		
 	    		studentRoster.setOasRosterId(Integer.valueOf(rs.getInt("oasRosterId")).toString());
 	    		studentRoster.setOasStudentid(Integer.valueOf(rs.getInt("oasStudentid")).toString());
 	    		studentRoster.setStudentpassword(rs.getString("password"));
@@ -168,8 +167,8 @@ public class TestAssignmentDAO {
 	public void updateAssignmentAPIStatus(final Integer testAdminId, Integer studentId,
 			final boolean success, final String errorCode, final String errorMessage)
 			throws SQLException {
-
-		logger.info(String.format("DB CALL: [testAdminID=%d][studentId=%d][updateSuccess=%b][updateStatus=%s][updateMessage=%s]",
+			
+		logger.debug(String.format("DB CALL: [testAdminID=%d][studentId=%d][updateSuccess=%b][updateStatus=%s][updateMessage=%s]",
 				testAdminId,
 				studentId,
 				Boolean.valueOf(success),
