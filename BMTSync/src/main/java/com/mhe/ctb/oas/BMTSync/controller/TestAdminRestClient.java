@@ -1,5 +1,7 @@
 package com.mhe.ctb.oas.BMTSync.controller;
 
+import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +16,8 @@ import com.mhe.ctb.oas.BMTSync.rest.CreateTestAdminResponse;
 public class TestAdminRestClient {
 
 	static private Logger logger = Logger.getLogger(TestAdminRestClient.class);
+	
+	static final private int ERROR_MESSAGE_LENGTH = 200;
 	
 	private TestAdminDAO testAdminDAO;
 	
@@ -70,12 +74,32 @@ public class TestAdminRestClient {
 	 * synched into BMT due to an error in data
 	 */
 	private void processResponses(final TestAdmin req, final CreateTestAdminResponse resp, final boolean success) throws Exception {
-		testAdminDAO.updateTestAdminStatus(
-				resp.getOasTestAdministrationID(), 
-				success,
-				resp.getErrorCode() == null ? "" : resp.getErrorCode().toString(),
-				resp.getErrorMessage() == null ? "" : resp.getErrorMessage()					
-                );
-
+		if (resp == null) {
+			updateTestAdminStatus(req.getOasTestAdministrationID(), false, "999", "Error from BMT sync API.");
+			return;
+		}
+		
+		if (resp.getErrorCode() != null && resp.getErrorMessage() != null) {
+			updateTestAdminStatus(req.getOasTestAdministrationID(), false, resp.getErrorCode().toString(), resp.getErrorMessage());
+			return;
+		}
+		
+		updateTestAdminStatus(req.getOasTestAdministrationID(), true, "", "");
+	}
+	
+	private void updateTestAdminStatus(final Integer testAdminId, final boolean success, final String errorCode, final String errorMessage)
+			throws SQLException{
+		final String errMsg;
+		if (ERROR_MESSAGE_LENGTH < errorMessage.length()) {
+			errMsg = errorMessage.substring(0, ERROR_MESSAGE_LENGTH);
+		} else {
+			errMsg = errorMessage;
+		}
+		
+		testAdminDAO.updateTestAdminStatus(testAdminId, success, errorCode, errMsg);
+		logger.info(String.format("Updated assignment API status in OAS. "
+				+ "[testAdminID=%d][updateSuccess=%b][updateStatus=%s][updateMessage=%s]",
+				testAdminId, success, errorCode, errMsg));
+		
 	}
 }
