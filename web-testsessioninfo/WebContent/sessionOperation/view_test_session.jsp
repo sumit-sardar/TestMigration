@@ -8,7 +8,6 @@
 
 <%
 	Boolean hasViewResponseResultConf = (Boolean)session.getAttribute("hasViewResponseResultConf");
-	System.out.println(">> hasViewResponseResultConf :: "+ hasViewResponseResultConf);
 %>
 <div id="viewTestSessionId"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 <br>
@@ -28,7 +27,7 @@
 	</div>
 	<c:if test="${hasViewResponseResultConf}">
 		<div id="scoreDetailsSectionId">
-			<h3 id="subtestSectionHeader"><a href="#"><lb:label key="viewStatus.score.title" /></a></h3>
+			<h3 id="scoreSectionHeader"><a href="#"><lb:label key="viewStatus.score.title" /></a></h3>
 			<div id="View_Score" style="background-color: #FFFFFF; overflow-x: hidden !important; overflow-y: scroll !important;">
 				<jsp:include page="/sessionOperation/view_score_details.jsp" />
 			</div>

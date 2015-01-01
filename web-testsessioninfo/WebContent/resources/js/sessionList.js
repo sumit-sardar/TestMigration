@@ -4844,6 +4844,9 @@ function registerDelegate(tree){
 		$("#labelTbl").width(924);
 		$("#buttonTbl").width(924);
 		$("#subtestSectionHeader").unbind("click");
+		if(document.getElementById("scoreSectionHeader") != undefined && document.getElementById("scoreSectionHeader") != null){
+			$("#scoreSectionHeader").unbind("click");
+		}
 		$("#viewTestSessionAccordion").accordion("destroy");
 		accommodationMapForRoster = {};
 		orgNodeHierarchyMapForRoster = {};
@@ -4997,6 +5000,10 @@ function registerDelegate(tree){
 					$("#viewTestSessionId").parent().width(1086);
 					$("#rosterDetailsSectionId").width(1058);
 					$("#subtestDetailsSectionId").width(1058);
+					if(document.getElementById("scoreDetailsSectionId") != undefined 
+							&& document.getElementById("scoreDetailsSectionId") != null){
+						$("#scoreDetailsSectionId").width(1058);
+					}
 					$("#labelTbl").width(982);
 					$("#buttonTbl").width(982);
 		         }
