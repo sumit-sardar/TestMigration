@@ -23,16 +23,16 @@ public class BMTStudentBlockingQueueWorker implements Runnable {
 	}
 	
 	public void run() {
-		logger.info("Starting polling for student messages to post to BMT....");
+		logger.debug("Starting polling for student messages to post to BMT....");
 		final List<StudentMessageType> messages = queue.dequeue();
 		
 		if (CollectionUtils.isEmpty(messages)) {
-			logger.info("No messages to post to BMT.");
+			logger.debug("No student messages to post to BMT.");
 			// Nothing to do here. Go away.
 			return;
 		}
 		
-		logger.info("Posting " + Integer.valueOf(messages.size()).toString() + " messages to BMT.");
+		logger.debug("Posting " + Integer.valueOf(messages.size()).toString() + " student messages to BMT.");
 		restClient.postStudentList(messages);
 	}
 

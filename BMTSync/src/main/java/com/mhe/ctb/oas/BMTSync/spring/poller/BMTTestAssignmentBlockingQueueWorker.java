@@ -22,16 +22,16 @@ public class BMTTestAssignmentBlockingQueueWorker implements Runnable {
 	}
 	
 	public void run() {
-		logger.info("Starting polling for test assignment messages to post to BMT....");
+		logger.debug("Starting polling for test assignment messages to post to BMT....");
 		final List<TestAssignmentMessageType> messages = queue.dequeue();
 		
 		if (CollectionUtils.isEmpty(messages)) {
-			logger.info("No test assignment messages to post to BMT.");
+			logger.debug("No test assignment messages to post to BMT.");
 			// Nothing to do here. Go away.
 			return;
 		}
 		
-		logger.info("Posting " + Integer.valueOf(messages.size()).toString() + " test assignment messages to BMT.");
+		logger.debug("Posting " + Integer.valueOf(messages.size()).toString() + " test assignment messages to BMT.");
 		for (final TestAssignmentMessageType message : messages) {
 			restClient.postStudentAssignment(message.getTestAdminId(), message.getStudentId());
 		}
