@@ -32,7 +32,7 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 
 		try {
 			if (super.offer(message, timeout, TimeUnit.MILLISECONDS)) {
-				logger.info("Message added to queue." + message.getLogDetails());
+				logger.info(message.getMessageType() + " message added to queue." + message.getLogDetails());
 				return;
 			}
 		} catch (InterruptedException ie) {
@@ -46,7 +46,7 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 	
 	public List<T> dequeue() {
 		final List<T> messageList = new ArrayList<T>();
-		logger.info("Attempting to dequeue message from the queue....");
+		logger.debug("Attempting to dequeue message from the queue....");
 		T message = null;
 		try {
 			message = super.poll(timeout, TimeUnit.MILLISECONDS);
@@ -54,7 +54,7 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 			logger.error("Interrupted while waiting to dequeue additional messages.");
 		}
 		if (message == null) {
-			logger.info("No messages in queue. Returning empty.");
+			logger.debug("No messages in queue. Returning empty.");
 			return Collections.emptyList();
 		}
 		logger.debug("One message dequeued from the queue; draining the queue up to queue size.");

@@ -82,4 +82,9 @@ public class TestAssignmentMessageType implements EnqueueableMessage {
 				getPrimaryKeyName(), getPrimaryKeyValue(),
 				getSecondaryKeyName(), getSecondaryKeyValue());
 	}
+
+	@Override
+	public String getMessageType() {
+		return "TestAssignment";
+	}
 }

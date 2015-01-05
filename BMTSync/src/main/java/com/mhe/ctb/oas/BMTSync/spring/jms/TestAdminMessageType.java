@@ -62,4 +62,9 @@ public class TestAdminMessageType implements EnqueueableMessage {
 				getPrimaryKeyName(), getPrimaryKeyValue(),
 				getSecondaryKeyName(), getSecondaryKeyValue());
 	}
+
+	@Override
+	public String getMessageType() {
+		return "TestAdmin";
+	}
 }

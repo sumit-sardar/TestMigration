@@ -75,4 +75,9 @@ public class StudentMessageType implements EnqueueableMessage {
 		return _customerId;
 	}
 
+	@Override
+	public String getMessageType() {
+		return "Student";
+	}
+
 }
