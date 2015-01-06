@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.mhe.ctb.oas.BMTSync.exception.UnknownTestAssignmentException;
 import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
 import com.mhe.ctb.oas.BMTSync.model.StudentRosterResponse;
 import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
@@ -34,7 +35,7 @@ public class AssignmentRestClient {
 	 * Method to consume a assignment web service
 	 */	
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")	
-	public @ResponseBody CreateAssignmentResponse postStudentAssignment (final long testAdminId, final long studentId) {
+	public @ResponseBody CreateAssignmentResponse postStudentAssignment (final int testAdminId, final int studentId) {
 		logger.info("Assigment Rest Client API called");
 		
 		final RestTemplate restTemplate = new RestTemplate();
@@ -63,7 +64,10 @@ public class AssignmentRestClient {
 			} catch (Exception e) {
 				logger.error("Error attempting to process assignment responses.", e);
 			}
-		} catch (Exception e) {
+		} catch (final UnknownTestAssignmentException utae) {
+			logger.info(String.format("Unknown test assignment. [testAdminId=%d,studentId=%d]"));
+			updateAssignmentStatus(testAdminId, studentId, false, "999", "Unknown test assignment.");
+		} catch (final Exception e) {
 			logger.error("Error in AssignmentRestClient class : "+e.getMessage(), e);
 		}
 		return assignmentResponse;
@@ -102,7 +106,7 @@ public class AssignmentRestClient {
 		// if resp is null, process everything in the request as failure with a generic "something went wrong."
 		if (resp == null) {
 			for (final Integer studentIdKey : processedStudentIds.keySet()) {	
-				updateAssignmentApiStatus(testAdminId, studentIdKey, false, "999", "Error from BMT sync API.");
+				updateAssignmentStatus(testAdminId, studentIdKey, false, "999", "Error from BMT sync API.");
 				processedStudentIds.put(studentIdKey, Boolean.TRUE);
 			}
 			return;
@@ -112,7 +116,7 @@ public class AssignmentRestClient {
 		// 		process everything in the request as failure with the global error details.
 		if (resp.getServiceErrorCode() != null && resp.getServiceErrorMessage() != null) {
 			for (final Integer studentIdKey : processedStudentIds.keySet()) {	
-				updateAssignmentApiStatus(testAdminId, studentIdKey, false, 
+				updateAssignmentStatus(testAdminId, studentIdKey, false, 
 				        resp.getServiceErrorCode(), resp.getServiceErrorMessage());
 				processedStudentIds.put(studentIdKey, Boolean.TRUE);
 			}
@@ -128,7 +132,7 @@ public class AssignmentRestClient {
 					final Integer studentId = Integer.parseInt(failure.getOasStudentid());
 					if (processedStudentIds.containsKey(studentId)) {
 						if (processedStudentIds.get(studentId).equals(Boolean.FALSE)) {
-							updateAssignmentApiStatus(testAdminId, studentId, false,
+							updateAssignmentStatus(testAdminId, studentId, false,
 							        failure.getErrorCode().toString(), failure.getErrorMessage());
 							processedStudentIds.put(studentId,  Boolean.TRUE);
 						} else {
@@ -144,14 +148,14 @@ public class AssignmentRestClient {
 		}
 		for (final Integer studentIdKey : processedStudentIds.keySet()) {
 			if (processedStudentIds.get(studentIdKey).equals(Boolean.FALSE)) {
-				updateAssignmentApiStatus(testAdminId, studentIdKey, success, "", "");
+				updateAssignmentStatus(testAdminId, studentIdKey, success, "", "");
 				processedStudentIds.put(studentIdKey, Boolean.TRUE);
 			}
 		}
 	}
 	
-	private void updateAssignmentApiStatus(final Integer testAdminId, final Integer studentId, final boolean success,
-			final String errorCode, final String errorMessage) throws SQLException {
+	private void updateAssignmentStatus(final Integer testAdminId, final Integer studentId, final boolean success,
+			final String errorCode, final String errorMessage) {
 		
 		final String errMsg;
 		if (ERROR_MESSAGE_LENGTH < errorMessage.length()) {
@@ -160,20 +164,23 @@ public class AssignmentRestClient {
 			errMsg = errorMessage;
 		}
 		
-		testAssignmentDAO.updateAssignmentAPIStatus(
-				testAdminId,
-		        studentId, 
-		        success, 
-		        errorCode, 
-		        errMsg);
-		
-		logger.info(String.format("Updated assignment API status in OAS. "
+		logger.info(String.format("Updating assignment API status in OAS. "
 				+ "[testAdminID=%d][studentId=%d][updateSuccess=%b][updateStatus=%s][updateMessage=%s]",
 				testAdminId,
 		        studentId, 
 		        success, 
 		        errorCode, 
 		        errMsg));
+		try {
+		testAssignmentDAO.updateAssignmentAPIStatus(
+				testAdminId,
+		        studentId, 
+		        success, 
+		        errorCode, 
+		        errMsg);
+		} catch (final SQLException sqle) {
+			logger.error("Unable to update data source. SQLException occurred: " + sqle.getMessage(), sqle);
+		}
 	}
 	
 }

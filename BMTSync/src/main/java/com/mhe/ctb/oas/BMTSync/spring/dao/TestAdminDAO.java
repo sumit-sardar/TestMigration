@@ -46,7 +46,6 @@ public class TestAdminDAO {
 	public TestAdminDAO(final DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
-		System.out.println(_jdbcTemplate);
 
 		_getTestAdminCall = new SimpleJdbcCall(_jdbcTemplate)
 				.withCatalogName("PKG_BMTSYNC_TESTADMIN")

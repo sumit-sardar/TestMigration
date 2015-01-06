@@ -52,7 +52,6 @@ public class TestAssignmentDAO {
 	public TestAssignmentDAO(final DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
-		System.out.println(_jdbcTemplate);
 
 		_getTestAssignmentCall = new SimpleJdbcCall(_jdbcTemplate)
 				.withCatalogName("PKG_BMTSYNC_ASSIGNMENT")
@@ -152,7 +151,6 @@ public class TestAssignmentDAO {
 	    	testDelivery.setEnforceTimeLimit(enforceTimeLimit);
 	    	testDelivery.setOrder(rs.getInt("Item_Order"));
 	    	
-	    	System.out.println(rs.getString("OasTestId"));
 	    	testDeliveryList.add(testDelivery);
 
 			studentRoster.setTestDelivery(testDeliveryList);
