@@ -69,6 +69,10 @@
 		<constructor-arg index="0" ref="oasDataSource" />
 	</bean>
 
+	<bean id="testStatusDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO">
+		<constructor-arg index="0" ref="oasDataSource" />
+	</bean>
+
 	<!-- Set up the REST clients. -->
 	<bean id="studentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.StudentRestClient">
 		<constructor-arg index="0" ref="springStudentDAO" />
@@ -81,6 +85,11 @@
 	<bean id="testAdminRestClient" class="com.mhe.ctb.oas.BMTSync.controller.TestAdminRestClient">
 		<constructor-arg index="0" ref="testAdminDAO" />
 	</bean>
+
+	<bean id="testStatusRestService" class="com.mhe.ctb.oas.BMTSync.controller.TestStatusRestService">
+		<constructor-arg index="0" ref="testStatusDAO" />
+	</bean>
+
 	
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true">
