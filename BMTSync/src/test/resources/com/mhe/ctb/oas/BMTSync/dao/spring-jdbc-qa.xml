@@ -53,6 +53,10 @@
 		<constructor-arg index="0" ref="oasDataSource" />
 	</bean>
 
+	<bean id="testStatusDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO">
+		<constructor-arg index="0" ref="oasDataSource" />
+	</bean>
+	
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true">
 		<property name="dataSource" ref="oasDataSource" />
