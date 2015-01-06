@@ -17,7 +17,6 @@ public class TestStatusDao  extends DatabaseManager {
 	public TestStatus validateSaveData(int pRosterId, String pOasTestID, 
 			String pDeliveryStatus, String pStartDate, String pCompletedDate) throws SQLException {
 		
-		//SimpleDateFormat formatter = new SimpleDateFormat("MM/DD/YYYY hh:mi:ss a");
 		Connection conn = null;
 		CallableStatement cstmt = null;
 		ResultSet rs = null;
@@ -25,9 +24,6 @@ public class TestStatusDao  extends DatabaseManager {
 		TestStatus testStatus = new TestStatus();
 		
 		try {
-		    //Date startDate = formatter.parse(pStartDate);
-			//Date completionDate = formatter.parse(pCompletedDate);
-			
 			conn = dbConnection();
 			cstmt = conn.prepareCall("BEGIN PKG_BMTSYNC_TESTSTATUS.ValidateSaveData(?,?,?,?,?,?); END;");
 			cstmt.setLong(1, pRosterId);
