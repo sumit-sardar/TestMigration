@@ -10,16 +10,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.mhe.ctb.oas.BMTSync.dao.TestStatusDao;
 import com.mhe.ctb.oas.BMTSync.model.TestStatus;
 import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusRequest;
 import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusResponse;
 import com.mhe.ctb.oas.BMTSync.rest.SuccessFailCounter;
+import com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO;
 
 
 @Controller
 public class TestStatusRestService {
 	static private Logger logger = Logger.getLogger(TestStatusRestService.class);
+	
+	private TestStatusDAO testStatusDAO;
+	
+	String errorMsg;	
+	
+	public TestStatusRestService(final TestStatusDAO testStatusDAO) {
+		this.testStatusDAO = testStatusDAO;
+	}	
 	
 	@RequestMapping(value="/api/v1/oas/teststatus", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody CreateTestStatusResponse postTestStatus(
@@ -42,24 +50,17 @@ public class TestStatusRestService {
 		List<TestStatus> testStatusErrList = new ArrayList<TestStatus>();
 		
 		try {
-			TestStatusDao testStatusDao = new TestStatusDao();
 			
 			for (TestStatus testStatus : request.getTestStatus()) {
 				logger.info("Request JSON:"+testStatus.toJson());
-				//logger.info("TestStatus :"+testStatus.toString());
-				//logger.info("RosterId:"+testStatus.getOasRosterId());
-				//logger.info("OasTestID:"+testStatus.getOasTestId());
-				//logger.info("DeliveryStatus:"+testStatus.getDeliveryStatus());
-				//logger.info("StartDate:"+testStatus.getStartedDate());
-				//logger.info("CompletedDate:"+testStatus.getCompletedDate());
-
-				TestStatus testStatusRet = new TestStatus();
-				testStatusRet = testStatusDao.validateSaveData(testStatus.getOasRosterId(), 
-						                       testStatus.getOasTestId(), 
-						                       testStatus.getDeliveryStatus(), 
-						                       testStatus.getStartedDate(), 
-						                       testStatus.getCompletedDate());
 				
+				TestStatus testStatusRet = new TestStatus();
+				
+				testStatusRet = testStatusDAO.validateSaveData(testStatus.getOasRosterId(), 
+	                       testStatus.getOasTestId(), 
+	                       testStatus.getDeliveryStatus(), 
+	                       testStatus.getStartedDate(), 
+	                       testStatus.getCompletedDate());
 				
 				logger.info("ReturnJSON:"+testStatusRet.toJson());
 				// If Failure add failure to response
