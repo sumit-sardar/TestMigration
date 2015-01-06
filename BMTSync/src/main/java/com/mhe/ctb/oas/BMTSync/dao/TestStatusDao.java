@@ -4,8 +4,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.apache.log4j.Logger;
 
 import com.mhe.ctb.oas.BMTSync.model.TestStatus;
