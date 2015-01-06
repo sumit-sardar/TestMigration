@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.mhe.ctb.oas.BMTSync.model.TestStatus;
 import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusRequest;
@@ -17,13 +17,18 @@ import com.mhe.ctb.oas.BMTSync.rest.SuccessFailCounter;
 import com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO;
 
 
-@Controller
+@RestController
 public class TestStatusRestService {
 	static private Logger logger = Logger.getLogger(TestStatusRestService.class);
 	
 	private TestStatusDAO testStatusDAO;
 	
 	String errorMsg;	
+	
+	//Constructors
+	public TestStatusRestService() {
+		
+	}
 	
 	public TestStatusRestService(final TestStatusDAO testStatusDAO) {
 		this.testStatusDAO = testStatusDAO;
