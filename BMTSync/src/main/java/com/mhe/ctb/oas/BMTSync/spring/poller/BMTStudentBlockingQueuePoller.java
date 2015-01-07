@@ -18,6 +18,7 @@ public class BMTStudentBlockingQueuePoller {
 	public BMTStudentBlockingQueuePoller(final BMTBlockingQueue<StudentMessageType> queue, final StudentRestClient restClient) {
 		logger.info("Creating poller to watch queue for Student messages to post to BMT.");
 		executor = new ScheduledThreadPoolExecutor(1);
+		executor.setKeepAliveTime(1, TimeUnit.MINUTES);
 		executor.scheduleAtFixedRate(new BMTStudentBlockingQueueWorker(queue, restClient), 1, 5, TimeUnit.SECONDS);
 	}
 }

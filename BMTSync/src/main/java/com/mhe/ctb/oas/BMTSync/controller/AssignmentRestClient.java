@@ -40,35 +40,30 @@ public class AssignmentRestClient {
 		
 		final RestTemplate restTemplate = new RestTemplate();
 		
-		TestAssignment testAssignment = new TestAssignment();
+		TestAssignment testAssignment = null;
 		CreateAssignmentResponse assignmentResponse = null;
 
 		try {
 			// Connects to OAS DB and return students related data 
 			testAssignment = testAssignmentDAO.getTestAssignment(testAdminId, studentId);	
 				
-			logger.info("Request json to BMT: "+testAssignment.toJson());
+			logger.info("[TestAssignment] Request json to BMT: "+testAssignment.toJson());
 	        assignmentResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_ASSIGNMENTS,
 	        		testAssignment, CreateAssignmentResponse.class);
-	        logger.info("Response json from BMT: " + assignmentResponse.toJson());
+	        logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
 	        
 	        //Updates the BMTSYN_Assignment_Status table, with success or failure
 	        processResponses(testAssignment, assignmentResponse, true);
 
 		} catch (RestClientException rce) {
-			logger.error("Http Client Error: " + rce.getMessage(), rce);			
-			try {
-				// On Error Mark the Student ID status as Failed
-				// in BMTSYN_ASSIGNMENT_STATUS table
-				processResponses(testAssignment, assignmentResponse, false);
-			} catch (Exception e) {
-				logger.error("Error attempting to process assignment responses.", e);
-			}
+			logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);			
+			updateAssignmentStatus(testAdminId, studentId, false, "999", rce.getMessage());
 		} catch (final UnknownTestAssignmentException utae) {
-			logger.info(String.format("Unknown test assignment. [testAdminId=%d,studentId=%d]"));
+			logger.error(String.format("[TestAssignment] Unknown test assignment. [testAdminId=%d,studentId=%d]"));
 			updateAssignmentStatus(testAdminId, studentId, false, "999", "Unknown test assignment.");
 		} catch (final Exception e) {
-			logger.error("Error in AssignmentRestClient class : "+e.getMessage(), e);
+			logger.error("[TestAssignment] Error in AssignmentRestClient class : "+e.getMessage(), e);
+			updateAssignmentStatus(testAdminId, studentId, false, "999", e.getMessage());
 		}
 		return assignmentResponse;
 	}

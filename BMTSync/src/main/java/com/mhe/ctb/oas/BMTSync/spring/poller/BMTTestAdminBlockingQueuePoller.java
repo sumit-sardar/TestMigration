@@ -18,6 +18,7 @@ public class BMTTestAdminBlockingQueuePoller {
 			final TestAdminRestClient restClient) {
 		logger.info("Creating poller to watch queue for TestAdmin messages to post to BMT.");
 		executor = new ScheduledThreadPoolExecutor(1);
+		executor.setKeepAliveTime(1, TimeUnit.MINUTES);
 		executor.scheduleAtFixedRate(new BMTTestAdminBlockingQueueWorker(queue, restClient), 1, 5, TimeUnit.SECONDS);
 	}
 }

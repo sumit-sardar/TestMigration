@@ -192,7 +192,7 @@
 
 	<!-- Route the message on receiving -->
 	<jms:listener-container connection-factory="jmsConnectionFactory"
-		concurrency="${jms.bmt.threads:1-4}"
+		concurrency="${jms.bmt.threads:1}"
 		destination-type="queue"
 		transaction-manager="transactionManager"
 		message-converter="studentMessageConverter"
@@ -202,7 +202,7 @@
 	</jms:listener-container>
 
 	<jms:listener-container connection-factory="jmsConnectionFactory"
-		concurrency="${jms.bmt.threads:1-4}"
+		concurrency="${jms.bmt.threads:1}"
 		destination-type="queue"
 		transaction-manager="transactionManager"
 		message-converter="testAssignmentMessageConverter"
@@ -212,7 +212,7 @@
 	</jms:listener-container>
 
 	<jms:listener-container connection-factory="jmsConnectionFactory"
-		concurrency="${jms.bmt.threads:1-4}"
+		concurrency="${jms.bmt.threads:1}"
 		destination-type="queue"
 		transaction-manager="transactionManager"
 		message-converter="testAdminMessageConverter"
