@@ -23,12 +23,12 @@ public class TestSpringStudentDAO {
 	@Autowired
 	private SpringStudentDAO _studentDao;
 	
-	//private Logger logger = Logger.getLogger(DAOTest.class);
+	//These tests assume the existence of a database and are rightfully integration tests.
 	
 	private static final int STUDENT_ID = 413595;
 
 	@Test
-	public void testStudentDAO_getStudent_success() throws SQLException {
+	public void testStudentDAO_Integ_getStudent_success() throws SQLException {
 		Student student = null;
 		try {
 			student = _studentDao.getStudent(STUDENT_ID);
@@ -43,13 +43,13 @@ public class TestSpringStudentDAO {
 	}
 	
 	@Test(expected = UnknownStudentException.class)
-	public void testStudentDAO_getStudent_failUnknownStudentException() throws SQLException, UnknownStudentException {
+	public void testStudentDAO_Integ_getStudent_failUnknownStudentException() throws SQLException, UnknownStudentException {
 		_studentDao.getStudent(-1);
 	}
 	
 	
 	@Test
-	public void testStudentDAO_updateStudentAPIStatus_success() throws SQLException {
+	public void testStudentDAO_Integ_updateStudentAPIStatus_success() throws SQLException {
 		_studentDao.updateStudentAPIStatus(STUDENT_ID, true, "", "Testing query.");
 	}
 }
