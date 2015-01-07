@@ -1,5 +1,7 @@
 package com.mhe.ctb.oas.BMTSync.spring.jms;
 
+import java.util.Calendar;
+
 /**
  * Provides a datum implementation of STUDENT_MESSAGE_TYP
  * 
@@ -7,7 +9,8 @@ package com.mhe.ctb.oas.BMTSync.spring.jms;
  *     CUSTOMER_ID       INTEGER,
  *     TEST_ADMIN_ID     INTEGER,
  *     STUDENT_ID        INTEGER,
- *     TEST_ROSTER_ID    INTEGER
+ *     TEST_ROSTER_ID    INTEGER,
+ *     UPDATED_DATE_TIME DATE
  * )
  */
 public class TestAssignmentMessageType implements EnqueueableMessage {
@@ -16,6 +19,7 @@ public class TestAssignmentMessageType implements EnqueueableMessage {
 	private Integer _customerId;
 	private Integer _testAdminId;
 	private Integer _testRosterId;
+	private Calendar _updatedDateTime;
 
 	public Integer getStudentId() {
 		return _studentId;
@@ -48,6 +52,14 @@ public class TestAssignmentMessageType implements EnqueueableMessage {
 
 	public void setTestRosterId(Integer _testRosterId) {
 		this._testRosterId = _testRosterId;
+	}
+
+	public Calendar getUpdatedDateTime() {
+		return _updatedDateTime;
+	}
+
+	public void setUpdatedDateTime(Calendar updatedDateTime) {
+		_updatedDateTime = updatedDateTime;
 	}
 
 	@Override

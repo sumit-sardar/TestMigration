@@ -167,8 +167,9 @@
 				class="org.springframework.data.jdbc.jms.support.oracle.StructDatumMapper">
 				<constructor-arg index="0" value="OAS.BMTSYNC_ASSIGNMENT_TYP" />
 				<constructor-arg index="1">
-					<bean class="org.springframework.data.jdbc.support.oracle.BeanPropertyStructMapper">
+					<bean class="com.mhe.ctb.oas.BMTSync.spring.converter.CustomBeanPropertyStructMapper">
 						<constructor-arg value="com.mhe.ctb.oas.BMTSync.spring.jms.TestAssignmentMessageType"/>
+						<property name="conversionService" ref="conversionService"></property>
 					</bean>
 				</constructor-arg>
 			</bean>
