@@ -42,9 +42,6 @@ public class TestAssignmentDAO {
 	// The JDBC template
 	private final JdbcTemplate _jdbcTemplate;
 
-	// The test assignment
-	private final SimpleJdbcCall _getTestAssignmentCall;	
-	
 	// Update status in BMTSYNC_ASSIGNMENT_STATUS
 	private SimpleJdbcCall _updateAssignmentAPIStatusCall;
 
@@ -53,17 +50,6 @@ public class TestAssignmentDAO {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 
-		_getTestAssignmentCall = new SimpleJdbcCall(_jdbcTemplate)
-				.withCatalogName("PKG_BMTSYNC_ASSIGNMENT")
-				.withProcedureName("getTestAssignment")
-				.useInParameterNames("pTestAdminId", "pStudentId", "pResultCursor")
-				.declareParameters(
-						new SqlParameter("pTestAdminId", Types.BIGINT),
-						new SqlParameter("pStudentID", Types.BIGINT),
-						new SqlOutParameter(OUTPUT_ASSIGNMENT, OracleTypes.CURSOR,
-								new TestAssignmentRowMapper()));
-		_getTestAssignmentCall.compile();
-		
 		_updateAssignmentAPIStatusCall = new SimpleJdbcCall(_jdbcTemplate)
 		.withCatalogName("PKG_BMTSYNC_ASSIGNMENT")
 		.withProcedureName("updateAssignmentAPIStatus")
@@ -80,7 +66,17 @@ public class TestAssignmentDAO {
 	
 	// returns student test assignments
 	public TestAssignment getTestAssignment(long testAdminId, long studentId) throws UnknownTestAssignmentException {
-
+		final SimpleJdbcCall _getTestAssignmentCall = new SimpleJdbcCall(_jdbcTemplate)
+				.withCatalogName("PKG_BMTSYNC_ASSIGNMENT")
+				.withProcedureName("getTestAssignment")
+				.useInParameterNames("pTestAdminId", "pStudentId", "pResultCursor")
+				.declareParameters(
+						new SqlParameter("pTestAdminId", Types.BIGINT),
+						new SqlParameter("pStudentID", Types.BIGINT),
+						new SqlOutParameter(OUTPUT_ASSIGNMENT, OracleTypes.CURSOR,
+								new TestAssignmentRowMapper()));
+		_getTestAssignmentCall.compile();
+		
 		// call the sproc
 		Map<String, Object> result = _getTestAssignmentCall.execute(testAdminId, studentId);
 
@@ -114,7 +110,7 @@ public class TestAssignmentDAO {
 
 	    List<TestDelivery> testDeliveryList = new ArrayList<TestDelivery>();
 	    StudentRoster studentRoster = new StudentRoster();
-        List<StudentRoster> studentRoasterList = new ArrayList<StudentRoster>();
+        List<StudentRoster> studentRosterList = new ArrayList<StudentRoster>();
         
 		public TestAssignment mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -154,9 +150,9 @@ public class TestAssignmentDAO {
 	    	testDeliveryList.add(testDelivery);
 
 			studentRoster.setTestDelivery(testDeliveryList);
-			studentRoasterList.add(studentRoster);
+			studentRosterList.add(studentRoster);
 			
-	        testAssignment.setRoster(studentRoasterList);
+	        testAssignment.setRoster(studentRosterList);
 			return testAssignment;		
 		}
 

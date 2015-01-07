@@ -46,6 +46,8 @@ public class AssignmentRestClient {
 		try {
 			// Connects to OAS DB and return students related data 
 			testAssignment = testAssignmentDAO.getTestAssignment(testAdminId, studentId);	
+			logger.info("[TestAssignment] Size of roster: " + testAssignment.getRoster().size());
+			logger.info("[TestAssignment] Size of parts: " + testAssignment.getRoster().get(0).getTestDelivery().size());
 				
 			logger.info("[TestAssignment] Request json to BMT: "+testAssignment.toJson());
 	        assignmentResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_ASSIGNMENTS,
