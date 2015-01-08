@@ -33,7 +33,7 @@ public class NotificationMessageHandler<T extends EnqueueableMessage> {
     	
     	logger.info("Received message: " + message.getLogDetails());
 
-    	// Queue isn't null, so add it to the queue to post.
+    	// Message isn't null, so add it to the queue to post.
     	try {    		
     		queue.enqueueWithTimeout(message);
     	} catch (MessageConversionException mce) {
