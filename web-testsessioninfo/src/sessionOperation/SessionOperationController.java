@@ -7925,7 +7925,7 @@ public class SessionOperationController extends PageFlowController {
 								ItemResponseAndScore obj = itemRespone[j];
 								if (sd.getItemSetId().intValue() == obj.getItemSetIdTS().intValue()) {
 									responseList.add(new ResponseResultDetails(obj));
-									if(null != obj.getRawScore() && !"--".equalsIgnoreCase(obj.getRawScore())){
+									if(null != obj.getRawScore() && (!"N/A".equalsIgnoreCase(obj.getRawScore()))){
 										pointsObtained+=Integer.valueOf(obj.getRawScore()).intValue();
 									}
 									if(null != obj.getPossibleScore()){

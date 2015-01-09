@@ -220,7 +220,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
     	irsItemFactTableMap.put("LL", "LASLINK_ITEM_FACT");
     }
     private static final int CTB_CUSTOMER_ID =2;
-    private static final String BLANK_VALUE = "--";
+    private static final String BLANK_VALUE = "N/A";
     private static final String CUSTOMER_CONFIG_ALLOW_SUBTEST_INVALIDATION = "Allow_Subtest_Invalidation";
     private static final String CUSTOMER_CONFIG_PARTIALLY ="Partially ";
     public static final String CUSTOMER_CONFIG_UPLOAD_DOWNLOAD = "Allow_Upload_Download";
@@ -2698,6 +2698,11 @@ public class TestSessionStatusImpl implements TestSessionStatus
         	if(customerClause== null) return null; 
         	responseDetails = itemSet.getScoreElementsForTS(parentItemSetId,testRosterId, customerClause);
         	if(responseDetails != null){
+        		// check ext hand scoring is done or not for TASC product
+        		String crCondition = null;
+        		if("TS".equalsIgnoreCase(productType)||"TR".equalsIgnoreCase(productType)){
+					crCondition = itemSet.checkExtHandScoring(testRosterId);
+        		}
         		//get the fact table name by product type
         		String scoreTableName=getScoreTableName(productType);
         		if(scoreTableName != null){
@@ -2731,11 +2736,23 @@ public class TestSessionStatusImpl implements TestSessionStatus
 	        						}
 	        						
 	        						//set rawscore fetched from irs
-	        						if(itemScoreMap.containsKey(itemId)){
-	            						res.setRawScore(itemScoreMap.get(itemId));
-	            					}else{
-	            						res.setRawScore(TestSessionStatusImpl.BLANK_VALUE);
-	            					}
+	        						if("TS".equalsIgnoreCase(productType)||"TR".equalsIgnoreCase(productType)){
+        								if(!"GR".equals(res.getItemType()) && "FALSE".equalsIgnoreCase(crCondition)){
+        									res.setRawScore(BLANK_VALUE);
+        								}else{
+        									if(itemScoreMap.containsKey(itemId)){
+		        								res.setRawScore(itemScoreMap.get(itemId));
+			            					}else{
+			            						res.setRawScore(TestSessionStatusImpl.BLANK_VALUE);
+			            					}
+        								}
+        							}else{
+		        						if(itemScoreMap.containsKey(itemId)){
+		        								res.setRawScore(itemScoreMap.get(itemId));
+		            					}else{
+		            						res.setRawScore(TestSessionStatusImpl.BLANK_VALUE);
+		            					}
+        							}
 	        					}
 							} catch (IOException se) {
 								CTBBusinessException cbe = new RosterDataNotFoundException("TestSessionStatusImpl: getScoreElementsForTS: " + se.getMessage());
