@@ -5,12 +5,12 @@ DECLARE
    vCustomer_ID    Customer.Customer_ID%TYPE;
 BEGIN
 
-	SELECT Std.Customer_ID 
+	SELECT ONS.Customer_ID 
 	INTO vCustomer_ID
-    FROM Student std , BMTSYNC_Customer Cust
+    FROM Org_Node_Student ONS , BMTSYNC_Customer Cust
     WHERE 
-    Std.Customer_Id = Cust.Customer_Id AND 
-    Std.Student_ID = :new.STUDENT_ID; 
+    ONS.Customer_Id = Cust.Customer_Id AND 
+    ONS.Student_ID = :new.STUDENT_ID AND ROWNUM = 1; 
 	
     -- Add Student in the BMTSYNC_Student_Status table
     PKG_BMTSYNC_ONCHANGE.Student(
