@@ -35,7 +35,7 @@ public class TestStatusDAO {
 	private final JdbcTemplate _jdbcTemplate;
 
 	// The test assignment
-	private final SimpleJdbcCall _valiDateSaveTestStatusCall;	
+	//rivate final SimpleJdbcCall _valiDateSaveTestStatusCall;	
 	
 	
 	public TestStatusDAO(final DataSource ds) {
@@ -43,21 +43,6 @@ public class TestStatusDAO {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 
-		_valiDateSaveTestStatusCall = new SimpleJdbcCall(_jdbcTemplate)
-				.withCatalogName("PKG_BMTSYNC_TESTSTATUS")
-				.withProcedureName("ValidateSaveTestStatus")
-				.useInParameterNames("pRosterId","pOasTestID","pDeliveryStatus",
-						"pStartedDate", "pCompletedDate", "pResultCursor")
-				.declareParameters(
-						new SqlParameter("pRosterId", Types.INTEGER),
-						new SqlParameter("pOasTestID", Types.VARCHAR),
-						new SqlParameter("pDeliveryStatus", Types.VARCHAR),
-						new SqlParameter("pStartedDate", Types.VARCHAR),
-						new SqlParameter("pCompletedDate", Types.VARCHAR),
-						new SqlOutParameter(OUTPUT_TESTSTATUS, OracleTypes.CURSOR,
-								new TestStatusRowMapper())
-						);
-		_valiDateSaveTestStatusCall.compile();
 	}
 	
 	
@@ -91,6 +76,23 @@ public class TestStatusDAO {
 			final String pDeliveryStatus, 
 			final String pStartedDate, 
 			final String pCompletedDate) throws UnknownTestStatusException {
+		
+		final SimpleJdbcCall _valiDateSaveTestStatusCall = new SimpleJdbcCall(_jdbcTemplate)
+		.withCatalogName("PKG_BMTSYNC_TESTSTATUS")
+		.withProcedureName("ValidateSaveTestStatus")
+		.useInParameterNames("pRosterId","pOasTestID","pDeliveryStatus",
+				"pStartedDate", "pCompletedDate", "pResultCursor")
+		.declareParameters(
+				new SqlParameter("pRosterId", Types.INTEGER),
+				new SqlParameter("pOasTestID", Types.VARCHAR),
+				new SqlParameter("pDeliveryStatus", Types.VARCHAR),
+				new SqlParameter("pStartedDate", Types.VARCHAR),
+				new SqlParameter("pCompletedDate", Types.VARCHAR),
+				new SqlOutParameter(OUTPUT_TESTSTATUS, OracleTypes.CURSOR,
+						new TestStatusRowMapper())
+				);
+        _valiDateSaveTestStatusCall.compile();
+		
 
 		// call the sproc
 		Map<String, Object> result = _valiDateSaveTestStatusCall.execute(rosterId, pOasTestID, 
