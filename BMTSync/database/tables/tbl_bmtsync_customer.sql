@@ -10,7 +10,8 @@ dbms_output.put_line('vExists: '||vExists );
 
 		execute immediate 'CREATE TABLE BMTSYNC_CUSTOMER (
 			Customer_Id           INTEGER NOT NULL,
-			Customer_Name        VARCHAR2(50) not null
+			Customer_Name        VARCHAR2(50) not null,
+                        URL_ENDPOINT         VARCHAR2(2000)
 		)';
 
 	end if;
