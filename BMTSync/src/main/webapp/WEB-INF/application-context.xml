@@ -56,7 +56,7 @@
 		<constructor-arg index="0" ref="oasDataSource" />
 	</bean>
 	
-	<bean id="springStudentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.SpringStudentDAO">
+	<bean id="studentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.StudentDAO">
 		<constructor-arg index="0" ref="oasDataSource" />
 		<constructor-arg index="1" ref="springOrgNodeDAO" />
 	</bean>
@@ -73,17 +73,24 @@
 		<constructor-arg index="0" ref="oasDataSource" />
 	</bean>
 
+	<bean id="endpointDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.EndpointDAO">
+		<constructor-arg index="0" ref="oasDataSource" />
+	</bean>
+	
 	<!-- Set up the REST clients. -->
 	<bean id="studentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.StudentRestClient">
-		<constructor-arg index="0" ref="springStudentDAO" />
+		<constructor-arg index="0" ref="studentDAO" />
+	    <constructor-arg index="1" ref="endpointDAO" />
 	</bean>
 	
 	<bean id="testAssignmentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.AssignmentRestClient">
 		<constructor-arg index="0" ref="testAssignmentDAO" />
+	    <constructor-arg index="1" ref="endpointDAO" />
 	</bean>
 	
 	<bean id="testAdminRestClient" class="com.mhe.ctb.oas.BMTSync.controller.TestAdminRestClient">
 		<constructor-arg index="0" ref="testAdminDAO" />
+	    <constructor-arg index="1" ref="endpointDAO" />
 	</bean>
 
 	<bean id="testStatusRestService" class="com.mhe.ctb.oas.BMTSync.controller.TestStatusRestService">

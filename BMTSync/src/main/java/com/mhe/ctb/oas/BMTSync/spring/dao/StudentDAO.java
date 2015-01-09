@@ -23,7 +23,7 @@ import com.mhe.ctb.oas.BMTSync.model.Student;
 import com.mhe.ctb.oas.BMTSync.model.Student.Accommodations;
 
 @Repository
-public class SpringStudentDAO {
+public class StudentDAO {
 
 	// Return map names
 	private static final String OUTPUT_STUDENT = "PRESULTCURSOR";
@@ -42,9 +42,9 @@ public class SpringStudentDAO {
 
 	private SpringOrgNodeDAO _orgNodeDao;
 	
-	private static final Logger LOGGER = Logger.getLogger(SpringStudentDAO.class);
+	private static final Logger LOGGER = Logger.getLogger(StudentDAO.class);
 
-	public SpringStudentDAO(final DataSource ds, final SpringOrgNodeDAO nodeDAO) {
+	public StudentDAO(final DataSource ds, final SpringOrgNodeDAO nodeDAO) {
 		_dataSource = ds;
 		_orgNodeDao = nodeDAO;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);

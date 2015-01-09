@@ -21,7 +21,7 @@ import com.mhe.ctb.oas.BMTSync.model.Student.Accommodations;
 public class TestSpringStudentDAO {
 
 	@Autowired
-	private SpringStudentDAO _studentDao;
+	private StudentDAO _studentDao;
 	
 	//These tests assume the existence of a database and are rightfully integration tests.
 	

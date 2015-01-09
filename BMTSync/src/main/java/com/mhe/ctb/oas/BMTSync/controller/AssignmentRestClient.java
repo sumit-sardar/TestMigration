@@ -25,10 +25,13 @@ public class AssignmentRestClient {
 	
 	private static final int ERROR_MESSAGE_LENGTH = 200;
 	
-	TestAssignmentDAO testAssignmentDAO;
+	private final TestAssignmentDAO testAssignmentDAO;
 	
-	public AssignmentRestClient(final TestAssignmentDAO testAssignmentDAO) {
+	private final EndpointSelector endpointSelector;
+	
+	public AssignmentRestClient(final TestAssignmentDAO testAssignmentDAO, final EndpointSelector endpointSelector) {
 		this.testAssignmentDAO = testAssignmentDAO;
+		this.endpointSelector = endpointSelector;
 	}
 
 	/*
@@ -48,13 +51,17 @@ public class AssignmentRestClient {
 			testAssignment = testAssignmentDAO.getTestAssignment(testAdminId, studentId);	
 				
 			logger.info("[TestAssignment] Request json to BMT: "+testAssignment.toJson());
-	        assignmentResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_ASSIGNMENTS,
-	        		testAssignment, CreateAssignmentResponse.class);
-	        logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
-	        
-	        //Updates the BMTSYN_Assignment_Status table, with success or failure
-	        processResponses(testAssignment, assignmentResponse, true);
-
+			final String endpoint = endpointSelector.getEndpoint(testAssignment.getOasCustomerId());
+			if (endpoint == null) {
+				logger.error("Endpoint not defined for customerId! [customerId=" + testAssignment.getOasCustomerId() + "]");
+			} else {
+		        assignmentResponse = restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
+		        		testAssignment, CreateAssignmentResponse.class);
+		        logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
+		        
+		        //Updates the BMTSYN_Assignment_Status table, with success or failure
+		        processResponses(testAssignment, assignmentResponse, true);
+			}
 		} catch (RestClientException rce) {
 			logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);			
 			updateAssignmentStatus(testAdminId, studentId, false, "999", rce.getMessage());

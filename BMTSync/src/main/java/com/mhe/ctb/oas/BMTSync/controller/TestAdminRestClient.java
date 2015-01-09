@@ -19,12 +19,15 @@ public class TestAdminRestClient {
 	
 	static final private int ERROR_MESSAGE_LENGTH = 200;
 	
-	private TestAdminDAO testAdminDAO;
+	private final TestAdminDAO testAdminDAO;
+	
+	private final EndpointSelector endpointSelector;
 	
 	String errorMsg;	
 	
-	public TestAdminRestClient(final TestAdminDAO testAdminDAO) {
+	public TestAdminRestClient(final TestAdminDAO testAdminDAO, final EndpointSelector endpointSelector) {
 		this.testAdminDAO = testAdminDAO;
+		this.endpointSelector = endpointSelector;
 	}
 	
 	/*
@@ -40,14 +43,18 @@ public class TestAdminRestClient {
 
 		try {
 			// Connects to OAS DB and return students related data 
-			testAdmin = testAdminDAO.getTestAdmin(testAdminId);	
-			
-			logger.info("[TestAdmin] Request json to BMT :"+testAdmin.toJson());
-			testAdminResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_TESTADMIN,
-	        		testAdmin, CreateTestAdminResponse.class);
-	        
-	        //Updates the BMTSYN_Assignment_Status table, with success or failure
-	        processResponses(testAdmin, testAdminResponse, true);
+			testAdmin = testAdminDAO.getTestAdmin(testAdminId);
+			final String endpoint = endpointSelector.getEndpoint(testAdmin.getOasCustomerId());
+			if (endpoint == null) {
+				logger.error("Endpoint not defined for customerId! [customerId=" + testAdmin.getOasCustomerId() + "]");
+			} else {
+				logger.info("[TestAdmin] Request json to BMT :"+testAdmin.toJson());
+				testAdminResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_TESTADMIN,
+		        		testAdmin, CreateTestAdminResponse.class);
+		        
+		        //Updates the BMTSYN_Assignment_Status table, with success or failure
+		        processResponses(testAdmin, testAdminResponse, true);
+			}
 		} catch (RestClientException rce) {
 			logger.error("[TestAdmin] Http Client Error: " + rce.getMessage(), rce);
 			try {

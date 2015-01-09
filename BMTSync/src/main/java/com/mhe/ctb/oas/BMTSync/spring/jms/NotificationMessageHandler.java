@@ -26,6 +26,8 @@ public class NotificationMessageHandler<T extends EnqueueableMessage> {
     	if (message == null) {
     		throw new JMSException("Message should not be null!");
     	}
+
+    	logger.debug("Handling " + message.getMessageType() + " message.");
     	
     	if (message.getPrimaryKeyValue() == null || message.getSecondaryKeyValue() == null) {
     		throw new MessageConversionException("Content of message cannot be null. " + message.getLogDetails());

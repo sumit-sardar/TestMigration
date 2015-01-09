@@ -40,7 +40,7 @@
 		<constructor-arg index="0" ref="oasDataSource" />
 	</bean>
 	
-	<bean id="springStudentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.SpringStudentDAO">
+	<bean id="studentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.StudentDAO">
 		<constructor-arg index="0" ref="oasDataSource" />
 		<constructor-arg index="1" ref="springOrgNodeDAO" />
 	</bean>
@@ -54,6 +54,10 @@
 	</bean>
 
 	<bean id="testStatusDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO">
+		<constructor-arg index="0" ref="oasDataSource" />
+	</bean>
+	
+	<bean id="endpointDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.EndpointDAO">
 		<constructor-arg index="0" ref="oasDataSource" />
 	</bean>
 	

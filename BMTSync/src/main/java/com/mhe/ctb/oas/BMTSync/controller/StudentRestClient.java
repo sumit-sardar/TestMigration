@@ -1,8 +1,10 @@
 package com.mhe.ctb.oas.BMTSync.controller;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,11 +13,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.mhe.ctb.oas.BMTSync.exception.UnknownStudentException;
 import com.mhe.ctb.oas.BMTSync.model.Student;
 import com.mhe.ctb.oas.BMTSync.model.StudentResponse;
 import com.mhe.ctb.oas.BMTSync.rest.CreateStudentsRequest;
 import com.mhe.ctb.oas.BMTSync.rest.CreateStudentsResponse;
-import com.mhe.ctb.oas.BMTSync.spring.dao.SpringStudentDAO;
+import com.mhe.ctb.oas.BMTSync.spring.dao.StudentDAO;
 import com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType;
 
 public class StudentRestClient {
@@ -24,10 +27,14 @@ public class StudentRestClient {
 
 	private static final Logger logger = Logger.getLogger(StudentRestClient.class);
 	
-	private SpringStudentDAO studentDAO;
+	private final StudentDAO studentDAO;
 	
-	public StudentRestClient(final SpringStudentDAO studentDAO) {
+	private final EndpointSelector endpointSelector;
+	
+	public StudentRestClient(final StudentDAO studentDAO, final EndpointSelector endpointSelector) {
+	//public StudentRestClient(final StudentDAO studentDAO) {
 		this.studentDAO = studentDAO;
+		this.endpointSelector = endpointSelector;
 	}
 	
 	String errorMsg;
@@ -38,36 +45,53 @@ public class StudentRestClient {
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody CreateStudentsResponse postStudentList(final List<StudentMessageType> messages) {
 		final RestTemplate restTemplate = new RestTemplate(); 
-		final CreateStudentsRequest studentListRequest = new CreateStudentsRequest();
+		final Map<Integer, CreateStudentsRequest> studentListMap = new HashMap<Integer, CreateStudentsRequest>();
 		CreateStudentsResponse studentListResponse = null;
 		
-		try {
 			for (final StudentMessageType studentMessage : messages) {
 				// Connects to OAS DB and return students related data 
-				final Student student = studentDAO.getStudent(studentMessage.getStudentId());
-				logger.info("Transmitting student. [studentId=" + student.getOasStudentId() + "]");
-				studentListRequest.addStudent(student);
-			}
-	
-			logger.info("JSON blob for BMT: " + studentListRequest.toJson());
-	        studentListResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_STUDENTS,
-	        		studentListRequest, CreateStudentsResponse.class);
-			logger.info("Response from BMT: " + studentListResponse.toJson());
-			processResponses(studentListRequest, studentListResponse, true);			
-		} catch (RestClientException rce) {
-			logger.error("Http Client Error: " + rce.getMessage(), rce);			
-			try {
-				// On Error Mark the Student ID status as Failed
-				// in Student_API_Status table
-				processResponses(studentListRequest, studentListResponse, false);
-			} catch (Exception e) {
-				logger.error("Error attempting to process student responses.", e);
+				try {
+					final Student student = studentDAO.getStudent(studentMessage.getStudentId());
+					logger.info("Transmitting student. [studentId=" + student.getOasStudentId() + "]");
+					// We assume here that customer ID is never null. It won't break if this isn't true,
+					// but we're not going to warn if it happens.
+					CreateStudentsRequest request = studentListMap.get(studentMessage.getCustomerId());
+					if (request == null) {
+						request = new CreateStudentsRequest();
+					}
+					request.addStudent(student);
+					studentListMap.put(student.getOasCustomerId(), request);
+				} catch (final UnknownStudentException use) {
+					logger.error("Unknown studentId. [studentId=" + studentMessage.getStudentId() + "]");
+				}
 			}
 			
-		}
-		catch (Exception e) {
-			logger.error("Error attempting to process student responses.", e);
-		} 
+			Set<Integer> customerIds = studentListMap.keySet();
+			for (final Integer customerId : customerIds) {
+				CreateStudentsRequest studentRequest = studentListMap.get(customerId);
+				final String endpoint = endpointSelector.getEndpoint(customerId);
+				if (endpoint == null) {
+					logger.error("No endpoint defined for customer ID! [customerId=" + customerId + "]");
+				} else {
+					try {
+						logger.info("JSON blob for BMT: " + studentListMap.get(customerId).toJson());
+						studentListResponse = restTemplate.postForObject(endpointSelector.getEndpoint(customerId)
+								+RestURIConstants.POST_STUDENTS,
+								studentRequest, CreateStudentsResponse.class);
+						logger.info("Response from BMT: " + studentListResponse.toJson());
+					} catch (RestClientException rce) {
+						logger.error("Http Client Error: " + rce.getMessage(), rce);			
+						try {
+							// On Error Mark the Student ID status as Failed
+							// in Student_API_Status table
+							processResponses(studentRequest, studentListResponse, false);
+						} catch (Exception e) {
+							logger.error("Error attempting to process student responses.", e);
+						}
+					}
+				}
+				processResponses(studentRequest, studentListResponse, true);
+			}
 		return studentListResponse;
 	}
 
@@ -76,7 +100,7 @@ public class StudentRestClient {
 	 * with status 'Failed' for the student ID's that were not 
 	 * synched into BMT due to an error in data
 	 */
-	private void processResponses(final CreateStudentsRequest req, final CreateStudentsResponse resp, final boolean success) throws Exception {
+	private void processResponses(final CreateStudentsRequest req, final CreateStudentsResponse resp, final boolean success) {
 
 		Map<Integer, Boolean> updateStatuses = new HashMap<Integer, Boolean>(req.getStudents().size());
 		Map<Integer, String> updateMessages = new HashMap<Integer, String>(req.getStudents().size());
@@ -116,10 +140,16 @@ public class StudentRestClient {
 		}
 
 		for (final Integer studentId : updateMessages.keySet()) {
-			studentDAO.updateStudentAPIStatus(studentId, updateStatuses.get(studentId), updateCodes.get(studentId),
-					updateMessages.get(studentId));
-			logger.debug(String.format("Updating student API status in OAS. [studentId=%d][updateSuccess=%b][updateMessage=%s]",
-					studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
+			try {
+				logger.debug(String.format("Updating student API status in OAS. [studentId=%d][updateSuccess=%b][updateMessage=%s]",
+						studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
+				studentDAO.updateStudentAPIStatus(studentId, updateStatuses.get(studentId), updateCodes.get(studentId),
+						updateMessages.get(studentId));
+			} catch (final SQLException sqle) {
+				logger.error(String.format("SQL error attempting to update student status in OAS."
+						+ " [studentId=%d][updateSuccess=%b][updateMessage=%s]",
+						studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
+			}
 					
 		}
 	}
