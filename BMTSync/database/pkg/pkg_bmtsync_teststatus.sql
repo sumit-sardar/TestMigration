@@ -23,7 +23,9 @@ CREATE OR REPLACE PACKAGE PKG_BMTSYNC_TESTSTATUS AS
 	*
 	**********************************************************/
 	PROCEDURE UpdateRosterTestStatus(
-	   pRosterId           IN NUMBER);
+	   pRosterId           IN NUMBER,
+	   pStartDate          IN DATE,
+	   pCompletionDate     IN DATE);
 
 	   
 
@@ -55,7 +57,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 		bSuccess       CHAR(1);
 		bErrorCode     NUMBER;
 		bErrorMsg      VARCHAR2(200);
-		vStatusDesc    Scoring_Status_Code.Scoring_Status_Desc%TYPE;
+		vStatusDesc    Test_Completion_Status_Code .TEST_COMPLETION_STATUS_DESC%TYPE;
 		vStartDate     DATE;
 		vCompletionDate   DATE;
 	BEGIN
@@ -126,9 +128,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 			
 			-- Validate the Delivery Status Code
 			BEGIN
-			    SELECT Scoring_Status_Desc INTO vStatusDesc
-				FROM Scoring_Status_Code 
-				WHERE Scoring_Status = pDeliveryStatus;
+			    SELECT Test_Completion_Status_Desc INTO vStatusDesc
+				FROM Test_Completion_Status_Code 
+				WHERE Test_Completion_Status = pDeliveryStatus;
 				DBMS_OUTPUT.PUT_LINE('Updated Successfully');
 			EXCEPTION
 			WHEN NO_DATA_FOUND THEN
@@ -155,7 +157,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 					bErrorMsg  := '';
 					
 					--Update Roaster Completion Status
-					UpdateRosterTestStatus(pRosterId);
+					UpdateRosterTestStatus(pRosterId, vStartDate, vCompletionDate);
+					
 					COMMIT;  
 				EXCEPTION
 				WHEN OTHERS THEN
@@ -195,7 +198,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 	*
 	**********************************************************/
 	PROCEDURE UpdateRosterTestStatus(
-	   pRosterId           IN NUMBER) AS
+	   pRosterId           IN NUMBER,
+	   pStartDate          IN DATE,
+	   pCompletionDate     IN DATE) AS
 
 	   --pRosterId NUMBER := 8662811;
 	   --pDeliveryStatus VARCHAR2(2);
@@ -226,12 +231,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
         IF vFinalStatus IS NOT NULL THEN
 			UPDATE Test_Roster SET Test_Completion_Status = vFinalStatus
 			WHERE Test_Roster_ID = pRosterId;
+			
+			UPDATE Test_Roster SET Start_Date_Time = pStartDate
+			WHERE Test_Roster_ID = pRosterId AND Start_Date_Time IS NULL;
+			
 		ELSE 
 			UPDATE Test_Roster ROS 
-			SET Test_completion_status = DECODE((SELECT count(*) FROM Student_Item_Set_Status 
+			SET Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status 
 				   WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)  
 			WHERE Test_Roster_Id = pRosterId;
-		
+
+			UPDATE Test_Roster 
+			SET Completion_Date_Time = pCompletionDate
+			WHERE Test_Completion_Status = 'CO' AND Test_Roster_ID = pRosterId;
+			
 		END IF;
 		
 		
