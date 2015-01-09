@@ -74,11 +74,13 @@ public class StudentRestClient {
 					logger.error("No endpoint defined for customer ID! [customerId=" + customerId + "]");
 				} else {
 					try {
-						logger.info("JSON blob for BMT: " + studentListMap.get(customerId).toJson());
+						logger.info("[Student] Request json to BMT: " + studentListMap.get(customerId).toJson());
+						logger.info("[Student] Transmiting json to endpoint " + endpointSelector.getEndpoint(customerId)
+								+RestURIConstants.POST_STUDENTS);
 						studentListResponse = restTemplate.postForObject(endpointSelector.getEndpoint(customerId)
 								+RestURIConstants.POST_STUDENTS,
 								studentRequest, CreateStudentsResponse.class);
-						logger.info("Response from BMT: " + studentListResponse.toJson());
+						logger.info("[Student] Response json from BMT: " + studentListResponse.toJson());
 					} catch (RestClientException rce) {
 						logger.error("Http Client Error: " + rce.getMessage(), rce);			
 						try {

@@ -49,9 +49,12 @@ public class TestAdminRestClient {
 				logger.error("Endpoint not defined for customerId! [customerId=" + testAdmin.getOasCustomerId() + "]");
 			} else {
 				logger.info("[TestAdmin] Request json to BMT :"+testAdmin.toJson());
-				testAdminResponse = restTemplate.postForObject(RestURIConstants.SERVER_URI+RestURIConstants.POST_TESTADMIN,
+				logger.info("[TestAdmin] Transmiting json to endpoint " + endpointSelector.getEndpoint(testAdmin.getOasCustomerId())
+						+RestURIConstants.POST_TESTADMIN);
+				testAdminResponse = restTemplate.postForObject(endpointSelector.getEndpoint(testAdmin.getOasCustomerId())
+						+RestURIConstants.POST_TESTADMIN,
 		        		testAdmin, CreateTestAdminResponse.class);
-		        
+		        logger.info("[TestAdmin] Response json from BMT: " + testAdminResponse.toJson());
 		        //Updates the BMTSYN_Assignment_Status table, with success or failure
 		        processResponses(testAdmin, testAdminResponse, true);
 			}

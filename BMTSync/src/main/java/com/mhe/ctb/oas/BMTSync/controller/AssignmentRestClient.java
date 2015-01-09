@@ -50,11 +50,13 @@ public class AssignmentRestClient {
 			// Connects to OAS DB and return students related data 
 			testAssignment = testAssignmentDAO.getTestAssignment(testAdminId, studentId);	
 				
-			logger.info("[TestAssignment] Request json to BMT: "+testAssignment.toJson());
 			final String endpoint = endpointSelector.getEndpoint(testAssignment.getOasCustomerId());
 			if (endpoint == null) {
 				logger.error("Endpoint not defined for customerId! [customerId=" + testAssignment.getOasCustomerId() + "]");
 			} else {
+				logger.info("[TestAssignment] Request json to BMT: "+testAssignment.toJson());
+				logger.info("[TestAssignment] Transmiting json to endpoint " + endpointSelector.getEndpoint(testAssignment.getOasCustomerId())
+						+RestURIConstants.POST_ASSIGNMENTS);
 		        assignmentResponse = restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
 		        		testAssignment, CreateAssignmentResponse.class);
 		        logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
