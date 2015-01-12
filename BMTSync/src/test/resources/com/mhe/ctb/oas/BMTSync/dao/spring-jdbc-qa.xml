@@ -26,46 +26,43 @@
 
 	<import resource="spring-qa.xml"/>
 
-	<!--  Setup the datasource -->
+	<!--  Setup the datasource
 	<bean id="oasDataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
-	</bean>
+	</bean>  -->
 
 	<!-- Set up the DAOs. -->
 	<bean id="springOrgNodeDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.SpringOrgNodeDAO">
-		<constructor-arg index="0" ref="oasDataSource" />
+		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
 	</bean>
 	
 	<bean id="studentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.StudentDAO">
-		<constructor-arg index="0" ref="oasDataSource" />
+		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
 		<constructor-arg index="1" ref="springOrgNodeDAO" />
 	</bean>
 
 	<bean id="testAssignmentDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestAssignmentDAO">
-		<constructor-arg index="0" ref="oasDataSource" />
+		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
 	</bean>
 
 	<bean id="testAdminDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestAdminDAO">
-		<constructor-arg index="0" ref="oasDataSource" />
+		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
 	</bean>
 
 	<bean id="testStatusDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO">
-		<constructor-arg index="0" ref="oasDataSource" />
+		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
 	</bean>
 	
 	<bean id="endpointDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.EndpointDAO">
-		<constructor-arg index="0" ref="oasDataSource" />
+		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
 	</bean>
 	
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true">
-		<property name="dataSource" ref="oasDataSource" />
+		<property name="dataSource" ref="oasBmtSyncDataSource" />
 	</bean>
-
-
-
 </beans>
