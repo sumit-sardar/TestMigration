@@ -26,9 +26,12 @@ public class BMTTestAssignmentBlockingQueuePoller implements DisposableBean {
 
 	@Override
 	public void destroy() throws Exception {
-		executor.shutdown();
-        while(!executor.isTerminated()){
-            //wait for all tasks to finish
+        executor.shutdown();
+        if (!executor.awaitTermination(10, TimeUnit.SECONDS))
+        {
+            logger.warn("Unable to shut down within 10 seconds.  Forcing Termination.");
+            executor.shutdownNow();
+            executor.awaitTermination(10, TimeUnit.SECONDS);
         }
 	}
 }
