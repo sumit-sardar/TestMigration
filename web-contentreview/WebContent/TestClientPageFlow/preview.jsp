@@ -595,59 +595,281 @@ function getCRcolor(){
 }
 
 <!-- End CR item scrolledittext scrollbar functions-->
+
+/* start sync from tdc*/
+function cntChars(which,widgetId){
+				var refObj='';
+				if(!gController){
+				  return;
+				}
+				 if(!which && which!=null && which!=undefined){
+				        return;
+				}
+	
+				for(var i=0;i<gController.crFields.length;i++)
+				{
+					if(gController.crFields[i].widget_id == widgetId){
+			            refObj=gController.crFields[i].ref
+						break;
+					}
+				}
+    		if(refObj){
+		            setTimeout(function(){
+		                       refObj.setAttribute("numCharacters",which.value.length);
+		                       refObj.updateCharacterMeter();
+		                       },150);
+		
+				}
+
+    
+				var maxStrLen =parseInt(jQuery(which).attr('maxlen'));
+			    var matches = jQuery(which).val().match(/\n/g);
+			    var breaks = matches ? matches.length : 0;
+			    var maxLength=maxStrLen+breaks;
+			    jQuery(which).attr('maxlength',maxLength);
+			    var rem = maxStrLen - which.value.length;
+			    
+			    return which.value;
+}
+/* Method to call particular method based on answer choice selection in SR Item*/
+function selectAnswerChoice(){
+
+	var keyValue = String.fromCharCode(event.keyCode).toLowerCase();
+	switch(keyValue){
+			
+					case 'a' :
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleA();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+					case 'b' :
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleB();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+					case 'c' :
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleC();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+					case 'd' :
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleD();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+					case 'e' :
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleE();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+					case 'f' :
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleF();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+					case 'g' :
+						console.log("****Inside case G****"+gItemInterface.visible+"======"+"gRevisitFalsePopup.visible"+"======"+gPleaseWaitPopup.visible);
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleG();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+					case 'h' :
+						console.log("****Inside case H*****"+gItemInterface.visible+"======"+"gRevisitFalsePopup.visible"+"======"+gPleaseWaitPopup.visible);
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleH();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+					case 'i' :
+						console.log("****Inside case I*****"+gItemInterface.visible+"======"+"gRevisitFalsePopup.visible"+"======"+gPleaseWaitPopup.visible);
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleI();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+					case 'j' :
+						console.log("****Inside case J*****"+gItemInterface.visible+"======"+"gRevisitFalsePopup.visible"+"======"+gPleaseWaitPopup.visible);
+							if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+								gHotKeys.toggleJ();
+								event.preventDefault(); // disable Ctrl+F
+							}
+					break;
+				 default:
+					break;
+			}
+}
+
+
+/*Used to detect key-combos and prevent its action if combo is not appropriate */
+var answerChoiceHandler = function(){
+		var downedKeysArr = [];
+		var isMetaKeyDown = false;
+		var checkMac = window.navigator.platform;
+		function keyPressedDown(e) {
+				
+		 	  	var evtobj = window.event? event : e;
+		 	  	//Used to block Ctrl+~ and Cmd key in Mac
+		 	  	if((checkMac.indexOf("Mac") != -1) && (evtobj.which == 91 || evtobj.which == 93 || evtobj.which == 192) ){  
+						isMetaKeyDown = true;
+		 	  			return false;
+		 	  	}else if(evtobj.which == 93){
+		 	  		 //Used to block right option key in Windows
+		 	  		return false;
+		 	  	}
+		 	  	// Code changes made to prevent continuous Cmd+V execution on SR items.
+		 	  	if(!gController.isCrItem() && evtobj.which == 86 && isMetaKeyDown){
+		 	  		//console.log("***GOT Cmd+V****");
+		 	  		return false;
+		 	  	}
+		 	  	// KeyCode 229 is used to prevent disabling of hot keys after ctrl+Q is pressed on SR item.
+		 	  	if(downedKeysArr.indexOf(evtobj.keyCode) < 0  && !(evtobj.which == 16) && !(evtobj.which == 20) && !isMetaKeyDown && !gController.isCrItem() && !(evtobj.which == 229))
+		      	{
+		      		downedKeysArr.push(evtobj.keyCode);
+		      		
+		      	}
+			  // console.log(downedKeysArr.length+" pressed down");  
+		}
+		
+		function keyPressedUp(e) {
+				     	var evtobj = window.event? event : e;
+		 	  			if((checkMac.indexOf("Mac") != -1) && (evtobj.which == 91 || evtobj.which == 93 || evtobj.which == 192)){
+		 	  				isMetaKeyDown = false;
+				 	  		return false;
+		 	  			}
+				if(!gController.isCrItem() && (gItemInterface.visible == true || gItemInterface.visible == 'true')){
+				     	var index=downedKeysArr.indexOf(evtobj.keyCode);
+				   		if (index >= 0) {
+				   				if(downedKeysArr.length == 1 && (evtobj.which >= 65 || evtobj.which <= 74) && !gController.isCrItem() && (!gScratchpad.scratchpadHasFocus) && (gController.isWritingPopupOpen == false)){
+					    			selectAnswerChoice();
+					    		}
+					    	
+				    	 	downedKeysArr.splice( index, 1 );
+				       		
+				   		 }
+		    			//console.log(downedKeysArr.length+" pressed Up"); 
+		    			
+		    			
+		   		 }
+			} 
+		function clearDownedKeysArr() {
+			if(downedKeysArr != null){
+				while(downedKeysArr.length > 0){
+					console.log("Poping array*****");
+					downedKeysArr.pop();
+				}
+			}
+		}
+
+	return {keyPressedDown:keyPressedDown, keyPressedUp:keyPressedUp, downedKeysArr:downedKeysArr, isMetaKeyDown:isMetaKeyDown, clearDownedKeysArr:clearDownedKeysArr}
+}();
+
+
+
+
+
+// to disabled the tab key when Scratchpad is opened 
+ //Clicking Tab twice selects entire contents of Scratchpad
+ 
+ // to disabled the tab key when Scratchpad is opened 
+ //Clicking Tab twice selects entire contents of Scratchpad
+ 
  function disableTabKey() {
  	var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
- 	
+ 	//Condition added to prevent special character typed into the CR area using Alt key in MAC
+ 	if(event.altKey){
+ 		  console.log("inside event.altKey "+event.altKey+"keystroke "+keystroke);
+ 		event.stopImmediatePropagation();
+ 		event.preventDefault();
+		event.stopPropagation();
+		return false;
+ 	}
+ 	if(gItemInterface.visible == true || gItemInterface.visible == 'true' ){
+ 		answerChoiceHandler.keyPressedDown();
+ 	}
 	if(event.which == 9 && gController.scratchpadOpen) { 
 		//console.log("TAB!!!!!!!!!!!!");
 		event.preventDefault();
 		event.stopPropagation();
 	}
-	
-	if (event.ctrlKey) {
+	// Fix for defect #79634 - Pause screen is flickering while pressing Ctrl+L on the pause screen.
+	if(event.ctrlKey){
+		//console.log("Inside external case l=====");
+		switch(keystroke){
+			case 'l':
+				if(!gItemInterface.visible) {
+					event.preventDefault();
+					event.stopPropagation();
+					return false;
+				}		
+			break;
+			
+			case 'q':
+					event.preventDefault();
+					event.stopPropagation();
+					return false;
+			break;
+			
+			default:
+				break;
+		}
+	}
+	if (event.ctrlKey && gController.iskeyEnabled && gHotKeys.onceOnly && (gController.isWritingPopupOpen == false)) {
 			//console.log("hotKeysHandle event.ctrlKey == true || keystroke==== "+keystroke);
 			switch(keystroke){
 				case 'l':
-				    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+				    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
 						gHotKeys.toggleMark();
 						event.preventDefault(); // disable Ctrl+L
-					}	
+					}else if(!gItemInterface.visible) {
+						event.preventDefault();
+						event.stopPropagation();
+						return false;
+					}		
 					break;
 				case 's':
 					event.preventDefault();
-					 if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+					 if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
 					 	hideMagnify();
 				    	gHotKeys.stop();
 						event.preventDefault(); // disable Ctrl+S
 					}	
 					break;
 				case 'u':
-				    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+				    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
 						gHotKeys.pause();
 						event.preventDefault(); // disable Ctrl+U
 					}	
 					break;
 				case 'o':
-					if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+					if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
 						gHotKeys.toggleTimer();
 						event.preventDefault(); // disable Ctrl+O
 					}
 					break;
 				case 'j':
-					if(gController.iskeyEnabled) {
+					if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
 						gHotKeys.goBack();
 						event.preventDefault(); // disable Ctrl+J
 					}
 					break;			
 				case 'k' :
-					if(gController.iskeyEnabled) {
+					if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
 						gHotKeys.goOn();
 						event.preventDefault(); // disable Ctrl+K
 					}
 					break;
 				case 'f' :
-					if(gController.iskeyEnabled) {
-						hideMagnify();
+					if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false) {
+						if(gController.onLastItem()) {
+							hideMagnify();
+						}
 						gHotKeys.finish();
 						event.preventDefault(); // disable Ctrl+F
 					}
@@ -681,6 +903,8 @@ function getCRcolor(){
 	}
 	/*added to restrict undo redo using hot keys in DHTML client ends*/
 }
+
+/* end sync from tdc*/
 
 
 /*function hotKeysHandle() {
@@ -1269,7 +1493,7 @@ body {
 
 <!--SA041005 start -->
 
-<BODY onload="load()" onkeydown="disableShortcuts()" oncontextmenu="javascript:return false;">
+<BODY onload="load()" onkeydown="disableTabKey()" onkeyup="answerChoiceHandler.keyPressedUp()" oncontextmenu="javascript:return false;">
 <button id="mybutton" style="visibility:hidden; width:0px; height:0px; display:none;">clickMe </button>
 <!-- generating TI calculators div start-->
 <div id="calculatorDiv" tabindex="0" class = "calculatorDiv" title="TI30 Calculator" style="display: none;width: inherit;">

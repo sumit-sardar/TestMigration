@@ -149,7 +149,7 @@ var ddpowerzoomer={
 				}
 			},
 			drag: function(event, ui) {
-			    if($.browser.safari){
+			    if(navigator.userAgent.indexOf("Safari")> -1){
 			    	$('#magnifierWindow').css("cursor", "url('./assets/dragger_press.png'), pointer");
 			    }else{
 			    	$('#magnifierWindow').css( 'cursor', "url('./assets/dragger_press.png'), pointer" );
@@ -256,5 +256,31 @@ jQuery.fn.initMagnify=function(options){
 			$('#maskRuler').trigger("mouseup");
 			$('#scratch').trigger("mouseup");
 			$('#protractor').trigger("mouseup");
+        });
+         localStorage.setItem("dManupulative", false);
+        //window.dManupulative=false;
+        $('[name="dManupulative"]').on("mousedown",function() {
+		  //window.dManupulative = true;
+		   localStorage.setItem("dManupulative", true);
+		});
+        
+        /* added to prevent sticking of TE draggable 
+        	items to mouse cursor when dragged over magnifier
+        */
+        $("#magnifierWindow").on("mouseover",function() {
+        	/*if($('iframe')[0].contentWindow.$(".ui-draggable-dragging")){
+        		$('iframe')[0].contentWindow.$(".ui-draggable-dragging").trigger("mouseup");
+        	}*/
+        	var iframeCon=$("iframe").contents().find(".ui-draggable");
+        	 var dManupulativeVals=localStorage.getItem("dManupulative");
+        	if(iframeCon && !dManupulativeVals){
+        		iframeCon.trigger("mouseup");
+        	}	
+        	isMagnifierMouseovered = true;
+        });
+        
+        $("#magnifierWindow").on("mouseout",function() {
+        	isMagnifierMouseovered = false;
+        	
         });
 }
