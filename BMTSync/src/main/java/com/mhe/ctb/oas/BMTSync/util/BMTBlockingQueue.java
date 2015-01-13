@@ -28,7 +28,7 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 	/**
 	 * Attempts to add a message to a queue with a rudimentary exception handling system.
 	 */
-	public void enqueueWithTimeout(final T message) throws MessageConversionException {
+	public void enqueueWithTimeout(final T message) throws InterruptedException, MessageConversionException {
 
 		try {
 			if (super.offer(message, timeout, TimeUnit.MILLISECONDS)) {
@@ -37,21 +37,20 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 			}
 		} catch (InterruptedException ie) {
 			logger.error("Interrupted while waiting to add message to queue. " + message.getLogDetails(), ie);
-			throw new MessageConversionException("Interrupted while waiting to add message to queue."
-					+ message.getLogDetails(), ie);
+			throw ie;
 		}
 		logger.error("Failed to add message to queue; queue likely full." + message.getLogDetails());
 		throw new MessageConversionException("Failed to add message to queue; queue likely full." + message.getLogDetails());
 	}
 	
-	public List<T> dequeue() {
+	public List<T> dequeue() throws InterruptedException {
 		final List<T> messageList = new ArrayList<T>();
 		logger.debug("Attempting to dequeue message from the queue....");
 		T message = null;
 		try {
 			message = super.poll(timeout, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException ie) {
-			logger.error("Interrupted while waiting to dequeue additional messages.");
+			throw ie;
 		}
 		if (message == null) {
 			logger.debug("No messages in queue. Returning empty.");

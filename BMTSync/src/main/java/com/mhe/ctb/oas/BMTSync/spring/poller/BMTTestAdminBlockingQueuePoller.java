@@ -5,33 +5,39 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mhe.ctb.oas.BMTSync.controller.AssignmentRestClient;
 import com.mhe.ctb.oas.BMTSync.controller.TestAdminRestClient;
 import com.mhe.ctb.oas.BMTSync.spring.jms.TestAdminMessageType;
+import com.mhe.ctb.oas.BMTSync.spring.jms.TestAssignmentMessageType;
 import com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue;
 
-public class BMTTestAdminBlockingQueuePoller implements DisposableBean {
-
-	public final ScheduledThreadPoolExecutor executor;
+public class BMTTestAdminBlockingQueuePoller implements DisposableBean, InitializingBean {
+	
 	private static final Logger logger = Logger.getLogger(BMTTestAdminBlockingQueuePoller.class);
 
-	public BMTTestAdminBlockingQueuePoller(final BMTBlockingQueue<TestAdminMessageType> queue,
-			final TestAdminRestClient restClient) {
-		logger.info("Creating poller to watch queue for TestAdmin messages to post to BMT.");
-		executor = new ScheduledThreadPoolExecutor(1);
-		executor.setKeepAliveTime(1, TimeUnit.MINUTES);
-		executor.scheduleAtFixedRate(new BMTTestAdminBlockingQueueWorker(queue, restClient), 1, 5, TimeUnit.SECONDS);
+	private BMTTestAdminBlockingQueueWorker worker;
+	private BMTBlockingQueue<TestAdminMessageType> queue;
+	private TestAdminRestClient restClient;
+	
+	@Autowired
+	public BMTTestAdminBlockingQueuePoller(final BMTBlockingQueue<TestAdminMessageType> queue, final TestAdminRestClient restClient) {
+		this.queue = queue;
+		this.restClient = restClient;
 	}
 
 	@Override
 	public void destroy() throws Exception {
-        executor.shutdown();
-        if (!executor.awaitTermination(10, TimeUnit.SECONDS))
-        {
-            logger.warn("Unable to shut down within 10 seconds.  Forcing Termination.");
-            executor.shutdownNow();
-            executor.awaitTermination(10, TimeUnit.SECONDS);
-        }
+		worker.shouldStop();
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		logger.info("Creating poller to watch queue for TestAdmin messages to post to BMT.");
+		worker = new BMTTestAdminBlockingQueueWorker(queue, restClient);
+		worker.start();
 	}
 
 }

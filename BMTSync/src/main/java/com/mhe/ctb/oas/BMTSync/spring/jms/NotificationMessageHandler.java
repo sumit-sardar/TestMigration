@@ -22,7 +22,7 @@ public class NotificationMessageHandler<T extends EnqueueableMessage> {
 	}
 	
     public void handleMessage(final T message) 
-            throws MessageConversionException, JMSException {
+            throws MessageConversionException, InterruptedException, JMSException {
     	if (message == null) {
     		throw new JMSException("Message should not be null!");
     	}
@@ -38,6 +38,8 @@ public class NotificationMessageHandler<T extends EnqueueableMessage> {
     	// Message isn't null, so add it to the queue to post.
     	try {    		
     		queue.enqueueWithTimeout(message);
+    	} catch (InterruptedException ie) {
+    		throw ie;
     	} catch (MessageConversionException mce) {
     		throw mce;
     	}

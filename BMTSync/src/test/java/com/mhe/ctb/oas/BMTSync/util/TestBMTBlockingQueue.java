@@ -30,7 +30,7 @@ public class TestBMTBlockingQueue {
 	}
 	
 	@Test
-	public void testBMTBlockingQueue_success() {
+	public void testBMTBlockingQueue_success() throws InterruptedException {
 		int first = 1;
 		int second = 2;
 		queue.enqueueWithTimeout(createMessage(first));
@@ -45,7 +45,7 @@ public class TestBMTBlockingQueue {
 	}
 
 	@Test(expected = MessageConversionException.class)
-	public void testBMTBlockingQueue_failFullQueue() {
+	public void testBMTBlockingQueue_failFullQueue() throws InterruptedException {
 		for (int index = 0; index <= QUEUE_SIZE; index++) {
 			queue.enqueueWithTimeout(createMessage(index));
 		}
