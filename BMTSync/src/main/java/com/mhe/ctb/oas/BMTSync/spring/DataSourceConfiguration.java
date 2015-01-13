@@ -39,7 +39,7 @@ public class DataSourceConfiguration {
         	// Try Tomcat context
             Context initContext = new InitialContext();
             envContext = (Context)initContext.lookup("java:/comp/env");
-            final DataSource tomcatDS = (DataSource)envContext.lookup("oasDataSource");
+            final DataSource tomcatDS = (DataSource)envContext.lookup("oasDataSourceQA"); // The
             jdbcTemplate = new JdbcTemplate(tomcatDS);
             jdbcTemplate.queryForObject(query, Integer.class);
             logger.info("[DataSource] Using Tomcat JNDI syntax");
