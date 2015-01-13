@@ -8,7 +8,7 @@ public class ReadPropertyFile {
 	
 	protected Properties prop = null;
 	//protected InputStream input = ReadPropertyFile.class.getClassLoader().getResourceAsStream("com/mhe/ctb/oas/BMTSync/util/config.properties");
-	protected InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties");
+	protected InputStream input = getClass().getClassLoader().getResourceAsStream("bmtsync.properties");
 	public ReadPropertyFile() throws IOException {
 		prop = new Properties();
 		prop.load(input);

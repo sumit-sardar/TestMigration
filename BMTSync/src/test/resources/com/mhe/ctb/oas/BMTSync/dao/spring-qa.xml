@@ -29,7 +29,6 @@
 	 -->
 	 
     <context:property-placeholder location="classpath:bmtsync.properties" />
-    <context:property-placeholder location="classpath:config.properties" />
     <tx:annotation-driven/>
 
 
