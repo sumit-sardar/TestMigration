@@ -22,14 +22,14 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>9.1.0.M0</version>
+			<version>8.1.16.v20140903</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-jsp</artifactId>
-			<version>9.1.0.M0</version>
+			<version>8.1.16.v20140903</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -165,7 +165,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.1.0.M0</version>
+                <version>8.1.16.v20140903</version>
                 <configuration>
     				<stopPort>9966</stopPort>
     				<stopKey>foo</stopKey>
