@@ -17,10 +17,10 @@ public class BMTTestAdminBlockingQueueWorker extends Thread {
 	private final TestAdminRestClient restClient;
 	private boolean shouldRun;
 
-	public BMTTestAdminBlockingQueueWorker(final BMTBlockingQueue<TestAdminMessageType> queue,
-			final TestAdminRestClient restClient) {
+	public BMTTestAdminBlockingQueueWorker(final BMTBlockingQueue<TestAdminMessageType> queue, final TestAdminRestClient restClient) {
 		this.queue = queue;
 		this.restClient = restClient;
+		this.shouldRun = true;
 	}
 	
 	public void run() {

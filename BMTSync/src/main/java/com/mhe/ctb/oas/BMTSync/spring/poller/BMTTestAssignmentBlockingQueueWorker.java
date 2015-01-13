@@ -17,8 +17,7 @@ public class BMTTestAssignmentBlockingQueueWorker extends Thread {
 	private final AssignmentRestClient restClient;
 	private boolean shouldRun;
 
-	public BMTTestAssignmentBlockingQueueWorker(final BMTBlockingQueue<TestAssignmentMessageType> queue,
-			final AssignmentRestClient restClient) {
+	public BMTTestAssignmentBlockingQueueWorker(final BMTBlockingQueue<TestAssignmentMessageType> queue, final AssignmentRestClient restClient) {
 		this.queue = queue;
 		this.restClient = restClient;
 		this.shouldRun = true;

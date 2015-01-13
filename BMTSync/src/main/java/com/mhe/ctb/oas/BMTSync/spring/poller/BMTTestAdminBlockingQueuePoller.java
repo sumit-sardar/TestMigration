@@ -1,17 +1,12 @@
 package com.mhe.ctb.oas.BMTSync.spring.poller;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.mhe.ctb.oas.BMTSync.controller.AssignmentRestClient;
 import com.mhe.ctb.oas.BMTSync.controller.TestAdminRestClient;
 import com.mhe.ctb.oas.BMTSync.spring.jms.TestAdminMessageType;
-import com.mhe.ctb.oas.BMTSync.spring.jms.TestAssignmentMessageType;
 import com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue;
 
 public class BMTTestAdminBlockingQueuePoller implements DisposableBean, InitializingBean {
