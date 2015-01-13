@@ -35,6 +35,7 @@ public class DataSourceConfiguration {
             logger.info("[DataSource] Couldn't lookup oasBmtSyncDataSource or execute test SQL using Weblogic JNDI syntax: " + e.getMessage());
         }
 
+        /** Commenting this block out for now because Tomcat doesn't like to provide access to queues.
         try {
         	// Try Tomcat context
             Context initContext = new InitialContext();
@@ -47,6 +48,7 @@ public class DataSourceConfiguration {
         } catch (Exception e) {
             logger.error("[DataSource] Couldn't lookup oasBmtSyncDataSource or execute test SQL using Tomcat JNDI syntax: " + e.getMessage());
         }
+        */
         
         // Default to direct database access, only used for desktop testing.
         BasicDataSource remoteDS = new BasicDataSource();
