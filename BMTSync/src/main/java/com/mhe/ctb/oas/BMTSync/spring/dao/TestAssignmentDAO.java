@@ -106,7 +106,7 @@ public class TestAssignmentDAO {
 		TestAssignment testAssignment = new TestAssignment();
 		DeliveryWindow deliveryWindow = new  DeliveryWindow();
 		Parameters parameters = new  Parameters();
-		EnforceTimeLimit enforceTimeLimit = new EnforceTimeLimit();
+		//EnforceTimeLimit enforceTimeLimit = new EnforceTimeLimit();
 
 	    List<TestDelivery> testDeliveryList = new ArrayList<TestDelivery>();
 	    StudentRoster studentRoster = new StudentRoster();
@@ -115,6 +115,7 @@ public class TestAssignmentDAO {
 		public TestAssignment mapRow(ResultSet rs, int rowNum) throws SQLException {
 
     		TestDelivery testDelivery  = new TestDelivery();
+    		EnforceTimeLimit enforceTimeLimit = new EnforceTimeLimit();
     		
     		if (rowNum == 1) {
 	    		testAssignment.setOasTestAdministrationID(rs.getInt("oasTestAdministrationID"));
@@ -138,6 +139,7 @@ public class TestAssignmentDAO {
 	    		studentRoster.setStudentpassword(rs.getString("password"));
 	    		studentRosterList.add(studentRoster);
     		}
+    		
 	    	testDelivery.setOasItemSetId(Integer.valueOf(rs.getInt("ITEM_SET_ID")).toString());
 	    	testDelivery.setDeliverystatus(rs.getString("Delivery_Status"));
 	    	testDelivery.setAccessCode(rs.getString("Access_Code"));
