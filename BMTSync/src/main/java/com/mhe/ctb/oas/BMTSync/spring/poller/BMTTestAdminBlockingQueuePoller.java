@@ -26,5 +26,8 @@ public class BMTTestAdminBlockingQueuePoller implements DisposableBean {
 	@Override
 	public void destroy() throws Exception {
 		executor.shutdown();
+        while(!executor.isTerminated()){
+            //wait for all tasks to finish
+        }
 	}
 }
