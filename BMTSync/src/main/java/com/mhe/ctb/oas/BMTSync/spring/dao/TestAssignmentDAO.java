@@ -136,6 +136,7 @@ public class TestAssignmentDAO {
 	    		studentRoster.setOasRosterId(Integer.valueOf(rs.getInt("oasRosterId")).toString());
 	    		studentRoster.setOasStudentid(Integer.valueOf(rs.getInt("oasStudentid")).toString());
 	    		studentRoster.setStudentpassword(rs.getString("password"));
+	    		studentRosterList.add(studentRoster);
     		}
 	    	testDelivery.setOasItemSetId(Integer.valueOf(rs.getInt("ITEM_SET_ID")).toString());
 	    	testDelivery.setDeliverystatus(rs.getString("Delivery_Status"));
@@ -150,7 +151,6 @@ public class TestAssignmentDAO {
 	    	testDeliveryList.add(testDelivery);
 
 			studentRoster.setTestDelivery(testDeliveryList);
-			studentRosterList.add(studentRoster);
 			
 	        testAssignment.setRoster(studentRosterList);
 			return testAssignment;		
