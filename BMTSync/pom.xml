@@ -166,6 +166,11 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.1.0.M0</version>
+                <configuration>
+    				<stopPort>9966</stopPort>
+    				<stopKey>foo</stopKey>
+    				<stopWait>10</stopWait>
+  				</configuration>
             </plugin>		
 	        <plugin>
         		<groupId>org.codehaus.mojo</groupId>
