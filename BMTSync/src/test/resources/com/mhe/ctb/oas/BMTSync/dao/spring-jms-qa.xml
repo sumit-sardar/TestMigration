@@ -33,7 +33,7 @@
 	<orcl:aq-jms-connection-factory id="jmsConnectionFactory"
 		use-local-data-source-transaction="true" 
 		native-jdbc-extractor="dbcpNativeJdbcExtractor"
-		data-source="oasDataSource" />
+		data-source="oasBmtSyncDataSource" />
 
 	<bean id="dbcpNativeJdbcExtractor"
 		class="org.springframework.jdbc.support.nativejdbc.CommonsDbcpNativeJdbcExtractor" />
@@ -95,9 +95,36 @@
 			</bean>
 		</constructor-arg>
 	</bean>
+	
+	<!-- Blocking queue beans to be used by notification handlers. -->
+	<bean id="bmtStudentBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
+		<constructor-arg index="0" value="100"/>
+		<constructor-arg index="1" value="15000"/>
+	</bean>
+	
+	<bean id="bmtTestAssignmentBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
+		<constructor-arg index="0" value="100"/>
+		<constructor-arg index="1" value="15000"/>
+	</bean>
+
+	<bean id="bmtTestAdminBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
+		<constructor-arg index="0" value="100"/>
+		<constructor-arg index="1" value="15000"/>
+	</bean>
 
 	<!-- Route the message on receiving -->
-	<bean id="messageDelegate-STUDENT_MESSAGE_TYP" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler" />	
+	<bean id="messageDelegate-STUDENT_MESSAGE_TYP" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
+		<constructor-arg ref="bmtStudentBlockingQueue" />
+	</bean>
+
+	<bean id="messageDelegate-BMTSYNC_ASSIGNMENT_TYP" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
+		<constructor-arg ref="bmtTestAssignmentBlockingQueue" />
+	</bean>
+	
+	<bean id="messageDelegate-BMTSYNC_TESTADMIN_TYP" class="com.mhe.ctb.oas.BMTSync.spring.jms.NotificationMessageHandler">
+		<constructor-arg ref="bmtTestAdminBlockingQueue" />
+	</bean>
+	
 	<jms:listener-container connection-factory="jmsConnectionFactory"
 		concurrency="${jms.bmt.threads:1-4}"
 		destination-type="queue"

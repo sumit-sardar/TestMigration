@@ -9,10 +9,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:com/mhe/ctb/oas/BMTSync/dao/spring-jms-qa.xml")
-public class JMSDebugRunnerTests {
+public class TestJMSDebugRunner {
 
 	
-	private Logger LOGGER = Logger.getLogger(JMSDebugRunnerTests.class);
+	private Logger LOGGER = Logger.getLogger(TestJMSDebugRunner.class);
 
 	@Test
 	public void testOrgNodeDAO() throws Exception
