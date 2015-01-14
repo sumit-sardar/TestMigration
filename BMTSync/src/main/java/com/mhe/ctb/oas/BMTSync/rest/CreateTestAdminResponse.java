@@ -30,7 +30,6 @@ public class CreateTestAdminResponse {
 	private Integer _errorCode;
 	private String _errorMessage;	
 
-	
 	/* Static Inner Classes */
 	public static class DeliveryWindow {
 		private String startDate;
