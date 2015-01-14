@@ -106,7 +106,6 @@ public class TestAssignmentDAO {
 		TestAssignment testAssignment = new TestAssignment();
 		DeliveryWindow deliveryWindow = new  DeliveryWindow();
 		Parameters parameters = new  Parameters();
-		//EnforceTimeLimit enforceTimeLimit = new EnforceTimeLimit();
 
 	    List<TestDelivery> testDeliveryList = new ArrayList<TestDelivery>();
 	    StudentRoster studentRoster = new StudentRoster();
