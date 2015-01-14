@@ -26,30 +26,34 @@ public class BMTTestAssignmentBlockingQueueWorker extends Thread {
 	public void run() {
 		while(shouldRun) {
 			synchronized(this) {
-				try {
-					logger.debug("Starting polling for test assignment messages to post to BMT....");
-					final List<TestAssignmentMessageType> messages = queue.dequeue();
-				
-					if (CollectionUtils.isEmpty(messages)) {
-						logger.debug("No test assignment messages to post to BMT.");
-					} else {
-						logger.debug("Posting " + Integer.valueOf(messages.size()).toString() + " test assignment messages to BMT.");
-						for (final TestAssignmentMessageType message : messages) {
-							restClient.postStudentAssignment(message.getTestAdminId(), message.getStudentId());
-						}
-					}
-				} catch (InterruptedException ie) {
-					logger.warn("Intentionally interrupted. Shutting down thread. ", ie);
-					shouldRun = false;
-					return;
-				} catch (Exception e) {
-					logger.fatal("Error-absorbing catcher: " + e.getMessage(), e);
-				}
+				pollForWork();
 			}
 		}
 	}
 
 	public void shouldStop() {
 		shouldRun = false;
+	}
+	
+	/** package-private */ void pollForWork() { // set up for testing.
+		try {
+			logger.debug("Starting polling for test assignment messages to post to BMT....");
+			final List<TestAssignmentMessageType> messages = queue.dequeue();
+		
+			if (CollectionUtils.isEmpty(messages)) {
+				logger.debug("No test assignment messages to post to BMT.");
+			} else {
+				logger.debug("Posting " + Integer.valueOf(messages.size()).toString() + " test assignment messages to BMT.");
+				for (final TestAssignmentMessageType message : messages) {
+					restClient.postStudentAssignment(message.getTestAdminId(), message.getStudentId());
+				}
+			}
+		} catch (InterruptedException ie) {
+			logger.warn("Intentionally interrupted. Shutting down thread. ", ie);
+			shouldRun = false;
+			return;
+		} catch (Exception e) {
+			logger.fatal("Error-absorbing catcher: " + e.getMessage(), e);
+		}
 	}
 }
