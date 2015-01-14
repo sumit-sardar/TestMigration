@@ -38,6 +38,7 @@ public class TestStatusRestService {
 	public @ResponseBody CreateTestStatusResponse postTestStatus(
 		@RequestBody CreateTestStatusRequest request ) {
 		
+		logger.info("[TestStatus] Request From BMT: "+request.toJson());
 		CreateTestStatusResponse response = new CreateTestStatusResponse();
 		response.setSuccessful(false);
 		
@@ -57,8 +58,6 @@ public class TestStatusRestService {
 		try {
 			
 			for (TestStatus testStatus : request.getTestStatus()) {
-				logger.info("Request JSON:"+testStatus.toJson());
-				
 				TestStatus testStatusRet = new TestStatus();
 				
 				testStatusRet = testStatusDAO.validateSaveData(testStatus.getOasRosterId(), 
@@ -67,7 +66,6 @@ public class TestStatusRestService {
 	                       testStatus.getStartedDate(), 
 	                       testStatus.getCompletedDate());
 				
-				logger.info("ReturnJSON:"+testStatusRet.toJson());
 				// If Failure add failure to response
 			    if (testStatusRet.getErrorCode() > 0) { 
 				   testStatusErrList.add(testStatusRet);
@@ -81,6 +79,8 @@ public class TestStatusRestService {
 			response.setSuccessCount(counter.getSuccessCount());
 			response.setFailureCount(counter.getFailureCount());
 			response.setFailures(testStatusErrList);
+			
+			logger.info("[TestStatus] Response to BMT: "+response.toJson());
 			
 			
 		} catch (Exception e) {
