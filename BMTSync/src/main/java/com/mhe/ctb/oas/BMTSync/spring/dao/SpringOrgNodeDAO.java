@@ -39,7 +39,7 @@ public class SpringOrgNodeDAO {
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 
 		_hierarchyReader = new SimpleJdbcCall(_jdbcTemplate)
-				.withCatalogName("PK_Students")
+				.withCatalogName("PKG_BMTSYNC_STUDENTS")
 				.withProcedureName("Heirarchy")
 				.useInParameterNames("pStudentID", "pResultCursor")
 				.declareParameters(
@@ -71,7 +71,7 @@ public class SpringOrgNodeDAO {
 	}
 
 	/**
-	 * Maps a response from the PK_Students.HeirarchyParents stored procedure
+	 * Maps a response from the PKG_BMTSYNC_STUDENTS.HeirarchyParents stored procedure
 	 * 
 	 * @author cparis
 	 */

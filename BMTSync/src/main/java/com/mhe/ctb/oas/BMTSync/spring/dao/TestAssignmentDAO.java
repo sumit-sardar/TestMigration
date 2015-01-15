@@ -98,7 +98,7 @@ public class TestAssignmentDAO {
 	}
 
 	/**
-	 * Maps a response from the PK_Students.HeirarchyParents stored procedure
+	 * Maps a response from the test_roster row.
 	 * 
 	 * @author cparis
 	 */

@@ -50,7 +50,7 @@ public class StudentDAO {
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
 
 		_getStudentDetailsCall = new SimpleJdbcCall(_jdbcTemplate)
-				.withCatalogName("PK_Students")
+				.withCatalogName("PKG_BMTSYNC_STUDENTS")
 				.withProcedureName("StudentDetails")
 				.useInParameterNames("pStudentId", "pResultCursor")
 				.declareParameters(
@@ -60,7 +60,7 @@ public class StudentDAO {
 		_getStudentDetailsCall.compile();
 
 		_updateStudentAPIStatusCall = new SimpleJdbcCall(_jdbcTemplate)
-				.withCatalogName("PK_Students")
+				.withCatalogName("PKG_BMTSYNC_STUDENTS")
 				.withProcedureName("updateStudentAPIStatus")
 				.useInParameterNames("pStudentID", "pAppName", "pExportStatus",	"pErrorCode", "pErrorMessage")
 				.declareParameters(
@@ -122,7 +122,7 @@ public class StudentDAO {
 	}
 
 	/**
-	 * Maps a response from the PK_Students.HeirarchyParents stored procedure
+	 * Maps a response from the PKG_BMTSYNC_STUDENTS.HeirarchyParents stored procedure
 	 * 
 	 * @author cparis
 	 */
