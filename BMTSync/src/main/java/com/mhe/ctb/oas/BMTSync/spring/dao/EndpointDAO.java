@@ -68,7 +68,7 @@ public class EndpointDAO implements EndpointSelector {
 	}
 	
 	/**
-	 * Maps a response from the PK_Students.HeirarchyParents stored procedure
+	 * Maps a response from the BMTSYNC_CUSTOMER table to a data structure.
 	 * 
 	 * @author tracerk
 	 */
