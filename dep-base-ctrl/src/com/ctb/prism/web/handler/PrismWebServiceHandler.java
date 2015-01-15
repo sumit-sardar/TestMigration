@@ -191,39 +191,52 @@ public class PrismWebServiceHandler {
 		String heirarchyLevel = null;
 		
 		boolean rosterAvailable = false;
+		boolean isAllTascSecondEdition = true;
 		for(long rosterID : rosterIds){
 			if (PrismWebServiceDBUtility.checkValidRosterStatus(rosterID)){
 				rosterAvailable = true;
-				RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
+				boolean isTASCSecondEdition = PrismWebServiceDBUtility.getRosterFormEdition(rosterID);
 				
-				StudentDetailsTO studentDetailsTO = getStudentBio(studentId);
-				studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterID));
-				//TODO - get the student survey details and put it in the studentDetailsTO
-				rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
-				
-				CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterID);
-				customerId = custHierarchyDetailsTO.getCustomerId();
-				String orgNodeCodeList = "";
-				for (int i=0;i<custHierarchyDetailsTO.getCollOrgDetailsTO().size();i++)
-				{
-					OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(i);
-					if (i>0) orgNodeCodeList += "~";
-	            	orgNodeCodeList += ((orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode());
-					heirarchyLevel = orgDetails.getOrgLevel();
+				if(!isTASCSecondEdition) {
+					isAllTascSecondEdition=false;
+					
+					RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
+					
+					StudentDetailsTO studentDetailsTO = getStudentBio(studentId);
+					studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterID));
+					//TODO - get the student survey details and put it in the studentDetailsTO
+					rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
+					
+					CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterID);
+					customerId = custHierarchyDetailsTO.getCustomerId();
+					String orgNodeCodeList = "";
+					for (int i=0;i<custHierarchyDetailsTO.getCollOrgDetailsTO().size();i++)
+					{
+						OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(i);
+						if (i>0) orgNodeCodeList += "~";
+		            	orgNodeCodeList += ((orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode());
+						heirarchyLevel = orgDetails.getOrgLevel();
+					}
+					orgNodeCode = orgNodeCodeList;
+					System.out.println("WS/EditStudent orgNodeCodeList: "+orgNodeCodeList);
+					
+					rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
+					
+					rosterDetailsTO.setRosterId(String.valueOf(rosterID));
+					rosterDetailsList.add(rosterDetailsTO);
 				}
-				orgNodeCode = orgNodeCodeList;
-				System.out.println("WS/EditStudent orgNodeCodeList: "+orgNodeCodeList);
 				
-				rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
-				
-				rosterDetailsTO.setRosterId(String.valueOf(rosterID));
-				rosterDetailsList.add(rosterDetailsTO);
 			}
 		}
-		if(rosterAvailable){
+		if(rosterAvailable && !isAllTascSecondEdition){
 			invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, 0, 0, "Edit Student", hitCount, logkey, con);
 		}else{
-			System.out.println("PrismWebServiceHandler.editStudent : No Roster availabe for the student id : " + studentId + ". Web Service not invoked.");
+			if(!rosterAvailable) {
+				System.out.println("PrismWebServiceHandler.editStudent : No Roster available for the student id : " + studentId + ". Web Service not invoked.");
+				
+			} else {	
+				System.out.println("PrismWebServiceHandler.editStudent : All valid rosters are having  Tasc second edition forms for the student id : " + studentId + ". Web Service not invoked.");
+			}
 		}
 		System.out.println("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
 		

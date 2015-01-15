@@ -98,6 +98,7 @@ public class PrismWebServiceDBUtility {
 
 	private static final String CHECK_ROSTER_STATUS = "SELECT 1  FROM TEST_ROSTER T WHERE T.TEST_ROSTER_ID = ?   AND (T.TEST_COMPLETION_STATUS = 'SC' OR T.TEST_COMPLETION_STATUS = 'NT')";
 	private static final String GET_SESSION_TIMEZONE = "SELECT TIME_ZONE as session_time_zone FROM test_admin WHERE TEST_ADMIN_ID = ?";
+	private static final String GET_ROSTER_FORM = "SELECT FORM_ASSIGNMENT FROM TEST_ROSTER WHERE TEST_ROSTER_ID = ?";
 	
 	/**
 	 * Get Prism Web Service URL
@@ -2303,4 +2304,43 @@ public class PrismWebServiceDBUtility {
 		}
 		return i;
 	}
+	
+	/**
+	 * Get Roster Form Assignment. If Second Edition return true if First Edition return false
+	 * 
+	 * @param rosterId
+	 * @return boolean
+	 */
+	public static boolean getRosterFormEdition(long rosterId){
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		String form = null;
+		boolean isTASCSecondEdition = false;
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_ROSTER_FORM);
+			pst.setLong(1, rosterId);
+			rs = pst.executeQuery();
+			
+			if(rs.next()){
+				form = rs.getString("FORM_ASSIGNMENT");
+				if ( null != form && (form.startsWith("D") || form.startsWith("E") || form.startsWith("F"))) { // Second Edition Forms
+					isTASCSecondEdition = true;
+	             }
+	             else if ( null != form && ( form.startsWith("A") || form.startsWith("B") || form.startsWith("C"))) { // First Edition Forms
+	            	 isTASCSecondEdition = false;
+	             }
+			}
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getRosterFormEdition() method to execute query : \n " +  GET_ROSTER_FORM);
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return isTASCSecondEdition;
+	}
+	
+	
+	
 }
