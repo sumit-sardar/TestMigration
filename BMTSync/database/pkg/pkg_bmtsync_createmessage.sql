@@ -51,7 +51,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_CREATEMESSAGE AS
 	BEGIN
 	    FOR StudentRecord IN StudentCursor LOOP
 		    
-			PKG_STUDENTQUEUE.ADD_STUDENT_TOQUEUE(StudentRecord.Customer_ID, 
+			PKG_BMTSYNC_STUDENTQUEUE.ADD_STUDENT_TOQUEUE(StudentRecord.Customer_ID, 
 			                                     StudentRecord.Student_ID, 
 												 StudentRecord.Updated_Date_Time);
 		    
