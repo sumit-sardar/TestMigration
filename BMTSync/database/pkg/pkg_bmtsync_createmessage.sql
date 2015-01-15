@@ -76,7 +76,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_CREATEMESSAGE AS
 
 		CURSOR assignmentCursor IS
 			SELECT BAS.Export_Status, BAS.Test_Admin_Id, BAS.Student_ID, 
-			   STD.Customer_ID, STD.Test_Roster_ID, STD.UPDATED_DATE_TIME
+			   STD.Customer_ID, STD.Test_Roster_ID, 
+                           NVL(STD.UPDATED_DATE_TIME, STD.CREATED_DATE_TIME) AS UPDATED_DATE_TIME
 			FROM BMTSYNC_Assignment_Status BAS, Test_Roster STD
 			WHERE 
 			BAS.Test_Admin_ID = STD.Test_Admin_ID AND
