@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -534,15 +535,16 @@ public class UploadUserFile {
 				}
 			}
 		} else { // if no MatchUploadOrgIds present in customer configuration
-			isOrgExist = isOrganizationExist(orgName, parentOrgId, categoryId,
+			// Change for OAS-1312 LAUSD: Import File update - Find Organization information with OrgMDRNumber in place of Org Name
+			isOrgExist = isOrganizationExist(strCellMdr, parentOrgId, categoryId,
 					false);
 			if (!orgName.trim().equals("")) {
 				// if no organization exist
 				if (!isOrgExist) {
 					isOrgExist = false;
 				} else {
-					// retrive existing organization by passing orgName
-					organization = getOrgNodeDetail(orgName, parentOrgId,
+					// retrieve existing organization by passing orgName
+					organization = getOrgNodeDetail(strCellMdr, parentOrgId,
 							categoryId, false);
 					// Is Organization Exist
 					if (organization != null) {
@@ -898,10 +900,10 @@ public class UploadUserFile {
 										}
 									}
 								}// End if
-							} else { // if no MatchUploadOrgIds present in
-										// customer configuration
+							} else { // if no MatchUploadOrgIds present in customer configuration
+								// Change for OAS-1312 LAUSD: Import File update 
 								boolean isOrgExist = isOrganizationExist(
-										orgName, parentOrgId, categoryId, false);
+										orgMdr, parentOrgId, categoryId, false);
 								if (!orgName.trim().equals("")) {
 									// if no organization exist
 									if (!isOrgExist) {
@@ -940,9 +942,9 @@ public class UploadUserFile {
 												.toArray(new Node[0]);
 									} else {
 										// retrieve existing organization by
-										// passing orgName
+										// passing orgMdr
 										organization = getOrgNodeDetail(
-												orgName, parentOrgId,
+												orgMdr, parentOrgId,
 												categoryId, false);
 										// Is Organization Exist
 										if (organization != null) {
@@ -950,7 +952,17 @@ public class UploadUserFile {
 													.getOrgNodeId();
 											orgNodeId = organization
 													.getOrgNodeId();
-											continue;
+											//Update org details only if values are changed.
+											if(!orgName.equals(organization.getOrgNodeName())
+													|| !orgCode.equals(organization.getOrgNodeCode())){
+												organization.setOrgNodeName(orgName);
+												organization.setOrgNodeCode(orgCode);
+												this.organizationManagement
+														.updateOrganization(
+																organization,
+																orgMDRImpl);
+												updatedOrgDetails(organization);
+											}
 										} else {
 											// new Organization creation
 											organization = new Node();
@@ -1118,6 +1130,25 @@ public class UploadUserFile {
 		}
 
 	}
+	
+	/**
+	 * Update node details array based on the MDR number if there is any change of node
+	 * 
+	 * @param organization
+	 */
+	private void updatedOrgDetails(Node organization) {
+		ArrayList<Node> tempList = new ArrayList<Node>(Arrays.asList(this.detailNodeM));
+		Iterator<Node> it = tempList.iterator();
+		while(it.hasNext()){
+			Node node = (Node)it.next();
+			if(node.getMdrNumber().equalsIgnoreCase(organization.getMdrNumber())){
+				node.setOrgNodeName(organization.getOrgNodeName());
+				node.setOrgNodeCode(organization.getOrgNodeCode());
+			}
+		}
+		
+		this.detailNodeM = (Node[]) tempList.toArray(new Node[tempList.size()]);
+	}
 
 	/*
    *
@@ -1176,8 +1207,9 @@ public class UploadUserFile {
 						}
 					}
 				} else {
+					// Change for OAS-1312 LAUSD: Import File update
 					if (!searchString.trim().equals("")
-							&& tempNode.getOrgNodeName().equalsIgnoreCase(
+							&& tempNode.getMdrNumber().equalsIgnoreCase(
 									searchString)
 							&& tempNode.getParentOrgNodeId().intValue() == parentId
 									.intValue()
@@ -1204,7 +1236,8 @@ public class UploadUserFile {
 	 * @param isMatchUploadOrgIds
 	 * @return
 	 */
-	private Node getOrgNodeDetail(String orgName, Integer parentId,
+	// Change for OAS-1312 LAUSD: Import File update
+	private Node getOrgNodeDetail(String searchString, Integer parentId,
 			Integer categoryId, boolean isMatchUploadOrgIds) {
 
 		Node orgNode = null;
@@ -1214,7 +1247,7 @@ public class UploadUserFile {
 				Node tempNode = detailNode[i];
 				if (isMatchUploadOrgIds) {
 					if (tempNode.getOrgNodeCode() != null) {
-						if (tempNode.getOrgNodeCode().equalsIgnoreCase(orgName)
+						if (tempNode.getOrgNodeCode().equalsIgnoreCase(searchString)
 								&& tempNode.getParentOrgNodeId().intValue() == parentId
 										.intValue()
 								&& tempNode.getOrgNodeCategoryId().intValue() == categoryId
@@ -1224,7 +1257,7 @@ public class UploadUserFile {
 						}
 					}
 				} else {
-					if (tempNode.getOrgNodeName().equalsIgnoreCase(orgName)
+					if (tempNode.getMdrNumber().equalsIgnoreCase(searchString)
 							&& tempNode.getParentOrgNodeId().intValue() == parentId
 									.intValue()
 							&& tempNode.getOrgNodeCategoryId().intValue() == categoryId

@@ -105,4 +105,35 @@ public class OrgNodeDAO implements IOrgNodeDAO {
 			SQLUtil.closeDbObjects(conn, pstmt, null);
 		}
 	}
+	
+	/**
+	 * Used for Updating Node data in Database
+	 * 
+	 * @param orgNode - Node data to be updated.
+	 * @return - Node - Updated Node returned.
+	 * @throws Exception
+	 */
+	public Node updateOrganization(Node orgNode) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = SQLUtil.getConnection();
+			String queryString = " Update  org_node set  org_node_name = ? ,   org_node_code = ? ,  activation_status = ? , "
+					+ " updated_by = 1 , updated_date_time = sysdate where org_node_id = ?  ";
+			pstmt = conn.prepareStatement(queryString);
+			pstmt.setString(1, orgNode.getOrgNodeName());
+			pstmt.setString(2, orgNode.getOrgNodeCode());
+			pstmt.setString(3, orgNode.getActivationStatus());
+			pstmt.setInt(4, orgNode.getOrgNodeId());
+			pstmt.executeUpdate();
+			return orgNode;
+		} catch (Exception e) {
+			logger.error("Exception in updateOrganization");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			SQLUtil.closeDbObjects(conn, pstmt, null);
+		}
+
+	}
 }
