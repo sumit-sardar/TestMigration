@@ -1,4 +1,4 @@
---fires every 21 (.35/1440)seconds. Fires every minute
+--fires every 21 (.35/1440)seconds. 
 
    VARIABLE jobno number;
 BEGIN
