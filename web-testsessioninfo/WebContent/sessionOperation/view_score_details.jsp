@@ -42,8 +42,17 @@
 		<td><span id="scoreTestGrade"></span></td>
 	</tr>
 	<tr id="scoreTestLevelRow" style="display: none;">
-		<td><lb:label key="viewStatus.subtest.testLevel" /></td>
-		<td><span id="scoreTestLevel"></span></td>
+		<td align="left" width="20%"><lb:label key="viewStatus.subtest.testLevel" /></td>
+		<td width="60%"><span id="scoreTestLevel"></span></td>
+		<td width="20%" class="buttonsRow">
+		<span id="printResponseButtonLevel">
+		    <div style="float:right;padding-left:5px;">
+			   <a href="#" id="printResponseButton" onclick="javascript:downloadResponeResult();" class="rounded {transparent} button">
+			      <lb:label key="viewStatus.score.button"/>
+			   </a>
+		    </div>
+		 </span>
+	</td>
 	</tr>
 </table>
 

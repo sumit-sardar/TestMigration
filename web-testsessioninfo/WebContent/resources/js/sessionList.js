@@ -7195,3 +7195,11 @@ function validNumber(str){
 		closePopUp('scoreResponsePopup');
 		$("#responseMessage").text('');
 	}
+	
+	function downloadResponeResult(){
+		var url = "/SessionWeb/sessionOperation/getScoreDetailsGeneratePrintPDF.do";
+		UIBlock();
+		setTimeout("$.unblockUI();", 2000);
+		url += "?testRosterId=" + selectedTestRosterId;
+		location.href = url;
+	}
