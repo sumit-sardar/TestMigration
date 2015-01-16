@@ -29,4 +29,13 @@ public interface IOrgNodeDAO {
 	 * @throws Exception
 	 */
 	void insertOrgNodeForParent(Node orgNode) throws Exception;
+	
+	/**
+	 * Used for Updating Node data in Database
+	 * 
+	 * @param orgNode - Node data to be updated.
+	 * @return - Node - Updated Node returned.
+	 * @throws Exception
+	 */
+	void updateOrganization(Node orgNode) throws Exception;
 }

@@ -760,7 +760,7 @@ public class UploadStudentFile {
 							} else { // if no MatchUploadOrgIds present in
 										// customer configuration
 								boolean isOrgExist = isOrganizationExist(
-										orgName, parentOrgId, categoryId, false);
+										orgMdr, parentOrgId, categoryId, false);
 								if (!orgName.trim().equals("")) {
 									// if no organization exist
 									if (!isOrgExist) {
@@ -801,17 +801,26 @@ public class UploadStudentFile {
 												.toArray(new Node[0]);
 									} else {
 										// retrieve existing organization by
-										// passing orgName
+										// passing orgMdr
 										organization = getOrgNodeDetail(
-												orgName, parentOrgId,
+												orgMdr, parentOrgId,
 												categoryId, false);
 										// Is Organization Exist
 										if (organization != null) {
-											parentOrgId = organization
-													.getOrgNodeId();
-											orgNodeId = organization
-													.getOrgNodeId();
-											continue;
+											parentOrgId = organization.getOrgNodeId();
+											orgNodeId = organization.getOrgNodeId();
+											
+											//Update Query will be executed if there are any change in name or code
+											if(!orgName.equals(organization.getOrgNodeName())
+													|| !orgCode.equals(organization.getOrgNodeCode())){
+												organization.setOrgNodeName(orgName);
+												organization.setOrgNodeCode(orgCode);
+												this.organizationManagement
+														.updateOrganization(
+																organization,
+																orgMDRImpl);
+												updatedOrgDetails(organization);
+											}
 										} else {
 											// new Organization creation
 											organization = new Node();
@@ -978,6 +987,25 @@ public class UploadStudentFile {
 
 		}
 
+	}
+
+	/**
+	 * Update node details array based on the MDR number if there is any change of node
+	 * 
+	 * @param organization
+	 */
+	private void updatedOrgDetails(Node organization) {
+		ArrayList<Node> tempList = new ArrayList<Node>(Arrays.asList(this.detailNodeM));
+		Iterator<Node> it = tempList.iterator();
+		while(it.hasNext()){
+			Node node = (Node)it.next();
+			if(node.getMdrNumber().equalsIgnoreCase(organization.getMdrNumber())){
+				node.setOrgNodeName(organization.getOrgNodeName());
+				node.setOrgNodeCode(organization.getOrgNodeCode());
+			}
+		}
+		
+		this.detailNodeM = (Node[]) tempList.toArray(new Node[tempList.size()]);
 	}
 
 	/**
@@ -2340,13 +2368,14 @@ public class UploadStudentFile {
 				}
 			}
 		} else { // if no MatchUploadOrgIds present in customer configuration
-			isOrgExist = isOrganizationExist(orgName, parentOrgId, categoryId,
+			// Change for OAS-1312 LAUSD: Import File update - Find Organization :: Information with OrgMDRNumber in place of Org Name
+			isOrgExist = isOrganizationExist(strCellMdr, parentOrgId, categoryId,
 					false);
 			if (!orgName.trim().equals("")) {
 				// if no organization exist
 				if (isOrgExist) {
-					// retrieve existing organization by passing orgName
-					organization = getOrgNodeDetail(orgName, parentOrgId,
+					// retrieve existing organization by passing orgMDR
+					organization = getOrgNodeDetail(strCellMdr, parentOrgId,
 							categoryId, false);
 					// Is Organization Exist
 					if (organization != null) {
@@ -2391,8 +2420,9 @@ public class UploadStudentFile {
 						}
 					}
 				} else {
+					// Change for OAS-1312 LAUSD: Import File update
 					if (!searchString.trim().equals("")
-							&& tempNode.getOrgNodeName().equalsIgnoreCase(
+							&& tempNode.getMdrNumber().equalsIgnoreCase(
 									searchString)
 							&& tempNode.getParentOrgNodeId().intValue() == parentId
 									.intValue()
@@ -2418,7 +2448,8 @@ public class UploadStudentFile {
 	 * @param isMatchUploadOrgIds
 	 * @return
 	 */
-	private Node getOrgNodeDetail(String orgName, Integer parentId,
+	// Change for OAS-1312 LAUSD: Import File update
+	private Node getOrgNodeDetail(String searchString, Integer parentId,
 			Integer categoryId, boolean isMatchUploadOrgIds) {
 		Node orgNode = null;
 		try {
@@ -2427,7 +2458,7 @@ public class UploadStudentFile {
 				Node tempNode = detailNode[i];
 				if (isMatchUploadOrgIds) {
 					if (tempNode.getOrgNodeCode() != null) {
-						if (tempNode.getOrgNodeCode().equalsIgnoreCase(orgName)
+						if (tempNode.getOrgNodeCode().equalsIgnoreCase(searchString)
 								&& tempNode.getParentOrgNodeId().intValue() == parentId
 										.intValue()
 								&& tempNode.getOrgNodeCategoryId().intValue() == categoryId
@@ -2438,7 +2469,7 @@ public class UploadStudentFile {
 						}
 					}
 				} else {
-					if (tempNode.getOrgNodeName().equalsIgnoreCase(orgName)
+					if (tempNode.getMdrNumber().equalsIgnoreCase(searchString)
 							&& tempNode.getParentOrgNodeId().intValue() == parentId
 									.intValue()
 							&& tempNode.getOrgNodeCategoryId().intValue() == categoryId

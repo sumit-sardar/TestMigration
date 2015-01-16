@@ -62,5 +62,27 @@ public class OrganizationManagementControl {
 			throw e;
 		}
 	}
+	
+	/**
+	 * Updates the Organization in the Database and returns the Node Object.
+	 * 
+	 * @param node - Bean having Org-node Data
+	 * @throws Exception
+	 */
+	public void updateOrganization(Node node,
+			OrgMDRDBCacheImpl orgMDRImpl) throws Exception {
+
+		try {
+			node.setUpdatedDateTime(new Date());
+			node.setActivationStatus(Constants.ACTIVATION_STATUS_ACTIVE);
+			String mdrNumber = node.getMdrNumber();
+			if (orgMDRImpl.getOrgMDRNumber(mdrNumber) != null) {
+				orgNode.updateOrganization(node);
+			}
+		} catch (Exception e) {
+			logger.error("Exception in createOrganization" + e.getMessage());
+			throw e;
+		}
+	}
 
 }
