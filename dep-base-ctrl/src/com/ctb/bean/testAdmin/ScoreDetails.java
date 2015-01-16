@@ -1,5 +1,6 @@
 package com.ctb.bean.testAdmin; 
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
@@ -237,8 +238,14 @@ public class ScoreDetails extends CTBBean
 	public void setResponseStatus(int pointsObtained, int pointsPossible) {
 		this.responseStatus = "Total Points Earned "+pointsObtained+" out of "+pointsPossible;
 	}
+	/**
+	 * @return the responseStatus
+	 */
+	public String getResponseStatus() {
+		return responseStatus;
+	}
 	
-	public static class DeliveryUnitElement {
+	public static class DeliveryUnitElement implements Serializable{
 		static final long serialVersionUID = 1L;
 		private Integer itemSetIdTD;
 		private String itemSetNameTD;
@@ -302,7 +309,7 @@ public class ScoreDetails extends CTBBean
 		
 	}
 	
-	public static class ResponseResultDetails{
+	public static class ResponseResultDetails implements Serializable {
 		static final long serialVersionUID = 1L;
 		String itemId;
 		Integer itemOrder;
@@ -315,6 +322,7 @@ public class ScoreDetails extends CTBBean
 		String completionStatusTD;
 		Integer itemSetIdTS;
 		String contentDomain;
+		String pdfResponse;
 		
 		public ResponseResultDetails() {
 			super();
@@ -332,9 +340,55 @@ public class ScoreDetails extends CTBBean
 			this.completionStatusTD = obj.getCompletionStatusTD();
 			this.itemSetIdTS = obj.getItemSetIdTS();
 			this.contentDomain = obj.getContentDomain();
+			this.pdfResponse = obj.getPdfResponse();
 		}
 		
+		public Integer getItemOrder() {
+			return itemOrder;
+		}
+		public String getRawScore() {
+			return rawScore;
+		}
+		public String getResponse() {
+			return response;
+		}
+		public String getItemType() {
+			return itemType;
+		}
+		public String getContentDomain() {
+			return contentDomain;
+		}
+		public String getPdfResponse() {
+			return pdfResponse;
+		}
+		public void setPdfResponse(String pdfResponse) {
+			this.pdfResponse = pdfResponse;
+		}
+		public String getItemId() {
+			return itemId;
+		}
+		public String getItemAnswerArea() {
+			return itemAnswerArea;
+		}
+		public Integer getItemSetIdTD() {
+			return itemSetIdTD;
+		}
+		public String getItemSetNameTD() {
+			return itemSetNameTD;
+		}
+		public String getCompletionStatusTD() {
+			return completionStatusTD;
+		}
+		public Integer getItemSetIdTS() {
+			return itemSetIdTS;
+		}
 		
+		public static class OrderByItemOrder implements Comparator<ResponseResultDetails> {
+			@Override
+			public int compare(ResponseResultDetails s1, ResponseResultDetails s2) {
+				return s1.itemOrder.compareTo(s2.itemOrder);
+			}
+		}
 	}
 	
 	public ScoreDetails() {

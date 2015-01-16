@@ -23,6 +23,7 @@ public class ItemResponseAndScore extends CTBBean {
 	private Integer itemSetIdTS;
 	private String contentDomain;
 	private Clob crResponse;
+	private String pdfResponse;
 	
 	
 	/**
@@ -181,13 +182,16 @@ public class ItemResponseAndScore extends CTBBean {
 	public void setCrResponse(Clob crResponse) {
 		this.crResponse = crResponse;
 	}
-
-//	public static class OrderByItemOrder implements
-//			Comparator<ItemResponseAndScore> {
-//		@Override
-//		public int compare(ItemResponseAndScore o1, ItemResponseAndScore o2) {
-//			return o1.itemOrder.compareTo(o2.itemOrder);
-//		}
-//	}
-
+	/**
+	 * @return the pdfResponse
+	 */
+	public String getPdfResponse() {
+		return pdfResponse;
+	}
+	/**
+	 * @param pdfResponse the pdfResponse to set
+	 */
+	public void setPdfResponse(String pdfResponse) {
+		this.pdfResponse = pdfResponse;
+	}
 }

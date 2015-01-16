@@ -33,6 +33,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import util.BroadcastUtils;
 import util.MessageResourceBundle;
 import util.RequestUtil;
+import util.StudentResponseReportPdfUtils;
 import weblogic.utils.StringUtils;
 
 import com.ctb.bean.request.FilterParams;
@@ -85,6 +86,7 @@ import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.bean.testAdmin.ScoreDetails.OrderByItemSetOrder;
 import com.ctb.bean.testAdmin.ScoreDetails.ResponseResultDetails;
+import com.ctb.bean.testAdmin.ScoreDetails.ResponseResultDetails.OrderByItemOrder;
 import com.ctb.control.db.OrgNode;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
@@ -276,6 +278,7 @@ public class SessionOperationController extends PageFlowController {
 	private boolean hasViewResponseResultConf = false; //Added for user story : 
    
 	private boolean hasShowRosterAccomAndHierarchy = false;
+	private List<ScoreDetails> sdForAllSubtests = null;
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
 	}
@@ -7881,7 +7884,8 @@ public class SessionOperationController extends PageFlowController {
 					@Override
 					public boolean shouldSkipField(FieldAttributes arg0) {
 						return (arg0.getName() == "deliverableUnit" || arg0.getName() == "itemSetIdTD" ||
-								arg0.getName() == "itemSetNameTD" || arg0.getName() == "completionStatusTD" || arg0.getName() == "testIdsToBeShown");
+								arg0.getName() == "itemSetNameTD" || arg0.getName() == "completionStatusTD" || 
+								arg0.getName() == "testIdsToBeShown" || arg0.getName() == "pdfResponse");
 					}
 		    		
 		    	}).serializeNulls().create();
@@ -7892,7 +7896,7 @@ public class SessionOperationController extends PageFlowController {
 		    private Base prepareScoreListDetailInformation(Integer testRosterID) {
 		    	Base base = new Base();
 		        RosterElement re = getTestRosterDetails(testRosterID);
-		        List<ScoreDetails> sdForAllSubtests = buildStudentStatusScore(this.sessionId,re);
+		        this.sdForAllSubtests = buildStudentStatusScore(this.sessionId,re);
 		        base.setStudentName(re.getFirstName() + " " + re.getLastName());
 		        base.setLoginName(re.getUserName());
 		        base.setPassword(re.getPassword());
@@ -7934,6 +7938,7 @@ public class SessionOperationController extends PageFlowController {
 								}
 							}
 							sd.setResponseStatus(pointsObtained, pointsPossible);
+							Collections.sort(responseList, new OrderByItemOrder());
 							sd.setResponseList(responseList.toArray(new ResponseResultDetails[responseList.size()]));
 							scoreList.add(sd);
 						}
@@ -9610,4 +9615,45 @@ public class SessionOperationController extends PageFlowController {
 				
 				}
 			}
+			
+	/**
+     * @jpf:action is blank
+     * 
+     * This method takes roster id as input from Request Scope, generates Printable
+     * Respone Report in PDF Format and makes the PDF available for download
+     * 
+     * Changes made for OAS-981 & OAS-982 story
+     */ 
+    @Jpf.Action()
+    protected Forward getScoreDetailsGeneratePrintPDF() {
+    	try{
+	    	Integer testRosterID = null;
+	    	if(null != getRequest().getParameter("testRosterId")) {
+	    		testRosterID = Integer.valueOf(getRequest().getParameter("testRosterId"));
+		        RosterElement re = getTestRosterDetails(testRosterID);
+		        if(null == this.sdForAllSubtests) {
+		        	this.sdForAllSubtests = buildStudentStatusScore(this.sessionId,re);
+		        }
+		        StudentResponseReportPdfUtils utils = new StudentResponseReportPdfUtils();
+				String fileName = re.getFirstName().replace(" ","") + "_" + re.getLastName().replace(" ","") + "_" + re.getExtPin1() +"_ResponseReport";
+				getResponse().setContentType("application/pdf");
+		        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".pdf");
+		        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+		        getResponse().setHeader("Pragma", "public");
+				utils.setup(getResponse().getOutputStream(), sdForAllSubtests, re.getFirstName() + " " + re.getLastName(), 
+						sdForAllSubtests.get(0).getTestSessionName(), re.getExtPin1());
+				utils.generateReport();
+	    	}
+	    	else {
+	    		System.out.println("Value of testRosterID is " + testRosterID + " in request scope");
+	    	}
+    	} catch (CTBBusinessException ce){
+			ce.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        return null;
+    }
 }

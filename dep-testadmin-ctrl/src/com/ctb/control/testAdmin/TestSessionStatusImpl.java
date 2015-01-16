@@ -2725,6 +2725,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
 								if("".equals(crResponse)){
 	        						res.setResponse(("CR".equals(res.getItemType()))?null:TestSessionStatusImpl.BLANK_VALUE);
 	        						res.setRawScore(TestSessionStatusImpl.BLANK_VALUE);
+	        						res.setPdfResponse("");
 	        					}else{
 	        						crResponse = java.net.URLDecoder.decode(crResponse, URL_ENCODING);
 	        						
@@ -2732,6 +2733,12 @@ public class TestSessionStatusImpl implements TestSessionStatus
 	        							res.setResponse(crResponse);
 	        						}else{
 		        						String answer = removeXMLTags(crResponse);
+		        						if(null == answer){
+		        							res.setPdfResponse("");
+		        						} else {
+		        							res.setPdfResponse(answer);
+		        						}
+		        						answer = forHTML(answer);
 		        						res.setResponse(("".equals(answer))?null:answer);
 	        						}
 	        						
@@ -2870,7 +2877,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
 			surveyValue = sVal.substring(sVal.indexOf(CDATA) + 9, sVal
 					.lastIndexOf(END_CDATA));
 		}
-		return forHTML(surveyValue);
+		return surveyValue;
 	}
     
     /**
