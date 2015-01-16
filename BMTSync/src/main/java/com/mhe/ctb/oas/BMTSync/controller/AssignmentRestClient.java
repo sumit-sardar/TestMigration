@@ -29,9 +29,12 @@ public class AssignmentRestClient {
 	
 	private final EndpointSelector endpointSelector;
 	
+	private RestTemplate restTemplate;
+	
 	public AssignmentRestClient(final TestAssignmentDAO testAssignmentDAO, final EndpointSelector endpointSelector) {
 		this.testAssignmentDAO = testAssignmentDAO;
 		this.endpointSelector = endpointSelector;
+		restTemplate = new RestTemplate();
 	}
 
 	/*
@@ -40,8 +43,6 @@ public class AssignmentRestClient {
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")	
 	public @ResponseBody CreateAssignmentResponse postStudentAssignment (final int testAdminId, final int studentId) {
 		logger.info("Assigment Rest Client API called");
-		
-		final RestTemplate restTemplate = new RestTemplate();
 		
 		TestAssignment testAssignment = null;
 		CreateAssignmentResponse assignmentResponse = null;
@@ -59,8 +60,9 @@ public class AssignmentRestClient {
 						+RestURIConstants.POST_ASSIGNMENTS);
 		        assignmentResponse = restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
 		        		testAssignment, CreateAssignmentResponse.class);
-		        logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
-		        
+		        if (assignmentResponse != null) {
+		        	logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
+		        } 
 		        //Updates the BMTSYN_Assignment_Status table, with success or failure
 		        processResponses(testAssignment, assignmentResponse, true);
 			}
@@ -68,7 +70,8 @@ public class AssignmentRestClient {
 			logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);			
 			updateAssignmentStatus(testAdminId, studentId, false, "999", rce.getMessage());
 		} catch (final UnknownTestAssignmentException utae) {
-			logger.error(String.format("[TestAssignment] Unknown test assignment. [testAdminId=%d,studentId=%d]"));
+			logger.error(String.format("[TestAssignment] Unknown test assignment. [testAdminId=%d,studentId=%d]",
+					testAdminId, studentId));
 			updateAssignmentStatus(testAdminId, studentId, false, "999", "Unknown test assignment.");
 		} catch (final Exception e) {
 			logger.error("[TestAssignment] Error in AssignmentRestClient class : "+e.getMessage(), e);
@@ -187,4 +190,7 @@ public class AssignmentRestClient {
 		}
 	}
 	
+	public void setRestTemplate(final RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
 }
