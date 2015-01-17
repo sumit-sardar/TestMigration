@@ -207,8 +207,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 	   
 	   CURSOR curSISS IS
 	   SELECT Completion_Status, Item_set_Order FROM Student_Item_Set_Status
-	   WHERE Test_Roster_Id = pRosterId
-       ORDER BY 2;	   
+	   WHERE Test_Roster_Id = pRosterId 
+       ORDER BY Item_set_Order;	   
 	   
 	   vFinalStatus VARCHAR2(2) := null;
 	BEGIN
@@ -221,31 +221,50 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 				WHEN 'IN' THEN 
 					vFinalStatus := 'IN';
 					EXIT;
+				WHEN 'CO' THEN 
+					vFinalStatus := 'CO';
+				WHEN 'SC' THEN 
+				    IF vFinalStatus = 'CO' THEN
+					   vFinalStatus := 'IS';
+					   EXIT;
+					END IF;
 				ELSE
                   NULL;				
 		   END CASE;
 		END LOOP;
 		
 		-- Update the Roster Status,  Update with CO if all the subtest is complete
-		DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
-        IF vFinalStatus IS NOT NULL THEN
-			UPDATE Test_Roster SET Test_Completion_Status = vFinalStatus
-			WHERE Test_Roster_ID = pRosterId;
+		--DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
+        IF vFinalStatus IS NOT NULL  THEN
 			
-			UPDATE Test_Roster SET Start_Date_Time = pStartDate
-			WHERE Test_Roster_ID = pRosterId AND Start_Date_Time IS NULL;
+            IF vFinalStatus = 'CO' THEN
+				UPDATE Test_Roster 
+				SET Test_Completion_Status = vFinalStatus, 
+				    Completion_Date_Time = pCompletionDate
+				WHERE Test_Completion_Status = 'CO' AND Test_Roster_ID = pRosterId;
+			ELSE 
+				UPDATE Test_Roster SET 
+				   Test_Completion_Status = vFinalStatus, 
+				   Start_Date_Time = NVL(Start_Date_Time, pStartDate)
+				WHERE Test_Roster_ID = pRosterId;
+			END IF;
 			
-		ELSE 
-			UPDATE Test_Roster ROS 
-			SET Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status 
-				   WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)  
-			WHERE Test_Roster_Id = pRosterId;
+			--UPDATE Test_Roster 
+			--SET Test_Completion_Status = vFinalStatus, 
+			--   Start_Date_Time = NVL(Start_Date_Time, pStartDate)
+			--WHERE Test_Roster_ID = pRosterId;
+			
+			--UPDATE Test_Roster SET Start_Date_Time = pStartDate
+			--WHERE Test_Roster_ID = pRosterId AND Start_Date_Time IS NULL;
+			
+		END IF;	
 
-			UPDATE Test_Roster 
-			SET Completion_Date_Time = pCompletionDate
-			WHERE Test_Completion_Status = 'CO' AND Test_Roster_ID = pRosterId;
-			
-		END IF;
+		/*
+		UPDATE Test_Roster ROS 
+		SET Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status 
+			   WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)  
+		WHERE Test_Roster_Id = pRosterId;
+        */
 		
 		
 		
