@@ -97,7 +97,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_ASSIGNMENT AS
 			IST.Ext_Tst_Item_Set_Id OasTestId,
 			IST2.ITEM_SET_NAME oasSubTestName,
 			DECODE(TA.Enforce_Time_Limit, 'T','True','False') Enforce_Time_Limit,
-			IST.TIME_LIMIT TimeLimitInMins,
+			CASE WHEN IST.TIME_LIMIT = 0 THEN 0 ELSE ROUND(IST.TIME_LIMIT/60, 0) END AS TimeLimitInMins,
             (SISS.ITEM_SET_ORDER+1) Item_Order
 		FROM Test_Admin TA, 
 			 Product PDT, 
