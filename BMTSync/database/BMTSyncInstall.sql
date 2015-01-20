@@ -30,12 +30,16 @@ PROMPT CREATING BMTSYNC PACKAGES
 @pkg/pkg_bmtsync_testadminqueue.sql;
 @pkg/pkg_bmtsync_teststatus.sql
 
+PROMPT CREATING BMTSYNC TRIGGERS
+@triggers/trg_bmtsync_assignment.sql;
+@triggers/trg_bmtsync_org_node_student.sql;
+@triggers/trg_bmtsync_student_accomodation.sql;
+@triggers/trg_bmtsync_student.sql;
 
 PROMPT SCHEDULING BMTSYNC JOBS
 @jobs/job_bmtsync_createassignmentmessage.sql
 @jobs/job_bmtsync_createstudentmessage.sql
 @jobs/job_bmtsync_createtestadminmessage.sql
-
 
 commit;
 disconnect
