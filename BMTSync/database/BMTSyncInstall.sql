@@ -17,6 +17,8 @@ PROMPT CREATING BMTSYNC TABLES
 @tables/tbl_bmtsync_assignment_status.sql
 @tables/tbl_bmtsync_testadmin_status.sql
 
+PROMPT CREATE QUEUE TABLES
+@tables/tbl_create_queuetables.sql
 
 PROMPT CREATING BMTSYNC PACKAGES
 @pkg/pkg_bmtsync_queueTable.sql
