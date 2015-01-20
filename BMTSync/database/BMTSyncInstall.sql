@@ -2,7 +2,7 @@
 set termout on
 spool bmytsync_deploy.log
 
-conn oas/oasr5d@oasr51d.ctb
+conn oas/pwd@oasr5p_ewdc
 
 PROMPT CREATING BMTSYNC TYPES
 @types/student_message_typ.sql

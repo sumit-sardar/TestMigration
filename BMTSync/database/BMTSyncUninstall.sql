@@ -1,7 +1,7 @@
 set termout on
 spool bmytsync_uninstall.log
 
-conn oas/oasr5d@oasr51d.ctb
+conn oas/pwd@oasr5p_ewdc
 
 PROMPT DROPPING BMTSYNC TRIGGERS
 DROP TRIGGER TRG_BMTSYNC_TESTADMIN;
