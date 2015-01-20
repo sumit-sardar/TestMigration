@@ -1,5 +1,3 @@
---DROP PACKAGE PK_Students;
-
 CREATE OR REPLACE PACKAGE PKG_BMTSYNC_Students AS
 
   	TYPE REF_CURSOR IS REF CURSOR;
@@ -337,8 +335,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_Students AS
 				Error_Code    = pErrorCode,
 				Error_Message = pErrorMessage,
 				Next_Retry_DateTime = vNext_Retry_DateTime
-			WHERE Student_ID = pStudentID 
-			  AND UPPER(Export_Status) = 'INPROGRESS';
+			WHERE Student_ID = pStudentID;
+
 		ELSE
 			UPDATE BMTSYNC_Student_Status
 			SET App_Name = pAppName,

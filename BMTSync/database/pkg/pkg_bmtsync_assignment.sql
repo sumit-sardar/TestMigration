@@ -289,8 +289,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_ASSIGNMENT AS
 				Error_Message = pErrorMessage,
 				Next_Retry_DateTime = vNext_Retry_DateTime
 			WHERE Test_Admin_ID = pTestAdminID 
-			  AND Student_ID = pStudentID 
-			  AND UPPER(Export_Status) = 'INPROGRESS';
+			  AND Student_ID = pStudentID; 
+
 		ELSE
 			UPDATE BMTSYNC_Assignment_Status
 			SET App_Name = pAppName,

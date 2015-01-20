@@ -180,8 +180,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTADMIN AS
 				Error_Code    = pErrorCode,
 				Error_Message = pErrorMessage,
 				Next_Retry_DateTime = vNext_Retry_DateTime
-			WHERE Test_Admin_ID = pTestAdminID 
-			  AND UPPER(Export_Status) = 'INPROGRESS';
+			WHERE Test_Admin_ID = pTestAdminID;
+
 		ELSE
 			UPDATE BMTSYNC_TestAdmin_Status
 			SET App_Name = pAppName,
