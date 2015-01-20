@@ -15,9 +15,7 @@ import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
 import com.ctb.lexington.db.data.StudentTestData;
 import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
-import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCPrimObjFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData;
-import com.ctb.lexington.db.mapper.tsmapper.IrsTASCPrimObjFactMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCSecObjFactMapper;
 
 
@@ -28,7 +26,7 @@ public class StudentObjectiveScoresController {
     private StudentTestData testData;
     private AdminData adminData;
     private ContextData contextData;
-    private IrsTASCPrimObjFactMapper poMapper;
+    //private IrsTASCPrimObjFactMapper poMapper;
     private IrsTASCSecObjFactMapper soMapper;
 
     public StudentObjectiveScoresController(Connection conn, StsTestResultFactData factData, StudentScoreSummaryData studentScoreSummaryData, CurriculumData currData, StudentTestData testData, AdminData adminData, ContextData contextData) {
@@ -38,22 +36,13 @@ public class StudentObjectiveScoresController {
         this.testData = testData;
         this.adminData = adminData;
         this.contextData = contextData;
-        poMapper = new IrsTASCPrimObjFactMapper(conn);
+        //poMapper = new IrsTASCPrimObjFactMapper(conn);
         soMapper = new IrsTASCSecObjFactMapper(conn);
     }
 
     public void run() throws SQLException {
-    	
-    	// Do not insert in Prim Obj Fact for TASC
-    	
-        /*IrsTASCPrimObjFactData [] pfacts = getPrimObjFactBeans();
-        for(int i=0;i<pfacts.length;i++) {
-            IrsTASCPrimObjFactData newFact = pfacts[i];
-            poMapper.delete(newFact);
-            if(new Long(1).equals(contextData.getCurrentResultId()))  {
-                poMapper.insert(newFact);
-            }
-        }*/
+    	// As for TASC Content Area and Primary Objective levels are 
+    	// same so Scoring at Primary Objective level is not required
         
         IrsTASCSecObjFactData [] sfacts = getSecObjFactBeans();
         for(int i=0;i<sfacts.length;i++) {
@@ -63,57 +52,6 @@ public class StudentObjectiveScoresController {
                 soMapper.insert(newFact);
             }
         }
-    }
-    
-    public IrsTASCPrimObjFactData [] getPrimObjFactBeans() {
-        PrimaryObjective [] prims = currData.getPrimaryObjectives();
-        ArrayList primaries = new ArrayList();
-        System.out.println("Primary Objective Length  : " + prims.length);
-        
-        for(int i=0;i<prims.length;i++) {
-            PrimaryObjective prim = currData.getPrimObjById(prims[i].getPrimaryObjectiveId());
-            StudentScoreSummaryDetails details = studentScoreSummaryData.get(prims[i].getPrimaryObjectiveId());
-            if(details != null && !"F".equals(details.getAtsArchive())) {
-                IrsTASCPrimObjFactData primObjFact = new IrsTASCPrimObjFactData();
-                primObjFact.setPrimObjid(new Long(Long.parseLong(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()))));
-                primObjFact.setPointsObtained(details.getPointsObtained());
-                primObjFact.setPointsPossible(details.getPointsPossible());
-                primObjFact.setMasteryLevelid( new Long( 
-                                                    "NM".equals(details.getMasteryLevel())?1:
-                                                    "PM".equals(details.getMasteryLevel())?2:
-                                                    "M".equals(details.getMasteryLevel())?3:
-                                                    "NON-MASTERY".equals(details.getMasteryLevel())?1:
-                                                    "PARTIAL MASTERY".equals(details.getMasteryLevel())?2:
-                                                    "MASTERY".equals(details.getMasteryLevel())?3:
-                                                    "Not Mastered".equals(details.getMasteryLevel())?1:
-                                                    "Partially Mastered".equals(details.getMasteryLevel())?2:
-                                                    "Mastered".equals(details.getMasteryLevel())?3:4 ));
-                primObjFact.setPercentObtained(details.getPercentObtained());
-                primObjFact.setPointsAttempted(details.getPointsAttempted());
-                    
-                // dim ids from context
-                primObjFact.setAssessmentid(contextData.getAssessmentId());
-                primObjFact.setCurrentResultid(contextData.getCurrentResultId());
-                primObjFact.setFormid(new Long(
-                                        "A1".equals(prim.getSubtestForm())?18:
-                                        "B1".equals(prim.getSubtestForm())?19:
-                                        "C1".equals(prim.getSubtestForm())?20:21));
-                primObjFact.setGradeid(contextData.getGradeId());
-                primObjFact.setLevelid(new Long(
-                                        "21-22".equals(prim.getSubtestLevel())?34:35));
-                primObjFact.setOrgNodeid(contextData.getOrgNodeId());
-                primObjFact.setProgramid(contextData.getProgramId());
-                primObjFact.setSessionid(contextData.getSessionId());
-                primObjFact.setStudentid(contextData.getStudentId());
-                primObjFact.setTestStartTimestamp(contextData.getTestStartTimestamp());
-                Timestamp subtestTime = null;
-                if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
-                primObjFact.setTestCompletionTimestamp(subtestTime);  
-                
-                primaries.add(primObjFact);
-            }
-        }
-        return (IrsTASCPrimObjFactData[]) primaries.toArray(new IrsTASCPrimObjFactData[0]);
     }
     
     public IrsTASCSecObjFactData [] getSecObjFactBeans() {
@@ -126,10 +64,8 @@ public class StudentObjectiveScoresController {
             StsTestResultFactDetails factDetails = factData.get(getContentAreaName(new Long(contentAreaId)));
             
             // Do not insert in SecObj Fact for TASC if SubtestScoringStatus is Suppressed & Omitted
-            
             if(!"SUP".equals(factDetails.getSubtestScoringStatus())
             		&& !"OM".equals(factDetails.getSubtestScoringStatus())){
-            	
 	            if(details != null && !"F".equals(details.getAtsArchive())) {
 	                IrsTASCSecObjFactData secObjFact = new IrsTASCSecObjFactData();
 	                secObjFact.setSecObjid(new Long(Long.parseLong(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()))));
@@ -138,14 +74,11 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setPercentObtained(details.getPercentObtained());
 	                secObjFact.setPointsAttempted(details.getPointsAttempted());
 	                secObjFact.setMasteryLevelid((details.getMasteryLevel() == null)?null: new Long(details.getMasteryLevel().toString()));
-	
-	                // dim ids from context
 	                secObjFact.setAssessmentid(contextData.getAssessmentId());
 	                secObjFact.setCurrentResultid(contextData.getCurrentResultId());
 	                secObjFact.setFormid(adminData.getFormId());
 	                secObjFact.setGradeid(contextData.getGradeId());
-	                secObjFact.setLevelid(new Long(
-	                                        "21-22".equals(sec.getSubtestLevel())?34:35));
+	                secObjFact.setLevelid(new Long("21-22".equals(sec.getSubtestLevel())?34:35));
 	                secObjFact.setOrgNodeid(contextData.getOrgNodeId());
 	                secObjFact.setProgramid(contextData.getProgramId());
 	                secObjFact.setSessionid(contextData.getSessionId());
@@ -159,7 +92,6 @@ public class StudentObjectiveScoresController {
 	                long pointsPossible = 0;
 	                if(null != details.getPointsAttempted()) pointsAttempted = details.getPointsAttempted().longValue();
 	                if(null != details.getPointsPossible()) pointsPossible = details.getPointsPossible().longValue();
-	            	
 	            	if(pointsAttempted == pointsPossible) {
 	            		details.setObjectiveScoringStatus("A"); // All items attempted
 	            	}
@@ -173,7 +105,6 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setScaleScore(details.getScaleScore());
 	                secObjFact.setConditionCode(details.getConditionCode());
 	                secObjFact.setScaleScoreRangeForMasteryLevel(details.getScaleScoreRangeForMastery());
-	                
 	                secondaries.add(secObjFact);
 	            } else{
 	            	IrsTASCSecObjFactData secObjFact = new IrsTASCSecObjFactData();
@@ -193,9 +124,7 @@ public class StudentObjectiveScoresController {
             }
         }
         return (IrsTASCSecObjFactData[]) secondaries.toArray(new IrsTASCSecObjFactData[0]);
-
     }
-    
     
     private String getContentAreaName(Long contentAreaId) {
         for(int i=0;i<currData.getContentAreas().length;i++) {

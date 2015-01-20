@@ -9,12 +9,10 @@ import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData;
-import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCPrimObjFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCCompositeFactMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCContentAreaFactMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCItemFactMapper;
-import com.ctb.lexington.db.mapper.tsmapper.IrsTASCPrimObjFactMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCSecObjFactMapper;
 
 /**
@@ -26,7 +24,6 @@ public class StudentResultStatusController{
     private ContextData context;    
     private IrsTASCCompositeFactMapper irsTASCCompositeFactMapper;
     private IrsTASCContentAreaFactMapper irsTASCContentAreaFactMapper;
-    private IrsTASCPrimObjFactMapper  irsTASCPrimObjFactMapper;
     private IrsTASCSecObjFactMapper irsTASCSecObjFactMapper;
     private IrsTASCItemFactMapper irsTASCItemFactMapper;
     
@@ -34,7 +31,6 @@ public class StudentResultStatusController{
         this.context = context;
         irsTASCCompositeFactMapper = new IrsTASCCompositeFactMapper(conn);
         irsTASCContentAreaFactMapper = new IrsTASCContentAreaFactMapper(conn);
-        irsTASCPrimObjFactMapper = new IrsTASCPrimObjFactMapper(conn);
         irsTASCSecObjFactMapper = new IrsTASCSecObjFactMapper(conn);
         irsTASCItemFactMapper = new IrsTASCItemFactMapper(conn);
     }

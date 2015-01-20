@@ -88,7 +88,6 @@
     <sqlMap resource="maps/tsfactmaps/IrsTASCCompositeFact.xml"/>
     <sqlMap resource="maps/tsfactmaps/IrsTASCContentAreaFact.xml"/>
     <sqlMap resource="maps/tsfactmaps/IrsTASCItemFact.xml"/>
-    <sqlMap resource="maps/tsfactmaps/IrsTASCPrimObjFact.xml"/>
     <sqlMap resource="maps/tsfactmaps/IrsTASCSecObjFact.xml"/>
     <sqlMap resource="maps/tcfactmaps/IrsTCContentAreaFact.xml"/>
     <sqlMap resource="maps/tcfactmaps/IrsTCItemFact.xml"/>
