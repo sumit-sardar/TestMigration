@@ -41,10 +41,10 @@ public class TestAdminRestClient {
 		logger.info("Test Admin Rest Client API called");
 		
 		TestAdmin testAdmin = null;
-		CreateTestAdminResponse testAdminResponse = new CreateTestAdminResponse();
+		CreateTestAdminResponse testAdminResponse = null;
 
 		try {
-			// Connects to OAS DB and return students related data 
+			// Connects to OAS DB and return admin-related data 
 			testAdmin = testAdminDAO.getTestAdmin(testAdminId);
 			final String endpoint = endpointSelector.getEndpoint(testAdmin.getOasCustomerId());
 			if (endpoint == null) {
@@ -57,7 +57,7 @@ public class TestAdminRestClient {
 						+RestURIConstants.POST_TESTADMIN,
 		        		testAdmin, CreateTestAdminResponse.class);
 		        logger.info("[TestAdmin] Response json from BMT: " + testAdminResponse.toJson());
-		        //Updates the BMTSYN_Assignment_Status table, with success or failure
+		        //Updates the BMTSYNC_TestAdmin_Status table, with success or failure
 		        processResponses(testAdmin, testAdminResponse, true);
 			}
 		} catch (RestClientException rce) {
@@ -73,9 +73,9 @@ public class TestAdminRestClient {
 				processResponses(testAdmin, testAdminResponse, false);
 			} catch (Exception ee) {
 				logger.error("[TestAdmin] Error trying to process TestAdmin API responses.", ee);
-			}		}
+			}		
+		}
 		
-		logger.info("[TestAdmin] Response json from BMT: "+testAdminResponse.toJson());
 		return testAdminResponse;
 		
 	}

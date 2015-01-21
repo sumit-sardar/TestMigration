@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.mhe.ctb.oas.BMTSync.model.DeliveryWindow;
@@ -69,6 +70,20 @@ public class TestTestAdminRestClient {
 		
 		client.postTestAdmin(admin.getOasTestAdministrationID());
 		verify(dao, times(1)).updateTestAdminStatus(admin.getOasTestAdministrationID(), false, "999", "Failure");
+	}
+	
+	@Test
+	public void testTestAdminRestClient_failRestClientException() throws Exception {
+		TestAdmin admin = createAdmin(1);
+		when(dao.getTestAdmin(admin.getOasTestAdministrationID())).thenReturn(admin);
+		String endpoint = "http://valid.endpoint";
+		when(selector.getEndpoint(admin.getOasCustomerId())).thenReturn(endpoint);
+
+		when(restTemplate.postForObject(endpoint+RestURIConstants.POST_TESTADMIN,
+		        		admin, CreateTestAdminResponse.class)).thenThrow(new RestClientException("Blammo!"));
+		
+		client.postTestAdmin(admin.getOasTestAdministrationID());
+		verify(dao, times(1)).updateTestAdminStatus(admin.getOasTestAdministrationID(), false, "999", "Error from BMT sync API.");
 	}
 		
 	private TestAdmin createAdmin(final int index) {
