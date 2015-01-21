@@ -234,14 +234,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 		END LOOP;
 		
 		-- Update the Roster Status,  Update with CO if all the subtest is complete
-		--DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
+		DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
         IF vFinalStatus IS NOT NULL  THEN
 			
             IF vFinalStatus = 'CO' THEN
 				UPDATE Test_Roster 
 				SET Test_Completion_Status = vFinalStatus, 
 				    Completion_Date_Time = pCompletionDate
-				WHERE Test_Completion_Status = 'CO' AND Test_Roster_ID = pRosterId;
+				WHERE Test_Roster_ID = pRosterId;
 			ELSE 
 				UPDATE Test_Roster SET 
 				   Test_Completion_Status = vFinalStatus, 
