@@ -21,9 +21,11 @@ CREATE OR REPLACE PACKAGE PKG_BMTSYNC_TESTSTATUS AS
 	* PROCEDURE TO UPDATE THE TEST_ROSTER COMPLETION STATUS
 	* BASED ON THE ROSTER SUB-TEST COMPLETION STATUS
 	*
+	* pCurrSubTestStatus = Current Sub-test status
 	**********************************************************/
 	PROCEDURE UpdateRosterTestStatus(
 	   pRosterId           IN NUMBER,
+	   pCurrSubTestStatus  IN VARCHAR2,
 	   pStartDate          IN DATE,
 	   pCompletionDate     IN DATE);
 
@@ -157,7 +159,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 					bErrorMsg  := '';
 					
 					--Update Roaster Completion Status
-					UpdateRosterTestStatus(pRosterId, vStartDate, vCompletionDate);
+					UpdateRosterTestStatus(pRosterId, pDeliveryStatus, vStartDate, vCompletionDate);
 					
 					COMMIT;  
 				EXCEPTION
@@ -196,9 +198,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 	* PROCEDURE TO UPDATE THE TEST_ROSTER COMPLETION STATUS
 	* BASED ON THE ROSTER SUB-TEST COMPLETION STATUS
 	*
+	* pCurrSubTestStatus = Current Sub-test status
 	**********************************************************/
 	PROCEDURE UpdateRosterTestStatus(
 	   pRosterId           IN NUMBER,
+	   pCurrSubTestStatus  IN VARCHAR2,
 	   pStartDate          IN DATE,
 	   pCompletionDate     IN DATE) AS
 
@@ -212,6 +216,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 	   
 	   vFinalStatus VARCHAR2(2) := null;
 	BEGIN
+		
 		FOR rec_SISS IN curSISS LOOP
 		   DBMS_OUTPUT.PUT_LINE('rec_SISS.Completion_Status is:'||rec_SISS.Completion_Status);
 		   CASE rec_SISS.Completion_Status
@@ -219,15 +224,34 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 					vFinalStatus := 'IP';
 					EXIT;
 				WHEN 'IN' THEN 
-					vFinalStatus := 'IN';
+				    IF pCurrSubTestStatus = 'IP' THEN
+					   vFinalStatus := 'IP';
+					ELSE
+					   vFinalStatus := 'IN';
+					END IF;
 					EXIT;
 				WHEN 'CO' THEN 
-					vFinalStatus := 'CO';
-				WHEN 'SC' THEN 
-				    IF vFinalStatus = 'CO' THEN
+				    IF vFinalStatus = 'SC' THEN
 					   vFinalStatus := 'IS';
 					   EXIT;
+					ELSE
+					   vFinalStatus := 'CO';
 					END IF;
+				WHEN 'SC' THEN
+                    CASE pCurrSubTestStatus
+					    WHEN 'IP' THEN
+					       vFinalStatus := 'IP';
+					       EXIT;	
+                      	WHEN 'IN' THEN   
+					       vFinalStatus := 'IN';
+					       EXIT;
+                        WHEN 'CO' THEN	
+                            vFinalStatus := 'IS';
+                            EXIT;							
+						ELSE   
+					       vFinalStatus := 'SC';
+                    END CASE;
+					
 				ELSE
                   NULL;				
 		   END CASE;
@@ -235,7 +259,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 		
 		-- Update the Roster Status,  Update with CO if all the subtest is complete
 		DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
-        IF vFinalStatus IS NOT NULL  THEN
+        IF vFinalStatus IS NOT NULL   THEN
 			
             IF vFinalStatus = 'CO' THEN
 				UPDATE Test_Roster ROS 
@@ -244,10 +268,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 					   WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)
 				WHERE Test_Roster_Id = pRosterId;
 		
-				--UPDATE Test_Roster 
-				--SET Test_Completion_Status = vFinalStatus, 
-				--    Completion_Date_Time = pCompletionDate
-				--WHERE Test_Roster_ID = pRosterId;
 			ELSE 
 				UPDATE Test_Roster SET 
 				   Test_Completion_Status = vFinalStatus, 
@@ -255,25 +275,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 				WHERE Test_Roster_ID = pRosterId;
 			END IF;
 			
-			--UPDATE Test_Roster 
-			--SET Test_Completion_Status = vFinalStatus, 
-			--   Start_Date_Time = NVL(Start_Date_Time, pStartDate)
-			--WHERE Test_Roster_ID = pRosterId;
-			
-			--UPDATE Test_Roster SET Start_Date_Time = pStartDate
-			--WHERE Test_Roster_ID = pRosterId AND Start_Date_Time IS NULL;
-			
 		END IF;	
 
-		/*
-		UPDATE Test_Roster ROS 
-		SET Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status 
-			   WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)  
-		WHERE Test_Roster_Id = pRosterId;
-        */
-		
-		
-		
 	EXCEPTION
 	WHEN OTHERS THEN
 		DBMS_OUTPUT.PUT_LINE('SQL Error: While updating Test_Roster table:'||SQLERRM(SQLCODE));
