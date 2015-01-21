@@ -23,11 +23,14 @@ public class TestAdminRestClient {
 	
 	private final EndpointSelector endpointSelector;
 	
+	private RestTemplate restTemplate;
+	
 	String errorMsg;	
 	
 	public TestAdminRestClient(final TestAdminDAO testAdminDAO, final EndpointSelector endpointSelector) {
 		this.testAdminDAO = testAdminDAO;
 		this.endpointSelector = endpointSelector;
+		restTemplate = new RestTemplate();
 	}
 	
 	/*
@@ -37,7 +40,6 @@ public class TestAdminRestClient {
 	public @ResponseBody CreateTestAdminResponse postTestAdmin (final long testAdminId) {
 		logger.info("Test Admin Rest Client API called");
 		
-		final RestTemplate restTemplate = new RestTemplate();
 		TestAdmin testAdmin = null;
 		CreateTestAdminResponse testAdminResponse = new CreateTestAdminResponse();
 
@@ -110,6 +112,9 @@ public class TestAdminRestClient {
 		logger.info(String.format("Updated assignment API status in OAS. "
 				+ "[testAdminID=%d][updateSuccess=%b][updateStatus=%s][updateMessage=%s]",
 				testAdminId, success, errorCode, errMsg));
-		
+	}
+	
+	public void setRestTemplate(final RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
 	}
 }
