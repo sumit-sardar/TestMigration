@@ -2,6 +2,7 @@ package com.mhe.ctb.oas.BMTSync.controller;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -83,6 +84,7 @@ public class StudentRestClient {
 								+RestURIConstants.POST_STUDENTS,
 								studentRequest, CreateStudentsResponse.class);
 						logger.info("[Student] Response json from BMT: " + studentListResponse.toJson());
+						processResponses(studentRequest, studentListResponse, true);
 					} catch (RestClientException rce) {
 						logger.error("Http Client Error: " + rce.getMessage(), rce);			
 						try {
@@ -94,7 +96,6 @@ public class StudentRestClient {
 						}
 					}
 				}
-				processResponses(studentRequest, studentListResponse, true);
 			}
 		return studentListResponse;
 	}
@@ -106,44 +107,59 @@ public class StudentRestClient {
 	 */
 	private void processResponses(final CreateStudentsRequest req, final CreateStudentsResponse resp, final boolean success) {
 
-		Map<Integer, Boolean> updateStatuses = new HashMap<Integer, Boolean>(req.getStudents().size());
-		Map<Integer, String> updateMessages = new HashMap<Integer, String>(req.getStudents().size());
-		Map<Integer, String> updateCodes = new HashMap<Integer, String>(req.getStudents().size());
-
+		final Map<Integer, Boolean> updateStatuses = new HashMap<Integer, Boolean>(req.getStudents().size());
+		final Map<Integer, String> updateMessages = new HashMap<Integer, String>(req.getStudents().size());
+		final Map<Integer, String> updateCodes = new HashMap<Integer, String>(req.getStudents().size());
+		final Set<Integer> studentIds = new HashSet<Integer>();
+		
+		List<Student> students = req.getStudents();
+		for (final Student student : students) {
+			studentIds.add(student.getOasStudentId());
+		}
+		
+		// If there was a boom in the REST client, this will fail. We need to account for that in our design.
 		logger.debug("Students post total count: " + req.getStudents().size());
-		logger.debug("Students post success count: "+resp.getSuccessCount());
-		logger.debug("Students post failure count: "+resp.getFailureCount());
-		List<StudentResponse> failures = resp.getFailures();
-		final StringBuilder failedStudentIds = new StringBuilder();
-		failedStudentIds.append("Students failed:");
-		if (failures == null) {
-			failedStudentIds.append(" none");
+		if (resp == null) {
+			logger.debug("No students successfully posted; null response.");
+			for (final Integer studentId : studentIds) {
+				updateStatuses.put(studentId, false);
+				updateCodes.put(studentId, "999");
+				updateMessages.put(studentId, "Error in REST call; null response.");
+			}
 		} else {
-			for (final StudentResponse failedUpdate : resp.getFailures()) {
-				failedStudentIds.append(" ");
-				failedStudentIds.append(failedUpdate.getOasStudentId().toString());				
-				updateStatuses.put(failedUpdate.getOasStudentId(), false);
-				updateCodes.put(failedUpdate.getOasStudentId(), failedUpdate.getErrorCode().toString());
-				final String errorMessage = failedUpdate.getErrorMessage();
-				if (ERROR_MESSAGE_LENGTH < errorMessage.length()) {
-					updateMessages.put(failedUpdate.getOasStudentId(), errorMessage.substring(0, ERROR_MESSAGE_LENGTH));
-				} else {
-					updateMessages.put(failedUpdate.getOasStudentId(), errorMessage);
+			logger.debug("Students post success count: "+resp.getSuccessCount());
+			logger.debug("Students post failure count: "+resp.getFailureCount());
+			List<StudentResponse> failures = resp.getFailures();
+			final StringBuilder failedStudentIds = new StringBuilder();
+			failedStudentIds.append("Students failed:");
+			if (failures == null) {
+				failedStudentIds.append(" none");
+			} else {
+				for (final StudentResponse failedUpdate : resp.getFailures()) {
+					failedStudentIds.append(" ");
+					failedStudentIds.append(failedUpdate.getOasStudentId().toString());				
+					updateStatuses.put(failedUpdate.getOasStudentId(), false);
+					updateCodes.put(failedUpdate.getOasStudentId(), failedUpdate.getErrorCode().toString());
+					final String errorMessage = failedUpdate.getErrorMessage();
+					if (ERROR_MESSAGE_LENGTH < errorMessage.length()) {
+						updateMessages.put(failedUpdate.getOasStudentId(), errorMessage.substring(0, ERROR_MESSAGE_LENGTH));
+					} else {
+						updateMessages.put(failedUpdate.getOasStudentId(), errorMessage);
+					}
 				}
 			}
+			logger.debug(failedStudentIds.toString());
 		}
-		logger.debug(failedStudentIds.toString());
-
-		List<Student> requests = req.getStudents();
-		for (final Student student : requests) {
-			if (!updateMessages.containsKey(student.getOasStudentId())) {
-				updateStatuses.put(student.getOasStudentId(), success);
-				updateCodes.put(student.getOasStudentId(), "");
-				updateMessages.put(student.getOasStudentId(), "");
+		
+		for (final Integer studentId : studentIds) {
+			if (!updateMessages.containsKey(studentId)) {
+				updateStatuses.put(studentId, success);
+				updateCodes.put(studentId, "");
+				updateMessages.put(studentId, "");
 			}
 		}
 
-		for (final Integer studentId : updateMessages.keySet()) {
+		for (final Integer studentId : studentIds) {
 			try {
 				logger.debug(String.format("Updating student API status in OAS. [studentId=%d][updateSuccess=%b][updateMessage=%s]",
 						studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));

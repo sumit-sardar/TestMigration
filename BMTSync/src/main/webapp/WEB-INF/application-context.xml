@@ -118,17 +118,17 @@
 	<!-- Blocking queue beans to be used by notification handlers. -->
 	<bean id="bmtStudentBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
 		<constructor-arg index="0" value="100"/>
-		<constructor-arg index="1" value="15000"/>
+		<constructor-arg index="1" value="5000"/>
 	</bean>
 	
 	<bean id="bmtTestAssignmentBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
 		<constructor-arg index="0" value="100"/>
-		<constructor-arg index="1" value="15000"/>
+		<constructor-arg index="1" value="5000"/>
 	</bean>
 
 	<bean id="bmtTestAdminBlockingQueue" class="com.mhe.ctb.oas.BMTSync.util.BMTBlockingQueue">
 		<constructor-arg index="0" value="100"/>
-		<constructor-arg index="1" value="15000"/>
+		<constructor-arg index="1" value="5000"/>
 	</bean>
 		
 	<!-- Message delegates. -->
