@@ -31,10 +31,13 @@ public class StudentRestClient {
 	
 	private final EndpointSelector endpointSelector;
 	
+	private RestTemplate restTemplate;
+	
 	public StudentRestClient(final StudentDAO studentDAO, final EndpointSelector endpointSelector) {
 	//public StudentRestClient(final StudentDAO studentDAO) {
 		this.studentDAO = studentDAO;
 		this.endpointSelector = endpointSelector;
+		this.restTemplate = new RestTemplate();
 	}
 	
 	String errorMsg;
@@ -44,7 +47,6 @@ public class StudentRestClient {
 	 */
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody CreateStudentsResponse postStudentList(final List<StudentMessageType> messages) {
-		final RestTemplate restTemplate = new RestTemplate(); 
 		final Map<Integer, CreateStudentsRequest> studentListMap = new HashMap<Integer, CreateStudentsRequest>();
 		CreateStudentsResponse studentListResponse = null;
 		
@@ -152,9 +154,11 @@ public class StudentRestClient {
 						+ " [studentId=%d][updateSuccess=%b][updateMessage=%s]",
 						studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
 			}
-					
 		}
 	}
-	
+
+	public void setRestTemplate(final RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
 	
 }
