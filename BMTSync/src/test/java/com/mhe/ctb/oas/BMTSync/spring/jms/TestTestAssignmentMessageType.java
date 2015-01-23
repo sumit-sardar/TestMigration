@@ -17,13 +17,16 @@ public class TestTestAssignmentMessageType {
 	
 	@Test
 	public void testTestAssignmentMessageType_success() {
+		Calendar now = Calendar.getInstance();
 		message = new TestAssignmentMessageType();
 		message.setCustomerId(1);
 		message.setTestAdminId(101);
 		message.setTestRosterId(10001);
 		message.setStudentId(1000001);
-		message.setUpdatedDateTime(Calendar.getInstance());
+		message.setUpdatedDateTime(now);
 		assertEquals(Integer.valueOf(1), Integer.valueOf(message.getCustomerId()));
+		assertEquals(Integer.valueOf(10001), Integer.valueOf(message.getTestRosterId()));
+		assertEquals(now, message.getUpdatedDateTime());
 		assertEquals("testAdminId", message.getPrimaryKeyName());
 		assertEquals("101", message.getPrimaryKeyValue());
 		assertEquals("studentId", message.getSecondaryKeyName());

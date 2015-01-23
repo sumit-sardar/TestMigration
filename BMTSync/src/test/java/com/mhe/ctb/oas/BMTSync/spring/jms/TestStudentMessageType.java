@@ -16,7 +16,7 @@ public class TestStudentMessageType {
 	private StudentMessageType message;
 	
 	@Test
-	public void testTestAdminMessageType_success() {
+	public void testStudentMessageType_success() {
 		message = new StudentMessageType();
 		message.setCustomerId(1);
 		message.setStudentId(1001);
@@ -31,7 +31,7 @@ public class TestStudentMessageType {
 	}
 	
 	@Test
-	public void testTestAdminMessageType_nulls() {
+	public void testStudentMessageType_nulls() {
 		message = new StudentMessageType();
 		assertEquals("studentId", message.getPrimaryKeyName());
 		assertEquals(null, message.getPrimaryKeyValue());
