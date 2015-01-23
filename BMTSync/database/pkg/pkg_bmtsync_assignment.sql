@@ -210,7 +210,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_ASSIGNMENT AS
 		
     EXCEPTION 
 	WHEN NO_DATA_FOUND THEN
-	    DBMS_OUTPUT.PUT_LINE('Insert');
+	    --DBMS_OUTPUT.PUT_LINE('Insert');
 	    INSERT INTO BMTSYNC_Assignment_Status (Customer_id,Test_Admin_ID, Student_ID, Roster_Id, App_Name, Exported_ON, Export_Status, Error_Code, Error_Message, Next_Retry_DateTime)
 	       VALUES (pCustomerID, pTestAdminID, pStudentID, pRosterId, pAppName, SYSDATE, pExportStatus, '', '', SYSDATE);
 
@@ -306,7 +306,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_ASSIGNMENT AS
 		COMMIT;
     EXCEPTION 
 	WHEN NO_DATA_FOUND THEN
-	    DBMS_OUTPUT.PUT_LINE('Insert');
+	    --DBMS_OUTPUT.PUT_LINE('Insert');
 	    INSERT INTO BMTSYNC_Assignment_Status (Test_Admin_ID, Student_ID, App_Name, Exported_ON, Export_Status, Error_Code, Error_Message, Next_Retry_DateTime)
 	       VALUES (pTestAdminID, pStudentID, pAppName, SYSDATE, pExportStatus, '', '', SYSDATE);
 		

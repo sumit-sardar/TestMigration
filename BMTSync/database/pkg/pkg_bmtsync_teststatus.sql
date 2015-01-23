@@ -133,7 +133,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 			    SELECT Test_Completion_Status_Desc INTO vStatusDesc
 				FROM Test_Completion_Status_Code 
 				WHERE Test_Completion_Status = pDeliveryStatus;
-				DBMS_OUTPUT.PUT_LINE('Updated Successfully');
+				--DBMS_OUTPUT.PUT_LINE('Updated Successfully');
 			EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				bSuccess := 'F';
@@ -173,7 +173,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 			END IF;
 			
 		END IF;
-	    DBMS_OUTPUT.PUT_LINE(bErrorMsg);
+	    --DBMS_OUTPUT.PUT_LINE(bErrorMsg);
 		OPEN pResultCursor FOR
 		SELECT pRosterID RosterId, pOasTestId OasTestId, pDeliveryStatus DeliveryStatus,
    		       pStartedDate Started_Date, pCompletedDate Completed_Date, 
@@ -190,7 +190,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
    		       pStartedDate Started_Date, pCompletedDate Completed_Date, 
 			   bSuccess AS Success, bErrorCode AS ErrorCode, bErrorMsg AS ErrorMsg FROM DUAL;
 
-		DBMS_OUTPUT.PUT_LINE(bErrorMsg);
+		--DBMS_OUTPUT.PUT_LINE(bErrorMsg);
 		
 	END ValidateSaveTestStatus;
 	
@@ -218,7 +218,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 	BEGIN
 		
 		FOR rec_SISS IN curSISS LOOP
-		   DBMS_OUTPUT.PUT_LINE('rec_SISS.Completion_Status is:'||rec_SISS.Completion_Status);
+		   --DBMS_OUTPUT.PUT_LINE('rec_SISS.Completion_Status is:'||rec_SISS.Completion_Status);
 		   CASE rec_SISS.Completion_Status
 				WHEN 'IP' THEN 
 					vFinalStatus := 'IP';
@@ -258,7 +258,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 		END LOOP;
 		
 		-- Update the Roster Status,  Update with CO if all the subtest is complete
-		DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
+		--DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
         IF vFinalStatus IS NOT NULL   THEN
 			
             IF vFinalStatus = 'CO' THEN
