@@ -2,7 +2,12 @@
 set termout on
 spool bmytsync_deploy.log
 
-conn oas/pwd@oasr5p_ewdc
+--PRODUCTION DATABASE
+--conn oas/pwd@oasr5p_ewdc 
+
+--STAGING DATABASE
+conn oas/pwd@oasr5s
+
 
 PROMPT CREATING BMTSYNC TYPES
 @types/student_message_typ.sql
@@ -17,7 +22,7 @@ PROMPT CREATING BMTSYNC TABLES
 @tables/tbl_bmtsync_assignment_status.sql
 @tables/tbl_bmtsync_testadmin_status.sql
 
-PROMPT CREATE QUEUE TABLES
+PROMPT CREATING BMTSYNC QUEUE TABLES
 @tables/tbl_create_queuetables.sql
 
 PROMPT CREATING BMTSYNC PACKAGES
