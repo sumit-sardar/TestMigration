@@ -105,8 +105,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_Students AS
 	   
 	   -- We get the student ids as a comma seperated values
 	   -- Use the SplintString function to get the Student Id as rows of data
-	   OPEN pResultCursor FOR
-	   SELECT Column_Value AS oasStudentId from table(splitString(vStudentIDs));
+	   --OPEN pResultCursor FOR
+	   --SELECT Column_Value AS oasStudentId from table(splitString(vStudentIDs));
+
+
 	   COMMIT;	   
 	   
 	END FetchStudentList;

@@ -18,11 +18,13 @@ dbms_output.put_line('vExists: '||vExists );
 end;
 /
 
-INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES 
-(15357,'INDIANA', 'http://sync-gain-qa-elb.ec2-ctb.com/');
+DELETE FROM BMTSYNC_CUSTOMER;
 
 INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES 
-(16701, 'GEORGIA', 'http://sync-gain-content-elb.ec2-ctb.com/');
+(7496,'INDIANA', '');
+
+INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES 
+(21264, 'GEORGIA', '');
 
 
 SET TERMOUT ON

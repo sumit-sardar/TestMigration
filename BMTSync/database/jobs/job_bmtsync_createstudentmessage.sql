@@ -1,5 +1,5 @@
 --fires every 21 seconds
-DECLARE
+--DECLARE
    VARIABLE jobno number;
 BEGIN
 

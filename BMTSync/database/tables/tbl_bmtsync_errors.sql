@@ -21,6 +21,7 @@ end;
 SET TERMOUT ON
 PROMPT BMTSYNC_ERRORS table script complete;
 
+DELETE FROM BMTSYNC_ERRORS;
 
 INSERT INTO BMTSYNC_ERRORS VALUES (1, 'Request URI does not contain _method.', 'Y');	
 INSERT INTO BMTSYNC_ERRORS VALUES (2, 'Requested student is not in the system.', 'N');	

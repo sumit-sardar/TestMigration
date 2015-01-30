@@ -1,5 +1,5 @@
 --fires every 21 (.35/1440)seconds. 
-
+--DECLARE
    VARIABLE jobno number;
 BEGIN
 
