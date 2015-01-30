@@ -8,7 +8,7 @@ import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.propertiesFileLoader.PropertiesLoader;
+//import com.propertiesFileLoader.PropertiesLoader;
 import com.propertiesFileLoader.PropertiesFileReader;
 
 public class OCSConfig extends Config {
