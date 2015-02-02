@@ -29,6 +29,7 @@ import com.ctb.prism.web.controller.StudentBioTO;
 import com.ctb.prism.web.controller.StudentDataLoadTO;
 import com.ctb.prism.web.controller.StudentDetailsTO;
 import com.ctb.prism.web.controller.StudentListTO;
+import com.ctb.prism.web.controller.StudentSurveyBioTO;
 import com.ctb.prism.web.dbutility.PrismWebServiceDBUtility;
 import com.ctb.util.HMACQueryStringEncrypter;
 import com.ctb.util.OASLogger;
@@ -258,6 +259,7 @@ public class PrismWebServiceHandler {
 		if(PrismWebServiceDBUtility.checkValidRosterStatus(rosterId)){
 			long startTime = System.currentTimeMillis();
 			System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring started for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
+			boolean isTASCSecondEdition = PrismWebServiceDBUtility.getRosterFormEdition(rosterId);
 			StudentListTO studentListTO = new StudentListTO();
 			
 			List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
@@ -282,9 +284,14 @@ public class PrismWebServiceHandler {
 			
 			rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
 			
-			StudentDetailsTO studentDetailsTO = getStudentBio(studentId);
+			StudentDetailsTO studentDetailsTO = getStudentBio(studentId, isTASCSecondEdition);
 			studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterId));
-			studentDetailsTO.setStudentSurveyBioTO(PrismWebServiceDBUtility.getStudentSurveyBio(rosterId));
+			if(isTASCSecondEdition == false) {
+				studentDetailsTO.setStudentSurveyBioTO(PrismWebServiceDBUtility.getStudentSurveyBio(rosterId));
+			}
+			else if(isTASCSecondEdition == true) {
+				studentDetailsTO.setStudentSurveyBioTO(new StudentSurveyBioTO());
+			}
 			rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
 			
 			List<ContentDetailsTO> contentDetailsTOList =  PrismWebServiceDBUtility.getContentDetailsTO(rosterId, studentId, sessionId);
@@ -312,6 +319,26 @@ public class PrismWebServiceHandler {
 	private static StudentDetailsTO getStudentBio(Integer studentId) throws Exception{
 		StudentDetailsTO studentDetailsTO = new StudentDetailsTO();
 		StudentBioTO studentBioTO =  PrismWebServiceDBUtility.getStudentBio(studentId);
+		studentDetailsTO.setStudentBioTO(studentBioTO);
+		return studentDetailsTO;
+	}
+
+	/**
+	 * Populate the StudentBioTO
+	 * @param studentDetailsTO
+	 * @param studentId
+	 * @param isTASCSecondEdition
+	 * @throws Exception
+	 */
+	private static StudentDetailsTO getStudentBio(Integer studentId, boolean isTASCSecondEdition) throws Exception{
+		StudentDetailsTO studentDetailsTO = new StudentDetailsTO();
+		StudentBioTO studentBioTO = null;
+		if(isTASCSecondEdition == true){
+			studentBioTO = PrismWebServiceDBUtility.getStudentBioSecondEdition(studentId);
+		}
+		else if(isTASCSecondEdition == false) {
+			studentBioTO = PrismWebServiceDBUtility.getStudentBio(studentId);
+		}
 		studentDetailsTO.setStudentBioTO(studentBioTO);
 		return studentDetailsTO;
 	}

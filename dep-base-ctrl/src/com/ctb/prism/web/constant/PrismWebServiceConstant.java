@@ -53,6 +53,9 @@ public class PrismWebServiceConstant {
 	public static final String ATestFormStr = "A";
 	public static final String BTestFormStr = "B";
 	public static final String CTestFormStr = "C";
+	public static final String DTestFormStr = "D";
+	public static final String ETestFormStr = "E";
+	public static final String FTestFormStr = "F";
 	
 	public static final String CustHierarchyDetailsTestName = "TASC";
 	

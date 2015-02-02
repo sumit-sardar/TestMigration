@@ -62,6 +62,7 @@ public class PrismWebServiceDBUtility {
 	private static final String irsDtataSourceJndiName = "irsDataSource";
 	
 	private static final String GET_STUDENT_BIO = "select stu.student_id as id,       stu.user_name as loginId,       stu.first_name as firstName,       substr(stu.middle_name,1,1) as middleName,       stu.last_name as lastName,       concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,       stu.gender as gender,       to_char(stu.birthdate , 'MM/DD/YYYY') as birthDate,    to_char(stu.birthdate , 'MMDDYY') as birthDateMMDDYY,      stu.grade as grade,       stu.ext_pin1 as studentIdNumber,       stu.ext_pin2 as studentIdNumber2,       stu.test_purpose as testPurpose,       stu.created_by as createdBy,       NVL(stu.out_of_school, 'No') as outOfSchool  from student stu where stu.student_id = ?";
+	private static final String GET_STUDENT_BIO_SEC_EDITION = "SELECT STU.STUDENT_ID AS ID, STU.USER_NAME AS LOGINID, CONCAT(CONCAT(STU.LAST_NAME, ', '), CONCAT(STU.FIRST_NAME, CONCAT(' ', STU.MIDDLE_NAME))) AS STUDENTNAME, STU.GRADE AS GRADE, STU.EXT_PIN1 AS STUDENTIDNUMBER, STU.EXT_PIN2 AS STUDENTIDNUMBER2, STU.TEST_PURPOSE AS TESTPURPOSE, STU.CREATED_BY AS CREATEDBY, NVL(STU.OUT_OF_SCHOOL, 'No') AS OUTOFSCHOOL FROM STUDENT STU WHERE STU.STUDENT_ID = ?";
 	private static final String GET_CUST_ORG_HIGR = "SELECT DISTINCT node.org_node_id            AS orgnodeid,                node.customer_id            AS customerid,                node.org_node_category_id   AS orgnodecategoryid,                node.org_node_name          AS orgnodename,                node.ext_qed_pin            AS extqedpin,                node.ext_elm_id             AS extelmid,                node.ext_org_node_type      AS extorgnodetype,                node.org_node_description   AS orgnodedescription,                node.created_by             AS createdby,                node.created_date_time      AS createddatetime,                node.updated_by             AS updatedby,                node.updated_date_time      AS updateddatetime,                node.activation_status      AS activationstatus,                node.data_import_history_id AS dataimporthistoryid,                node.parent_state           AS parentstate,                node.parent_region          AS parentregion,                node.parent_county          AS parentcounty,                node.parent_district        AS parentdistrict,                node.org_node_code          AS orgnodecode,                ona.number_of_levels        AS numberoflevels,                cat.category_name           AS orgtype  FROM org_node          node,       org_node_category cat,       org_node_ancestor ona,       org_node_student  ons,       test_roster    tr WHERE ona.ancestor_org_node_id = node.org_node_id   AND ona.org_node_id = ons.org_node_id   AND ons.org_node_id = tr.Org_Node_Id   AND tr.student_id  = ?   AND tr.test_roster_id = ?   AND node.org_node_id NOT IN (1, 2)   AND cat.org_node_category_id = node.org_node_category_id /*AND ons.activation_status = 'AC'*/ AND ons.student_id = tr.student_id ORDER BY ona.number_of_levels DESC";
 	private static final String GET_ROSTER_LIST_FOR_STUDENT = "select t.test_roster_id as rosterId    from test_roster t   where t.student_id = ?";
 	private static final String GET_STUDENT_DEMO = "SELECT  s.item_set_form AS fldtestform, t.form_assignment AS testform     , ta.product_id AS prodid              FROM student_item_set_status st,                        item_set                s,                        item_set_parent         ip,                        item_set                ipp,test_roster t,    test_admin              ta              WHERE st.test_roster_id =  t.test_roster_id                    AND s.item_set_id = st.item_set_id                    AND ip.item_set_id = s.item_set_id                    AND ipp.item_set_id = ip.parent_item_set_id                    AND s.SAMPLE = 'F'                    AND t.test_roster_id = ?        AND ta.test_admin_id = t.test_admin_id            AND ROWNUM = 1 ";
@@ -147,6 +148,32 @@ public class PrismWebServiceDBUtility {
 			populateStudentBioTO(rs, std);
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.getStudentBio() method to execute query : \n " +  GET_STUDENT_BIO);
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return std;
+	}
+	
+	/**
+	 * Get Student Bio Information for Second Edition
+	 * @param studentId
+	 * @return std (StudentBioTO)
+	 */
+	public static StudentBioTO getStudentBioSecondEdition(java.lang.Integer studentId){
+		
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		StudentBioTO std = new StudentBioTO();
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_STUDENT_BIO_SEC_EDITION);
+			pst.setLong(1, studentId);
+			rs = pst.executeQuery();
+			populateStudentBioTOSecondEdition(rs, std);
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getStudentBioSecondEdition() method to execute query : \n " +  GET_STUDENT_BIO_SEC_EDITION);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -241,8 +268,14 @@ public class PrismWebServiceDBUtility {
 					demoTOTstFrm.setDemovalue(PrismWebServiceConstant.ATestFormStr);
 				}else if(testForm != null && testForm.startsWith("B")){
 					demoTOTstFrm.setDemovalue(PrismWebServiceConstant.BTestFormStr);
-				}else{
+				}else if(testForm != null && testForm.startsWith("C")){
 					demoTOTstFrm.setDemovalue(PrismWebServiceConstant.CTestFormStr);
+				}else if(testForm != null && testForm.startsWith("D")){
+					demoTOTstFrm.setDemovalue(PrismWebServiceConstant.DTestFormStr);
+				}else if(testForm != null && testForm.startsWith("E")){
+					demoTOTstFrm.setDemovalue(PrismWebServiceConstant.ETestFormStr);
+				}else if(testForm != null && testForm.startsWith("F")){
+					demoTOTstFrm.setDemovalue(PrismWebServiceConstant.FTestFormStr);
 				}
 				demoList.add(demoTOTstFrm);
 				
@@ -1820,6 +1853,27 @@ public class PrismWebServiceDBUtility {
 			std.setDataChanged(true);
 		}
 		
+	}
+	
+	/**
+	 * Populate the Student TO
+	 * @param rs
+	 * @param std
+	 * @throws SQLException 
+	 */
+	private static void populateStudentBioTOSecondEdition(ResultSet rs, StudentBioTO std) throws SQLException, ParseException {
+		while(rs.next()){
+			std.setLastName("");
+			std.setFirstName("");
+			std.setMiddleInit("");
+			std.setGender("");
+			std.setGrade(rs.getString("grade"));
+			std.setChrnlgclAge("");
+			std.setBirthDate("");
+			std.setExamineeId(rs.getString("studentIdNumber"));
+			std.setOasStudentId(rs.getString("id"));
+			std.setDataChanged(true);
+		}
 	}
 
 	/**
