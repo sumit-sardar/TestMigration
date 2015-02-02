@@ -52,9 +52,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTADMIN AS
 			TA.Test_Catalog_Id oasTestCatalogId,
 			TA.TEST_ADMIN_NAME name,
 			PDT.PRODUCT_NAME productName,
-			TO_CHAR(TA.Login_Start_Date, 'YYYY-MM-DD') startDate,
+			TO_CHAR(TA.Login_Start_Date, 'YYYY-MM-DD hh24:mi:ss') startDate,
 			TO_CHAR(TA.Daily_Login_Start_Time, 'YYYY-MM-DD hh24:mi:ss') startHour,
-			TO_CHAR(TA.Login_End_Date, 'YYYY-MM-DD') endDate,
+			TO_CHAR(TA.Login_End_Date, 'YYYY-MM-DD hh24:mi:ss') endDate,
 			TO_CHAR(TA.Daily_Login_End_Time, 'YYYY-MM-DD hh24:mi:ss') endHour			
 		FROM Test_Admin TA, 
 			 Product PDT 
