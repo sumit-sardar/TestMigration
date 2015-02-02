@@ -184,6 +184,7 @@ public class TSScorer extends STScorer {
     }
     
     public void onEvent(ResponseReceivedEvent event){
+    	super.onEvent(event);
     	StudentScoreSummaryData summaryData = getResultHolder().getStudentScoreSummaryData();
     	StudentItemScoreData itemData = getResultHolder().getStudentItemScoreData();
     	CurriculumData currData = getResultHolder().getCurriculumData();
