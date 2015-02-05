@@ -21,10 +21,12 @@ end;
 DELETE FROM BMTSYNC_CUSTOMER;
 
 INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES 
-(7496,'INDIANA', '');
+(7496,'INDIANA', 'http://insync-bmt.prod.ec2-ctb.com/');
 
 INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES 
-(21264, 'GEORGIA', '');
+(21264, 'GEORGIA', 'http://gasync-bmt.prod.ec2-ctb.com/');
+
+COMMIT;
 
 
 SET TERMOUT ON
