@@ -228,6 +228,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_Students AS
 		      WHERE Org_Node_Id IN (
 		        SELECT Org_Node_Id FROM Org_Node_Student ONS
 		        WHERE ONS.Customer_Id = OND.CUSTOMER_ID AND
+				    ONS.Activation_Status = 'AC' AND 
 		        	ONS.STUDENT_ID = pStudentID )
 		   ) 
         UNION
