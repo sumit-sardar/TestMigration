@@ -13,7 +13,6 @@ import com.ctb.lexington.db.data.StsTestResultFactDetails;
 import com.ctb.lexington.db.data.StudentScoreSummaryData;
 import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
 import com.ctb.lexington.db.data.StudentTestData;
-import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCSecObjFactMapper;
@@ -26,7 +25,6 @@ public class StudentObjectiveScoresController {
     private StudentTestData testData;
     private AdminData adminData;
     private ContextData contextData;
-    //private IrsTASCPrimObjFactMapper poMapper;
     private IrsTASCSecObjFactMapper soMapper;
 
     public StudentObjectiveScoresController(Connection conn, StsTestResultFactData factData, StudentScoreSummaryData studentScoreSummaryData, CurriculumData currData, StudentTestData testData, AdminData adminData, ContextData contextData) {
@@ -36,7 +34,6 @@ public class StudentObjectiveScoresController {
         this.testData = testData;
         this.adminData = adminData;
         this.contextData = contextData;
-        //poMapper = new IrsTASCPrimObjFactMapper(conn);
         soMapper = new IrsTASCSecObjFactMapper(conn);
     }
 

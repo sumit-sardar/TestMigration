@@ -1,7 +1,6 @@
 package com.ctb.lexington.db.irsdata.irstsdata;
 
 import com.ctb.lexington.db.record.Persistent;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**

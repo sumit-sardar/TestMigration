@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.db.data.CurriculumData;
 import com.ctb.lexington.db.data.StsTestResultFactData;
 import com.ctb.lexington.db.data.StsTestResultFactDetails;
@@ -25,7 +24,6 @@ import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
 import com.ctb.lexington.domain.score.event.ContentAreaDerivedScoreEvent;
 import com.ctb.lexington.domain.score.event.ContentAreaNumberCorrectEvent;
-import com.ctb.lexington.domain.score.event.ObjectiveRawScoreEvent;
 import com.ctb.lexington.domain.score.event.PrimaryObjectivePercentMasteryEvent;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.SecondaryObjectiveDerivedScoreEvent;

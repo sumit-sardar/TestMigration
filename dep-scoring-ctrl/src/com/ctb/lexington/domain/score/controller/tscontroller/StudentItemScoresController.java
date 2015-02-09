@@ -1,25 +1,20 @@
 package com.ctb.lexington.domain.score.controller.tscontroller;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
-import com.ctb.lexington.db.data.CurriculumData.Item;
-import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.StudentItemResponseData;
-import com.ctb.lexington.db.data.StudentItemResponseDetails;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Iterator;
-
 import com.ctb.lexington.db.data.StudentItemScoreData;
 import com.ctb.lexington.db.data.StudentItemScoreDetails;
 import com.ctb.lexington.db.data.StudentTestData;
-import com.ctb.lexington.db.irsdata.irslldata.IrsLLItemFactData;
+import com.ctb.lexington.db.data.CurriculumData.Item;
+import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCItemFactMapper;
-import com.ctb.lexington.db.mapper.StudentItemScoreMapper;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 
 public class StudentItemScoresController {
     private StudentItemScoreData studentItemScoreData;

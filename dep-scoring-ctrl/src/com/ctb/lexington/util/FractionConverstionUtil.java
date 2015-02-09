@@ -26,12 +26,12 @@ public class FractionConverstionUtil {
 							.substring(0,nonRoundedString.indexOf("/")))
 							/ Double.parseDouble(nonRoundedString.substring(nonRoundedString
 									.indexOf("/")+1));
-					System.out.println("Input:"+nonRoundedString);
-					System.out.println("InitialValue:"+initialValue);
-	//				DecimalFormat df=new DecimalFormat("###.#####");				// Fix for defect #76092
+					//System.out.println("Input:"+nonRoundedString);
+					//System.out.println("InitialValue:"+initialValue);
+					//DecimalFormat df=new DecimalFormat("###.#####");		// Fix for defect #76092
 					DecimalFormat df=new DecimalFormat("###.####");
 					String roundedString=df.format(initialValue);
-					System.out.println("Rounded Value:"+roundedString);
+					//System.out.println("Rounded Value:"+roundedString);
 					return roundedString;
 				}
 			}catch(Exception e){

@@ -1,20 +1,15 @@
 package com.ctb.lexington.domain.score.controller.tscontroller;
 
-import com.ctb.lexington.db.data.ContextData;
-import com.ctb.lexington.db.data.CurriculumData;
-import com.ctb.lexington.db.data.CurriculumData.Composite;
-import com.ctb.lexington.db.data.StsTotalStudentScoreData;
-import com.ctb.lexington.db.data.StsTotalStudentScoreDetail;
 import java.sql.Connection;
-
-import com.ctb.lexington.db.data.StudentPredictedScoresData;
-import com.ctb.lexington.db.irsdata.irslldata.IrsLLContentAreaFactData;
-import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData;
-import com.ctb.lexington.db.mapper.tsmapper.IrsTASCCompositeFactMapper;
-import com.ctb.lexington.db.mapper.StudentPredictedScoresMapper;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import com.ctb.lexington.db.data.ContextData;
+import com.ctb.lexington.db.data.CurriculumData;
+import com.ctb.lexington.db.data.StsTotalStudentScoreData;
+import com.ctb.lexington.db.data.StsTotalStudentScoreDetail;
+import com.ctb.lexington.db.data.CurriculumData.Composite;
+import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData;
+import com.ctb.lexington.db.mapper.tsmapper.IrsTASCCompositeFactMapper;
 
 /**
  * @author ncohen

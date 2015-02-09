@@ -1,25 +1,20 @@
 package com.ctb.lexington.domain.score.controller.tscontroller;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
-import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.data.StsTestResultFactData;
 import com.ctb.lexington.db.data.StsTestResultFactDetails;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Iterator;
-
 import com.ctb.lexington.db.data.StudentSubtestScoresData;
 import com.ctb.lexington.db.data.StudentSubtestScoresDetails;
 import com.ctb.lexington.db.data.StudentTestData;
-import com.ctb.lexington.db.irsdata.irslldata.IrsLLContentAreaFactData;
+import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData;
-import com.ctb.lexington.db.mapper.IrsContentAreaDimMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCContentAreaFactMapper;
-import com.ctb.lexington.db.mapper.StudentSubtestScoresMapper;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 
 public class StudentContentAreaScoresController {
     private StudentSubtestScoresData subtestData;
