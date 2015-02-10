@@ -53,6 +53,7 @@ import com.ctb.tms.exception.testDelivery.TestSessionInProgressException;
 import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.util.Constants;
+import com.ctb.tms.util.TabeAdaptiveExcludedItems;
 import com.ctb.tms.web.listener.TestDeliveryContextListener;
 
 public class OASOracleSource implements OASRDBSource
@@ -455,11 +456,20 @@ public class OASOracleSource implements OASRDBSource
 	            		subtest.addNewExternalId().setValue(BigInteger.valueOf(priors[i].getExternalId()));
 	            		subtest.addNewPriorAbility().setValue(BigInteger.valueOf(priors[i].getAbilityScore()));
 	            		PriorItemHistory history = subtest.addNewPriorItemHistory();
+	            		
 	            		for(int j=0;j<priors[i].getPriorItems().length;j++) {
 	            			CATPriorItemData item = priors[i].getPriorItems()[j];
-	            			PriorItem priorItem = history.addNewPriorItem();
-	            			priorItem.setItemId(item.getItemId());
-	            			priorItem.setExternalId(item.getExternalId());
+	            			
+	            			if (TabeAdaptiveExcludedItems.isItemExcluded((item.getItemId()))) {
+	            				//TODO Fix: filtering out the extra items
+	            				logger.warn(item.getItemId()+" is excluded for testRosterId="+testRosterId
+	            						+" due to item discrepancy between the content (items) in OAS and CAT");
+	            			}
+	            			else {
+		            			PriorItem priorItem = history.addNewPriorItem();
+		            			priorItem.setItemId(item.getItemId());
+		            			priorItem.setExternalId(item.getExternalId());
+	            			}
 	            		}
 	            	}
 	            }
