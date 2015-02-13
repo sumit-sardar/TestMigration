@@ -26,6 +26,13 @@ INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES
 INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES 
 (21264, 'GEORGIA', 'http://gasync-bmt.prod.ec2-ctb.com/');
 
+
+INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES 
+(22446,'CTBQA ISTEP 2015', 'http://insync-bmt.prod.ec2-ctb.com/');
+
+INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES 
+(22465, 'CTBQA GA 2015', 'http://gasync-bmt.prod.ec2-ctb.com/');
+
 COMMIT;
 
 
