@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +21,7 @@ import com.mhe.ctb.oas.BMTSync.model.StudentRosterResponse;
 import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
 import com.mhe.ctb.oas.BMTSync.rest.CreateAssignmentResponse;
 import com.mhe.ctb.oas.BMTSync.spring.dao.TestAssignmentDAO;
+import com.mhe.ctb.oas.BMTSync.spring.jms.TestAssignmentMessageType;
 
 public class AssignmentRestClient {
 	static private Logger logger = Logger.getLogger(AssignmentRestClient.class);
@@ -77,6 +80,83 @@ public class AssignmentRestClient {
 			logger.error("[TestAssignment] Error in AssignmentRestClient class : "+e.getMessage(), e);
 			updateAssignmentStatus(testAdminId, studentId, false, "999", e.getMessage());
 		}
+		return assignmentResponse;
+	}
+	
+	/*
+	 * Method to consume a assignment web service
+	 */	
+	@RequestMapping(method=RequestMethod.POST, produces="application/json")	
+	public @ResponseBody CreateAssignmentResponse postStudentAssignment (final List<TestAssignmentMessageType> messages) {
+		logger.info("Assigment Rest Client API called");
+		
+		CreateAssignmentResponse assignmentResponse = null;
+		
+		if (CollectionUtils.isEmpty(messages)) {
+			logger.error("No messages sent to REST client!");
+			return null;
+		}
+		
+		final Map<Integer, Map<Integer, TestAssignment>> assignmentMap = new HashMap<Integer, Map<Integer, TestAssignment>>();
+		for (final TestAssignmentMessageType message : messages) {
+			try {
+				// Connects to OAS DB and return students related data 
+				final TestAssignment dbTestAssignment = testAssignmentDAO.getTestAssignment(message.getTestAdminId(), message.getStudentId());
+				Map<Integer, TestAssignment> testAssignments = assignmentMap.get(dbTestAssignment.getOasCustomerId());
+				if (testAssignments == null) {
+					testAssignments = new HashMap<Integer, TestAssignment>();
+				}
+				TestAssignment storedTestAssignment = testAssignments.get(message.getTestAdminId());
+				if (storedTestAssignment == null) {
+					storedTestAssignment = dbTestAssignment;
+				} else {
+					storedTestAssignment.getRoster().addAll(dbTestAssignment.getRoster());
+				}
+				testAssignments.put(message.getTestAdminId(), storedTestAssignment);
+				assignmentMap.put(message.getCustomerId(), testAssignments);
+			} catch (final UnknownTestAssignmentException utae) {
+				logger.error(String.format("[TestAssignment] Unknown test assignment. [testAdminId=%d,studentId=%d]",
+						message.getTestAdminId(), message.getStudentId()));
+				updateAssignmentStatus(message.getTestAdminId(), message.getStudentId(), false, "999", "Unknown test assignment.");
+			}
+		}
+
+		final Set<Integer> customerIds = assignmentMap.keySet();
+		for (final Integer customerId : customerIds) {
+			final String endpoint = endpointSelector.getEndpoint(customerId);
+			if (endpoint == null) {
+				logger.error("Endpoint not defined for customerId! [customerId=" + customerId + "]");
+			} else {
+				final Map<Integer, TestAssignment> requests = assignmentMap.get(customerId);
+				for (final Integer testAdminId : requests.keySet()) {
+					TestAssignment assignment = requests.get(testAdminId);
+					logger.info("[TestAssignment] Request json to BMT: "+assignment.toJson());
+					logger.info("[TestAssignment] Transmiting json to endpoint " + endpoint+RestURIConstants.POST_ASSIGNMENTS);
+					try {
+				        assignmentResponse = restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
+				        		assignment, CreateAssignmentResponse.class);
+				        if (assignmentResponse != null) {
+				        	logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
+				        } 
+				        //Updates the BMTSYN_Assignment_Status table, with success or failure
+			        	processResponses(assignment, assignmentResponse, true);
+					} catch (RestClientException rce) {
+						logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);			
+			        	for (final StudentRoster roster : assignment.getRoster()) {
+			        		updateAssignmentStatus(assignment.getOasTestAdministrationID(), Integer.valueOf(roster.getOasStudentid()),
+			        				false, "999", rce.getMessage());
+			        	}
+					} catch (final Exception e) {
+						logger.error("[TestAssignment] Error in AssignmentRestClient class : "+e.getMessage(), e);
+			        	for (final StudentRoster roster : assignment.getRoster()) {
+			        		updateAssignmentStatus(assignment.getOasTestAdministrationID(), Integer.valueOf(roster.getOasStudentid()),
+			        				false, "999", e.getMessage());
+			        	}
+					}
+				}
+			}
+		}
+
 		return assignmentResponse;
 	}
 	

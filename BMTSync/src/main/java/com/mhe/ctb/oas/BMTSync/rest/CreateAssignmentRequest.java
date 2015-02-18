@@ -1,5 +1,8 @@
 package com.mhe.ctb.oas.BMTSync.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,20 +13,26 @@ import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
 public class CreateAssignmentRequest {
 	private static final Logger logger = Logger.getLogger(CreateAssignmentRequest.class);
 	
-	private TestAssignment testAssignment;
+	private List<TestAssignment> _testAssignments;
 	
-	
-	public TestAssignment getTestAssignment() {
-		return testAssignment;
+	public CreateAssignmentRequest() {
+		_testAssignments = new ArrayList<TestAssignment>();
 	}
-	@JsonProperty(value="testAssignment", required=true)
-	public void setTestAssignment(TestAssignment testAssignment) {
-		this.testAssignment = testAssignment;
+	
+	public List<TestAssignment> getTestAssignments() {
+		return _testAssignments;
+	}
+	
+	@JsonProperty(value="testAssignments", required=true)
+	public void addTestAssignment(TestAssignment testAssignment) {
+		_testAssignments.add(testAssignment);
 	}
 
-	
-	
-	
+	@JsonProperty(value="testAssignments", required=true)
+	public void addTestAssignments(List<TestAssignment> testAssignments) {
+		_testAssignments.addAll(testAssignments);
+	}
+		
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -33,6 +42,4 @@ public class CreateAssignmentRequest {
 			return null;
 		}
 	}	
-	
-	
 }

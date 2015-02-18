@@ -44,9 +44,7 @@ public class BMTTestAssignmentBlockingQueueWorker extends Thread {
 				logger.debug("No test assignment messages to post to BMT.");
 			} else {
 				logger.debug("Posting " + Integer.valueOf(messages.size()).toString() + " test assignment messages to BMT.");
-				for (final TestAssignmentMessageType message : messages) {
-					restClient.postStudentAssignment(message.getTestAdminId(), message.getStudentId());
-				}
+				restClient.postStudentAssignment(messages);
 			}
 		} catch (InterruptedException ie) {
 			logger.warn("Intentionally interrupted. Shutting down thread. ", ie);
