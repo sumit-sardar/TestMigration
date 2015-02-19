@@ -4,7 +4,6 @@
 	<comment></comment>
 	<projects>
 		<project>dep-base-ctrl</project>
-		<project>dep-download-mgr</project>
 		<project>dep-licensing-ctrl</project>
 		<project>dep-testadmin-ctrl</project>
 		<project>dep-usermgmt-ctrl</project>

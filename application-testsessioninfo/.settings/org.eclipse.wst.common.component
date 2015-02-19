@@ -5,9 +5,5 @@
         <dependent-module deploy-path="/" handle="module:/resource/web-testsessioninfo/web-testsessioninfo">
             <dependent-object>WebModule_1256248050577</dependent-object>
             <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="dep-download-mgr.jar" deploy-path="/" handle="module:/resource/dep-download-mgr/dep-download-mgr">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
     </wb-module>
 </project-modules>
