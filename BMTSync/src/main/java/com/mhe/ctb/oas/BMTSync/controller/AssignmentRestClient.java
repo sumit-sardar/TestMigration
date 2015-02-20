@@ -40,52 +40,6 @@ public class AssignmentRestClient {
 		restTemplate = new RestTemplate();
 	}
 
-	/*
-	 * Method to consume a assignment web service
-	 */	
-	@RequestMapping(method=RequestMethod.POST, produces="application/json")	
-	public @ResponseBody CreateAssignmentResponse postStudentAssignment (final int testAdminId, final int studentId) {
-		logger.info("Assigment Rest Client API called");
-		
-		TestAssignment testAssignment = null;
-		CreateAssignmentResponse assignmentResponse = null;
-
-		try {
-			// Connects to OAS DB and return students related data 
-			testAssignment = testAssignmentDAO.getTestAssignment(testAdminId, studentId);	
-				
-			final String endpoint = endpointSelector.getEndpoint(testAssignment.getOasCustomerId());
-			if (endpoint == null) {
-				logger.error("Endpoint not defined for customerId! [customerId=" + testAssignment.getOasCustomerId() + "]");
-			} else {
-				logger.info("[TestAssignment] Request json to BMT: "+testAssignment.toJson());
-				logger.info("[TestAssignment] Transmiting json to endpoint " + endpointSelector.getEndpoint(testAssignment.getOasCustomerId())
-						+RestURIConstants.POST_ASSIGNMENTS);
-		        assignmentResponse = restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
-		        		testAssignment, CreateAssignmentResponse.class);
-		        if (assignmentResponse != null) {
-		        	logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
-		        } 
-		        //Updates the BMTSYN_Assignment_Status table, with success or failure
-		        processResponses(testAssignment, assignmentResponse, true);
-			}
-		} catch (RestClientException rce) {
-			logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);			
-			updateAssignmentStatus(testAdminId, studentId, false, "999", rce.getMessage());
-		} catch (final UnknownTestAssignmentException utae) {
-			logger.error(String.format("[TestAssignment] Unknown test assignment. [testAdminId=%d,studentId=%d]",
-					testAdminId, studentId));
-			updateAssignmentStatus(testAdminId, studentId, false, "999", "Unknown test assignment.");
-		} catch (final Exception e) {
-			logger.error("[TestAssignment] Error in AssignmentRestClient class : "+e.getMessage(), e);
-			updateAssignmentStatus(testAdminId, studentId, false, "999", e.getMessage());
-		}
-		return assignmentResponse;
-	}
-	
-	/*
-	 * Method to consume a assignment web service
-	 */	
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")	
 	public @ResponseBody CreateAssignmentResponse postStudentAssignment (final List<TestAssignmentMessageType> messages) {
 		logger.info("Assigment Rest Client API called");

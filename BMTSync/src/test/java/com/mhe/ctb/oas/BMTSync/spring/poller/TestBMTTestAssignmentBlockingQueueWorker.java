@@ -1,6 +1,6 @@
 package com.mhe.ctb.oas.BMTSync.spring.poller;
 
-import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,16 +46,17 @@ public class TestBMTTestAssignmentBlockingQueueWorker {
 		response.setSuccessCount(1);
 		response.setFailureCount(0);
 		when(queue.dequeue()).thenReturn(messageList);
-		when(restClient.postStudentAssignment(message.getTestAdminId(), message.getStudentId())).thenReturn(response);
+		when(restClient.postStudentAssignment(messageList)).thenReturn(response);
 		worker.pollForWork();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testBMTTestAssignmentBlockingQueueWorker_successWithoutMessage() throws Exception {
 		final List<TestAssignmentMessageType> messageList = new ArrayList<TestAssignmentMessageType>();
 		when(queue.dequeue()).thenReturn(messageList);
 		worker.pollForWork();
-		verify(restClient, times(0)).postStudentAssignment(anyInt(), anyInt());
+		verify(restClient, times(0)).postStudentAssignment(any(List.class));
 	}
 	
 	@Test
@@ -63,17 +64,19 @@ public class TestBMTTestAssignmentBlockingQueueWorker {
 		worker.shouldStop();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testBMTTestAssignmentBlockingQueueWorker_failInterrupted() throws Exception {
 		when(queue.dequeue()).thenThrow(new InterruptedException("Interruption!"));
 		worker.pollForWork();
-		verify(restClient, times(0)).postStudentAssignment(anyInt(), anyInt());
+		verify(restClient, times(0)).postStudentAssignment(any(List.class));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testBMTTestAssignmentBlockingQueueWorker_failOtherException() throws Exception {
 		when(queue.dequeue()).thenThrow(new RuntimeException("Boo!"));
 		worker.pollForWork();
-		verify(restClient, times(0)).postStudentAssignment(anyInt(), anyInt());
+		verify(restClient, times(0)).postStudentAssignment(any(List.class));
 	}
 }
