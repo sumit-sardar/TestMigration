@@ -41,7 +41,7 @@ public class BMTTestAdminBlockingQueueWorker extends Thread {
 			final List<TestAdminMessageType> messages = queue.dequeue();
 		
 			if (CollectionUtils.isEmpty(messages)) {
-				logger.debug("No test assignment messages to post to BMT.");
+				logger.debug("No test admin messages to post to BMT.");
 			} else {
 				logger.debug("Posting " + Integer.valueOf(messages.size()).toString() + " test admin messages to BMT.");
 				for (final TestAdminMessageType message : messages) {
