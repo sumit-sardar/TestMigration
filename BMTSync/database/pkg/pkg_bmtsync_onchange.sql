@@ -82,6 +82,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_ONCHANGE AS
 	    -- INSERT/UPDATE THE RECORD IN BMTSYNC_STUDENT_STATUS TABLE
 		PKG_BMTSYNC_Students.AddUpdateStudentAPIStatus(
 	    pStudentID,
+	    pCustomerID,
 		'BMT',
 		pStatus);	
 	END Student;

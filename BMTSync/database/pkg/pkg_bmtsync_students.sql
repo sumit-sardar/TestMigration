@@ -60,6 +60,7 @@ CREATE OR REPLACE PACKAGE PKG_BMTSYNC_Students AS
 	*/
 	PROCEDURE AddUpdateStudentAPIStatus(
 	    pStudentID     IN VARCHAR2,
+	    pCustomerID    IN VARCHAR2,
 		pAppName       IN VARCHAR2,
 		pExportStatus  IN VARCHAR2);		
 
@@ -370,6 +371,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_Students AS
 	*/
 	PROCEDURE AddUpdateStudentAPIStatus(
 	    pStudentID     IN VARCHAR2,
+	    pCustomerID    IN VARCHAR2,
 		pAppName       IN VARCHAR2,
 		pExportStatus  IN VARCHAR2) AS
 		
@@ -399,8 +401,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_Students AS
     EXCEPTION 
 	WHEN NO_DATA_FOUND THEN
 	    --DBMS_OUTPUT.PUT_LINE('Insert');
-	    INSERT INTO BMTSYNC_Student_Status (Student_ID, App_Name, Exported_ON, Export_Status, Error_Code, Error_Message, Next_Retry_DateTime)
-	       VALUES (pStudentID, pAppName, SYSDATE, pExportStatus, '', '', SYSDATE);
+	    INSERT INTO BMTSYNC_Student_Status
+	    	(Student_ID, Customer_ID, App_Name, Exported_ON, Export_Status, Error_Code, Error_Message, Next_Retry_DateTime)
+	    VALUES
+	    	(pStudentID, pCustomerID, pAppName, SYSDATE, pExportStatus, '', '', SYSDATE);
 
     WHEN OTHERS THEN	
 		RAISE_APPLICATION_ERROR(-20001, 'PKG_Students.AddUpdateStudentAPIStatus FAILURE :' || SQLERRM(SQLCODE));
