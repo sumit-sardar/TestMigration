@@ -1604,6 +1604,7 @@ public class UploadOperationController extends PageFlowController {
 		boolean isOKCustomer = false;
 		boolean isGACustomer = false;
 		boolean isTascCustomer = false;
+		boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
 		boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
 		boolean hasUploadConfig = false;
 		boolean hasDownloadConfig = false;
@@ -1739,6 +1740,11 @@ public class UploadOperationController extends PageFlowController {
 				isTascCustomer = true;
 				continue;
 			}
+ 			//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASCReadiness_Customer")){
+				isTASCReadinessCustomer = true;
+				continue;
+            }
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
 					"WV_Customer")
 			// [IAA]&& cc.getDefaultValue().equals("T")) {
@@ -1781,7 +1787,8 @@ public class UploadOperationController extends PageFlowController {
 								(hasResetTestSession && hasResetTestSessionForAdmin)
 										&& ((isOKCustomer && isTopLevelAdmin)
 												|| (laslinkCustomer && (adminUser || adminCoordinatorUser))
-												|| (isGACustomer && adminUser) || (isTascCustomer && isTopLevelAdmin))));
+												|| (isGACustomer && adminUser) || (isTascCustomer && isTopLevelAdmin)
+												|| (isTASCReadinessCustomer && isTopLevelAdmin))));
 		// this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this
 				.getSession()

@@ -5400,7 +5400,7 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)|| (this.isTASCCustomer && isTopLevelAdmin))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)|| (this.isTASCCustomer && isTopLevelAdmin) || (this.isTASCReadinessCustomer && isTopLevelAdmin))));
 		
 		this.getSession().setAttribute("isTascCustomer", new Boolean(this.isTASCCustomer));
 		this.getSession().setAttribute("isTASCReadinessCustomer", new Boolean(this.isTASCReadinessCustomer));

@@ -3296,6 +3296,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTascCustomer = false;
+    	boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean laslinkCustomer = false;
     	boolean hasLockHierarchyEdit = false;
@@ -3448,6 +3449,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 						cc.getDefaultValue().equals("T")){
 					hasBlockStudentDeletion = Boolean.TRUE;
 				}
+	 			//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASCReadiness_Customer")){
+					isTASCReadinessCustomer = true;
+					continue;
+	            }
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
 			this.isTASC = isTascCustomer;
@@ -3515,7 +3521,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		//System.out.println(laslinkCustomer);
      	//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
-     	this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin))));
+     	this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin) || (isTASCReadinessCustomer && isTopLevelAdmin))));
 		
      	//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));

@@ -83,6 +83,7 @@ public class ResetOperationController extends PageFlowController {
     
     private boolean isLasLinkCustomer = false;
     private boolean isTASCCustomer = false;
+    private boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
     private boolean isEngradeCustomer = false;
     public static String CONTENT_TYPE_JSON = "application/json";
     
@@ -1489,6 +1490,7 @@ public class ResetOperationController extends PageFlowController {
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTascCustomer = false;
+    	boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean hasUploadConfig = false;
     	boolean hasDownloadConfig = false;
@@ -1596,6 +1598,11 @@ public class ResetOperationController extends PageFlowController {
 				isTascCustomer = true;
 				continue;
             }
+ 			//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASCReadiness_Customer")){
+				isTASCReadinessCustomer = true;
+				continue;
+            }
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("WV_Customer")
 					//[IAA]&& cc.getDefaultValue().equals("T")) {
             		){
@@ -1620,6 +1627,8 @@ public class ResetOperationController extends PageFlowController {
 		}
 		
 		this.isTASCCustomer = isTascCustomer;
+		this.isTASCReadinessCustomer = isTASCReadinessCustomer;//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
+		
 		if(isWVCustomer)
 		{
 			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig));
@@ -1631,7 +1640,7 @@ public class ResetOperationController extends PageFlowController {
 			this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
 		}
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin) || (isTASCReadinessCustomer && isTopLevelAdmin))));
 		this.getSession().setAttribute("hasAuditingResetTestSession", new Boolean(hasResetTestSession && (laslinkCustomer && (adminUser||adminCoordinatorUser))));
 		getConfigStudentLabel(customerConfigs);
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);

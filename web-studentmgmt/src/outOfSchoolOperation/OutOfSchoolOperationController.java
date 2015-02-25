@@ -503,6 +503,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTascCustomer = false;
+    	boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean laslinkCustomer = false;
     	boolean hasDataExportVisibilityConfig = false;
@@ -625,6 +626,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 					isTascCustomer = true;
 					continue;
 	            }
+	 			//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASCReadiness_Customer")){
+					isTASCReadinessCustomer = true;
+					continue;
+	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("WV_Customer")
 						//[IAA]&& cc.getDefaultValue().equals("T")) {
 	            		){
@@ -671,7 +677,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin) || (isTASCReadinessCustomer && isTopLevelAdmin))));
 
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		System.out.println(laslinkCustomer);

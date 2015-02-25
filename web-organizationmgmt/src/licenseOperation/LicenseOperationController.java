@@ -1460,6 +1460,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTascCustomer = false;
+    	boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean hasUploadConfig = false;
     	boolean hasDownloadConfig = false;
@@ -1561,6 +1562,11 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 				isTascCustomer = true;
 				continue;
             }
+ 			//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASCReadiness_Customer")){
+				isTASCReadinessCustomer = true;
+				continue;
+            }
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("WV_Customer")
 					//[IAA]&& cc.getDefaultValue().equals("T")) {
             		){
@@ -1597,7 +1603,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
 
 		
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin) || (isTASCReadinessCustomer && isTopLevelAdmin))));
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//show Account file download link      	

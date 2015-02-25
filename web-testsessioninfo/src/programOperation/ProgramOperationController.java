@@ -1451,6 +1451,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasLicenseConfiguration= false;
     	boolean TABECustomer = false;
     	boolean TASCCustomer = false;
+    	boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
     	String roleName = this.user.getRole().getRoleName();
     	boolean adminCoordinatorUser = isAdminCoordinatorUser();
     	boolean hasResetTestSession = false;
@@ -1536,6 +1537,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")) {
 					TASCCustomer = true;
 	            	continue;
+	            }
+	 			//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASCReadiness_Customer")){
+					isTASCReadinessCustomer = true;
+					continue;
 	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
 	            		cc.getDefaultValue().equals("T")	) {
@@ -1633,7 +1639,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin) || (isTASCReadinessCustomer && isTopLevelAdmin))));
 	 
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));

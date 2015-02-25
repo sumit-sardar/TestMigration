@@ -285,6 +285,7 @@ public class UserAccountFileOperationController extends PageFlowController{
 		boolean laslinkCustomer = false;
 		boolean tabeCustomer = false;
 		boolean TASCCustomer = false;
+		boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
 		boolean adminUser = isAdminUser();
 		boolean adminCoordinatorUser = isAdminCoordinatorUser();
     	boolean hasUploadConfig = false;
@@ -342,6 +343,11 @@ public class UserAccountFileOperationController extends PageFlowController{
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")) {
 					TASCCustomer = true;
 	            	continue;
+	            }
+	 			//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASCReadiness_Customer")){
+					isTASCReadinessCustomer = true;
+					continue;
 	            }
 				// For Upload Download
 				// For Upload Download
@@ -470,7 +476,7 @@ public class UserAccountFileOperationController extends PageFlowController{
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin) || (isTASCReadinessCustomer && isTopLevelAdmin))));
 
 
 		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);

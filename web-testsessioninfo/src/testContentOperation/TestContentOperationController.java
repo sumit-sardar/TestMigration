@@ -917,7 +917,7 @@ public class TestContentOperationController extends PageFlowController {
     	boolean hasBlockUserManagement = false;
     	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
-    	
+    	boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
 		//**[IAA] Proctor users should not see PRISM reports
 		boolean TASCProctor = false;
 		boolean isWVCustomer = false;
@@ -1016,6 +1016,11 @@ public class TestContentOperationController extends PageFlowController {
         		this.isEngradeCustomer = true;
         		continue;
             }
+ 			//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASCReadiness_Customer")){
+				isTASCReadinessCustomer = true;
+				continue;
+            }
 		}
 		if (isWVCustomer)
 		{
@@ -1044,7 +1049,7 @@ public class TestContentOperationController extends PageFlowController {
 		}
 		
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin) || (isTASCReadinessCustomer && isTopLevelAdmin))));
 		this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
