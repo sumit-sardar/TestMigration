@@ -139,9 +139,14 @@
 	function validateTASCSubtest(){
 		var isValid = true;
 		var numberOfRows = getVisibleRows("des_row_");
-		if(numberOfRows<2){
+		if(numberOfRows==0){
 			isValid=false;
-			setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noTASCSubtestMsg").val());
+			setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
+		}
+		else if(numberOfRows==1 && (document.getElementById('des_row_1').innerText.indexOf(TASC_BACKGROUND_QUESTIONS)!=-1)){
+				isValid=false;
+				setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noTASCSubtestMsg").val());
+			
 		}
 		return isValid;
 	}
@@ -931,7 +936,7 @@
 	    }
 	    
 	    if (chosenRow != null) {
-	        if (isFirstVisibleRow(chosenRow)||(isTASCProduct && isSecondVisibleRow(chosenRow)) || 
+	        if (isFirstVisibleRow(chosenRow)||(isTASCProduct && isSecondVisibleRow(chosenRow) && $("#selectedSubtestsTable td")[0].childNodes[1].data == TASC_BACKGROUND_QUESTIONS) || 
 	        								(isTASCReadinessProduct && isSecondVisibleRow(chosenRow) && $("#selectedSubtestsTable td")[0].childNodes[1].data == TASC_BACKGROUND_QUESTIONS)){ 
 	            moveUp.setAttribute("disabled", "true");
 	            if ($(moveUp).hasClass("ui-widget-header")) {
