@@ -52,7 +52,7 @@
 	    } else if(isTabeAdaptiveProduct ) {
 	    	isValidated = validationTABE_ADAPTIVE(tmpSelectedSubtests, false);
 	    } else if(isTASCProduct){
-	    	isValidated = validateTASCSubtest();
+	    	isValidated = validateTASCSubtest(tmpSelectedSubtests);
 	    }
 	    
 	    if(isLasLinksProduct){
@@ -136,19 +136,27 @@
 	    return - 1;
 	}
 	
-	function validateTASCSubtest(){
+	function validateTASCSubtest(subtests){
+
 		var isValid = true;
 		var numberOfRows = getVisibleRows("des_row_");
-		if(numberOfRows==0){
-			isValid=false;
-			setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
-		}
-		else if(numberOfRows==1 && (document.getElementById('des_row_1').innerText.indexOf(TASC_BACKGROUND_QUESTIONS)!=-1)){
-				isValid=false;
+		if (subtests == undefined || subtests == null || subtests.length == 0) {
+	        isValid = false;
+	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());  
+        }else{
+        	var hasTASCBackgroundQuestions = false;
+        	for(var i=0;i<subtests.length ; i++){
+        		if(subtests[i].subtestName == TASC_BACKGROUND_QUESTIONS){
+        			hasTASCBackgroundQuestions = true;
+        			break;
+        		}	
+        	}
+        	if(hasTASCBackgroundQuestions == true && numberOfRows<2){
+				isValid = false;
 				setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noTASCSubtestMsg").val());
-			
+			}
 		}
-		return isValid;
+     	return isValid;
 	}
 	
 	function validationTABE_ADAPTIVE (subtests , isForStudentMsm) { 
