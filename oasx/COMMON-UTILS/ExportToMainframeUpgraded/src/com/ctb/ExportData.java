@@ -113,11 +113,9 @@ public class ExportData {
 				System.exit(1);
 			} else {
 				if (Integer.parseInt(frameworkProductId) == 7500) {
-					/*new CreateFiles2ndEdition(isValidStartDate, isValidEndDate,
+					new CreateFiles2ndEdition(isValidStartDate, isValidEndDate,
 							extractSpanStartDate, extractSpanEndDate,
-							customerId, new Integer(frameworkProductId), MFid).writeToText();*/
-					logger.error("Sorry !! LAS Links 2nd Edition will be coming soon. Change the framework product ID\n");
-					System.exit(1);
+							customerId, new Integer(frameworkProductId), MFid).writeToText();
 				} else if (Integer.parseInt(frameworkProductId) == 7000) {
 					new CreateFile(isValidStartDate, isValidEndDate,
 							extractSpanStartDate, extractSpanEndDate,
