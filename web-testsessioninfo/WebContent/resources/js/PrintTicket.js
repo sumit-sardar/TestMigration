@@ -23,6 +23,7 @@ var leafParentOrgNodeIdPrint = "";
 var displayAccessCodeOnTicket = false;	//Changes for access code display in test ticket
 var printClassNameOnTicket = false;
 var displayMultipleAccessCode = false;
+var printSessionNameOnTicket = false;
 
 function printTTicket(element){
 	if (isButtonDisabled(element))
@@ -72,6 +73,7 @@ function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
 	url += "&displayAccess=" + displayAccessCodeOnTicket;
 	url += "&printClassName=" + printClassNameOnTicket;
 	url += "&displayMultipleAccessCode=" + displayMultipleAccessCode;
+	url += "&printSessionName=" + printSessionNameOnTicket;
 	anchor.href = url;
 	return anchor;
 }
@@ -139,7 +141,12 @@ function populateTestTicketTree() {
 									printClassNameOnTicket = true;
 								}	
 								else
-									$('#printClassNameMsg').hide();	
+									$('#printClassNameMsg').hide();
+							}
+							
+							var hasPrintSessionName = data.hasPrintSessionName;
+							if(hasPrintSessionName != undefined && hasPrintSessionName == true){
+								printSessionNameOnTicket = true;
 							}	
 						}
 						$("#ticktSearchheader").css("visibility","visible");	

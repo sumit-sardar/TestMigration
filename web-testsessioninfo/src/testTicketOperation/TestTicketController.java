@@ -185,6 +185,7 @@ public class TestTicketController extends PageFlowController
             String accessAllow = (String)getRequest().getParameter("displayAccess"); // changed for TABE BAUM - 028
             String printClassName = (String)getRequest().getParameter("printClassName");
             String multipleAccessAllow = (String)getRequest().getParameter("displayMultipleAccessCode");
+            String printSessionName = (String)getRequest().getParameter("printSessionName");
             //System.out.println("printClassName >> "+printClassName);
             
             Integer sessionId = new Integer(testAdminId); 
@@ -251,7 +252,8 @@ public class TestTicketController extends PageFlowController
                                 printClassName,
                                 new Boolean(multipleAccessAllow),                                
                                 subtestAccessList,
-                                isTabeAdaptive
+                                isTabeAdaptive,
+                                printSessionName
                                 }); // Changed for TABE BAUM - 028
         }
         catch (IOException ie)

@@ -12,6 +12,7 @@ public class BaseTree {
 	private boolean hasPrintClassName;
 	private boolean isWVCustomer;
 	private boolean showMultipleAccessCode;
+	private boolean hasPrintSessionName;
 	
 	
 
@@ -81,6 +82,14 @@ public class BaseTree {
 	 */
 	public void setHasPrintClassName(boolean hasPrintClassName) {
 		this.hasPrintClassName = hasPrintClassName;
+	}
+
+	public boolean isHasPrintSessionName() {
+		return hasPrintSessionName;
+	}
+
+	public void setHasPrintSessionName(boolean hasPrintSessionName) {
+		this.hasPrintSessionName = hasPrintSessionName;
 	}
 
 	

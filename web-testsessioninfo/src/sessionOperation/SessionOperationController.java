@@ -3696,6 +3696,7 @@ public class SessionOperationController extends PageFlowController {
 			baseTree.setHasPrintClassName(customerHasPrintClassName());
 			baseTree.setWVCustomer(isWVCustomer());
 			baseTree.setShowMultipleAccessCode(customerHasMultipleAccessCode());
+			baseTree.setHasPrintSessionName(customerHasPrintSessionName());
 			jsonTree = gson.toJson(baseTree);
 			String pattern = ",\"children\":[]";
 			jsonTree = jsonTree.replace(pattern, "");
@@ -9535,6 +9536,29 @@ public class SessionOperationController extends PageFlowController {
 		        }
 		       
 		        return hasPrintClassName;
+		    }
+			
+			/**
+			 * This method checks whether customer is configured to display Session name in testTicket or not.
+			 * @return Return Boolean 
+			 */
+			
+			private Boolean customerHasPrintSessionName()
+		    {               
+				Integer customerId = this.user.getCustomer().getCustomerId();
+		        boolean hasPrintSessionName = false;
+		        
+		        for (int i=0; i < this.customerConfigurations.length; i++)
+		        {
+		        	CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+		            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Print_SessionName") && 
+		            		cc.getDefaultValue().equals("T")) {
+		            	hasPrintSessionName = true;
+		                break;
+		            } 
+		        }
+		       
+		        return hasPrintSessionName;
 		    }
 			
 			private boolean isWVCustomer()

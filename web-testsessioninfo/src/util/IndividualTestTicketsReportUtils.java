@@ -36,6 +36,21 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private static final float LOGIN_INFO_Y = 607f;
     private static final float LOGIN_INFO_TABLE_Y = 587f;
     private static final float LOGIN_INSTRUCTIONS_Y = 508f;
+    /**
+     * New coordinates for printing Session Name (Changes done for story OAS-1642)
+     * START
+     */
+    private static final float TEST_NAME_SESSION_Y = 685f;
+    private static final float SESSION_NAME_Y = 657f;
+    private static final float CLASS_NAME_SESSION_Y = 622f;
+    private static final float LOCATION_SESSION_Y = 608f;
+    private static final float LOGIN_INFO_SESSION_Y = 585f;
+    private static final float LOGIN_INFO_TABLE_SESSION_Y = 565f;
+    private static final float LOGIN_INSTRUCTIONS_SESSION_Y = 495f;
+    /**
+     * END
+     */
+    
     private static final float KEYBOARD_SHORTCUTS_Y = 464f;
     private static final float KEYBOARD_SHORTCUTS_TEXT_1_Y = 442f;
     private static final float KEYBOARD_SHORTCUTS_TEXT_2_Y = 398f;
@@ -56,6 +71,14 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     
     private static final float FOOTER_Y = 72f;
     private static final float WAVING_MAN_Y = 488f;
+    /**
+     * New coordinate for printing Session Name (Changes done for story OAS-1642)
+     * START
+     */
+    private static final float WAVING_MAN_SESSION_Y = 475f;
+    /**
+     * END
+     */
     private static final float WATERMARK_Y = 30f;
 
     private static final float PAGE_WIDTH = 460f;
@@ -86,6 +109,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
 	private static final String STUDENT_ID_LABEL = "Student ID:";
 	private static final String CLASS_NAME_LABEL = "Class Name:";
 	private static final String TEST_NAME_LABEL = "Test Name:";
+	private static final String SESSION_NAME_LABEL = "Session Name:";
     private static final String LOGIN_INFORMATION = "Your login information";
 	private static final String LOCATION_LABEL = "Location:";
 	private static final String LOGIN_ID_LABEL = "Login ID:";
@@ -134,6 +158,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     
     private String accessAllow = null; // Changed for TABE BAUM - 028
     private String printClassName = null;
+    private String printSessionName = null;
     
     private boolean multipleAccessAllow = false;
     private boolean isTestBreak = false;
@@ -186,6 +211,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
       	this.multipleAccessAllow = (Boolean)args[12];
       	this.subtestAccessList = (SubtestAccessCodeDetail[])args[13];
       	this.isTabeAdaptive = (Boolean)args[14];
+      	this.printSessionName = (String)args[15];
       	
         if(!isMultiIndividualTkt) {
         	this.getKeyboardShortcutsTables();
@@ -212,9 +238,16 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
             ArrayList tables = new ArrayList();
             tables.add(getStudentNameValue(student, yValue));
             tables.add(getStudentIdValue(student, yValue));
-            if(this.printClassName.equals("true"))
-            	tables.add(getClassNameValue(student, yValue));
-            tables.add(getLoginTable(student, yValue));
+            
+            if(this.printSessionName.equals("true")) {
+            	if(this.printClassName.equals("true"))
+                	tables.add(getClassNameValue(student, yValue+CLASS_NAME_Y-CLASS_NAME_SESSION_Y));
+            	tables.add(getLoginTable(student, yValue+LOGIN_INFO_TABLE_Y-LOGIN_INFO_TABLE_SESSION_Y));
+            } else {
+            	if(this.printClassName.equals("true"))
+                	tables.add(getClassNameValue(student, yValue));
+            	tables.add(getLoginTable(student, yValue));
+            }
             tables.add(getKeyboardShortcutsTable(student));
             this.pages.add(tables);
         }
@@ -231,9 +264,16 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
             ArrayList tables = new ArrayList();
             tables.add(getStudentNameValue(student, yValue));
             tables.add(getStudentIdValue(student, yValue));
-            if(this.printClassName.equals("true"))
-            	tables.add(getClassNameValue(student, yValue));
-            tables.add(getLoginTable(student, yValue));
+            
+            if(this.printSessionName.equals("true")) {
+            	if(this.printClassName.equals("true"))
+                	tables.add(getClassNameValue(student, yValue+CLASS_NAME_Y-CLASS_NAME_SESSION_Y));
+            	tables.add(getLoginTable(student, yValue+LOGIN_INFO_TABLE_Y-LOGIN_INFO_TABLE_SESSION_Y));
+            } else {
+            	if(this.printClassName.equals("true"))
+                	tables.add(getClassNameValue(student, yValue));
+            	tables.add(getLoginTable(student, yValue));
+            }
            if(flag){
             	//this.createStaticAboveTables();
             	yValue = (this.isTabeAdaptive)?ADDITIONAL_Y_COPYWRITE:ADDITIONAL_Y;
@@ -298,12 +338,25 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private void addStaticGeneralInformation(float yValue) throws DocumentException{
         addStudentNameLabel(yValue);
         addStudentIdLabel(yValue);
-        if(this.printClassName.equals("true"))
-        	addClassNameLabel(yValue);
-        addTestNameLabel(yValue);
-        addTestNameValue(yValue);
-        addLocationLabel(yValue);
-        addLocationValue(yValue);
+        
+        if(this.printSessionName.equals("true")) {
+        	addTestNameLabel(yValue+TEST_NAME_Y-TEST_NAME_SESSION_Y);
+	        addTestNameValue(yValue+TEST_NAME_Y-TEST_NAME_SESSION_Y);
+	        addSessionNameLabel(yValue);
+            addSessionNameValue(yValue);
+            if(this.printClassName.equals("true"))
+            	addClassNameLabel(yValue+CLASS_NAME_Y-CLASS_NAME_SESSION_Y);
+	        addLocationLabel(yValue+LOCATION_Y-LOCATION_SESSION_Y);
+            addLocationValue(yValue+LOCATION_Y-LOCATION_SESSION_Y);
+        } else {
+        	if(this.printClassName.equals("true"))
+            	addClassNameLabel(yValue);
+        	addTestNameLabel(yValue);
+	        addTestNameValue(yValue);
+	        addLocationLabel(yValue);
+	        addLocationValue(yValue);
+        }
+        
     }
     
     private void addStudentNameLabel(float yValue) throws DocumentException{
@@ -362,6 +415,22 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
                                     (TEST_NAME_Y-yValue)));
      }
     
+    private void addSessionNameLabel(float yValue) throws DocumentException{
+        this.staticTables.add( 
+             tableUtils.getLabelTable(SESSION_NAME_LABEL,
+                                      INFO_LABEL_WIDTH,
+                                      LEFT_X,
+                                      (SESSION_NAME_Y-yValue)));
+   }
+
+    private void addSessionNameValue(float yValue) throws DocumentException{
+         this.staticTables.add( 
+            tableUtils.getInfoTable(getSessionName(),
+                                    INFO_VALUE_WIDTH,
+                                    INFO_X,
+                                    (SESSION_NAME_Y-yValue)));
+     }
+    
     private void addLocationLabel(float yValue) throws DocumentException{
         if(hasLocation()){
             this.staticTables.add( 
@@ -383,8 +452,13 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
    }
 
     private void addStaticLoginInformation(float yValue) throws DocumentException, IOException{
-        addLoginLabel(yValue);
-        addLoginInstructions(yValue);
+    	if(this.printSessionName.equals("true")) {
+    		addLoginLabel(yValue+LOGIN_INFO_Y-LOGIN_INFO_SESSION_Y);
+	        addLoginInstructions(yValue+LOGIN_INSTRUCTIONS_Y-LOGIN_INSTRUCTIONS_SESSION_Y);
+    	} else {
+	        addLoginLabel(yValue);
+	        addLoginInstructions(yValue);
+    	}
         if(this.isTabeAdaptive)addStaticInfoForTA(yValue);// Added for TABE Adaptive Story : OAS-831 - TABE Adaptive - Add text to individual test ticket
     }
  
@@ -421,7 +495,13 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     }
     
     private void addWavingMan() throws DocumentException, IOException{
-        ImageVO wavingMan = new ImageVO(WAVING_MAN_URL, WAVING_MAN_X, WAVING_MAN_Y);
+        ImageVO wavingMan = null;
+        if(this.printSessionName.equals("true")) {
+        	wavingMan = new ImageVO(WAVING_MAN_URL, WAVING_MAN_X, WAVING_MAN_SESSION_Y);
+        } else {
+        	wavingMan = new ImageVO(WAVING_MAN_URL, WAVING_MAN_X, WAVING_MAN_Y);
+        }
+        
         if(this.images == null){
             this.images = new ArrayList();
         }
@@ -600,7 +680,11 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
    
    private String getTestName(){
         return getNonBlankString(testAdmin.getTestName());
-   }   
+   }  
+   
+   private String getSessionName(){
+       return getNonBlankString(testAdmin.getSessionName());
+   }
    private String[] getKeyboardShortcutsTexts(boolean pause){
         int totalCells = pause ? 18 : 16;
         String[] result = new String[totalCells];
