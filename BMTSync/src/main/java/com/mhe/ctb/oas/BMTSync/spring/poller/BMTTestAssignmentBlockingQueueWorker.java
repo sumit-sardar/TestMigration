@@ -46,10 +46,6 @@ public class BMTTestAssignmentBlockingQueueWorker extends Thread {
 				logger.debug("Posting " + Integer.valueOf(messages.size()).toString() + " test assignment messages to BMT.");
 				restClient.postStudentAssignment(messages);
 			}
-		} catch (InterruptedException ie) {
-			logger.warn("Intentionally interrupted. Shutting down thread. ", ie);
-			shouldRun = false;
-			return;
 		} catch (Exception e) {
 			logger.fatal("Error-absorbing catcher: " + e.getMessage(), e);
 		}

@@ -46,10 +46,6 @@ public class BMTStudentBlockingQueueWorker extends Thread {
 				logger.debug("Posting " + Integer.valueOf(messages.size()).toString() + " student messages to BMT.");
 				restClient.postStudentList(messages);
 			}
-		} catch (InterruptedException ie) {
-			logger.warn("Intentionally interrupted. Shutting down thread. ", ie);
-			shouldRun = false;
-			return;
 		} catch (Exception e) {
 			logger.fatal("Error-absorbing catcher: " + e.getMessage(), e);
 		}

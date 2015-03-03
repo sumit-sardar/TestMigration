@@ -66,14 +66,7 @@ public class TestBMTTestAdminBlockingQueueWorker {
 	public void testBMTTestAdminBlockingQueueWorker_successShouldStop() throws Exception {
 		worker.shouldStop();
 	}
-	
-	@Test
-	public void testBMTTestAdminBlockingQueueWorker_failInterrupted() throws Exception {
-		when(queue.dequeue()).thenThrow(new InterruptedException("Interruption!"));
-		worker.pollForWork();
-		verify(restClient, times(0)).postTestAdmin(anyInt());
-	}
-	
+
 	@Test
 	public void testBMTTestAdminBlockingQueueWorker_failOtherException() throws Exception {
 		when(queue.dequeue()).thenThrow(new RuntimeException("Boo!"));

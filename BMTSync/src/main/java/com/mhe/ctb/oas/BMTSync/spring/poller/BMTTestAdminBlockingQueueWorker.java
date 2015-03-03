@@ -48,10 +48,6 @@ public class BMTTestAdminBlockingQueueWorker extends Thread {
 					restClient.postTestAdmin(message.getTestAdminId());
 				}
 			}
-		} catch (InterruptedException ie) {
-			logger.warn("Intentionally interrupted. Shutting down thread. ", ie);
-			shouldRun = false;
-			return;
 		} catch (Exception e) {
 			logger.fatal("Error-absorbing catcher: " + e.getMessage(), e);
 		}

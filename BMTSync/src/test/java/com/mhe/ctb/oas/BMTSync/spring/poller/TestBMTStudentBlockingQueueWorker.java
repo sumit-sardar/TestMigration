@@ -71,14 +71,6 @@ public class TestBMTStudentBlockingQueueWorker {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testBMTStudentBlockingQueueWorker_failInterrupted() throws Exception {
-		when(queue.dequeue()).thenThrow(new InterruptedException("Interruption!"));
-		worker.pollForWork();
-		verify(restClient, times(0)).postStudentList(anyList());
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
 	public void testBMTStudentBlockingQueueWorker_failOtherException() throws Exception {
 		when(queue.dequeue()).thenThrow(new RuntimeException("Boo!"));
 		worker.pollForWork();

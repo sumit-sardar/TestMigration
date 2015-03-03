@@ -63,15 +63,7 @@ public class TestBMTTestAssignmentBlockingQueueWorker {
 	public void testBMTTestAssignmentBlockingQueueWorker_successShouldStop() throws Exception {
 		worker.shouldStop();
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testBMTTestAssignmentBlockingQueueWorker_failInterrupted() throws Exception {
-		when(queue.dequeue()).thenThrow(new InterruptedException("Interruption!"));
-		worker.pollForWork();
-		verify(restClient, times(0)).postStudentAssignment(any(List.class));
-	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testBMTTestAssignmentBlockingQueueWorker_failOtherException() throws Exception {
