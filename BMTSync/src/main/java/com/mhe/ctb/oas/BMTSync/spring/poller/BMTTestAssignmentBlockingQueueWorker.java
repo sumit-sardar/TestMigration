@@ -15,11 +15,14 @@ public class BMTTestAssignmentBlockingQueueWorker extends Thread {
 	
 	private final BMTBlockingQueue<TestAssignmentMessageType> queue;
 	private final AssignmentRestClient restClient;
+	private int batchSize;
 	private boolean shouldRun;
 
-	public BMTTestAssignmentBlockingQueueWorker(final BMTBlockingQueue<TestAssignmentMessageType> queue, final AssignmentRestClient restClient) {
+	public BMTTestAssignmentBlockingQueueWorker(final BMTBlockingQueue<TestAssignmentMessageType> queue,
+			final AssignmentRestClient restClient, final int batchSize) {
 		this.queue = queue;
 		this.restClient = restClient;
+		this.batchSize = batchSize;
 		this.shouldRun = true;
 	}
 	
@@ -38,7 +41,7 @@ public class BMTTestAssignmentBlockingQueueWorker extends Thread {
 	/** package-private */ void pollForWork() { // set up for testing.
 		try {
 			logger.debug("Starting polling for test assignment messages to post to BMT....");
-			final List<TestAssignmentMessageType> messages = queue.dequeue();
+			final List<TestAssignmentMessageType> messages = queue.dequeue(batchSize);
 		
 			if (CollectionUtils.isEmpty(messages)) {
 				logger.debug("No test assignment messages to post to BMT.");

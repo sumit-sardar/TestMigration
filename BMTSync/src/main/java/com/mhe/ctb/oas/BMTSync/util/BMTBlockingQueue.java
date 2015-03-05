@@ -44,6 +44,10 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 	}
 	
 	public List<T> dequeue() {
+		return dequeue(queueSize);
+	}
+	
+	public List<T> dequeue(final int batchSize) {
 		final List<T> messageList = new ArrayList<T>();
 		logger.debug("Attempting to dequeue message from the queue....");
 		T message = null;
@@ -59,7 +63,7 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 		logger.debug("One message dequeued from the queue; draining the queue up to queue size.");
 		messageList.add(message);
 		// We got one; pull whatever's in the queue up to the limit of the return size.
-		super.drainTo(messageList, queueSize - 1);
+		super.drainTo(messageList, batchSize - 1);
 		logger.info("Returning " + Integer.valueOf(messageList.size()).toString() + " messages from queue.");
 		return messageList;
 	}

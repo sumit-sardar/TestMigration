@@ -22,7 +22,7 @@ public class TestBMTTestAssignmentBlockingQueuePoller {
 	
 	@Test
 	public void testBMTTestAssignmentBlockingQueuePoller_success() throws Exception {
-		poller = new BMTTestAssignmentBlockingQueuePoller(queue, restClient);
+		poller = new BMTTestAssignmentBlockingQueuePoller(queue, restClient, 1, 1);
 		poller.afterPropertiesSet();
 		poller.destroy();
 	}

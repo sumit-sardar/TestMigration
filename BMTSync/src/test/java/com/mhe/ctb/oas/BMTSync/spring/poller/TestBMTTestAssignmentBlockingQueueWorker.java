@@ -31,7 +31,7 @@ public class TestBMTTestAssignmentBlockingQueueWorker {
 	
 	@Before
 	public void setUp() {
-		worker = new BMTTestAssignmentBlockingQueueWorker(queue, restClient);
+		worker = new BMTTestAssignmentBlockingQueueWorker(queue, restClient, 1);
 	}
 	
 	@Test
