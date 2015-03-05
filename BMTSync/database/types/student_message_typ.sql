@@ -1,7 +1,8 @@
 CREATE TYPE STUDENT_MESSAGE_TYP AS OBJECT (
-STUDENT_ID    INTEGER,
-CUSTOMER_ID   NUMBER,
-UPDATED_DATE_TIME DATE
-);
+                  STUDENT_ID    INTEGER,
+                  CUSTOMER_ID   NUMBER,
+                  UPDATED_DATE_TIME DATE
+                );
+/
 
-PROMPT STUDENT_MESSAGE_TYP script complete;
+
