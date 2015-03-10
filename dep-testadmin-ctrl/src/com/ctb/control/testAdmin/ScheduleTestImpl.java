@@ -2745,7 +2745,16 @@ public class ScheduleTestImpl implements ScheduleTest
 						srformCounts.add(obj);
 					}
 				}
+            }else if(scheduledStudents.length>0 && productId.intValue() == 37){ //Changes for story : OAS-1865 :: GA Spring '15 - EOG - Test Spiraling"
+            	studentAccommo = getScreenReaderStudentAccommodations(scheduledStudents);  
+               	for (int h = 0; h < formCounts.length; h++) {
+					FormAssignmentCount obj = formCounts[h];
+					if (obj.getForm().equalsIgnoreCase("3T")) {
+						srformCounts.add(obj);
+					}
+				}
             }
+            
             
             ArrayList subtestAssignments = new ArrayList();
             boolean testRestricted = "T".equals(admins.isTestRestricted(newSession.getTestSession().getItemSetId()))?true:false;
@@ -2780,12 +2789,12 @@ public class ScheduleTestImpl implements ScheduleTest
                         		Integer studentId = scheduledStudents[j].getStudentId();
                         		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                         		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                        	}else if(productId.intValue() == 32 || productId.intValue() == 35){ 
+                        	}else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37){ 
                                 String sr = studentAccommo.get(student.getStudentId()); 
                                 FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                                 srformCounts.toArray(fc); 
                                 if(sr!=null && sr.equalsIgnoreCase("T")){ 
-                                     form=TestFormSelector.getFormWithLowestCountAndIncrement(fc); 
+                                     form=TestFormSelector.getFormWithLowestCountAndIncrement(fc);
                                 }else{ 
                                      form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts); 
                                 } 
@@ -3048,7 +3057,15 @@ public class ScheduleTestImpl implements ScheduleTest
 					}
 				}
             }
-            
+            else if(newUnits.length>0 && productId.intValue() == 37){ //Changes for story : OAS-1865 :: GA Spring '15 - EOG - Test Spiraling"
+            	studentAccommo = getScreenReaderStudentAccommodations(newUnits);  
+               	for (int h = 0; h < formCounts.length; h++) {
+					FormAssignmentCount obj = formCounts[h];
+					if (obj.getForm().equalsIgnoreCase("3T")) {
+						srformCounts.add(obj);
+					}
+				}
+            }		
             
             for(int j=0;newUnits!=null && j<newUnits.length;j++) {
             	String lvl = "";
@@ -3104,7 +3121,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     		Integer studentId = newUnit.getStudentId();
                     		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                     		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                    	}else if(productId.intValue() == 32 || productId.intValue() == 35){ 
+                    	}else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37){ 
                             String sr = studentAccommo.get(newUnit.getStudentId()); 
                             FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                             srformCounts.toArray(fc); 
