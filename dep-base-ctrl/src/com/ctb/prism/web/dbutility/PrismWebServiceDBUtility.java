@@ -96,6 +96,7 @@ public class PrismWebServiceDBUtility {
 	private static final String UPDATE_WS_ERROR_LOG = "UPDATE ws_error_log   SET invoke_count = ?, message = ?, updated_date = SYSDATE, status = ?, ADDITIONAL_INFO = ? WHERE ws_error_log_key = ?";
 	private static final String SELECT_WS_ERROR_LOG = "select a.UPDATED_DATE UPDATEDATE,a.WS_ERROR_LOG_KEY LOGKEY,a.INVOKE_COUNT INVKCOUNT,a.STUDENT_ID STDID,a.ROSTER_ID RSTRID,a.SESSION_ID SESSIONID,a.WS_TYPE WSTYP from WS_ERROR_LOG a, TMP_WS_ERROR_LOG_ROWNUM t where a.rowid = t.row_id order by a.UPDATED_DATE";
 	private static final String SP_FETCH_WS_ERRORS = "{call sp_fetch_ws_errors(?)}";
+	private static final String INSERT_WS_ERROR_LOG_ERERROR ="{CALL INSERT INTO ws_error_log (ws_error_log_key,student_id, roster_id, session_id, status, invoke_count, ws_type, message, ADDITIONAL_INFO) VALUES (SEQ_WS_ERROR_LOG_KEY.NEXTVAL, ?, ?, ?, 'Failed', 0, 'Scoring', 'eResource error', '')  RETURNING ws_error_log_key INTO ?}";
 
 	private static final String CHECK_ROSTER_STATUS = "SELECT 1  FROM TEST_ROSTER T WHERE T.TEST_ROSTER_ID = ?   AND (T.TEST_COMPLETION_STATUS = 'SC' OR T.TEST_COMPLETION_STATUS = 'NT')";
 	private static final String GET_SESSION_TIMEZONE = "SELECT TIME_ZONE as session_time_zone FROM test_admin WHERE TEST_ADMIN_ID = ?";
@@ -1959,6 +1960,37 @@ public class PrismWebServiceDBUtility {
 			}
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.insertWSErrorLog() method to execute query : \n " +  INSERT_WS_ERROR_LOG);
+			e.printStackTrace();
+		} finally {
+			close(con, cst);
+		}
+		return wsErrorLogKey;
+	}
+	
+	/**
+	 * Insert into WS Error Log table for eResource error
+	 * @param studentId
+	 * @param rosterId
+	 * @param sessionId
+	 * @return
+	 */
+	public static long insertWSErrorLogForEReesourceError(Integer studentId, long rosterId, long sessionId){
+		CallableStatement cst  = null;
+		Connection con = null;
+		long wsErrorLogKey = 0;
+		try {
+			con = openOASDBcon(false);
+			cst  = con.prepareCall(INSERT_WS_ERROR_LOG_ERERROR);
+			cst.setLong(1, studentId);
+			cst.setLong(2, rosterId);
+			cst.setLong(3, sessionId);
+			cst.registerOutParameter(4, Types.NUMERIC);
+			int count = cst.executeUpdate();
+			if(count > 0){
+				wsErrorLogKey = cst.getLong(4);
+			}
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.insertWSErrorLogForEReesourceError() method to execute query : \n " +  INSERT_WS_ERROR_LOG_ERERROR);
 			e.printStackTrace();
 		} finally {
 			close(con, cst);
