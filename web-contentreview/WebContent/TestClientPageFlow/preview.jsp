@@ -393,19 +393,20 @@ function getFontAccomodation(){
 }
 */
 
+/*OAS-1592 - Retreive question and answer font-color  accommodation*/ 
 function getFontAccomodation(){
 	var fontObj = new Object();
-	var questionBgColor = gController.questionBgColor;
+	var answerFontColor = gController.answerFontColor;
 	var questionFontColor = gController.questionFontColor;
 	
-	if(typeof questionBgColor == "number"){
-		questionBgColor = questionBgColor.toString(16);
-		while(questionBgColor.length<6)
+	if(typeof answerFontColor == "number"){
+		answerFontColor = questionFontColor.toString(16);
+		while(answerFontColor.length<6)
         {
-            questionBgColor='0'+questionBgColor;
+            answerFontColor='0'+answerFontColor;
         }
-		if(questionBgColor.indexOf("0x") < 0){
-			questionBgColor = "0x"+ questionBgColor;
+		if(answerFontColor.indexOf("0x") < 0){
+			answerFontColor = "0x"+ questionFontColor;
 		}
 	}
 	
@@ -419,8 +420,8 @@ function getFontAccomodation(){
 			questionFontColor = "0x"+ questionFontColor;
 		}
 	}
-	fontObj.bgcolor = questionBgColor.replace('0x', '#');
-	fontObj.fgcolor = questionFontColor.replace('0x', '#');
+	fontObj.stemArea = questionFontColor.replace('0x', '#');
+	fontObj.responseArea = answerFontColor.replace('0x', '#');
 	fontObj.hasFontMag = gController.hasFontAccommodation;
 	return fontObj;
 }
@@ -1333,30 +1334,26 @@ function enableEraser(isEnabled){
      	var iframe = jQuery("iframe")[0];
      	console.log("iframe state");
      	if(iframe){
-			  
 		   
 		    //check whether iFrame loaded successfully or not
 		    if(iframe != null
 	    		&& iframe.contentWindow != null
 	    		&& typeof iframe.contentWindow.accomPkg != 'undefined') {
-	    		console.log("if");
-		    	//iframeLoaded = true;
 		    }
 		    
-     		var fontObj = getFontAccomodation();	
-     		var bgColorObj = getBackColorAccomodation();				
-     		
-    		/*if(fontObj.hasFontMag){
-    			iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '18px',bgColorObj);
-    		}
-    		else {
-    			iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
-    		}*/
-	    	iframe.contentWindow.isReadable(canvas.readable);
-	    	//iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
-	    	/*var xscalefact = (780 * xscalefactorjs)/800;
-	    	var yscalefact = (450 * yscalefactorjs)/462;*/
-	    	iframe.contentWindow.isReadable(canvas.readable);
+	    		var fontObj = getFontAccomodation();	
+	    		var bgColorObj = getBackColorAccomodation();				
+	    		
+	   		/*OAS-1647 - Validate if student has large font accomodation*/	
+	   		if(fontObj.hasFontMag){
+	   			localStorage.setItem("hasFontMag",true);
+	   		}else{
+	   			localStorage.setItem("hasFontMag",false);	
+	   		}
+	   		/*OAS-1592/1647 - Apply color/font accomodation for TE items */ 
+	   		iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj,bgColorObj);
+	   		iframe.contentWindow.isReadable(canvas.readable);
+	    	
 	    	var xscalefact = 780/800;
 	    	var yscalefact = 450/462;
 	    	iframe.contentWindow.translate(xscalefact, yscalefact);
@@ -1365,8 +1362,7 @@ function enableEraser(isEnabled){
 	    		iframe.contentWindow.getItemId(id);
 	    	}
 	    	lz.embed.setCanvasAttribute('frameLoaded',true);
-	    	
-	}
+      }
 }
 
 function isAnswered(){
@@ -1493,7 +1489,7 @@ body {
 
 <!--SA041005 start -->
 
-<BODY onload="load()" onkeydown="disableTabKey()" onkeyup="answerChoiceHandler.keyPressedUp()" oncontextmenu="javascript:return false;">
+<BODY onload="load()" onkeydown="disableTabKey()" onkeyup="answerChoiceHandler.keyPressedUp()"  oncontextmenu="javascript:return false;">
 <button id="mybutton" style="visibility:hidden; width:0px; height:0px; display:none;">clickMe </button>
 <!-- generating TI calculators div start-->
 <div id="calculatorDiv" tabindex="0" class = "calculatorDiv" title="TI30 Calculator" style="display: none;width: inherit;">

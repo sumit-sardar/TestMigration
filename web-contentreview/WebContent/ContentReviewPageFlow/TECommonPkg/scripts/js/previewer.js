@@ -1,8 +1,8 @@
  var editorContentJSON, accomPkg, isStandAlone = false,
     droppedSequence, isPageLoaded = true,
     accomPkgScoreOb = 0,
-    accomPkgPossibleSc = 0;
-
+    accomPkgPossibleSc = 0 ;
+    
 $(document).ready(function () {
       /* load custom font file dynamically */
 	  if ($.browser.msie) {
@@ -130,6 +130,18 @@ $(document).ready(function () {
     }
     var mathBtn = $(".palette-button").css("background-image", "");
 	
+	/*OAS-1592 - Assign font color to '.ui-draggable-dragging' objects for interactiontype='6' */
+    var gFontObj = window.parent.getFontAccomodation();
+    var dndPassageRestricted = $("#previewArea div[interactiontype='6']");
+    if (dndPassageRestricted.length > 0) {
+    	$("[behavior='2']:not([isdropped=true])").on("dragstart", function(e){
+    		if(gFontObj.stemArea != null){
+	    		$(".ui-draggable-dragging").css("color",gFontObj.stemArea);
+	    	}	
+    	});
+   	}            
+    
+	
 });
 
 function makeFFDraggable(ele) {
@@ -141,9 +153,7 @@ function makeFFDraggable(ele) {
         var text = getFreeFlowSelectionHtml();
         if (text != undefined) {
             $("body").append("<div id = '" + drag + "' class = 'ffText'>" + text + "</div>");
-			//$("body").append("<div class = 'draggabletxt'>" + $('.ffText').text() + "</div>");
             var $moveable = $('.ffText');
-			//var $moveable = $('.draggabletxt');
             $(document).mousemove(function (e) {
                 var isOpera = !! window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
                 var isChrome = !! window.chrome && !isOpera;
@@ -1033,7 +1043,8 @@ function activateControls($previewHtml, pos, json, selectedScreen, isFromOutside
         $ele, top = 0,
         left = 0,
         screens;
-    $("#previewArea").css("background-color", "rgb(255, 255, 255)");
+    /*Internal defect for OAS-1592: preview area background color is set dynamically */
+    //$("#previewArea").css("background-color", "rgb(255, 255, 255)");
     if (isStandAlone) {
         $previewHtml = resetFontName($previewHtml);
     }
@@ -1320,7 +1331,16 @@ function makeDrggable() {
                 localStorage.setItem("dManupulative", false);//OAS change
                 scaleDropArea();
                 if (isStandAlone) {
+                	/*OAS-1647 - Scale draggable objects while dragstart from original container*/
+                	if(localStorage.getItem("hasFontMag") != undefined){
+                		if(localStorage.getItem("hasFontMag") == 'true' || localStorage.getItem("hasFontMag") == true){
+                    		scalingContent($(ui.helper), 1.4, 1.4);
+                    	}else{
                     scalingContent($(ui.helper), $("#scaleX").val(), $("#scaleY").val());
+                    	}
+                    }else{
+                    	//do nothing
+                    }		
                     stopHighLighting(event);
                 }
 
@@ -1628,7 +1648,16 @@ function makeDropAreaSortable(drop) {
                 e.preventDefault();
                 return false;
             }
+            /*OAS-1647 - Scale draggable objects while dragstart from drop area*/
+            if(localStorage.getItem("hasFontMag") != undefined){
+                if(localStorage.getItem("hasFontMag") == 'true' || localStorage.getItem("hasFontMag") == true){
+                	scalingContent($(ui.helper), 1.4, 1.4);
+                }else{	
             scalingContent($(ui.helper), $("#scaleX").val(), $("#scaleY").val());
+                }
+            }else{
+                  	//do nothing
+            }
             stopHighLighting(e);
         },
         containment: "document",
@@ -2324,7 +2353,11 @@ function makePassageRes(drag, drop, accessType) {
             "top": dropElePos.top,
             "left": dropElePos.left
         });
-        $droppedElement.find(".answer").css("color", drop.find(".text").css("color"));
+        /*Internal defect for OAS-1592: after draggable objects(i.e. highlighted passage text) are dropped in drop areas, font color of the dropped objects should be same as that of answer area font color. */
+        var gFontObj = window.parent.getFontAccomodation();
+        if(gFontObj.responseArea != null){
+	        $droppedElement.find(".answer").css("color", gFontObj.responseArea);
+	    }    
     }
 
     setDropAreaScrollbar(drop);
@@ -2377,50 +2410,57 @@ function changeQuesProp(dialog) {
     }
 }
 
-function setColorFontAccomm(quesBackgroundColor, ansBackgroundColor, quesFontColor, ansFontColor) {
+function setColorFontAccomm(quesBackgroundColor, ansBackgroundColor, quesFontColor, ansFontColor, hasFontMag) {
+	/*OAS-1647 - Apply scaling to previewArea*/
+	if(hasFontMag){
+		setLargeFont(1.4, 1.4);
+	    $("#previewArea").css("overflow", "auto");
+	}else{
+		//do nothing
+	}
+    /*OAS-1592 - Apply color accomodation to question and answer areas.*/
     var qsArea = $("div[ansarea='false']"),
-        quesArea = $("div.element:not(.mathpalette,[ansarea])");
+    quesArea = $("div.element:not(.mathpalette,[ansarea])");
     for (var index = 0; index < qsArea.length; index++) {
         if (qsArea.eq(index).attr("bgrequired") == "1") {
-            qsArea.eq(index).css("background-color", "#" + quesBackgroundColor);
+            qsArea.eq(index).css({"background-color":quesBackgroundColor,
+            						"border-color":quesFontColor});
         }
-        //if(!qsArea.eq(index).is("div.divbox")){
-        qsArea.eq(index).children(".text").css("color", "#" + quesFontColor);
-        //qsArea.eq(index).find(".correctAns").css("color", "#" + quesFontColor);
-        qsArea.eq(index).children(".text table, td").css("border-color", "#000000");
-        // }
+        qsArea.eq(index).children(".text").css("color",quesFontColor);
+        qsArea.eq(index).children(".text table, td").css("border-color",quesFontColor);
         if (qsArea.eq(index).find(".answer").length > 0) {
-            qsArea.eq(index).find(".answer").css("color", "#" + quesFontColor);
+            qsArea.eq(index).find(".answer").css("color",quesFontColor);
         }
     }
     for (var index1 = 0; index1 < quesArea.length; index1++) {
         if (quesArea.eq(index1).attr("bgrequired") == "1" || quesArea.eq(index1).attr("bgrequired") == undefined) {
-            quesArea.eq(index1).css("background-color", "#" + quesBackgroundColor);
+            quesArea.eq(index1).css("background-color",quesBackgroundColor);
         }
-        // if(!quesArea.eq(index1).is("div.divbox")){
-        quesArea.eq(index1).children(".text").css("color", "#" + quesFontColor);
-        //quesArea.eq(index1).find(".correctAns").css("color", "#" + quesFontColor);
-        quesArea.eq(index1).children(".text table, td").css("border-color", "#000000");
-        // }
+        quesArea.eq(index1).children(".text").css("color",quesFontColor);
+        quesArea.eq(index1).children(".text table, td").css("border-color",quesFontColor);
         if (quesArea.eq(index1).find(".answer").length > 0) {
-            quesArea.eq(index1).find(".answer").css("color", "#" + quesFontColor);
+            quesArea.eq(index1).find(".answer").css("color",quesFontColor);
         }
     }
-    $("#previewArea").css("background-color", "#" + quesBackgroundColor);
+    
+    $("#previewArea").css("background-color",quesBackgroundColor);
     var ansArea = $("div[ansarea='true']");
     for (var index2 = 0; index2 < ansArea.length; index2++) {
         if (ansArea.eq(index2).attr("bgrequired") == "1") {
-            ansArea.eq(index2).css("background-color", "#" + ansBackgroundColor);
+            ansArea.eq(index2).css({"background-color":ansBackgroundColor,
+            						"border-color":ansFontColor});
         }
-        // if(!ansArea.eq(index2).is("div.divbox")){
-        ansArea.eq(index2).children(".text").css("color", "#" + ansFontColor);
+        ansArea.eq(index2).children(".text").css("color",ansFontColor);
         if (ansArea.eq(index2).find(".answer").length > 0) {
-            ansArea.eq(index2).find(".answer").css("color", "#" + ansFontColor);
+            ansArea.eq(index2).find(".answer").css("color",ansFontColor);
         }
-
-        //ansArea.eq(index2).find(".correctAns").css("color", "#" + ansFontColor);
-        ansArea.eq(index2).children(".text table, td").css("border-color", "#000000");
-        //	  }
+        ansArea.eq(index2).children(".text table, td").css("border-color",ansFontColor);
+    }
+    
+    var dropArea = $("div[data-role='droparea']");
+    for(var i=0; i<dropArea.length; i++){
+      	dropArea.eq(i).css({"background-color":ansBackgroundColor,
+      						"border-color":ansFontColor});
     }
 }
 
@@ -3994,9 +4034,14 @@ function checkImage(items) {
         itemText = "";
     for (var itemCount = 0; itemCount < items.length; itemCount++) {
         itemText = items.eq(itemCount).find(".text").html();
+		
+		if(itemText != null){
         if (itemText.indexOf("<img") > 0) {
             isImgPresent = true;
             break;
+			} else {
+				isImgPresent = false;
+			}
         } else {
             isImgPresent = false;
         }
