@@ -2685,8 +2685,14 @@ public class ScheduleTestImpl implements ScheduleTest
             boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue(); 
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             SessionStudent [] scheduledStudents = newSession.getStudents();
+            if(productId == 39)//Changes for story : OAS-1875 :: GA Spring '15 - EOC - Test Spiraling"
+            {    
+            	Map <Integer, String> studentAccommoGEOC = getScreenReaderStudentAccommodations(scheduledStudents);
+            	scheduledStudents = modifySessionStudentArray(scheduledStudents,studentAccommoGEOC);
+            }	
             String form = newSession.getTestSession().getPreferredForm();
             FormAssignmentCount [] formCounts = null;
+            boolean isLiteratureTestGAEOC= false;
             if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
                 formCounts = formAssignments.getFormAssignmentCounts(testAdminId);
             }
@@ -2755,6 +2761,22 @@ public class ScheduleTestImpl implements ScheduleTest
 				}
             }
             
+            else if(scheduledStudents.length>0 && productId.intValue() == 39){ //Changes for story : OAS-1875 :: GA Spring '15 - EOC - Test Spiraling"
+            	studentAccommo = getScreenReaderStudentAccommodations(scheduledStudents);  
+               	for (int h = 0; h < formCounts.length; h++) {
+					FormAssignmentCount obj = formCounts[h];
+					if (obj.getForm().equalsIgnoreCase("C1") || obj.getForm().equalsIgnoreCase("C2")
+							|| obj.getForm().equalsIgnoreCase("D1") || obj.getForm().equalsIgnoreCase("D2")) {
+						srformCounts.add(obj);
+						if(!isLiteratureTestGAEOC)
+						{
+							isLiteratureTestGAEOC=true;
+						}
+					}
+				}
+            }
+            
+            
             
             ArrayList subtestAssignments = new ArrayList();
             boolean testRestricted = "T".equals(admins.isTestRestricted(newSession.getTestSession().getItemSetId()))?true:false;
@@ -2789,7 +2811,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         		Integer studentId = scheduledStudents[j].getStudentId();
                         		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                         		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                        	}else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37){ 
+                        	}else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37 || (productId.intValue() == 39 && isLiteratureTestGAEOC)){ 
                                 String sr = studentAccommo.get(student.getStudentId()); 
                                 FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                                 srformCounts.toArray(fc); 
@@ -2975,6 +2997,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 overrideUsingStudentManifest = true;
             
             Integer testAdminId = newSession.getTestSession().getTestAdminId();
+            boolean isLiteratureTestGAEOC=false;
             String [] validForms = null;
             if(null != productId && (productId.intValue() == 4009 || productId.intValue() == 4010 
             		|| productId.intValue() == 4011 || productId.intValue() == 4012)) {
@@ -2992,6 +3015,12 @@ public class ScheduleTestImpl implements ScheduleTest
             RosterElement [] oldUnits = rosters.getRosterForTestSession(testAdminId);
             HashMap oldMap = new HashMap();
             SessionStudent [] newUnits = newSession.getStudents();
+            if(productId == 39) //Changes for story : OAS-1875 :: GA Spring '15 - EOC - Test Spiraling"
+            {    
+            	Map <Integer, String> studentAccommoGEOC = getScreenReaderStudentAccommodations(newUnits);
+            	newUnits = modifySessionStudentArray(newUnits,studentAccommoGEOC);
+            }
+            
             for(int i=0;i<oldUnits.length;i++) {
                    oldMap.put(oldUnits[i].getStudentId(), oldUnits[i]);
             }
@@ -3065,7 +3094,23 @@ public class ScheduleTestImpl implements ScheduleTest
 						srformCounts.add(obj);
 					}
 				}
-            }		
+            }
+            
+            else if(newUnits.length>0 && productId.intValue() == 39){ //Changes for story : OAS-1875 :: GA Spring '15 - EOC - Test Spiraling"
+            	studentAccommo = getScreenReaderStudentAccommodations(newUnits);  
+               	for (int h = 0; h < formCounts.length; h++) {
+					FormAssignmentCount obj = formCounts[h];
+					if (obj.getForm().equalsIgnoreCase("C1") || obj.getForm().equalsIgnoreCase("C2")
+							|| obj.getForm().equalsIgnoreCase("D1") || obj.getForm().equalsIgnoreCase("D2")) {
+						srformCounts.add(obj);
+						if(!isLiteratureTestGAEOC)
+						{
+							isLiteratureTestGAEOC=true;
+						}
+					}
+				}
+            }
+            
             
             for(int j=0;newUnits!=null && j<newUnits.length;j++) {
             	String lvl = "";
@@ -3121,7 +3166,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     		Integer studentId = newUnit.getStudentId();
                     		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                     		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                    	}else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37){ 
+                    	}else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37 || (productId.intValue() == 39 && isLiteratureTestGAEOC)){ 
                             String sr = studentAccommo.get(newUnit.getStudentId()); 
                             FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                             srformCounts.toArray(fc); 
@@ -5234,4 +5279,43 @@ public class ScheduleTestImpl implements ScheduleTest
     		throw ctbe;
     	}
     }
+    
+    private SessionStudent[] modifySessionStudentArray(SessionStudent[] scheduledStudents, Map<Integer,String> studentAccommoGEOC)
+    {
+    	SessionStudent[] modifiedArray = null;
+    	try{
+    	List<SessionStudent> withScreenReaderList = new ArrayList<SessionStudent>();
+    	List<SessionStudent> withoutScreenReaderList = new ArrayList<SessionStudent>();
+    	
+        modifiedArray = new SessionStudent[scheduledStudents.length];
+    	
+    	for(SessionStudent student : scheduledStudents)
+    	{     
+    		String screenReader = studentAccommoGEOC.get(student.getStudentId());
+    		if("T".equalsIgnoreCase(screenReader))
+    		{
+    			withScreenReaderList.add(student);
+    		}
+    		else
+    		{
+    			withoutScreenReaderList.add(student);
+    		}	
+    		
+    	}
+    	boolean isSuccess = withScreenReaderList.addAll(withoutScreenReaderList); 
+    	if(isSuccess)
+    	{
+    	 withScreenReaderList.toArray(modifiedArray);
+    	}
+    	}
+    	catch(Exception e)
+    	{
+    	System.out.println("Error in modifiying array ");
+    		
+    	}
+    	
+    	return modifiedArray;
+    }
+    
+    
 } 
