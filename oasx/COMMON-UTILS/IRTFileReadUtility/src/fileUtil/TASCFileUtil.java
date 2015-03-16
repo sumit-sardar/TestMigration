@@ -120,6 +120,7 @@ public class TASCFileUtil {
 					forms.add("E1");
 				}else if ("F".equalsIgnoreCase(test_form)){
 					forms.add("F1");
+					forms.add("F2");
 				}else{
 					System.out.println("Content Code :"+ Content_area_initial +" Form value :"+ test_form + " ... Break the loop ... Processing next file.");
 					// System.exit(0);
@@ -184,6 +185,7 @@ public class TASCFileUtil {
 					forms.add("E1");
 				}else if ("F".equalsIgnoreCase(test_form)){
 					forms.add("F1");
+					forms.add("F2");
 				}else {
 					// System.out.println("Form value is not correct..Exit Called..");
 					// System.exit(0);
@@ -248,6 +250,7 @@ public class TASCFileUtil {
 					forms.add("E1");
 				}else if ("F".equalsIgnoreCase(test_form)){
 					forms.add("F1");
+					forms.add("F2");
 				}else {
 					// System.out.println("Form value is not correct..Exit Called..");
 					// System.exit(0);
@@ -286,6 +289,7 @@ public class TASCFileUtil {
 				forms.add("D1");
 				forms.add("E1");
 				forms.add("F1");
+				forms.add("F2");
 				//forms.add("C2");
 				//forms.add("C3");
 				/*forms.add("A4");
@@ -325,6 +329,7 @@ public class TASCFileUtil {
 				forms.add("D1");
 				forms.add("E1");
 				forms.add("F1");
+				forms.add("F2");
 				//forms.add("C2");
 				//forms.add("C3");
 				/*forms.add("A4");
