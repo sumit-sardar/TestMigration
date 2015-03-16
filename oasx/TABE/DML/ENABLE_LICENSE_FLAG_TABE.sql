@@ -1,0 +1,5 @@
+UPDATE CUSTOMER_CONFIGURATION cc
+   SET cc.CUSTOMER_CONFIGURATION_NAME = 'Allow_Subscription'
+ WHERE cc.CUSTOMER_CONFIGURATION_NAME = 'Allow_Subscription_Disabled_OAS1944'
+/
+commit;
