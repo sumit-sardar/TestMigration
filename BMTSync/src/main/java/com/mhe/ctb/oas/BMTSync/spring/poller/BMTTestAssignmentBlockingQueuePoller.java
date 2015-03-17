@@ -40,9 +40,9 @@ public class BMTTestAssignmentBlockingQueuePoller implements DisposableBean, Ini
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		logger.info("Creating poller to watch queue for Assignment messages to post to BMT.");
 		workers = new ArrayList<BMTTestAssignmentBlockingQueueWorker>();
 		for (int index = 0; index < workerCount; index++) {
+			logger.info("Creating poller " + Integer.valueOf(index).toString() + " to watch queue for Assignment messages to post to BMT.");
 			final BMTTestAssignmentBlockingQueueWorker worker = new BMTTestAssignmentBlockingQueueWorker(queue, restClient, batchSize);
 			worker.start();
 			workers.add(worker);
