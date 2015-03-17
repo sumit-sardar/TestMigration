@@ -116,6 +116,7 @@ public class TASCFileUtil {
 					/*forms.add("C1-S");*/
 				}else if ("D".equalsIgnoreCase(test_form)){
 					forms.add("D1");
+					forms.add("D2");
 				}else if ("E".equalsIgnoreCase(test_form)){
 					forms.add("E1");
 					forms.add("E2");
@@ -182,6 +183,7 @@ public class TASCFileUtil {
 					/*forms.add("C1-S");*/
 				}else if("D".equalsIgnoreCase(test_form)){
 					forms.add("D1");
+					forms.add("D2");
 				}else if ("E".equalsIgnoreCase(test_form)){
 					forms.add("E1");
 					forms.add("E2");
@@ -248,6 +250,7 @@ public class TASCFileUtil {
 					/*forms.add("C1-S");*/
 				}else if("D".equalsIgnoreCase(test_form)){
 					forms.add("D1");
+					forms.add("D2");
 				}else if ("E".equalsIgnoreCase(test_form)){
 					forms.add("E1");
 					forms.add("E2");
@@ -292,6 +295,7 @@ public class TASCFileUtil {
 				forms.add("D1");
 				forms.add("E1");
 				forms.add("F1");
+				forms.add("D2");
 				forms.add("E2");
 				forms.add("F2");
 				//forms.add("C2");
@@ -333,6 +337,7 @@ public class TASCFileUtil {
 				forms.add("D1");
 				forms.add("E1");
 				forms.add("F1");
+				forms.add("D2");
 				forms.add("E2");
 				forms.add("F2");
 				//forms.add("C2");
