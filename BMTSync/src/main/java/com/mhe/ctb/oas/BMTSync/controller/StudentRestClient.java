@@ -24,16 +24,27 @@ import com.mhe.ctb.oas.BMTSync.spring.jms.StudentMessageType;
 
 public class StudentRestClient {
 
+	/** Maximum length of error message. This should be in the DAO. */
+	/** TODO: Put this in the DAO. */
 	private static final int ERROR_MESSAGE_LENGTH = 200;
 
+	/** The logger. */
 	private static final Logger logger = Logger.getLogger(StudentRestClient.class);
 	
+	/** The student DAO. */
 	private final StudentDAO studentDAO;
 	
+	/** The endpoint selector (actually a DAO, but loaded once at runtime and never changed). */
 	private final EndpointSelector endpointSelector;
 	
+	/** The REST template, can be overridden for testing. */
 	private RestTemplate restTemplate;
 	
+	/**
+	 * Constructor.
+	 * @param studentDAO student DAO.
+	 * @param endpointSelector endpoint selector.
+	 */
 	public StudentRestClient(final StudentDAO studentDAO, final EndpointSelector endpointSelector) {
 	//public StudentRestClient(final StudentDAO studentDAO) {
 		this.studentDAO = studentDAO;
@@ -41,10 +52,10 @@ public class StudentRestClient {
 		this.restTemplate = new RestTemplate();
 	}
 	
-	String errorMsg;
-
-	/*
-	 * Method to consume a students web service
+	/**
+	 * Receive a group of messages from the database, load the matching data from the DAO, and send the data to BMT.
+	 * @param messages a list of student IDs from the database.
+	 * @return The response body of the last BMT call.
 	 */
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody CreateStudentsResponse postStudentList(final List<StudentMessageType> messages) {
@@ -100,10 +111,13 @@ public class StudentRestClient {
 		return studentListResponse;
 	}
 
-	/*
+	/**
 	 * Method to insert/record records in the Student_API_Status
 	 * with status 'Failed' for the student ID's that were not 
 	 * synched into BMT due to an error in data
+	 * @param req The request sent to BMT.
+	 * @param resp The response from BMT.
+	 * @param success Whether the call to BMT was successful or not.
 	 */
 	private void processResponses(final CreateStudentsRequest req, final CreateStudentsResponse resp, final boolean success) {
 
@@ -173,6 +187,10 @@ public class StudentRestClient {
 		}
 	}
 
+	/**
+	 * Override the REST template for testing.
+	 * @param restTemplate a mock REST template.
+	 */
 	public void setRestTemplate(final RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}

@@ -24,22 +24,37 @@ import com.mhe.ctb.oas.BMTSync.spring.dao.TestAssignmentDAO;
 import com.mhe.ctb.oas.BMTSync.spring.jms.TestAssignmentMessageType;
 
 public class AssignmentRestClient {
+	/** The logger. */
 	static private Logger logger = Logger.getLogger(AssignmentRestClient.class);
 	
+	/** The max length of an error message based on the size of the database table column. */
 	private static final int ERROR_MESSAGE_LENGTH = 200;
 	
+	/** The test assignment DAO, settable for testing purposes. */
 	private final TestAssignmentDAO testAssignmentDAO;
 	
+	/** The endpoint selector (technically a DAO but loaded once at runtime). */
 	private final EndpointSelector endpointSelector;
 	
+	/** The REST template, not settable. */
 	private RestTemplate restTemplate;
 	
+	/**
+	 * Public constructor.
+	 * @param testAssignmentDAO test assignment DAO.
+	 * @param endpointSelector endpoint selector for BMT.
+	 */
 	public AssignmentRestClient(final TestAssignmentDAO testAssignmentDAO, final EndpointSelector endpointSelector) {
 		this.testAssignmentDAO = testAssignmentDAO;
 		this.endpointSelector = endpointSelector;
 		restTemplate = new RestTemplate();
 	}
 
+	/**
+	 * Get a batch of messages from a queue, break them into chunks to send to BMT, and then send them to BMT.
+	 * @param messages a list of TestAssignment messages to send to BMT.
+	 * @return The return message from BMT for the last successful call.
+	 */
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")	
 	public @ResponseBody CreateAssignmentResponse postStudentAssignment (final List<TestAssignmentMessageType> messages) {
 		logger.info("Assigment Rest Client API called");
@@ -51,56 +66,74 @@ public class AssignmentRestClient {
 			return null;
 		}
 		
+		// This object is a map of CustomerID-to-(testAdminId-to-TestAssignment)). We have to break this down this way to preserve
+		// both the distinct endpoints of the customer IDs and the testAdminId/studentId associations in the messages.
 		final Map<Integer, Map<Integer, TestAssignment>> assignmentMap = new HashMap<Integer, Map<Integer, TestAssignment>>();
 		for (final TestAssignmentMessageType message : messages) {
 			try {
-				// Connects to OAS DB and return students related data 
+				// Fetch the data from the DAO for a single test assignment. 
 				final TestAssignment dbTestAssignment = testAssignmentDAO.getTestAssignment(message.getTestAdminId(), message.getStudentId());
 				Map<Integer, TestAssignment> testAssignments = assignmentMap.get(dbTestAssignment.getOasCustomerId());
+				// If there is no hashmap yet for testAdminId-to-TestAssignment, create one.
 				if (testAssignments == null) {
 					testAssignments = new HashMap<Integer, TestAssignment>();
 				}
+				// If there's no TestAssignment object for this testAdminId yet, use the one we fetched from the DAO.
+				// If there is a TestAssignment object for this testAdminId, add the student ID we fetched to it.
 				TestAssignment storedTestAssignment = testAssignments.get(message.getTestAdminId());
 				if (storedTestAssignment == null) {
 					storedTestAssignment = dbTestAssignment;
 				} else {
 					storedTestAssignment.getRoster().addAll(dbTestAssignment.getRoster());
 				}
+				// Put the TestAssignment back in the map for this testAdminId, then put that map back in the map of
+				// customerId to (testAdminId to TestAssignment).
 				testAssignments.put(message.getTestAdminId(), storedTestAssignment);
 				assignmentMap.put(message.getCustomerId(), testAssignments);
 			} catch (final UnknownTestAssignmentException utae) {
+				// If we can't find the record we expect in the DAO, kill this message.
 				logger.error(String.format("[TestAssignment] Unknown test assignment. [testAdminId=%d,studentId=%d]",
 						message.getTestAdminId(), message.getStudentId()));
 				updateAssignmentStatus(message.getTestAdminId(), message.getStudentId(), false, "999", "Unknown test assignment.");
 			}
 		}
 
+		// At this point, we have our map of customerId to (map of testAdminId to TestAssignment). Get all the customer IDs.
 		final Set<Integer> customerIds = assignmentMap.keySet();
 		for (final Integer customerId : customerIds) {
+			// Find the endpoint we're supposed to call for that customerId.
 			final String endpoint = endpointSelector.getEndpoint(customerId);
 			if (endpoint == null) {
+				// If there's no such endpoint, log that we can't find it and move on.
 				logger.error("Endpoint not defined for customerId! [customerId=" + customerId + "]");
 			} else {
+				// Get the list of TestAdmin IDs. We don't need them specifically but we use them as keys into the object to get the
+				// TestAssignment objects. We could do this using the values() instead, but then we don't have testAdminId as a
+				// single variable for logging purposes.
 				final Map<Integer, TestAssignment> requests = assignmentMap.get(customerId);
 				for (final Integer testAdminId : requests.keySet()) {
 					TestAssignment assignment = requests.get(testAdminId);
 					logger.info("[TestAssignment] Request json to BMT: "+assignment.toJson());
 					logger.info("[TestAssignment] Transmiting json to endpoint " + endpoint+RestURIConstants.POST_ASSIGNMENTS);
 					try {
+						// Send the TestAssignment (testAdminId to list of studentId) to BMT.
 				        assignmentResponse = restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
 				        		assignment, CreateAssignmentResponse.class);
 				        if (assignmentResponse != null) {
+				        	// If BMT responds, log the response.
 				        	logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
 				        } 
 				        //Updates the BMTSYN_Assignment_Status table, with success or failure
 			        	processResponses(assignment, assignmentResponse, true);
 					} catch (RestClientException rce) {
+						// If something goes wrong with the REST call, log the error.
 						logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);			
 			        	for (final StudentRoster roster : assignment.getRoster()) {
 			        		updateAssignmentStatus(assignment.getOasTestAdministrationID(), Integer.valueOf(roster.getOasStudentid()),
 			        				false, "999", rce.getMessage());
 			        	}
 					} catch (final Exception e) {
+						// If something unexpected goes wrong, log it.
 						logger.error("[TestAssignment] Error in AssignmentRestClient class : "+e.getMessage(), e);
 			        	for (final StudentRoster roster : assignment.getRoster()) {
 			        		updateAssignmentStatus(assignment.getOasTestAdministrationID(), Integer.valueOf(roster.getOasStudentid()),
@@ -114,10 +147,13 @@ public class AssignmentRestClient {
 		return assignmentResponse;
 	}
 	
-	/*
-	 * Method to insert/record records in the Student_API_Status
-	 * with status 'Failed' for the roster ID's that were not 
+	/**
+	 * Method to insert/record records in the Student_API_Status with status 'Failed' for the roster ID's that were not 
 	 * synched into BMT due to an error in data
+	 * @param req The TestAssignment we sent to BMT.
+	 * @param resp The response we got back from BMT.
+	 * @param success Whether we succeeded in our BMT call or not.
+	 * @throws Exception Catchall for exceptions we might throw because of DAO or integer conversion errors.
 	 */
 	private void processResponses(final TestAssignment req, final CreateAssignmentResponse resp, final boolean success) throws Exception {
 		
@@ -195,6 +231,14 @@ public class AssignmentRestClient {
 		}
 	}
 	
+	/**
+	 * Send updates to the DAO based on the results of the BMT call.
+	 * @param testAdminId the test admin ID.
+	 * @param studentId the student ID.
+	 * @param success whether the call to BMT was successful.
+	 * @param errorCode error code to log, if necessary.
+	 * @param errorMessage error message to log, if necessary.
+	 */
 	private void updateAssignmentStatus(final Integer testAdminId, final Integer studentId, final boolean success,
 			final String errorCode, final String errorMessage) {
 		
@@ -224,6 +268,10 @@ public class AssignmentRestClient {
 		}
 	}
 	
+	/**
+	 * Override to set the restTemplate for testing purposes.
+	 * @param restTemplate a mock REST template.
+	 */
 	public void setRestTemplate(final RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}

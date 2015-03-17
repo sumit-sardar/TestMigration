@@ -19,21 +19,35 @@ import com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO;
 
 @RestController
 public class TestStatusRestService {
+	/** The logger. */
 	static private Logger logger = Logger.getLogger(TestStatusRestService.class);
 	
+	/** The test status DAO. */
 	private TestStatusDAO testStatusDAO;
 	
+	/** An error message */
 	String errorMsg;	
 	
-	//Constructors
+	/**
+	 * Public empty constructor to stop Spring from complaining.
+	 */
 	public TestStatusRestService() {
 		
 	}
 	
+	/**
+	 * Actual constructor, takes a test status DAO so it can be tested.
+	 * @param testStatusDAO
+	 */
 	public TestStatusRestService(final TestStatusDAO testStatusDAO) {
 		this.testStatusDAO = testStatusDAO;
 	}	
 	
+	/**
+	 * Start a REST servlet to respond to test status updates from BMT.
+	 * @param request the request from BMT.
+	 * @return the response body for the update.
+	 */
 	@RequestMapping(value="/api/v1/oas/teststatus", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody CreateTestStatusResponse postTestStatus(
 		@RequestBody CreateTestStatusRequest request ) {
@@ -81,9 +95,8 @@ public class TestStatusRestService {
 			response.setFailures(testStatusErrList);
 			
 			logger.info("[TestStatus] Response to BMT: "+response.toJson());
-			
-			
 		} catch (Exception e) {
+			// Generic logger message.
 			logger.info(e.getMessage());
 		}
 		

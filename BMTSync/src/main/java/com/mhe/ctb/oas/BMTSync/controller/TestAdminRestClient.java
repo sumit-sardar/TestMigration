@@ -15,27 +15,40 @@ import com.mhe.ctb.oas.BMTSync.rest.CreateTestAdminResponse;
 
 public class TestAdminRestClient {
 
+	/** The logger. */
 	static private Logger logger = Logger.getLogger(TestAdminRestClient.class);
 	
+	/** Max error message length set by the database. This should be in the DAO. */
 	static final private int ERROR_MESSAGE_LENGTH = 200;
 	
+	/** The TestAdmin DAO. */
 	private final TestAdminDAO testAdminDAO;
 	
+	/** The endpoint selector (technically a DAO, but we load it once at runtime and never change it). */
 	private final EndpointSelector endpointSelector;
 	
+	/** The REST template. Can be overridden for testing. */
 	private RestTemplate restTemplate;
 	
+	/** An error message string. */
 	String errorMsg;	
 	
+	/**
+	 * Constructor.
+	 * @param testAdminDAO test admin DAO.
+	 * @param endpointSelector endpoint selector. 
+	 */
 	public TestAdminRestClient(final TestAdminDAO testAdminDAO, final EndpointSelector endpointSelector) {
 		this.testAdminDAO = testAdminDAO;
 		this.endpointSelector = endpointSelector;
 		restTemplate = new RestTemplate();
 	}
 	
-	/*
-	 * Method to consume a assignment web service
-	 */	
+	/**
+	 * Load a TestAdmin record from the DAO, send it to BMT, and process the response.
+	 * @param testAdminId
+	 * @return Response body from call to BMT.
+	 */
 	@RequestMapping(value="/api/v1/oas/testadmin", method=RequestMethod.POST, produces="application/json")	
 	public @ResponseBody CreateTestAdminResponse postTestAdmin (final long testAdminId) {
 		logger.info("Test Admin Rest Client API called");
@@ -80,10 +93,14 @@ public class TestAdminRestClient {
 		
 	}
 	
-	/*
+	/**
 	 * Method to insert/record records in the TESTADMIN_API_Status
 	 * with status 'Failed' for the Roster ID's that were not 
 	 * synched into BMT due to an error in data
+	 * @param req TestAdmin record sent to BMT.
+	 * @param resp response from BMT.
+	 * @param success Whether the call was successful or not.
+	 * @throws Exception Generic exception in case of parsing errors or DAO problems.
 	 */
 	private void processResponses(final TestAdmin req, final CreateTestAdminResponse resp, final boolean success) throws Exception {
 		if (resp == null) {
@@ -99,6 +116,14 @@ public class TestAdminRestClient {
 		updateTestAdminStatus(req.getOasTestAdministrationID(), success, "", "");
 	}
 	
+	/**
+	 * Update the DAO with the response from BMT.
+	 * @param testAdminId The test admin ID.
+	 * @param success Whether the call to BMT was successful.
+	 * @param errorCode The error code from BMT, if applicable.
+	 * @param errorMessage The error message from BMT, if applicable.
+	 * @throws SQLException If there's a DAO problem.
+	 */
 	private void updateTestAdminStatus(final Integer testAdminId, final boolean success, final String errorCode, final String errorMessage)
 			throws SQLException{
 		final String errMsg;
@@ -114,6 +139,10 @@ public class TestAdminRestClient {
 				testAdminId, success, errorCode, errMsg));
 	}
 	
+	/**
+	 * Override the REST template for testing.
+	 * @param restTemplate a mock REST template.
+	 */
 	public void setRestTemplate(final RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
