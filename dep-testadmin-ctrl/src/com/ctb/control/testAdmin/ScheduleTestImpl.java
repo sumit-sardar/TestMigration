@@ -2685,7 +2685,7 @@ public class ScheduleTestImpl implements ScheduleTest
             boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue(); 
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             SessionStudent [] scheduledStudents = newSession.getStudents();
-            if(productId == 39)//Changes for story : OAS-1875 :: GA Spring '15 - EOC - Test Spiraling"
+            if(scheduledStudents.length > 0 && productId == 39)//Changes for story : OAS-1875 :: GA Spring '15 - EOC - Test Spiraling"
             {    
             	Map <Integer, String> studentAccommoGEOC = getScreenReaderStudentAccommodations(scheduledStudents);
             	scheduledStudents = modifySessionStudentArray(scheduledStudents,studentAccommoGEOC);
@@ -5282,40 +5282,24 @@ public class ScheduleTestImpl implements ScheduleTest
     
     private SessionStudent[] modifySessionStudentArray(SessionStudent[] scheduledStudents, Map<Integer,String> studentAccommoGEOC)
     {
-    	SessionStudent[] modifiedArray = null;
-    	try{
-    	List<SessionStudent> withScreenReaderList = new ArrayList<SessionStudent>();
-    	List<SessionStudent> withoutScreenReaderList = new ArrayList<SessionStudent>();
-    	
-        modifiedArray = new SessionStudent[scheduledStudents.length];
-    	
-    	for(SessionStudent student : scheduledStudents)
-    	{     
-    		String screenReader = studentAccommoGEOC.get(student.getStudentId());
-    		if("T".equalsIgnoreCase(screenReader))
-    		{
-    			withScreenReaderList.add(student);
-    		}
-    		else
-    		{
-    			withoutScreenReaderList.add(student);
-    		}	
-    		
-    	}
-    	boolean isSuccess = withScreenReaderList.addAll(withoutScreenReaderList); 
-    	if(isSuccess)
-    	{
-    	 withScreenReaderList.toArray(modifiedArray);
-    	}
-    	}
-    	catch(Exception e)
-    	{
-    	System.out.println("Error in modifiying array ");
-    		
-    	}
-    	
-    	return modifiedArray;
-    }
-    
-    
+		SessionStudent[] modifiedArray = null;
+		try {
+			List<SessionStudent> withScreenReaderList = new ArrayList<SessionStudent>();
+			List<SessionStudent> withoutScreenReaderList = new ArrayList<SessionStudent>();
+			modifiedArray = new SessionStudent[scheduledStudents.length];
+			for (SessionStudent student : scheduledStudents) {
+				String screenReader = studentAccommoGEOC.get(student.getStudentId());
+				if ("T".equalsIgnoreCase(screenReader)) {
+					withScreenReaderList.add(student);
+				} else {
+					withoutScreenReaderList.add(student);
+				}
+			}
+			withScreenReaderList.addAll(withoutScreenReaderList);
+			withScreenReaderList.toArray(modifiedArray);
+		} catch (Exception e) {
+			System.out.println("Error in modifiying array ");
+		}
+		return modifiedArray;
+	}
 } 
