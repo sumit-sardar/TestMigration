@@ -39,8 +39,8 @@ select system.org_node_name District,
    and grade.activation_status = 'AC'
    and school.activation_status = 'AC'
    and system.activation_status = 'AC'
-   and stu.created_by <> 1
-   and stu.precode_id is null
+   --and stu.created_by <> 1
+   --and stu.precode_id is null
    and acco.screen_reader = 'T'
    and tr.form_assignment = '1T'
    and adm.product_id = 37
