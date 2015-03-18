@@ -9,6 +9,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Class to describe a test administration.
+ * @author oas
+ */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class TestAdmin {
 	private static final Logger logger = Logger.getLogger(TestAdmin.class);	

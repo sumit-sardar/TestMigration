@@ -2,6 +2,10 @@ package com.mhe.ctb.oas.BMTSync.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class to describe a response from BMT for a student roster.
+ * @author oas
+ */
 public class StudentRosterResponse extends StudentRoster {
 	private String errorCode;
 	private String errorMessage;

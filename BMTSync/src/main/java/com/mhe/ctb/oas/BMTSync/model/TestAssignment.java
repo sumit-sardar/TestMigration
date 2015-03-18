@@ -9,6 +9,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Class to describe a test assignment.
+ * @author oas
+ */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class TestAssignment {
 	private static final Logger logger = Logger.getLogger(TestAssignment.class);

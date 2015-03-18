@@ -2,6 +2,10 @@ package com.mhe.ctb.oas.BMTSync.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class to describe a test time limit.
+ * @author oas
+ */
 public class EnforceTimeLimit {
 	private String isRequired;   // Time_Limit required
 	private String timeLimitInMins;

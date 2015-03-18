@@ -3,6 +3,10 @@ package com.mhe.ctb.oas.BMTSync.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * Class to describe a hierarchy record.
+ * @author oas
+ */
 @JsonPropertyOrder({"oasHeirarchyId", "heirarchyCategoryName", "code","name"  } )
 public class HierarchyNode {
 	private Integer _oasHeirarchyId;

@@ -2,6 +2,10 @@ package com.mhe.ctb.oas.BMTSync.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class to describe test parameters.
+ * @author oas
+ */
 public class Parameters {
 	private String enforceBreak;
 	private String enforceTutorial; 

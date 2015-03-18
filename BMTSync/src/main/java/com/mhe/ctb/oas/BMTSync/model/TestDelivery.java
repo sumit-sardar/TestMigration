@@ -3,6 +3,10 @@ package com.mhe.ctb.oas.BMTSync.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * Class to describe a test delivery.
+ * @author oas
+ */
 @JsonPropertyOrder({"deliverystatus", "accessCode", "oasItemSetId",
 	"oasTestId","oasSubTestName","enforceTimeLimit","order"})
 public class TestDelivery {

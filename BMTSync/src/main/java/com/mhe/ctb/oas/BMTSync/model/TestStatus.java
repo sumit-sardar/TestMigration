@@ -8,11 +8,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+/**
+ * Class to describe a test status
+ * @author oas
+ */
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonPropertyOrder({"oasRosterId", "oasTestId", "deliveryStatus",
 	"startedDate","completedDate"})
-
 public class TestStatus {
 	static private Logger logger = Logger.getLogger(TestStatus.class);
 	

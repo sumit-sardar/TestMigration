@@ -4,6 +4,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class to describe a student roster.
+ * @author oas
+ */
 public class StudentRoster {
 
 	private String oasRosterId;

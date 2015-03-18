@@ -2,6 +2,11 @@ package com.mhe.ctb.oas.BMTSync.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class to describe a delivery window.
+ * @author oas
+ *
+ */
 public class DeliveryWindow {
 	private String startDate;
 	private String startHour;

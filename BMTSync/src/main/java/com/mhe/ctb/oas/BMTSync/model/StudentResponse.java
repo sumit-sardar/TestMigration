@@ -12,7 +12,6 @@ import com.mhe.ctb.oas.BMTSync.model.Student.Accommodations;
  * 
  * @author cparis
  */
-
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonPropertyOrder({"oasStudentId", "oasCustomerId", "studentusername", 
 	"firstName","middleName", "lastName","birthdate","gender", "grade",
