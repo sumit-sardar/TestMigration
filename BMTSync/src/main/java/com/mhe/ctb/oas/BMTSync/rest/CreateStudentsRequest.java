@@ -10,6 +10,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhe.ctb.oas.BMTSync.model.Student;
 
+/**
+ * Request to BMT to synch students.
+ * @author oas
+ */
 public class CreateStudentsRequest {
 	// This isn't a property so there's no getter or setter.
 	private static final Logger logger = Logger.getLogger(Student.class);

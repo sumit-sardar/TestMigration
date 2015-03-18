@@ -2,6 +2,10 @@ package com.mhe.ctb.oas.BMTSync.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Basic response data for OAS from BMT.
+ * @author oas
+ */
 public class BaseResponse {
 	private boolean _successful;
 	private String _serviceErrorCode;

@@ -15,6 +15,10 @@ import com.mhe.ctb.oas.BMTSync.model.DeliveryWindow;
 import com.mhe.ctb.oas.BMTSync.model.Parameters;
 import com.mhe.ctb.oas.BMTSync.model.StudentRosterResponse;
 
+/**
+ * Response from BMT to synch assignments.
+ * @author oas
+ */
 @JsonIgnoreProperties(ignoreUnknown=true)
 //@JsonPropertyOrder({"isSuccessful", "successCount", "failureCount", "errorCode", "errorMessage", "failures"})
 @JsonInclude(Include.NON_EMPTY)

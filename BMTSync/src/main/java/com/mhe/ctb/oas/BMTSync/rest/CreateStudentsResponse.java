@@ -13,6 +13,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhe.ctb.oas.BMTSync.model.StudentResponse;
 
+/**
+ * Response from BMT for synching students.
+ * @author oas
+ */
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonPropertyOrder({"isSuccessful", "successCount", "failureCount", "failures"})
 @JsonInclude(Include.NON_EMPTY)

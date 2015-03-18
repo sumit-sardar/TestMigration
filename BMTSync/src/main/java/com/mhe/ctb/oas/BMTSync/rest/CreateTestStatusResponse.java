@@ -14,6 +14,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhe.ctb.oas.BMTSync.model.TestStatus;
 
 
+/**
+ * Test Status response for BMT.
+ * @author oas
+ */
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonPropertyOrder({"isSuccessful", "successCount", "failureCount", "failures"})
 @JsonInclude(Include.NON_EMPTY)

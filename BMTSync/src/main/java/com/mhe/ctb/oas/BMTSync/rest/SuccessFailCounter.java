@@ -3,6 +3,10 @@ package com.mhe.ctb.oas.BMTSync.rest;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Success/fail counter for objects synched to BMT.
+ * @author oas
+ */
 public class SuccessFailCounter {
 	private int _remainingItems;
 	private int _failureCount;

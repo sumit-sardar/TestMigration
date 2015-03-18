@@ -11,6 +11,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhe.ctb.oas.BMTSync.model.Student;
 import com.mhe.ctb.oas.BMTSync.model.TestStatus;
 
+/**
+ * Request from BMT for a test status update.
+ * @author oas
+ */
 public class CreateTestStatusRequest {
 	// This isn't a property so there's no getter or setter.
 	private static final Logger logger = Logger.getLogger(Student.class);

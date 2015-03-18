@@ -10,6 +10,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
 
+/**
+ * Request to BMT to synch assignments.
+ * @author oas
+ */
 public class CreateAssignmentRequest {
 	private static final Logger logger = Logger.getLogger(CreateAssignmentRequest.class);
 	
