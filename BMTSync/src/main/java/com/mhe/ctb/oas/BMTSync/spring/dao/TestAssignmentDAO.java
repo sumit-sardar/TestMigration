@@ -28,7 +28,10 @@ import com.mhe.ctb.oas.BMTSync.model.StudentRoster;
 import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
 import com.mhe.ctb.oas.BMTSync.model.TestDelivery;
 
-
+/**
+ * DAO for loading test roster data from the database.
+ * @author kristy_tracer
+ */
 @Repository
 public class TestAssignmentDAO {
 	private static final Logger logger = Logger.getLogger(TestAssignmentDAO.class);
@@ -45,7 +48,10 @@ public class TestAssignmentDAO {
 	// Update status in BMTSYNC_ASSIGNMENT_STATUS
 	private SimpleJdbcCall _updateAssignmentAPIStatusCall;
 
-	// Constructor
+	/**
+	 * Constructor
+	 * @param ds
+	 */
 	public TestAssignmentDAO(final DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
@@ -64,7 +70,13 @@ public class TestAssignmentDAO {
 		_updateAssignmentAPIStatusCall.compile();		
 	}
 	
-	// returns student test assignments
+	/**
+	 * Get test assignment data from the database base on test admin ID and student ID.
+	 * @param testAdminId Test admin ID
+	 * @param studentId Student ID
+	 * @return TestAssignment object
+	 * @throws UnknownTestAssignmentException If there is no roster matching these records.
+	 */
 	public TestAssignment getTestAssignment(long testAdminId, long studentId) throws UnknownTestAssignmentException {
 		final SimpleJdbcCall _getTestAssignmentCall = new SimpleJdbcCall(_jdbcTemplate)
 				.withCatalogName("PKG_BMTSYNC_ASSIGNMENT")
@@ -159,6 +171,15 @@ public class TestAssignmentDAO {
 
 	}
 	
+	/**
+	 * Update BMTSYNC_ASSIGNMENT_STATUS based on the results from BMT.
+	 * @param testAdminId Test admin ID
+	 * @param studentId Student ID
+	 * @param success Whether the call to BMT was successful.
+	 * @param errorCode Error code if applicable
+	 * @param errorMessage Error message if applicable.
+	 * @throws SQLException If something goes wrong.
+	 */
 	public void updateAssignmentAPIStatus(final Integer testAdminId, Integer studentId,
 			final boolean success, final String errorCode, final String errorMessage)
 			throws SQLException {

@@ -15,6 +15,12 @@ import org.springframework.stereotype.Repository;
 
 import com.mhe.ctb.oas.BMTSync.controller.EndpointSelector;
 
+/**
+ * The Endpoint Selector gets loaded once at runtime from the database, so it is a "data access object" but it never makes calls to the DB
+ * after it's loaded. Since endpoints only change with extensive negotiations, this seemed the more reasonable approach than forcing an extra
+ * DB call every time we needed to know where to send queries to BMT.
+ * @author oas
+ */
 @Repository
 public class EndpointDAO implements EndpointSelector {
 
@@ -32,6 +38,10 @@ public class EndpointDAO implements EndpointSelector {
 
 	private static final Logger LOGGER = Logger.getLogger(EndpointDAO.class);
 
+	/**
+	 * Constructor
+	 * @param ds Data source as determined from the configuration bean.
+	 */
 	public EndpointDAO(final DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
@@ -46,6 +56,7 @@ public class EndpointDAO implements EndpointSelector {
 		}
 	}
 	
+	/** A private class describing an endpoint, only used inside the DAO to map customer ID to URI. */
 	private class Endpoint {
 		private Integer customerId;
 		private String endpoint;
@@ -84,6 +95,9 @@ public class EndpointDAO implements EndpointSelector {
 		}
 	}
 
+	/**
+	 * Return the endpoint to the code that calls it.
+	 */
 	@Override
 	public String getEndpoint(Integer customerId) {
 		LOGGER.debug("Fetching endpoint for customer id. [customerId=" + customerId + "]");

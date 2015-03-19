@@ -21,6 +21,10 @@ import org.springframework.stereotype.Repository;
 import com.mhe.ctb.oas.BMTSync.exception.UnknownTestStatusException;
 import com.mhe.ctb.oas.BMTSync.model.TestStatus;
 
+/**
+ * The Test status DAO for updating test statuses as sent from BMT.
+ * @author oas
+ */
 @Repository
 public class TestStatusDAO {
 	private static final Logger logger = Logger.getLogger(TestStatusDAO.class);
@@ -34,20 +38,18 @@ public class TestStatusDAO {
 	// The JDBC template
 	private final JdbcTemplate _jdbcTemplate;
 
-	// The test assignment
-	//rivate final SimpleJdbcCall _valiDateSaveTestStatusCall;	
-	
-	
+	/**
+	 * Constructor.
+	 * @param ds Data source from the configuration bean.
+	 */
 	public TestStatusDAO(final DataSource ds) {
-
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
-
 	}
 	
 	
 	/**
-	 * Maps a response 
+	 * Maps a response to a database column.
 	 * 
 	 * @author sbasa
 	 */
@@ -69,8 +71,16 @@ public class TestStatusDAO {
 
 	}
 	
-
-	// returns roaster test Status that failed to update 
+	/**
+	 * Validate the data coming back from BMT.
+	 * @param rosterId Roster ID
+	 * @param pOasTestID Test ID
+	 * @param pDeliveryStatus Test status
+	 * @param pStartedDate Start date for the test
+	 * @param pCompletedDate End date for the test
+	 * @return Success of the update
+	 * @throws UnknownTestStatusException If something goes wrong with the database.
+	 */
 	public TestStatus validateSaveData(final Integer rosterId,
 			final String pOasTestID, 
 			final String pDeliveryStatus, 
@@ -115,6 +125,4 @@ public class TestStatusDAO {
 
 		return returnList.iterator().next();
 	}
-	
-	
 }

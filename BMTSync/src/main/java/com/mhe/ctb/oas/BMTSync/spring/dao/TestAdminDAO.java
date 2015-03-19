@@ -22,7 +22,11 @@ import com.mhe.ctb.oas.BMTSync.exception.UnknownTestAdminException;
 import com.mhe.ctb.oas.BMTSync.model.DeliveryWindow;
 import com.mhe.ctb.oas.BMTSync.model.TestAdmin;
 
-
+/**
+ * Test Admin DAO.
+ * @author kristy_tracer
+ *
+ */
 @Repository
 public class TestAdminDAO {
 	private static final Logger logger = Logger.getLogger(TestAdminDAO.class);
@@ -42,7 +46,10 @@ public class TestAdminDAO {
 	// Update status in BMTSYNC_ASSIGNMENT_STATUS
 	private SimpleJdbcCall _updateAdminStatusCall;
 
-	// Constructor
+	/**
+	 * Constructor
+	 * @param ds
+	 */
 	public TestAdminDAO(final DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
@@ -70,7 +77,12 @@ public class TestAdminDAO {
 		_updateAdminStatusCall.compile();		
 	}
 	
-	// returns student test assignments
+	/**
+	 * Fetch test admin data from the database based on ID.
+	 * @param testAdminId Test Admin ID
+	 * @return TestAdmin object.
+	 * @throws UnknownTestAdminException If there is no test admin for that ID.
+	 */
 	public TestAdmin getTestAdmin(final long testAdminId) throws UnknownTestAdminException {
 
 		// call the sproc
@@ -121,6 +133,14 @@ public class TestAdminDAO {
 
 	}
 	
+	/**
+	 * Update BMTSYNC_TESTADMIN_STATUS based on results of call to BMT.
+	 * @param testAdminId Test admin ID
+	 * @param success Whether the call to BMT was successful.
+	 * @param errorCode Error code if applicable
+	 * @param errorMessage Error message if applicable
+	 * @throws SQLException If something goes wrong.
+	 */
 	public void updateTestAdminStatus(final Integer testAdminId, final boolean success,
 			final String errorCode, final String errorMessage) throws SQLException {
 			

@@ -22,6 +22,11 @@ import com.mhe.ctb.oas.BMTSync.exception.UnknownStudentException;
 import com.mhe.ctb.oas.BMTSync.model.Student;
 import com.mhe.ctb.oas.BMTSync.model.Student.Accommodations;
 
+/**
+ * DAO to load student data from the database.
+ * @author kristy_tracer
+ *
+ */
 @Repository
 public class StudentDAO {
 
@@ -44,6 +49,11 @@ public class StudentDAO {
 	
 	private static final Logger LOGGER = Logger.getLogger(StudentDAO.class);
 
+	/**
+	 * Constructor
+	 * @param ds Datasource from the configuration bean
+	 * @param nodeDAO DAO for student hierarchy information
+	 */
 	public StudentDAO(final DataSource ds, final SpringOrgNodeDAO nodeDAO) {
 		_dataSource = ds;
 		_orgNodeDao = nodeDAO;
@@ -106,6 +116,14 @@ public class StudentDAO {
 		return student;
 	}
 
+	/**
+	 * Update the BMTSYNC_STUDENT_STATUS table based on the results of the call to BMT.
+	 * @param studentId
+	 * @param success
+	 * @param errorCode
+	 * @param errorMessage
+	 * @throws SQLException
+	 */
 	public void updateStudentAPIStatus(final Integer studentId,
 			final boolean success, final String errorCode, final String errorMessage)
 			throws SQLException {
@@ -172,6 +190,7 @@ public class StudentDAO {
 
 	}
 
+	/** Set the OrgNode DAO. Used for testing */
 	public void setOrgNodeDao(SpringOrgNodeDAO orgNodeDao) {
 		_orgNodeDao = orgNodeDao;
 	}

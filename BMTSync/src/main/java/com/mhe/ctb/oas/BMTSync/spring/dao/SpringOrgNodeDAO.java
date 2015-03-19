@@ -20,6 +20,10 @@ import org.springframework.stereotype.Repository;
 import com.mhe.ctb.oas.BMTSync.exception.UnknownStudentException;
 import com.mhe.ctb.oas.BMTSync.model.HierarchyNode;
 
+/**
+ * A DAO to fetch organization information for a student.
+ * @author oas
+ */
 @Repository
 public class SpringOrgNodeDAO {
 	// Return map names
@@ -34,6 +38,10 @@ public class SpringOrgNodeDAO {
 	// The hierarchy reader
 	private final SimpleJdbcCall _hierarchyReader;
 	
+	/**
+	 * Constructor
+	 * @param ds Data source.
+	 */
 	public SpringOrgNodeDAO(final DataSource ds) {
 		_dataSource = ds;
 		_jdbcTemplate = new JdbcTemplate(_dataSource);
@@ -52,10 +60,9 @@ public class SpringOrgNodeDAO {
 
 	/**
 	 * Returns a list of the student hierarchies
-	 * 
-	 * @param studentId
-	 * @return
-	 * @throws UnknownStudentException
+	 * @param studentId Student ID
+	 * @return The hierarchy information for the student.
+	 * @throws UnknownStudentException If the student is unknown.
 	 */
 	public List<HierarchyNode> getStudentHeirarchy(long studentId)
 			throws UnknownStudentException {
