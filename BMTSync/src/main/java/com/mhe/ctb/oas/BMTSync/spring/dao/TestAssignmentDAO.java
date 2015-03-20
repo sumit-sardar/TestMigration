@@ -128,7 +128,7 @@ public class TestAssignmentDAO {
     		TestDelivery testDelivery  = new TestDelivery();
     		EnforceTimeLimit enforceTimeLimit = new EnforceTimeLimit();
     		
-    		if (rowNum == 1) {
+    		if (rowNum == 0) {
 	    		testAssignment.setOasTestAdministrationID(rs.getInt("oasTestAdministrationID"));
 	    		testAssignment.setOasCustomerId(rs.getInt("oasCustomerId"));
 	    		testAssignment.setOasTestCatalogId(rs.getInt("oasTestCatalogId"));
