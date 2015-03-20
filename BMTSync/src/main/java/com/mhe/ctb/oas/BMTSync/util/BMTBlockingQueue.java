@@ -11,14 +11,30 @@ import org.springframework.jms.support.converter.MessageConversionException;
 
 import com.mhe.ctb.oas.BMTSync.spring.jms.EnqueueableMessage;
 
+/**
+ * Class to implement a blocking queue of EnqueueableMessage objects.
+ * @author kristy_tracer
+ *
+ * @param <T> A class implementing EnqueueableMessage
+ */
 public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlockingQueue<T> {	
 
 	private static final long serialVersionUID = 4458659170047975987L;
 	
+	/** The logger. */
 	private static final Logger logger = Logger.getLogger(BMTBlockingQueue.class);
+	
+	/** The timeout for waiting for new messages. */
 	private final long timeout;
+	
+	/** The size of the queue. */
 	private final int queueSize;
 	
+	/**
+	 * Constructor.
+	 * @param queueSize
+	 * @param timeout
+	 */
 	public BMTBlockingQueue(final int queueSize, final long timeout) {
 		super(queueSize);
 		this.queueSize = queueSize;
@@ -27,6 +43,9 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 	
 	/**
 	 * Attempts to add a message to a queue with a rudimentary exception handling system.
+	 * @param message Message to be enqueued.
+	 * @throws InterruptedException If something interrupts the thread.
+	 * @throws MessageConversionException If there's a JMS conversion exception.
 	 */
 	public void enqueueWithTimeout(final T message) throws InterruptedException, MessageConversionException {
 
@@ -43,10 +62,19 @@ public class BMTBlockingQueue<T extends EnqueueableMessage> extends LinkedBlocki
 		throw new MessageConversionException("Failed to add message to queue; queue likely full." + message.getLogDetails());
 	}
 	
+	/**
+	 * Generic dequeue to return the entire block of enqueued messages.
+	 * @return All the enqueued messages.
+	 */
 	public List<T> dequeue() {
 		return dequeue(queueSize);
 	}
 	
+	/**
+	 * A dequeue to return only a subset of the messages in the blocking queue.
+	 * @param batchSize The maximum number of messages to return.
+	 * @return The dequeued messages.
+	 */
 	public List<T> dequeue(final int batchSize) {
 		final List<T> messageList = new ArrayList<T>();
 		logger.debug("Attempting to dequeue message from the queue....");
