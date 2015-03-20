@@ -186,6 +186,9 @@ public class TestTicketController extends PageFlowController
             String printClassName = (String)getRequest().getParameter("printClassName");
             String multipleAccessAllow = (String)getRequest().getParameter("displayMultipleAccessCode");
             String printSessionName = (String)getRequest().getParameter("printSessionName");
+            if(null==printSessionName)
+            	printSessionName="false";
+            
             //System.out.println("printClassName >> "+printClassName);
             
             Integer sessionId = new Integer(testAdminId); 
