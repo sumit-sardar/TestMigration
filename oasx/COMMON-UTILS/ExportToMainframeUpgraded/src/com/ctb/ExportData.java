@@ -45,6 +45,9 @@ public class ExportData {
 		boolean isValidStartDate = false;
 		boolean isValidEndDate = false;
 		Long time = System.currentTimeMillis();
+		String levelElementNumberStr = Configuration.getClasslevelElementNumber().trim();
+		int classLevelElementNumber = 0;
+		
 		
 		try {
 			logger.info("Execution started :: "+new Date());
@@ -106,7 +109,27 @@ public class ExportData {
 				logger.info("End Date (MM/DD/YYYY) Of Extract Date Span : "
 								+ extractSpanEndDate);
 			}
+			//Checking elementG startNumber
 
+			if(null == levelElementNumberStr || "".equals(levelElementNumberStr)) {
+				logger.info("Optional Class Element Start Number is blank.");
+				logger.info("\nContinuing... considering Class Element Start Number as 0000001");
+			}
+			else if (java.util.regex.Pattern.matches("\\d+", levelElementNumberStr)){
+				int levelElementNumberInt = new Integer(levelElementNumberStr).intValue();
+				
+				if(levelElementNumberInt > 0 && levelElementNumberInt <= 9999991) {
+					classLevelElementNumber = levelElementNumberInt - 1;
+				}else{
+					logger.info("Optional Class Element Start Number is not in correct range [1-9999991]");
+					logger.info("\nContinuing... considering Class Element Start Number as 0000001");
+				}
+			}
+			else {
+				logger.info("Optional Class Element Start Number is Non Numeric.");
+				logger.info("\nContinuing... considering Class Element Start Number as 0000001");
+			}
+			
 			// Checking product_id
 			if (null == frameworkProductId || "".equals(frameworkProductId)) {
 				logger.error("Framework Product Id field is madatory. \nExecution forcefully stopped.");
@@ -115,11 +138,11 @@ public class ExportData {
 				if (Integer.parseInt(frameworkProductId) == 7500) {
 					new CreateFiles2ndEdition(isValidStartDate, isValidEndDate,
 							extractSpanStartDate, extractSpanEndDate,
-							customerId, new Integer(frameworkProductId), MFid).writeToText();
+							customerId, new Integer(frameworkProductId), MFid, classLevelElementNumber).writeToText();
 				} else if (Integer.parseInt(frameworkProductId) == 7000) {
 					new CreateFile(isValidStartDate, isValidEndDate,
 							extractSpanStartDate, extractSpanEndDate,
-							customerId, new Integer(frameworkProductId), MFid).writeToText();
+							customerId, new Integer(frameworkProductId), MFid, classLevelElementNumber).writeToText();
 				} else {
 					logger.error("Framework Product Id is invalid. \nExecution forcefully stopped.");
 					System.exit(1);

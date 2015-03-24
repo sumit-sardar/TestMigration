@@ -108,7 +108,7 @@ public class CreateFiles2ndEdition {
 	}
 	
 	public CreateFiles2ndEdition(boolean isValidStartDate, boolean isValidEndDate, String extractSpanStartDate,
-			String extractSpanEndDate, Integer customerId, Integer frameworkProductId, String mFid) {
+			String extractSpanEndDate, Integer customerId, Integer frameworkProductId, String mFid, int classLevelElementNumber) {
 		this.isValidStartDate = isValidStartDate;
 		this.isValidEndDate = isValidEndDate;
 		this.extractSpanStartDate = extractSpanStartDate;
@@ -116,6 +116,7 @@ public class CreateFiles2ndEdition {
 		this.customerId = customerId;
 		this.frameProductId = frameworkProductId;
 		this.MFid = mFid;
+		this.levelElementNumber = classLevelElementNumber;
 	}
 
 	public CreateFiles2ndEdition() {

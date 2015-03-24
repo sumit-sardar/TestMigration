@@ -17,6 +17,7 @@ public class Configuration {
 	static String threadCount = "";
 	static String log4jFile = "";
 	static String maxElementsInMemory="";
+	static String classlevelElementNumber="";
 	
 	static {
 		
@@ -35,6 +36,7 @@ public class Configuration {
 		log4jFile = ExtractUtil.getDetail("oas.log4j.file");
 		maxElementsInMemory = ExtractUtil.getDetail("cache.inmemory.maxlimit");
 		threadCount = ExtractUtil.getDetail("thread.connection.number");
+		classlevelElementNumber = ExtractUtil.getDetail("oas.classelement.startNumber");
 	}
 
 	
@@ -144,5 +146,8 @@ public class Configuration {
 		return threadCount;
 	}
 
-	
+	public static String getClasslevelElementNumber() {
+		return classlevelElementNumber;
+	}
+
 }

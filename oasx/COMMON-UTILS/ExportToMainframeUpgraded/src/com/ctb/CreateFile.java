@@ -113,7 +113,7 @@ public class CreateFile{
 		
 	public CreateFile(boolean isValidStartDate, boolean isValidEndDate,
 			String extractSpanStartDate, String extractSpanEndDate,
-			Integer customerId, Integer frameworkProductId, String MFid) {
+			Integer customerId, Integer frameworkProductId, String MFid, int classLevelElementNumber) {
 		super();
 		this.isValidStartDate = isValidStartDate;
 		this.isValidEndDate = isValidEndDate;
@@ -122,6 +122,7 @@ public class CreateFile{
 		this.customerId = customerId;
 		this.frameworkProductId = frameworkProductId;
 		this.MFid = MFid;
+		this.levelElementNumber = classLevelElementNumber;
 	}
 
 	/**
