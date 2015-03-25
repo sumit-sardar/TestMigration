@@ -1,5 +1,6 @@
 package com.mhe.ctb.oas.BMTSync.controller;
 
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyInt;
@@ -15,7 +16,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -53,13 +53,10 @@ public class TestAssignmentRestClient {
 	
 	@Test
 	public void testAssignmentRestClient_successSuccessOneEndpoint() throws Exception {
-		messages = createMessages(2, 3);
+		messages = createMessages(1, 3);
 		TestAssignment assignment11 = createAssignment(1, 1);
 		TestAssignment assignment12 = createAssignment(1, 2);
 		TestAssignment assignment13 = createAssignment(1, 3);
-		TestAssignment assignment21 = createAssignment(2, 1);
-		TestAssignment assignment22 = createAssignment(2, 2);
-		TestAssignment assignment23 = createAssignment(2, 3);
 		List<Integer> studentIds = new ArrayList<Integer>();
 		studentIds.add(1);
 		studentIds.add(2);
@@ -67,9 +64,6 @@ public class TestAssignmentRestClient {
 		when(dao.getTestAssignment(1, 1)).thenReturn(assignment11);
 		when(dao.getTestAssignment(1, 2)).thenReturn(assignment12);
 		when(dao.getTestAssignment(1, 3)).thenReturn(assignment13);
-		when(dao.getTestAssignment(2, 1)).thenReturn(assignment21);
-		when(dao.getTestAssignment(2, 2)).thenReturn(assignment22);
-		when(dao.getTestAssignment(2, 3)).thenReturn(assignment23);
 		String endpoint = "http://valid.endpoint";
 		when(selector.getEndpoint(assignment11.getOasCustomerId())).thenReturn(endpoint);
 		CreateAssignmentResponse response = new CreateAssignmentResponse();
@@ -79,121 +73,143 @@ public class TestAssignmentRestClient {
 		    	any(TestAssignment.class), eq(CreateAssignmentResponse.class))).thenReturn(response);
 	
 		client.postStudentAssignment(messages);
-		verify(restTemplate, times(2)).postForObject(eq(endpoint+RestURIConstants.POST_ASSIGNMENTS),
+		verify(restTemplate, times(1)).postForObject(eq(endpoint+RestURIConstants.POST_ASSIGNMENTS),
 		    	any(TestAssignment.class), eq(CreateAssignmentResponse.class));
-		verify(dao, times(6)).updateAssignmentAPIStatus(anyInt(),
+		verify(dao, times(3)).updateAssignmentAPIStatus(anyInt(),
 				anyInt(), eq(true), eq(""), eq(""));
 	}
 	
-	@Ignore
+	@Test
+	public void testAssignmentRestClient_successSuccessMultipleEndpoints() throws Exception {
+		messages = createMessages(2, 1);
+		TestAssignment assignment11 = createAssignment(1, 1);
+		TestAssignment assignment21 = createAssignment(2, 1);
+		List<Integer> studentIds = new ArrayList<Integer>();
+		studentIds.add(1);
+		when(dao.getTestAssignment(1, 1)).thenReturn(assignment11);
+		when(dao.getTestAssignment(2, 1)).thenReturn(assignment21);
+		String endpoint1 = "http://valid1.endpoint";
+		String endpoint2 = "http://valid2.endpoint";
+		when(selector.getEndpoint(assignment11.getOasCustomerId())).thenReturn(endpoint1);
+		when(selector.getEndpoint(assignment21.getOasCustomerId())).thenReturn(endpoint2);
+		CreateAssignmentResponse response = new CreateAssignmentResponse();
+		response.setSuccessCount(1);
+		response.setFailureCount(0);
+		when(restTemplate.postForObject(eq(endpoint1+RestURIConstants.POST_ASSIGNMENTS),
+		    	any(TestAssignment.class), eq(CreateAssignmentResponse.class))).thenReturn(response);
+		when(restTemplate.postForObject(eq(endpoint2+RestURIConstants.POST_ASSIGNMENTS),
+		    	any(TestAssignment.class), eq(CreateAssignmentResponse.class))).thenReturn(response);
+	
+		client.postStudentAssignment(messages);
+		verify(restTemplate, times(1)).postForObject(eq(endpoint1+RestURIConstants.POST_ASSIGNMENTS),
+		    	any(TestAssignment.class), eq(CreateAssignmentResponse.class));
+		verify(restTemplate, times(1)).postForObject(eq(endpoint2+RestURIConstants.POST_ASSIGNMENTS),
+		    	any(TestAssignment.class), eq(CreateAssignmentResponse.class));
+		verify(dao, times(2)).updateAssignmentAPIStatus(anyInt(),
+				anyInt(), eq(true), eq(""), eq(""));
+	}
+	
+	@Test
+	public void testAssignmentRestClient_successNoMessages() throws Exception {
+		CreateAssignmentResponse response = client.postStudentAssignment(null);
+		assertNull("No messages, no response.", response);
+	}
+
+	@Test
 	public void testAssignmentRestClient_successStudentFailure() throws Exception {
-		//TestAssignment assignment = createAssignment(1);
-		//when(dao.getTestAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid())))
-		//		.thenReturn(assignment);
+		messages = createMessages(1, 1);
+		TestAssignment assignment = createAssignment(1, 1);
+		List<Integer> studentIds = new ArrayList<Integer>();
+		studentIds.add(1);
+		when(dao.getTestAssignment(1, 1)).thenReturn(assignment);
 		String endpoint = "http://valid.endpoint";
-		//when(selector.getEndpoint(assignment.getOasCustomerId())).thenReturn(endpoint);
+		when(selector.getEndpoint(assignment.getOasCustomerId())).thenReturn(endpoint);
 		CreateAssignmentResponse response = new CreateAssignmentResponse();
 		response.setSuccessCount(0);
 		response.setFailureCount(1);
 		StudentRosterResponse studentResponse = new StudentRosterResponse();
 		studentResponse.setErrorCode("999");
 		studentResponse.setErrorMessage("Failure");
-		//studentResponse.setOasStudentid(assignment.getRoster().get(0).getOasStudentid());
-		//studentResponse.setOasRosterId(assignment.getRoster().get(0).getOasRosterId());
-		//studentResponse.setStudentpassword(assignment.getRoster().get(0).getStudentpassword());
+		studentResponse.setOasStudentid(assignment.getRoster().get(0).getOasStudentid());
+		studentResponse.setOasRosterId(assignment.getRoster().get(0).getOasRosterId());
+		studentResponse.setStudentpassword(assignment.getRoster().get(0).getStudentpassword());
 		List<StudentRosterResponse> studentResponseList = new ArrayList<StudentRosterResponse>();
 		studentResponseList.add(studentResponse);
 		response.setFailures(studentResponseList);
-		//when(restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
-		//        		assignment, CreateAssignmentResponse.class)).thenReturn(response);
-		
-		//client.postStudentAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()));
-		//verify(dao, times(1)).updateAssignmentAPIStatus(assignment.getOasTestAdministrationID(),
-		//		Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()), false, "999", "Failure");
-	}
+		when(restTemplate.postForObject(eq(endpoint+RestURIConstants.POST_ASSIGNMENTS),
+		    	any(TestAssignment.class), eq(CreateAssignmentResponse.class))).thenReturn(response);
 	
-	@Ignore
-	public void testAssignmentRestClient_successTestFailure() throws Exception {
-		//TestAssignment assignment = createAssignment(1);
-		//when(dao.getTestAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid())))
-		//		.thenReturn(assignment);
-		String endpoint = "http://valid.endpoint";
-		//when(selector.getEndpoint(assignment.getOasCustomerId())).thenReturn(endpoint);
-		CreateAssignmentResponse response = new CreateAssignmentResponse();
-		response.setSuccessCount(0);
-		response.setFailureCount(1);
-		StudentRosterResponse studentResponse = new StudentRosterResponse();
-		response.setErrorCode("999");
-		response.setErrorMessage("Test Failure");
-		//studentResponse.setOasStudentid(assignment.getRoster().get(0).getOasStudentid());
-		//studentResponse.setOasRosterId(assignment.getRoster().get(0).getOasRosterId());
-		//studentResponse.setStudentpassword(assignment.getRoster().get(0).getStudentpassword());
-		List<StudentRosterResponse> studentResponseList = new ArrayList<StudentRosterResponse>();
-		studentResponseList.add(studentResponse);
-		response.setFailures(studentResponseList);
-		//when(restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
-		//        		assignment, CreateAssignmentResponse.class)).thenReturn(response);
-		
-		//client.postStudentAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()));
-		//verify(dao, times(1)).updateAssignmentAPIStatus(assignment.getOasTestAdministrationID(),
-		//		Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()), false, "999", "Test Failure");
+		client.postStudentAssignment(messages);
+		verify(restTemplate, times(1)).postForObject(eq(endpoint+RestURIConstants.POST_ASSIGNMENTS),
+		    	any(TestAssignment.class), eq(CreateAssignmentResponse.class));
+		verify(dao, times(1)).updateAssignmentAPIStatus(assignment.getOasTestAdministrationID(),
+				Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()), false, "999", "Failure");
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Ignore
+	@Test
 	public void testAssignmentRestClient_failNoEndpoint() throws Exception {
-//		TestAssignment assignment = createAssignment(1);
-//		when(dao.getTestAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid())))
-//				.thenReturn(assignment);
-//		when(selector.getEndpoint(assignment.getOasCustomerId())).thenReturn(null);
-		
-//		client.postStudentAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()));
+		// TODO: Validate this behavior. This seems wrong. A missing endpoint should cause code to fail.
+		messages = createMessages(1, 1);
+		TestAssignment assignment = createAssignment(1, 1);
+		List<Integer> studentIds = new ArrayList<Integer>();
+		studentIds.add(1);
+		when(dao.getTestAssignment(1, 1)).thenReturn(assignment);
+		when(selector.getEndpoint(assignment.getOasCustomerId())).thenReturn(null);
+
+		client.postStudentAssignment(messages);
 		verify(restTemplate, times(0)).postForObject(anyString(), any(TestAssignment.class), any(Class.class));
 		verify(dao, times(0)).updateAssignmentAPIStatus(anyInt(), anyInt(), anyBoolean(), anyString(), anyString());
 	}
-	
-	@Ignore
+
+	@Test
 	public void testAssignmentRestClient_failRestClientException() throws Exception {
-		//TestAssignment assignment = createAssignment(1);
-		//when(dao.getTestAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid())))
-		//		.thenReturn(assignment);
+		messages = createMessages(1, 1);
+		TestAssignment assignment = createAssignment(1, 1);
+		List<Integer> studentIds = new ArrayList<Integer>();
+		studentIds.add(1);
+		when(dao.getTestAssignment(1, 1)).thenReturn(assignment);
 		String endpoint = "http://invalid.endpoint";
-		//when(selector.getEndpoint(assignment.getOasCustomerId())).thenReturn(endpoint);
-		//when(restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
-        //		assignment, CreateAssignmentResponse.class)).thenThrow(new RestClientException("Invalid Endpoint"));
-		
-		//client.postStudentAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()));
-		//verify(dao, times(1)).updateAssignmentAPIStatus(assignment.getOasTestAdministrationID(),
-		//		Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()), false, "999", "Invalid Endpoint");
+		when(selector.getEndpoint(assignment.getOasCustomerId())).thenReturn(endpoint);
+		when(restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
+        		assignment, CreateAssignmentResponse.class)).thenThrow(new RestClientException("Invalid Endpoint"));
+
+		client.postStudentAssignment(messages);
+		verify(restTemplate, times(1)).postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS, assignment, CreateAssignmentResponse.class);
+		verify(dao, times(1)).updateAssignmentAPIStatus(assignment.getOasTestAdministrationID(),
+				Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()), false, "999", "Invalid Endpoint");
 	}
 	
-	@Ignore
+	@Test
 	public void testAssignmentRestClient_failNullResponse() throws Exception {
-		//TestAssignment assignment = createAssignment(1);
-		//when(dao.getTestAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid())))
-		//		.thenReturn(assignment);
+		messages = createMessages(1, 1);
+		TestAssignment assignment = createAssignment(1, 1);
+		List<Integer> studentIds = new ArrayList<Integer>();
+		studentIds.add(1);
+		when(dao.getTestAssignment(1, 1)).thenReturn(assignment);
 		String endpoint = "http://valid.endpoint";
-		//when(selector.getEndpoint(assignment.getOasCustomerId())).thenReturn(endpoint);
-		//when(restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
-        //		assignment, CreateAssignmentResponse.class)).thenReturn(null);
+		when(selector.getEndpoint(assignment.getOasCustomerId())).thenReturn(endpoint);
+		when(restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
+        		assignment, CreateAssignmentResponse.class)).thenReturn(null);
 		
-		//client.postStudentAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()));
-		//verify(dao, times(1)).updateAssignmentAPIStatus(assignment.getOasTestAdministrationID(),
-		//		Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()), false, "999", "Error from BMT sync API.");
+		client.postStudentAssignment(messages);
+		verify(dao, times(1)).updateAssignmentAPIStatus(assignment.getOasTestAdministrationID(),
+				Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()), false, "999", "Error from BMT sync API.");
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Ignore
+	@Test
 	public void testAssignmentRestClient_failUnknownTestAssignmentException() throws Exception {
-		//TestAssignment assignment = createAssignment(1);
-		//when(dao.getTestAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid())))
-		//		.thenThrow(new UnknownTestAssignmentException(
-        //				assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid())));
+		messages = createMessages(1, 1);
+		TestAssignment assignment = createAssignment(1, 1);
+		List<Integer> studentIds = new ArrayList<Integer>();
+		studentIds.add(1);
+		when(dao.getTestAssignment(1, 1)).thenThrow(new UnknownTestAssignmentException(1, 1));
 		
-		//client.postStudentAssignment(assignment.getOasTestAdministrationID(), Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()));
-		//verify(restTemplate, times(0)).postForObject(anyString(), any(TestAssignment.class), any(Class.class));
-		//verify(dao, times(1)).updateAssignmentAPIStatus(assignment.getOasTestAdministrationID(),
-		//		Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()), false, "999", "Unknown test assignment.");
+		client.postStudentAssignment(messages);
+		verify(restTemplate, times(0)).postForObject(anyString(), any(TestAssignment.class), any(Class.class));
+		verify(dao, times(1)).updateAssignmentAPIStatus(assignment.getOasTestAdministrationID(),
+				Integer.parseInt(assignment.getRoster().get(0).getOasStudentid()), false, "999", "Unknown test assignment.");
 	}
 	
 	private List<TestAssignmentMessageType> createMessages(final int adminCount, final int studentCount) {
@@ -201,7 +217,7 @@ public class TestAssignmentRestClient {
 		for (int admin = 1; admin <= adminCount; admin++) {
 			for (int student = 1; student <= studentCount; student++) {
 				final TestAssignmentMessageType message = new TestAssignmentMessageType();
-				message.setCustomerId(1);
+				message.setCustomerId(admin);
 				message.setTestAdminId(admin);
 				message.setStudentId(student);
 				message.setTestRosterId(createRosterId(admin, student));
@@ -216,7 +232,7 @@ public class TestAssignmentRestClient {
 	private TestAssignment createAssignment(final int adminId, final int studentId) {
 		final TestAssignment assignment = new TestAssignment();
 		assignment.setOasTestAdministrationID(adminId);
-		assignment.setOasCustomerId(1);
+		assignment.setOasCustomerId(adminId);
 		assignment.setProductName(String.format("test-%3d", adminId));
 		final DeliveryWindow window = new DeliveryWindow();
 		assignment.setDeliveryWindow(window);
@@ -227,7 +243,7 @@ public class TestAssignmentRestClient {
 	private TestAssignment createAssignmentWithRosterList(final int adminId, final List<Integer> studentIds) {
 		final TestAssignment assignment = new TestAssignment();
 		assignment.setOasTestAdministrationID(adminId);
-		assignment.setOasCustomerId(1);
+		assignment.setOasCustomerId(adminId);
 		assignment.setProductName(String.format("test-%3d", adminId));
 		final DeliveryWindow window = new DeliveryWindow();
 		assignment.setDeliveryWindow(window);
