@@ -141,9 +141,29 @@ public class StudentRestClient {
 				updateMessages.put(studentId, "Error in REST call; null response.");
 			}
 		} else {
-			logger.debug("Students post success count: "+resp.getSuccessCount());
-			logger.debug("Students post failure count: "+resp.getFailureCount());
+			final int transmitCount = students.size();
+			final int failureCount = resp.getFailureCount();
+			final int successCount = resp.getSuccessCount();
+			final int failuresReturned;
+			logger.debug("Students post success count: "+successCount);
+			logger.debug("Students post failure count: "+failureCount);
 			List<StudentResponse> failures = resp.getFailures();
+			if (failures == null) {
+				failuresReturned = 0;
+			} else {
+				failuresReturned = failures.size();
+			}
+			if (! validateFailureCount(transmitCount, failureCount, successCount, failuresReturned)) {
+				for (final Integer studentId : studentIds) {
+					if (!updateMessages.containsKey(studentId)) {
+						updateStatuses.put(studentId, false);
+						updateCodes.put(studentId, "999");
+						updateMessages.put(studentId, "Response from BMT doesn't match request from OAS.");
+					}
+				}
+			}
+			
+			
 			final StringBuilder failedStudentIds = new StringBuilder();
 			failedStudentIds.append("Students failed:");
 			if (failures == null) {
@@ -185,6 +205,27 @@ public class StudentRestClient {
 						studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
 			}
 		}
+	}
+	
+	/**
+	 * Validate that BMT sent back the right number of records for the number of records sent outbound.
+	 * @param transmitCount
+	 * @param failureCount
+	 * @param successCount
+	 * @param failuresReturned
+	 * @return
+	 */
+	boolean validateFailureCount(final int transmitCount, final int failureCount, final int successCount, final int failuresReturned) {
+		// If the number of returned records doesn't match the number of sent records, fail.
+		if (transmitCount != failureCount + successCount) {
+			return false;
+		}
+		// If the number of failed responses doesn't match the expected number of failures, fail.
+		if (failureCount != failuresReturned) {
+			return false;
+		}
+		// Otherwise, succeed.
+		return true;
 	}
 
 	/**

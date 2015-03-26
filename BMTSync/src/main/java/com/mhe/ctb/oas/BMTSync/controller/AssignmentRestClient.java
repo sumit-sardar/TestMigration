@@ -200,9 +200,29 @@ public class AssignmentRestClient {
 			return;
 		}
 		
+		// If resp is not null, but resp contains a different number of responses than req has of requests, process everything
+		// as "failed" with a code that says we got back an unprocessable response from BMT.
+		final int transmitCount = req.getRoster().size();
+		final int failureCount = resp.getFailureCount();
+		final int successCount = resp.getSuccessCount();
+		final List<StudentRosterResponse> failures = resp.getFailures();
+		final int failuresReturned;
+		if (failures == null) {
+			failuresReturned = 0;
+		} else {
+			failuresReturned = failures.size();
+		}
+		if (! validateFailureCount(transmitCount, failureCount, successCount, failuresReturned)) {
+			for (final Integer studentIdKey : processedStudentIds.keySet()) {	
+				updateAssignmentStatus(testAdminId, studentIdKey, false, 
+				        "999", "Response from BMT doesn't match request from OAS.");
+				processedStudentIds.put(studentIdKey, Boolean.TRUE);
+			}
+			return;
+		}
+		
 		// if resp is not null and resp.getErrorCode is zero and getErrorMessage is null,
 		// 		process everything in the request as "error if it's in the failures, success otherwise."
-		final List<StudentRosterResponse> failures = resp.getFailures();
 		if (failures != null) {
 			for (final StudentRosterResponse failure : failures) {
 				try {
@@ -266,6 +286,27 @@ public class AssignmentRestClient {
 		} catch (final SQLException sqle) {
 			logger.error("Unable to update data source. SQLException occurred: " + sqle.getMessage(), sqle);
 		}
+	}
+	
+	/**
+	 * Validate that BMT sent back the right number of records for the number of records sent outbound.
+	 * @param transmitCount
+	 * @param failureCount
+	 * @param successCount
+	 * @param failuresReturned
+	 * @return
+	 */
+	boolean validateFailureCount(final int transmitCount, final int failureCount, final int successCount, final int failuresReturned) {
+		// If the number of returned records doesn't match the number of sent records, fail.
+		if (transmitCount != failureCount + successCount) {
+			return false;
+		}
+		// If the number of failed responses doesn't match the expected number of failures, fail.
+		if (failureCount != failuresReturned) {
+			return false;
+		}
+		// Otherwise, succeed.
+		return true;
 	}
 	
 	/**
