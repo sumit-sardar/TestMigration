@@ -1,5 +1,14 @@
 CREATE OR REPLACE TRIGGER TRG_BMTSYNC_TESTADMIN
-AFTER INSERT OR UPDATE ON TEST_ADMIN
+AFTER INSERT OR UPDATE OF 
+Test_Admin_Id, 
+Customer_ID,
+Test_Catalog_Id,
+TEST_ADMIN_NAME,
+Login_Start_Date,
+Daily_Login_Start_Time,
+Login_End_Date,
+Daily_Login_End_Time
+ON TEST_ADMIN
 FOR EACH ROW 
 DECLARE
    vCustomer_ID    Customer.Customer_ID%TYPE;
