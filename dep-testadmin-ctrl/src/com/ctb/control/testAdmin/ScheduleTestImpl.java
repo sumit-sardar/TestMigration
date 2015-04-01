@@ -3857,6 +3857,7 @@ public class ScheduleTestImpl implements ScheduleTest
                      			sss.setValidationUpdatedBy(userId);
                      			sss.setValidationUpdatedDateTime(new Date());
                      			sss.setValidationUpdatedNote("");
+                     			// Investigating story OAS-1948
                      			//for defect #-  65787
                      			//rosters.getConnection().setAutoCommit(false);
                      			rosters.createNewStudentItemSetStatusForRoster(customerId, sss,rosterId);
