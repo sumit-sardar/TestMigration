@@ -11,3 +11,8 @@ DBMS_SCHEDULER.create_job (
 );
 END;
 /
+
+begin
+  sys.dbms_scheduler.set_attribute(name => 'OAS.MONITOR_ROSTER_STATUS_TABE', attribute => 'repeat_interval', value => 'Freq=Hourly;Interval=2');
+end;
+/

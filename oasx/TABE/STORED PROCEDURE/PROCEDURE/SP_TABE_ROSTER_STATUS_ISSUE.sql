@@ -2,8 +2,8 @@ CREATE OR REPLACE PROCEDURE SP_TABE_ROSTER_STATUS_ISSUE IS
 
   /*
   * This cursor fetches the list of those rosters which are assigned with TABE tests and have either 
-  * login or completed any subtest during the last 30 minutes of the job execution.
-  * OAS - 1942
+  * login or completed any subtest during the last 4 hours to last 2 hours of the job execution.
+  * OAS - 1942, 2312
   */
   CURSOR CUR_ROSTER_LIST IS
     SELECT TR.TEST_ROSTER_ID         AS TEST_ROSTER_ID,
@@ -19,13 +19,17 @@ CREATE OR REPLACE PROCEDURE SP_TABE_ROSTER_STATUS_ISSUE IS
        AND TA.PRODUCT_ID = PR.PRODUCT_ID
        AND TA.TEST_CATALOG_ID = TC.TEST_CATALOG_ID
        AND TC.PRODUCT_ID = PR.PRODUCT_ID
-       AND (TR.START_DATE_TIME > (SYSDATE - 30 / 1440) OR
-           TR.COMPLETION_DATE_TIME > (SYSDATE - 30 / 1440) OR EXISTS
+       AND ((TR.START_DATE_TIME > (SYSDATE - 4 / 24) AND
+           TR.START_DATE_TIME < (SYSDATE - 2 / 24)) OR
+           (TR.COMPLETION_DATE_TIME > (SYSDATE - 4 / 24) AND
+           TR.COMPLETION_DATE_TIME < (SYSDATE - 2 / 24)) OR EXISTS
             (SELECT 1
                FROM STUDENT_ITEM_SET_STATUS SISS
               WHERE SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID
-                AND (SISS.START_DATE_TIME > (SYSDATE - 30 / 1440) OR
-                    SISS.COMPLETION_DATE_TIME > (SYSDATE - 30 / 1440))))
+                AND ((SISS.START_DATE_TIME > (SYSDATE - 4 / 24) AND
+                    SISS.START_DATE_TIME < (SYSDATE - 2 / 24)) OR
+                    (SISS.COMPLETION_DATE_TIME > (SYSDATE - 4 / 24) AND
+                    SISS.COMPLETION_DATE_TIME < (SYSDATE - 2 / 24)))))
        AND TRUNC(TA.LOGIN_START_DATE) <= TRUNC(SYSDATE)
        AND TRUNC(TA.LOGIN_END_DATE) >= TRUNC(SYSDATE)
        AND PR.PARENT_PRODUCT_ID = 4000
