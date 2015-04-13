@@ -12,3 +12,7 @@ BEGIN
 
 END;
 /
+begin
+  sys.dbms_scheduler.set_attribute(name => 'OAS.MONITOR_TABE_LOCATOR_ERROR', attribute => 'repeat_interval', value => 'Freq=Hourly;Interval=2');
+end;
+/
