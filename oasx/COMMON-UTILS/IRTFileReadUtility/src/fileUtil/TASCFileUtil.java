@@ -115,8 +115,10 @@ public class TASCFileUtil {
 					/*forms.add("C4");*/
 					/*forms.add("C1-S");*/
 				}else if ("D".equalsIgnoreCase(test_form)){
-					forms.add("D1");
-					forms.add("D2");
+					/*forms.add("D1");
+					forms.add("D2");*/
+					
+					forms.add("D3");
 				}else if ("E".equalsIgnoreCase(test_form)){
 					forms.add("E1");
 					forms.add("E2");
@@ -182,8 +184,10 @@ public class TASCFileUtil {
 					/*forms.add("C4");*/
 					/*forms.add("C1-S");*/
 				}else if("D".equalsIgnoreCase(test_form)){
-					forms.add("D1");
-					forms.add("D2");
+					/*forms.add("D1");
+					forms.add("D2");*/
+					
+					forms.add("D3");
 				}else if ("E".equalsIgnoreCase(test_form)){
 					forms.add("E1");
 					forms.add("E2");
@@ -249,8 +253,10 @@ public class TASCFileUtil {
 					/*forms.add("C4");*/
 					/*forms.add("C1-S");*/
 				}else if("D".equalsIgnoreCase(test_form)){
-					forms.add("D1");
-					forms.add("D2");
+					/*forms.add("D1");
+					forms.add("D2");*/
+					
+					forms.add("D3");
 				}else if ("E".equalsIgnoreCase(test_form)){
 					forms.add("E1");
 					forms.add("E2");
@@ -292,12 +298,13 @@ public class TASCFileUtil {
 					System.out.println("File extension is not E or S..Exit Called..");
 					System.exit(0);
 				}
-				forms.add("D1");
+				forms.add("D3");
+				/*forms.add("D1");
 				forms.add("E1");
 				forms.add("F1");
 				forms.add("D2");
 				forms.add("E2");
-				forms.add("F2");
+				forms.add("F2");*/
 				//forms.add("C2");
 				//forms.add("C3");
 				/*forms.add("A4");
@@ -334,12 +341,13 @@ public class TASCFileUtil {
 					System.out.println("File extension is not E or S..Exit Called..");
 					System.exit(0);
 				}
-				forms.add("D1");
+				forms.add("D3");
+				/*forms.add("D1");
 				forms.add("E1");
 				forms.add("F1");
 				forms.add("D2");
 				forms.add("E2");
-				forms.add("F2");
+				forms.add("F2");*/
 				//forms.add("C2");
 				//forms.add("C3");
 				/*forms.add("A4");
