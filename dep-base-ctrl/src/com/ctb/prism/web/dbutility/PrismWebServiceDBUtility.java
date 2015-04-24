@@ -84,7 +84,10 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_PRIM_OBJ_SCORE = "SELECT t.points_obtained AS numcorrect,       t.points_possible AS numpossible,       t.SCALE_SCORE AS scalescore,       t.mastery_levelid AS mastery,       '' AS objmasscalescorerng,       t.scoring_status AS itmattempflag  FROM tasc_prim_obj_fact t WHERE substr(t.prim_objid, 5)  = ? AND t.studentid = ? AND t.sessionid = ?";
 	private static final String GET_SEC_OBJ_SCORE = "SELECT t.points_obtained AS numcorrect,       t.points_possible AS numpossible,       t.SCALE_SCORE AS scalescore,       t.mastery_levelid AS mastery,       t.scale_score_range AS objmasscalescorerng,       t.scoring_status AS itmattempflag ,       t.condition_code    AS conditioncode  FROM tasc_sec_obj_fact t WHERE substr(t.sec_objid, 5) = ?   AND t.studentid = ?   AND t.sessionid = ?";
 	private static final String GET_SURVEY_BIO_RES = "SELECT tab.\"response\" AS \"response\",       tab.\"quesId\" AS \"quesId\",       tab.\"quesOrder\" AS \"quesOrder\",       tab.\"quesCode\" AS \"quesCode\",       tab.\"quesType\" AS \"quesType\"  FROM (SELECT to_clob(serop.question_option_prism) AS \"response\",               serq.question_id AS \"quesId\",               serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'SR' AS \"quesType\"          FROM item_response res, student_survey_question serq, item itm, STUDENT_SURVEY_QUESTION_OPTION serop         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND res.item_id = serq.question_id           AND res.test_roster_id = ?           AND res.RESPONSE_SEQ_NUM =               (SELECT MAX(t.RESPONSE_SEQ_NUM)                  FROM item_response t                 WHERE t.test_roster_id = ?                   AND t.item_id = res.item_id)           AND itm.item_id = res.item_id           AND serop.question_option_oas = res.response           AND serop.question_id = res.item_id           AND serop.question_order = serq.question_order           AND itm.item_type = 'SR'         UNION ALL         SELECT  to_clob(utl_url.unescape(dbms_lob.substr(crres.constructed_response,                                                length(crres.constructed_response),                                                1))) AS \"response\",               serq.question_id AS \"quesId\",               serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'GR' AS \"quesType\"          FROM item_response_cr        crres,               student_survey_question serq,               item                    itm         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND crres.item_id = serq.question_id           AND crres.test_roster_id = ?           AND itm.item_id = crres.item_id          AND   itm.answer_area = 'GRID'    UNION ALL         SELECT  to_clob(utl_url.unescape(dbms_lob.substr(crres.constructed_response,length(crres.constructed_response),1))) AS \"response\",               serq.question_id AS \"quesId\",              serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'CR' AS \"quesType\"          FROM item_response_cr       crres,               student_survey_question serq,               item                    itm         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND crres.item_id = serq.question_id           AND crres.test_roster_id = ?           AND itm.item_id = crres.item_id           AND itm.item_type = 'CR' AND (itm.answer_area is null  OR upper(itm.answer_area) = 'AUDIOITEM')) tab ORDER BY tab.\"quesOrder\"";
-	private static final String CHECK_CR_SCORE_PRESENT = "SELECT count(1) AS count_row FROM item_datapoint_score t WHERE t.test_roster_id = ? AND ROWNUM = 1";
+	//Changes for story : OAS-2544 // private static final String CHECK_CR_SCORE_PRESENT = "SELECT count(1) AS count_row FROM item_datapoint_score t WHERE t.test_roster_id = ? AND ROWNUM = 1";
+	private static final String CHECK_CR_SCORE_PRESENT = "SELECT T.ITEM_ID AS CRITEMID, T.FINAL_SCORE AS RAWSCORE FROM ITEM_DATAPOINT_SCORE T, ITEM_SET_ITEM ISI, ITEM_SET_PARENT ISP, ITEM_SET ISET, ITEM  I WHERE T.TEST_ROSTER_ID = ? AND ISP.PARENT_ITEM_SET_ID = ? AND ISET.ITEM_SET_ID = ISP.ITEM_SET_ID AND ISET.SAMPLE = 'F' AND ISI.ITEM_SET_ID = ISET.ITEM_SET_ID AND ISET.ACTIVATION_STATUS = 'AC' AND ISI.SUPPRESSED = 'F' AND ISI.FIELD_TEST = 'F' AND I.ITEM_ID = ISI.ITEM_ID AND I.ITEM_TYPE = 'CR' AND I.ACTIVATION_STATUS = 'AC' AND I.ANSWER_AREA IS NULL AND T.ITEM_ID = I.ITEM_ID AND T.ITEM_READER_ID = (SELECT MAX(ITEM_READER_ID) FROM ITEM_DATAPOINT_SCORE IDS WHERE IDS.TEST_ROSTER_ID = T.TEST_ROSTER_ID AND IDS.ITEM_ID = T.ITEM_ID)";
+	private static final String CHECK_CR_SCORE_IN_IRS = "SELECT IDIM.OAS_ITEMID, IFACT.POINTS_OBTAINED, SECFACT.CONDITION_CODE FROM TASC_ITEM_FACT IFACT, TASC_SEC_OBJ_FACT SECFACT, ITEM_DIM IDIM WHERE SECFACT.SESSIONID = IFACT.SESSIONID AND SECFACT.STUDENTID = IFACT.STUDENTID AND SECFACT.SEC_OBJID = IDIM.SEC_OBJID AND IDIM.ITEMID = IFACT.ITEMID AND IFACT.SESSIONID = ? AND IFACT.STUDENTID = ? AND IDIM.OAS_ITEMID IN (?)";
+	
 	private static final String GET_GR_RESP_STATUS = "SELECT decode(t.points_obtained, 1, 'R', 0, 'W', 'O') AS respstatus,       t.points_obtained AS origresp,       dim.oas_itemid AS itmid  FROM tasc_item_fact t, item_dim dim WHERE t.studentid = ?   AND t.sessionid = ?  AND t.itemid = dim.itemid  AND dim.oas_itemid IN ";
 	private static final String GET_CONTENT_AREA_ID = "SELECT DISTINCT productid,       contentareaid,       contentareaname  FROM (SELECT DISTINCT dp.item_id,                        dp.max_points,                        productid,                        contentareaid,                        contentareaname,                        contentareatype,                        subject,                        contentareanumitems,                        subtestform,                        subtestlevel,                        subtestid          FROM (SELECT DISTINCT prod.product_id AS productid,                                prod.product_id || ca.item_set_id AS contentareaid,                                ca.item_set_name AS contentareaname,                                prod.product_type || ' CONTENT AREA' AS contentareatype,                                prod.product_type || ' ' || ca.item_set_name AS subject,                                COUNT(DISTINCT item.item_id) AS contentareanumitems,                                td.item_set_form AS subtestform,                                td.item_set_level AS subtestlevel,                                td.item_set_id AS subtestid                  FROM item,                       item_set ca,                       item_set_category cacat,                       item_set_ancestor caisa,                       item_set_item caisi,                       item_set_ancestor tcisa,                       item_set_item tcisi,                       test_roster ros,                       test_admin adm,                       test_catalog tc,                       product prod,                       item_set td                 WHERE ros.test_roster_id = ?                   AND adm.test_admin_id = ros.test_admin_id                   AND tc.test_catalog_id = adm.test_catalog_id                   AND prod.product_id = tc.product_id                   AND item.activation_status = 'AC'                   AND tc.activation_status = 'AC'                   AND ca.item_set_id = caisa.ancestor_item_set_id                   AND ca.item_set_type = 'RE'                   AND caisa.item_set_id = caisi.item_set_id                  AND item.item_id = caisi.item_id                   AND tcisi.suppressed = 'F'                   AND tcisi.item_id = item.item_id                  AND tcisa.item_set_id = tcisi.item_set_id                   AND adm.item_set_id = tcisa.ancestor_item_set_id                   AND cacat.item_set_category_id = ca.item_set_category_id                   AND cacat.item_set_category_level =                      prod.content_area_level                   AND td.item_set_id = tcisi.item_set_id                   AND td.SAMPLE = 'F'                  AND (td.item_set_level != 'L' OR prod.product_type = 'TL')                   AND cacat.framework_product_id = prod.parent_product_id                GROUP BY prod.product_id,                          prod.product_id || ca.item_set_id,                          ca.item_set_name,                         prod.product_type || ' CONTENT AREA',                          prod.product_type || ' ' || ca.item_set_name,                         td.item_set_form,                          td.item_set_level,                          td.item_set_id) derived,               datapoint dp,              item_set_item isi         WHERE isi.item_set_id = derived.subtestid           AND isi.suppressed = 'F'           AND dp.item_id =isi.item_id) derived1 GROUP BY productid,          contentareaid,          contentareaname";
 	private static final String GET_CUST_CONF_ACCOMMODATION = "SELECT * FROM student_accommodation t WHERE t.student_id = ? ";
@@ -673,6 +676,7 @@ public class PrismWebServiceDBUtility {
 				Integer contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get(contentCodeName);
 				ContentDetailsTO contentDetailsTO = contentDetailsTOMap.get(contentCode);
 				List<ObjectiveScoreDetailsTO> objectiveScoreDetailsList = new ArrayList<ObjectiveScoreDetailsTO>();
+				boolean isCRScorePresent = false;
 				if(contentCode != null && contentDetailsTO != null){
 					contentDetailsTO.setDataChanged(true);
 					contentDetailsTO.setContentCode(String.valueOf(contentCode));
@@ -701,10 +705,17 @@ public class PrismWebServiceDBUtility {
 					
 					String scoringStatus = (String) contentScoreDetailsObjs[1];
 					
+					// Changes for story : OAS-2544 // Checking the availability of EHS Score at OAS and match with the IRS 
+					if (contentCode == PrismWebServiceConstant.wrContentCode
+							&& !StringUtils.isEmptyString(testStatus)
+							&& !StringUtils.isEmptyString(valStatus)) {
+						isCRScorePresent = checkCRScoreAvailablility(rosterId, itemSetId, studentId, sessionId, scoringStatus);
+					}
+					
 					if(PrismWebServiceConstant.InvalidContentStatusCode.equalsIgnoreCase(statusCode)){//For the invalid test special handling
 						//If invaldiated when CR scoring is in progress don't sent item responses
 						if(contentCode == PrismWebServiceConstant.wrContentCode){
-							if(!StringUtils.isEmptyString(testStatus) && testStatus.equalsIgnoreCase("CO") && checkCRScoreAvailablility(rosterId)){
+							if(!StringUtils.isEmptyString(testStatus) && testStatus.equalsIgnoreCase("CO") && isCRScorePresent){
 								ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId, true);
 								contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 							}
@@ -725,7 +736,6 @@ public class PrismWebServiceDBUtility {
 					//Check the CR scoring availability for Writing Sub test and send SIP flag
 					if(contentCode == PrismWebServiceConstant.wrContentCode && !StringUtils.isEmptyString(testStatus) && !StringUtils.isEmptyString(valStatus)
 							&& valStatus.equalsIgnoreCase("VA") && testStatus.equalsIgnoreCase("CO")){
-						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
 						if(!isCRScorePresent){
 							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.ScoringInProgressCode));
 							sendELA = false;
@@ -1006,27 +1016,101 @@ public class PrismWebServiceDBUtility {
 	 * @param rosterId
 	 * @return
 	 */
-	private static boolean checkCRScoreAvailablility(long rosterId) {
+	private static boolean checkCRScoreAvailablility(long rosterId, long itemSetId, Integer studentId, long sessionId, String scoringStatus) {
 		
 		PreparedStatement pst = null;
 		Connection con = null;
 		ResultSet rs = null;
 		boolean checkCRScorePresent = false;
+		boolean isFirstValue = true;
+		Map<String,String> itemScoreMap = new HashMap<String, String>();
+		StringBuilder inClause = new StringBuilder();
 		try {
 			con = openOASDBcon(false);
 			pst = con.prepareStatement(CHECK_CR_SCORE_PRESENT);
 			pst.setLong(1, rosterId);
+			pst.setLong(2, itemSetId);
 			rs = pst.executeQuery();
-			if(rs.next() && rs.getInt("count_row") >= 1){
-				checkCRScorePresent	= true;
+			//-- Changes for story : OAS-2544 --//
+			while (rs.next()) {
+				checkCRScorePresent = true;
+
+				// Store CR item and OAS end score map
+				itemScoreMap.put(rs.getString(1), rs.getString(2));
+
+				// Making in clause value for IRS
+				if (isFirstValue) {
+					isFirstValue = false;
+				} else {
+					inClause.append(",");
+				}
+				inClause.append(rs.getString(1));
 			}
+			
+			/**
+			 * Checking IRS score for each Item, if score is present in OAS
+			 * and score status of content area not in OM and SUP. 
+			 */
+			if (checkCRScorePresent) {
+				if (PrismWebServiceConstant.OmittedContentStatusCode.equalsIgnoreCase(scoringStatus)
+						|| PrismWebServiceConstant.SuppressedContentStatusCode.equalsIgnoreCase(scoringStatus)) {
+					return checkCRScorePresent;
+				} else {
+					close(con, pst, rs);
+					return validateScoreWithIrs(sessionId, studentId, itemScoreMap, inClause);
+				}
+			}
+			//-- Changes for story : OAS-2544 --//
+			
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.checkCRScoreAvailablility() method to execute query : \n " +  CHECK_CR_SCORE_PRESENT);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
 		}
-		return checkCRScorePresent;
+		return false;
+	}
+
+	/**
+	 * Validate the OAS score is present in IRS or not
+	 * @param sessionId
+	 * @param studentId
+	 * @param itemScoreMap
+	 * @param inClause
+	 * @return boolean
+	 */
+	private static boolean validateScoreWithIrs(long sessionId, Integer studentId,
+			Map<String, String> itemScoreMap,
+			StringBuilder inClause) {
+
+		PreparedStatement pst = null;
+		Connection irscon = null;
+		ResultSet rs = null;
+		try {
+			irscon = openIRSDBcon(false);
+			pst = irscon.prepareStatement(CHECK_CR_SCORE_IN_IRS);
+			pst.setLong(1, sessionId);
+			pst.setLong(2, studentId);
+			pst.setString(3, inClause.toString());
+			rs = pst.executeQuery();
+			while (rs.next()) {
+				String scoreValue = itemScoreMap.get(rs.getString(1));
+				String regex = "[0-9]+";
+				if (scoreValue.matches(regex)) { // Checking the numeric value
+					return (Integer.valueOf(scoreValue).intValue() == Integer
+							.valueOf(rs.getString(2)).intValue()) ? true
+							: false;
+				} else {
+					return (scoreValue.equals(rs.getString(3))) ? true : false;
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.validateScoreWithIrs() method to execute query : \n " + CHECK_CR_SCORE_IN_IRS);
+			e.printStackTrace();
+		} finally {
+			close(irscon, pst, rs);
+		}
+		return false;
 	}
 
 	/**
