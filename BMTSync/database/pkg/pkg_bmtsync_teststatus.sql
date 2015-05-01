@@ -35,8 +35,6 @@ END PKG_BMTSYNC_TESTSTATUS;
 /
 
 
-
-
 CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 
     /***************************************************
@@ -44,6 +42,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 	* Procedure to validate the Test Status Data
 	* and updates the Student Item Set Status table
 	* with the completion Status
+	*
+	* Fixed Defect BMTOAS-1202    04-28-2015
 	***************************************************/
 
     PROCEDURE ValidateSaveTestStatus (
@@ -53,7 +53,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 		pStartedDate        IN VARCHAR2,
 		pCompletedDate      IN VARCHAR2,
 		pResultCursor       OUT REF_CURSOR) AS
-		
+
 		vFound         NUMBER;
 		vItemSet_Id    NUMBER;
 		bSuccess       CHAR(1);
@@ -66,14 +66,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 	    bSuccess := 'T';
 		vStartDate := TO_DATE(pStartedDate, 'MM-DD-YYYY HH:MI:SS PM');
 		vCompletionDate := TO_DATE(pCompletedDate, 'MM-DD-YYYY HH:MI:SS PM');
-		
+
 		bErrorMsg  := 'Missing required fields';
 	    IF pRosterID = NULL OR pRosterID = 0 THEN
 		    bSuccess := 'F';
 			bErrorCode := 104;
 			bErrorMsg  := bErrorMsg||', Roster ID is mandatory';
 		END IF;
-		
+
 		IF pOasTestID IS NULL OR LENGTH(TRIM(pOasTestID)) = 0 THEN
 		    bSuccess := 'F';
 			bErrorCode := 104;
@@ -91,13 +91,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 			bErrorCode := 104;
 			bErrorMsg  := bErrorMsg||', Started Date is mandatory';
 		END IF;
-		
+
 		IF bSuccess = 'T' THEN
 		    bErrorMsg  := '';
 		    --Validate Roster ID
 		    BEGIN
-				SELECT Test_Roster_ID INTO vFound 
-				FROM Test_Roster 
+				SELECT Test_Roster_ID INTO vFound
+				FROM Test_Roster
 				WHERE Test_Roster_ID = pRosterID;
 			EXCEPTION
 			WHEN NO_DATA_FOUND THEN
@@ -109,13 +109,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 				bErrorCode := 199;
 				bErrorMsg  := 'Oracle Error validating Test Roster ID: '||SQLCODE||', '||SUBSTR(SQLERRM, 1, 80);
 			END;
-			
+
 			-- Find the Item Set ID
 			BEGIN
 			    SELECT IST.Item_Set_Id INTO vItemSet_Id
-				FROM Student_Item_Set_Status SISS, Item_Set IST 
+				FROM Student_Item_Set_Status SISS, Item_Set IST
 				WHERE SISS.Item_Set_ID = IST.Item_set_Id AND
-				   SISS.Test_Roster_ID = pRosterID AND 
+				   SISS.Test_Roster_ID = pRosterID AND
 				   IST.Ext_Tst_Item_Set_Id = pOasTestId;
 			EXCEPTION
 			WHEN NO_DATA_FOUND THEN
@@ -127,11 +127,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 				bErrorCode := 199;
 				bErrorMsg  := 'Oracle Error validating Item Set Id : '||SQLCODE||', '||SUBSTR(SQLERRM, 1, 80);
 			END;
-			
+
 			-- Validate the Delivery Status Code
 			BEGIN
 			    SELECT Test_Completion_Status_Desc INTO vStatusDesc
-				FROM Test_Completion_Status_Code 
+				FROM Test_Completion_Status_Code
 				WHERE Test_Completion_Status = pDeliveryStatus;
 				--DBMS_OUTPUT.PUT_LINE('Updated Successfully');
 			EXCEPTION
@@ -144,8 +144,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 				bErrorCode := 199;
 				bErrorMsg  := 'Oracle Error validating Delivery Status Code : '||SQLCODE||', '||SUBSTR(SQLERRM, 1, 80);
 			END;
-		
-            -- The data is validatated successfully and will now be saved		
+
+            -- The data is validatated successfully and will now be saved
 			IF bSuccess = 'T' THEN
 				BEGIN
 					UPDATE Student_Item_Set_Status
@@ -154,14 +154,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 						Completion_Date_Time = vCompletionDate
 					WHERE Test_Roster_Id = pRosterId
 					  AND Item_Set_ID = vItemSet_Id;
-					  
+
 					bErrorCode := 0;
 					bErrorMsg  := '';
-					
+
 					--Update Roaster Completion Status
 					UpdateRosterTestStatus(pRosterId, pDeliveryStatus, vStartDate, vCompletionDate);
-					
-					COMMIT;  
+
+					COMMIT;
 				EXCEPTION
 				WHEN OTHERS THEN
 					bSuccess := 'F';
@@ -169,31 +169,31 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 					bErrorMsg  := 'Oracle Error updating Student_Item_Set_Status_table: '||SQLCODE||', '||SUBSTR(SQLERRM, 1, 80);
 					ROLLBACK;
 				END;
-		    
+
 			END IF;
-			
+
 		END IF;
 	    --DBMS_OUTPUT.PUT_LINE(bErrorMsg);
 		OPEN pResultCursor FOR
 		SELECT pRosterID RosterId, pOasTestId OasTestId, pDeliveryStatus DeliveryStatus,
-   		       pStartedDate Started_Date, pCompletedDate Completed_Date, 
+   		       pStartedDate Started_Date, pCompletedDate Completed_Date,
 			   bSuccess AS Success, bErrorCode AS ErrorCode, bErrorMsg AS ErrorMsg FROM DUAL;
-		
+
 	EXCEPTION
 	WHEN OTHERS THEN
 		bSuccess := 'F';
 		bErrorCode := 199;
 		bErrorMsg  := 'Oracle Error in ValidateSaveTestStatus: '||SQLCODE||', '||SUBSTR(SQLERRM, 1, 80);
-		
+
 		OPEN pResultCursor FOR
 		SELECT pRosterID RosterId, pOasTestId OasTestId, pDeliveryStatus DeliveryStatus,
-   		       pStartedDate Started_Date, pCompletedDate Completed_Date, 
+   		       pStartedDate Started_Date, pCompletedDate Completed_Date,
 			   bSuccess AS Success, bErrorCode AS ErrorCode, bErrorMsg AS ErrorMsg FROM DUAL;
 
 		--DBMS_OUTPUT.PUT_LINE(bErrorMsg);
-		
+
 	END ValidateSaveTestStatus;
-	
+
 	/**********************************************************
 	* PROCEDURE TO UPDATE THE TEST_ROSTER COMPLETION STATUS
 	* BASED ON THE ROSTER SUB-TEST COMPLETION STATUS
@@ -208,29 +208,33 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 
 	   --pRosterId NUMBER := 8662811;
 	   --pDeliveryStatus VARCHAR2(2);
-	   
+
 	   CURSOR curSISS IS
 	   SELECT Completion_Status, Item_set_Order FROM Student_Item_Set_Status
-	   WHERE Test_Roster_Id = pRosterId 
-       ORDER BY Item_set_Order;	   
-	   
+	   WHERE Test_Roster_Id = pRosterId
+       ORDER BY Item_set_Order;
+
 	   vFinalStatus VARCHAR2(2) := null;
 	BEGIN
-		
+
 		FOR rec_SISS IN curSISS LOOP
 		   --DBMS_OUTPUT.PUT_LINE('rec_SISS.Completion_Status is:'||rec_SISS.Completion_Status);
 		   CASE rec_SISS.Completion_Status
-				WHEN 'IP' THEN 
+				WHEN 'IP' THEN
 					vFinalStatus := 'IP';
 					EXIT;
-				WHEN 'IN' THEN 
+				WHEN 'IN' THEN
 				    IF pCurrSubTestStatus = 'IP' THEN
 					   vFinalStatus := 'IP';
 					ELSE
 					   vFinalStatus := 'IN';
 					END IF;
 					EXIT;
-				WHEN 'CO' THEN 
+				WHEN 'CO' THEN
+				    IF pCurrSubTestStatus = 'IP' THEN
+					   vFinalStatus := 'IP';
+					   EXIT;
+					END IF;
 				    IF vFinalStatus = 'SC' THEN
 					   vFinalStatus := 'IS';
 					   EXIT;
@@ -241,54 +245,51 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
                     CASE pCurrSubTestStatus
 					    WHEN 'IP' THEN
 					       vFinalStatus := 'IP';
-					       EXIT;	
-                      	WHEN 'IN' THEN   
+					       EXIT;
+                      	WHEN 'IN' THEN
 					       vFinalStatus := 'IN';
 					       EXIT;
-                        WHEN 'CO' THEN	
+                        WHEN 'CO' THEN
                             vFinalStatus := 'IS';
-                            EXIT;							
-						ELSE   
+                            EXIT;
+						ELSE
 					       vFinalStatus := 'SC';
                     END CASE;
-					
+
 				ELSE
-                  NULL;				
+                  NULL;
 		   END CASE;
 		END LOOP;
-		
+
 		-- Update the Roster Status,  Update with CO if all the subtest is complete
 		--DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
         IF vFinalStatus IS NOT NULL   THEN
-			
+
             IF vFinalStatus = 'CO' THEN
-				UPDATE Test_Roster ROS 
+				UPDATE Test_Roster ROS
 				SET Completion_Date_Time = pCompletionDate,
 				    Updated_Date_Time = SYSDATE,
-				   Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status 
+				   Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status
 					   WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)
 				WHERE Test_Roster_Id = pRosterId;
-		
-			ELSE 
-				UPDATE Test_Roster SET 
-				   Test_Completion_Status = vFinalStatus, 
+
+			ELSE
+				UPDATE Test_Roster SET
+				   Test_Completion_Status = vFinalStatus,
 				   Start_Date_Time = NVL(Start_Date_Time, pStartDate),
 				   Updated_Date_Time = SYSDATE
 				WHERE Test_Roster_ID = pRosterId;
 			END IF;
-			
-		END IF;	
+
+		END IF;
 
 	EXCEPTION
 	WHEN OTHERS THEN
 		DBMS_OUTPUT.PUT_LINE('SQL Error: While updating Test_Roster table:'||SQLERRM(SQLCODE));
 		ROLLBACK;
 	END UpdateRosterTestStatus;
-	
 
-    
+
+
 END PKG_BMTSYNC_TESTSTATUS;
 /
-
-set TERMOUT on
-PROMPT PKG_BMTSYNC_TESTSTATUS compiled
