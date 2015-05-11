@@ -2825,6 +2825,12 @@ public class ScheduleTestImpl implements ScheduleTest
                         	}
                         }
                     }
+                    
+                    // Changes for story OAS-2503 GA Summer '15 - EOC Operational : Assign All Students Form AU (ELA)
+                    if(productId.intValue() == 41 && newSession.getTestSession().getTestName()!=null && newSession.getTestSession().getTestName().indexOf("Literature and Composition")>=0) {
+                    	form="AU";
+                    }
+                    
                     RosterElement roster = new RosterElement();
                     //Integer testRosterId = rosters.getNextPK();
                     roster.setActivationStatus("AC");
@@ -3178,6 +3184,10 @@ public class ScheduleTestImpl implements ScheduleTest
                        }else{
                     		form = TestFormSelector.getFormWithLowestCountAndIncrement(formCounts);
                     	}
+                    }
+                    // Changes for story OAS-2503 GA Summer '15 - EOC Operational : Assign All Students Form AU (ELA)
+                    if(productId.intValue() == 41 && newSession.getTestSession().getTestName()!=null && newSession.getTestSession().getTestName().indexOf("Literature and Composition")>=0) {
+                    	form="AU";
                     }
                     re.setFormAssignment(form);
                     re.setCustomerFlagStatus(defaultCustomerFlagStatus);
