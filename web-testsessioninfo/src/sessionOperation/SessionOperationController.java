@@ -5447,6 +5447,8 @@ public class SessionOperationController extends PageFlowController {
      	
      	this.getSession().setAttribute("pageConfigPresent",pageConfigPresent(customerConfigs));
      	
+     	this.getSession().setAttribute("hasBulkStateReportExport", hasBulkStateReportExport(customerConfigs));
+     	
      	getConfigStudentLabel(customerConfigs);
      	
      	getStudentGrades(customerConfigs);     	
@@ -7125,6 +7127,23 @@ public class SessionOperationController extends PageFlowController {
 	        	
             }
 	    	return pageSizeconfig;
+	    }
+	    
+	    private boolean hasBulkStateReportExport(CustomerConfiguration[] customerConfigurations)
+	    {
+	    	boolean hasBulkStateReportExport = false;
+	    	for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                
+	        	if (cc.getCustomerConfigurationName().equalsIgnoreCase("Bulk_State_Report_Export") && cc.getDefaultValue().equals("T") )
+	            {
+	        		hasBulkStateReportExport = true;
+	            break;
+	            }
+	        	
+            }
+	    	return hasBulkStateReportExport;
 	    }
 	    
 	    private boolean isTabeLocatorSession(String productType)
@@ -9680,4 +9699,13 @@ public class SessionOperationController extends PageFlowController {
 		}
         return null;
     }
+    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success",  path = "bulk_state_export_report.jsp")
+        })
+        protected Forward tabeBulkStateReporting()
+        {  
+        	System.out.println("Redirected to Bulk State Report Export page...");
+            return new Forward("success");
+        }
 }
