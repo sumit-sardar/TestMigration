@@ -6,14 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.bea.control.annotations.TransactionAttribute;
-import com.bea.control.annotations.TransactionAttributeType;
+import org.apache.beehive.controls.api.bean.ControlInterface;
+
+import com.ctb.bean.testAdmin.AncestorOrgDetails;
 import com.ctb.bean.testAdmin.LASLicenseNode;
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.Program;
+import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudentData;
 import com.ctb.bean.testAdmin.StudentManifest;
-import org.apache.beehive.controls.api.bean.ControlInterface;
-import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.exception.CTBBusinessException;
 
 /**
  * Platform control provides functions related to test session
@@ -681,4 +684,39 @@ public interface ScheduleTest
 	com.ctb.bean.testAdmin.TestletLevelForm[] getTestletLevelForms(java.lang.String subject) throws com.ctb.exception.CTBBusinessException;
 	
 	void updateLicenseCountEditSessionCatalogChange(ScheduledSession session, Integer customerId) throws com.ctb.exception.CTBBusinessException;
+	
+	
+	/**
+     * Get the association of top level nodes for the user.
+     * @param userName
+     * @return Node []
+     * @throws CTBBusinessException
+     */
+    public Node[] getAllTopLevelNodesForUser(String userName) throws CTBBusinessException;
+    
+    /**
+	 * Returns the OrgNodeCategory[] list for the customer for which the orgNodeId is given as input
+	 * @param orgNodeId
+	 * @return OrgNodeCategory[]
+	 * @throws CTBBusinessException
+	 */
+	public OrgNodeCategory[] getCustomerOrgStructure(Integer orgNodeId)	throws CTBBusinessException;
+	
+	
+	/**
+	 * Returns the Parent-org-node list for the  given orgNodeId
+	 * @param orgNodeId
+	 * @return Node[]
+	 * @throws CTBBusinessException
+	 */
+	public Node[] getParentOrgDetails(Integer orgNodeId) throws CTBBusinessException;
+	
+	/**
+	 * Returns the Children-org-node list for the  given orgNodeId
+	 * @param orgNodeId
+	 * @return AncestorOrgDetails[]
+	 * @throws CTBBusinessException
+	 */
+	public AncestorOrgDetails[] getChildrenOrgDetails(Integer orgNodeId) throws CTBBusinessException;
+	
 } 

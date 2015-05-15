@@ -7203,3 +7203,141 @@ function validNumber(str){
 		url += "?testRosterId=" + selectedTestRosterId;
 		location.href = url;
 	}
+	
+	
+	
+// Start of Bulk Report
+function populateDataOptionsBulkReport(){
+ console.log('populateDataOptionsBulkReport');
+	$.ajax({
+		async:		true,
+		beforeSend:	function(){	
+						UIBlock();	
+					},
+		url:		'getLoginUserOrgHierarchyBulkReport.do', 
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){
+						populateOrgListOptionsBulkReport(data.topLevelNodes);
+						populateOrgHiearchyOptions(data.parentHierarchyDetails,data.orgNodeCategoryList, data.childLevelNodes);
+						$.unblockUI();		
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();
+						window.location.href="error.do";
+					}
+	});
+}
+
+
+function populateOrgHiearchyOptions(parentHierarchyDetails,orgNodeCategoryList,childLevelNodes){
+	var html = '';
+	for(var index=0 ; index<orgNodeCategoryList.length ; index++ ){
+		html += '<tr class="transparent">';
+		html += '<td style="text-align:left; width:20%;" class="transparent" > '+ orgNodeCategoryList[index].categoryName + '&nbsp;:</td>';
+		if(index < parentHierarchyDetails.length){
+			html += '<td style="text-align:left; width:80%;" class="transparent"> '+ parentHierarchyDetails[index].orgNodeName + '&nbsp;</td>';
+		}
+		else if(index == parentHierarchyDetails.length ){
+			html += '<td style="text-align:left; width:80%;" class="transparent">';
+			html += '<select class="clsName" id="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" name="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option"  style="width: 152px;">';
+		 	html += '<option  id="20">'+ $("#labelBulkReport").val()+'</option>';
+		 	html += '<option  id="21">'+ $("#labelBulkReport").val()+'</option>';
+		 	html += '</select>';
+		 	html += '</td>';
+		}
+		else {
+			html += '<td style="text-align:left; width:80%;" class="transparent" >';
+			html += '<select class="clsName" id="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" name="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" style="width: 152px;" disabled="disabled">';
+		 	html += '<option  id="2">'+ $("#labelBulkReport").val()+'</option>';
+		 	html += '</select>';
+		 	html += '</td>';
+		}
+		html += '</tr>';
+	}
+	$("#criteriaOrgListBulkReport").html(html);
+	$(".clsName").change(function(){
+		var id=$(this).attr('id');
+		console.log('Change' + id);
+		populateOrgLevelDetails(orgNodeCategoryList);
+	})
+}
+
+function populateOrgLevelDetails(data){
+	console.log(data);
+}
+
+function populateOrgListOptionsBulkReport(data){
+ console.log('populateOrgListOptionsBulkReport');
+	if(data.length > 1){
+		$("#orgNameOptionsBulkReportLbl").show();
+		$("#orgNameOptionsBulkReport").show();
+		$("#orgNameOptionsBulkReportLbl").addClass("subtitle");
+		$("#orgNameOptionsBulkReport").addClass("subtitle");		
+		fillOrgNameOptionsBulkReport('orgNameOptionsBulkReport',data);
+	}
+}
+
+function fillOrgNameOptionsBulkReport(elementId, options) {
+	var selectElement = document.getElementById(elementId);
+	var optionHtml = '' ;
+	for(var i = 0; i < options.length; i++ ) {		     
+		optionHtml += '<option  value="'+ options[i].orgNodeId+'">'+ options[i].orgNodeName+'</option>';	
+	}
+	$(selectElement).html(optionHtml);
+}
+
+function getOrgListForBulkReport(){
+	console.log('getOrgListForBulkReport');	
+ 	var selectElement = document.getElementById("orgNameOptionsBulkReport");
+	var chosenOption = selectElement.options[selectElement.selectedIndex];
+	var postDataObject = {};
+	postDataObject.selectedOrgId = chosenOption.value;
+	$.ajax({
+		async:		true,
+		beforeSend:	function(){	
+						UIBlock();	
+					},
+		url:		'getSelectedOrgHierarchyBulkReport.do', 
+		type:		'POST',
+		data:		postDataObject,
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){
+						populateOrgHiearchyOptions(data.parentHierarchyDetails,data.orgNodeCategoryList);
+						$.unblockUI();		
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();
+						window.location.href="error.do";
+					}
+	  
+	});
+}
+
+
+/**
+function testDateRangeHandler(radio){
+ 	console.log('Radio' + radio.value);
+ 	if(radio.value == "AllDates"){
+ 		$("#startDateBulkReport").attr('disabled',true);
+ 		$("#endDateBulkReport").attr('disabled',true);
+ 	}else if (radio.value == "DateRange"){
+ 		$("#startDateBulkReport").removeAttr('disabled');
+ 		$("#endDateBulkReport").removeAttr('disabled');
+ 	}
+}**/
+$(document).ready(function(){
+		$('.radioDate').change(function(){
+			var chkid=$(this).attr('id');
+			if($(this).prop('checked') && chkid=='bukExportAllDates'){
+				$("#startDateBulkReport").attr('disabled',true);
+		 		$("#endDateBulkReport").attr('disabled',true);
+			}else{
+				$("#startDateBulkReport").removeAttr('disabled');
+		 		$("#endDateBulkReport").removeAttr('disabled');
+		}
+		
+		})
+});
+// End of Bulk Report
+	

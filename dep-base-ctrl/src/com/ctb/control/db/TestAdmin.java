@@ -1,17 +1,21 @@
 package com.ctb.control.db; 
 
-import com.bea.control.*;
+import java.sql.SQLException;
+import java.util.Date;
+
+import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
 import com.ctb.bean.testAdmin.ActiveSession;
+import com.ctb.bean.testAdmin.AncestorOrgDetails;
 import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.LicenseNodeData;
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.OrgNodeRosterCount;
 import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.SubtestAccessCodeDetail;
-import com.ctb.bean.testAdmin.TestSession; 
-import java.sql.SQLException;
-import java.util.Date; 
-import org.apache.beehive.controls.api.bean.ControlExtension;
+import com.ctb.bean.testAdmin.TestSession;
 
 /** 
  * Defines a new database control. 
@@ -1071,4 +1075,25 @@ public interface TestAdmin extends JdbcControl
     
     @JdbcControl.SQL(statement = "SELECT COUNT(1) AS subtestCount FROM ITEM_SET ISET WHERE {sql: itemSetIdList} AND ISET.ACTIVATION_STATUS = 'AC' AND ISET.ITEM_SET_LEVEL <> 'L' AND ISET.ITEM_SET_TYPE = 'TS'")
     java.lang.Integer getSubtestCount(String itemSetIdList) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement = "select org.org_node_id  as orgNodeId, org.org_node_category_id as orgNodeCategoryId, org.org_node_name   as orgNodeName from org_node org, user_role ur, users u, org_node_category onc where ur.user_id = u.user_id and ur.org_node_id = org.org_node_id and org.org_node_category_id = onc.org_node_category_id and org.activation_status = 'AC' and ur.activation_status = 'AC' and u.activation_status = 'AC' and u.user_name = {userName} order by onc.category_level ,org.org_node_name, org.org_node_id ",
+    		arrayMaxLength = 0, fetchSize = 100)
+    Node[] getTopLevelOrgNodeForUser(String userName) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement = "select onc.category_name  as categoryName, onc.category_level as categoryLevel, onc.org_node_category_id as orgNodeCategoryId from org_node org, org_node_category onc where org.customer_id = onc.customer_id and onc.activation_status = 'AC' and onc.is_group = 'F' and org.org_node_id = {orgNodeId} and org.activation_status = 'AC' order by onc.category_level ",
+    		arrayMaxLength = 0, fetchSize = 100)
+    OrgNodeCategory[] getOrgNodeCategoryListForCustomer(Integer orgNodeId) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement = "select org.org_node_id as orgNodeId, org.org_node_category_id as orgNodeCategoryId, org.org_node_name as orgNodeName from org_node_ancestor ona, org_node org where ona.ancestor_org_node_id = org.org_node_id and org.activation_status = 'AC' and ona.org_node_id = {orgNodeId} and ona.ancestor_org_node_id not in (1, 2) order by ona.number_of_levels desc ",
+    		arrayMaxLength = 0, fetchSize = 100)
+    Node[] getParentOrgDetails(Integer orgNodeId) throws SQLException;
+   
+    
+    @JdbcControl.SQL(statement = " select org.org_node_name   as orgNodeName, org.org_node_id  as orgNodeId, org.org_node_category_id as orgNodeCategoryId, onp.parent_org_node_id  as parentOrgNodeId, onc.category_level   as categoryLevel, onc.category_name  as orgNodeCategoryName from org_node   org, org_node_category onc, org_node_ancestor ona, org_node_parent   onp where org.org_node_id = ona.org_node_id and org.org_node_id = onp.org_node_id and org.org_node_category_id = onc.org_node_category_id and ona.ancestor_org_node_id = {orgNodeId} and org.activation_status = 'AC' and onc.activation_status = 'AC' order by onc.category_level, org.org_node_name ",
+    		arrayMaxLength = 0, fetchSize = 100)
+    AncestorOrgDetails[] getChildrenOrgDetails(Integer orgNodeId) throws SQLException;
+    
 }

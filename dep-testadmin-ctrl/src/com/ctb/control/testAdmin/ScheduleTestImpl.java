@@ -1,6 +1,5 @@
 package com.ctb.control.testAdmin; 
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,8 +15,6 @@ import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.naming.InitialContext;
-
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
 import com.ctb.bean.request.FilterParams;
@@ -28,6 +25,7 @@ import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.request.SortParams.SortParam;
 import com.ctb.bean.request.SortParams.SortType;
 import com.ctb.bean.request.testAdmin.FormAssignmentCount;
+import com.ctb.bean.testAdmin.AncestorOrgDetails;
 import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
@@ -35,6 +33,7 @@ import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.LicenseNodeData;
 import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.OrgNodeRosterCount;
 import com.ctb.bean.testAdmin.OrgNodeStudent;
 import com.ctb.bean.testAdmin.ProctorAssignment;
@@ -69,7 +68,6 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
-import com.ctb.control.db.StudentItemSetStatus;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.request.InvalidFilterFieldException;
 import com.ctb.exception.testAdmin.CustomerConfigurationDataNotFoundException;
@@ -77,6 +75,7 @@ import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
 import com.ctb.exception.testAdmin.InvalidNoOfProgramsException;
 import com.ctb.exception.testAdmin.ManifestUpdateFailException;
 import com.ctb.exception.testAdmin.NotEditableManifestException;
+import com.ctb.exception.testAdmin.OrgNodeCategoryDataNotFound;
 import com.ctb.exception.testAdmin.OrgNodeDataNotFoundException;
 import com.ctb.exception.testAdmin.ProductDataNotFoundException;
 import com.ctb.exception.testAdmin.RosterDataNotFoundException;
@@ -90,7 +89,6 @@ import com.ctb.exception.testAdmin.TransactionTimeoutException;
 import com.ctb.exception.testAdmin.UserDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.SimpleCache;
-import com.ctb.util.request.Filterer;
 import com.ctb.util.testAdmin.AccessCodeGenerator;
 import com.ctb.util.testAdmin.PasswordGenerator;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
@@ -5313,4 +5311,101 @@ public class ScheduleTestImpl implements ScheduleTest
 		}
 		return modifiedArray;
 	}
+    
+    
+    /**
+	 * Get the association of top level nodes for the user.
+	 * 
+	 * @param userName
+	 * @return Node []
+	 * @throws CTBBusinessException
+	 */
+	public Node[] getAllTopLevelNodesForUser(String userName)
+			throws CTBBusinessException {
+		Node[] associatedTopOrgNodes = null;
+		try {
+			associatedTopOrgNodes = admins.getTopLevelOrgNodeForUser(userName);
+			return associatedTopOrgNodes;
+
+		} catch (SQLException se) {
+			OrgNodeDataNotFoundException oe = new OrgNodeDataNotFoundException(
+					"StudentManagementImpl: getAllTopLevelNodesForUser : "
+							+ se.getMessage());
+			oe.setStackTrace(se.getStackTrace());
+			throw oe;
+		}
+
+	}
+
+	/**
+	 * Returns the OrgNodeCategory[] list for the customer for which the
+	 * orgNodeId is given as input
+	 * 
+	 * @param orgNodeId
+	 * @return OrgNodeCategory[]
+	 * @throws CTBBusinessException
+	 */
+	public OrgNodeCategory[] getCustomerOrgStructure(Integer orgNodeId)
+			throws CTBBusinessException {
+
+		OrgNodeCategory[] orgStructure = null;
+		try {
+			orgStructure = admins.getOrgNodeCategoryListForCustomer(orgNodeId);
+			return orgStructure;
+
+		} catch (SQLException se) {
+			OrgNodeCategoryDataNotFound oe = new OrgNodeCategoryDataNotFound(
+					"StudentManagementImpl: getCustomerOrgStructure : "
+							+ se.getMessage());
+			oe.setStackTrace(se.getStackTrace());
+			throw oe;
+		}
+	}
+
+	/**
+	 * Returns the Parent-org-node list for the given orgNodeId
+	 * 
+	 * @param orgNodeId
+	 * @return Node[]
+	 * @throws CTBBusinessException
+	 */
+	public Node[] getParentOrgDetails(Integer orgNodeId)
+			throws CTBBusinessException {
+
+		Node[] topOrgDetails = null;
+		try {
+			topOrgDetails = admins.getParentOrgDetails(orgNodeId);
+			return topOrgDetails;
+
+		} catch (SQLException se) {
+			OrgNodeDataNotFoundException oe = new OrgNodeDataNotFoundException(
+					"StudentManagementImpl: getParentOrgDetails : "
+							+ se.getMessage());
+			oe.setStackTrace(se.getStackTrace());
+			throw oe;
+		}
+	}
+	
+	/**
+	 * Returns the Children-org-node list for the  given orgNodeId
+	 * @param orgNodeId
+	 * @return AncestorOrgDetails[]
+	 * @throws CTBBusinessException
+	 */
+	public AncestorOrgDetails[] getChildrenOrgDetails(Integer orgNodeId) throws CTBBusinessException{
+		AncestorOrgDetails[] childOrgDetails = null;
+		try {
+			childOrgDetails = admins.getChildrenOrgDetails(orgNodeId);
+			return childOrgDetails;
+
+		} catch (SQLException se) {
+			OrgNodeDataNotFoundException oe = new OrgNodeDataNotFoundException(
+					"StudentManagementImpl: getParentOrgDetails : "
+							+ se.getMessage());
+			oe.setStackTrace(se.getStackTrace());
+			throw oe;
+		}
+		
+	}
+    
 } 

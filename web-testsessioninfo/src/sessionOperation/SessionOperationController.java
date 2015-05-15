@@ -41,6 +41,8 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.request.FilterParams.FilterType;
+import com.ctb.bean.testAdmin.AncestorOrgDetails;
+import com.ctb.bean.testAdmin.BulkReportData;
 import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
@@ -9700,12 +9702,150 @@ public class SessionOperationController extends PageFlowController {
         return null;
     }
     
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success",  path = "bulk_state_export_report.jsp")
-        })
-        protected Forward tabeBulkStateReporting()
-        {  
-        	System.out.println("Redirected to Bulk State Report Export page...");
-            return new Forward("success");
-        }
+    /*
+	 * Start of Bulk State Reporting 
+	 **/
+
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "bulk_state_export_report.jsp") })
+	protected Forward tabeBulkStateReporting() {
+		System.out.println("Redirected to Bulk State Report Export page...");
+		return new Forward("success");
+	}
+
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") })
+	protected Forward getLoginUserOrgHierarchyBulkReport() {
+		System.out.println("getLoginUserOrgHierarchy");
+		OutputStream stream = null;
+		HttpServletResponse resp = null;
+		try {
+			resp = getResponse();
+			resp.setCharacterEncoding("UTF-8");
+			BulkReportData bulkReportData = new BulkReportData();
+			if (this.userName == null) {
+				getLoggedInUserPrincipal();
+			}
+			Node[] associatedNodes = scheduleTest
+					.getAllTopLevelNodesForUser(this.userName);
+			bulkReportData.setTopLevelNodes(associatedNodes);
+			if (associatedNodes != null) {
+				populateOrgStructureForReport(
+						associatedNodes[0].getOrgNodeId(), bulkReportData);
+			}
+			Gson gson = new Gson();
+			String json = gson.toJson(bulkReportData);
+			resp.setContentType(CONTENT_TYPE_JSON);
+			resp.flushBuffer();
+			stream = resp.getOutputStream();
+			stream.write(json.getBytes("UTF-8"));
+
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err
+					.println("Exception while getLoginUserOrgHierarchy for Bulk Report.");
+			e.printStackTrace();
+		} finally {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+
+	}
+
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") })
+	protected Forward getSelectedOrgHierarchyBulkReport() {
+		System.out.println("getSelectedOrgHierarchyBulkReport");
+		OutputStream stream = null;
+		HttpServletResponse resp = null;
+		try {
+			resp = getResponse();
+			resp.setCharacterEncoding("UTF-8");
+			BulkReportData bulkReportData = new BulkReportData();
+			Integer associatedOrgNodeId = Integer.valueOf(this.getRequest()
+					.getParameter("selectedOrgId"));
+			if (associatedOrgNodeId == null) {
+				return null;
+			}
+			populateOrgStructureForReport(associatedOrgNodeId, bulkReportData);
+			Gson gson = new Gson();
+			String json = gson.toJson(bulkReportData);
+			resp.setContentType(CONTENT_TYPE_JSON);
+			resp.flushBuffer();
+			stream = resp.getOutputStream();
+			stream.write(json.getBytes("UTF-8"));
+
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err
+					.println("Exception while getSelectedOrgHierarchyBulkReport for Bulk Report.");
+			e.printStackTrace();
+		} finally {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+
+	}
+
+	/**
+	 * Populates the org structure for the bulk state reporting
+	 * @param orgNodeId
+	 */
+	private void populateOrgStructureForReport(Integer orgNodeId,
+			BulkReportData bulkReportData) throws Exception {
+		OrgNodeCategory[] customerHierarchyStructure = null;
+		Node[] parentOrgDetails = null;
+		AncestorOrgDetails[] childrenOrgNodes = null;
+		AncestorOrgDetails childTopNode = null;
+		try {
+			customerHierarchyStructure = scheduleTest
+					.getCustomerOrgStructure(orgNodeId);
+			parentOrgDetails = scheduleTest.getParentOrgDetails(orgNodeId);
+			childrenOrgNodes = scheduleTest.getChildrenOrgDetails(orgNodeId);
+			childTopNode = processChildrenNodesList(childrenOrgNodes);
+			bulkReportData.setOrgNodeCategoryList(customerHierarchyStructure);
+			bulkReportData.setParentHierarchyDetails(parentOrgDetails);
+			bulkReportData.setChildLevelNodes(childTopNode);
+		} catch (Exception e) {
+			System.err
+					.println("Exception while populateOrgStructureForReport for Bulk Report.");
+			throw e;
+		}
+	}
+
+	private AncestorOrgDetails processChildrenNodesList(
+			AncestorOrgDetails[] childrenOrgNodes) throws Exception {
+		try {
+			Map<Integer, AncestorOrgDetails> nodeDetailsMap = new HashMap<Integer, AncestorOrgDetails>();
+			for (int index = 0; index < childrenOrgNodes.length; index++) {
+				AncestorOrgDetails orgDetails = childrenOrgNodes[index];
+				Integer orgNodeId = orgDetails.getOrgNodeId();
+				Integer parentId = orgDetails.getParentOrgNodeId();
+				nodeDetailsMap.put(orgNodeId, orgDetails);
+				if (index != 0) {
+					nodeDetailsMap.get(parentId).getChildrenNodes().add(
+							orgDetails);
+				}
+			}
+			return nodeDetailsMap.get(0);
+		} catch (Exception e) {
+			System.err
+					.println("Exception while processChildrenNodesList for Bulk Report.");
+			throw e;
+		}
+	}
+
+	/*
+	 * End of Bulk State Reporting 
+	 * */
+	
 }

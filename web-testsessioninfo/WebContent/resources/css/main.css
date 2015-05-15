@@ -211,6 +211,17 @@ td.toolbar a.selected {
 	cursor: default;
 }
 
+bulkReportTable{
+	color: #003399;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    text-align: center; 
+    width: 100%;
+    border : 1px solid #ffffff;
+    
+}
 
 table.bodyLayout {
     color: #003399;
