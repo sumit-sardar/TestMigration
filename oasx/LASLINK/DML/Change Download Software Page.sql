@@ -1,4 +1,4 @@
---OAS 2463 Change Download Software Page
+--Story Id : OAS 2463 Change Download Software Page 
 insert into resource_type (resource_type_code , resource_type_desc) values ('JRE_URL','Java SE Runtime Environment URL');
 insert into resource_type (resource_type_code , resource_type_desc) values ('ADOBE_AIR','Adobe AIR Runtime URL');
 insert into resource_type (resource_type_code , resource_type_desc) values ('FLASH_PL','Flash player URL');
