@@ -17,6 +17,7 @@
     <netui-template:section name="bodySection">
     <netui:form action="tabeBulkStateReporting">
     <input type="hidden" id="menuId" name="menuId" value="reportsLink" />
+    <input type="hidden" id="invalidDatesBulkReport" value=<lb:label key="common.invalidDates.message" prefix="'" suffix="'"/> />
 		<table width="75%" border="0" style="margin-left: 15px;"> 
 			<tr>
 				<td style="padding-left:5px;">
@@ -40,24 +41,31 @@
 				</td>
 			</tr>
 		</table>
-		
-		
-		<div id="displayMessageBulkReport"
-			style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; margin-bottom: 5px; padding: 2px 2px 2px 10px; color: black;">
-		
-		<table width="99.5%">
+
+		<table id="displayMessageBulkReport" style="display: none;">
 			<tbody>
 				<tr>
-					<td valign="middle" width="18"></td>
-					<td valign="middle">
-					<div id="messageTitleBulkReport" style="display: none; font-weight: bold;"></div>
-					<div id="messageBulkReport" style="display: none;"></div>
-
+					<td collspan="3">&nbsp;</td>
+				</tr>
+				<tr>
+					<td width="18">
+						&nbsp;&nbsp;&nbsp;&nbsp;
+					</td>
+					<td width="18" valign="top" rowspan="3">
+						<img width="16" height="16" border="0" src="/SessionWeb/resources/images/messaging/icon_error.gif">&nbsp;&nbsp;
+					</td>
+					<td valign="top">
+						<table>
+							<tbody>
+								<tr>
+									<td><font style="color: red; font-size:12px; font-weight:bold"><div id="messageBulkReport"></div></font></td>
+								</tr>
+							</tbody>
+						</table>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-		</div>
 
 
 

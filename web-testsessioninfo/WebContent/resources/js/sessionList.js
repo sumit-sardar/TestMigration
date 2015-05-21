@@ -7208,7 +7208,7 @@ function validNumber(str){
 	
 // Start of Bulk Report
 function populateDataOptionsBulkReport(){
- console.log('populateDataOptionsBulkReport');
+ // console.log('populateDataOptionsBulkReport');
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){	
@@ -7234,41 +7234,89 @@ function populateOrgHiearchyOptions(parentHierarchyDetails,orgNodeCategoryList,c
 	var html = '';
 	for(var index=0 ; index<orgNodeCategoryList.length ; index++ ){
 		html += '<tr class="transparent">';
-		html += '<td style="text-align:left; width:20%;" class="transparent" > '+ orgNodeCategoryList[index].categoryName + '&nbsp;:</td>';
-		if(index < parentHierarchyDetails.length){
-			html += '<td style="text-align:left; width:80%;" class="transparent"> '+ parentHierarchyDetails[index].orgNodeName + '&nbsp;</td>';
-		}
-		else if(index == parentHierarchyDetails.length ){
+		html += '<td style="text-align:left; width:20%;" class="transparent" >'+ orgNodeCategoryList[index].categoryName + ':</td>';
+		if(index < parentHierarchyDetails.length) {
+			// index == 0 => State
+			// index == 1 => District
+			html += '<td style="text-align:left; width:80%;" class="transparent">'+ parentHierarchyDetails[index].orgNodeName + '<input type="hidden" class="clsLabel-'+index+'" value="'+(parseInt(index) + 1)+'_'+parentHierarchyDetails[index].orgNodeId+'" /></td>';
+		} else if(index == parentHierarchyDetails.length) {
+			// index == 2 => School
 			html += '<td style="text-align:left; width:80%;" class="transparent">';
-			html += '<select class="clsName" id="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" name="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option"  style="width: 152px;">';
-		 	html += '<option  id="20">'+ $("#labelBulkReport").val()+'</option>';
-		 	html += '<option  id="21">'+ $("#labelBulkReport").val()+'</option>';
-		 	html += '</select>';
-		 	html += '</td>';
-		}
-		else {
+			html += '<select class="clsName clsName-'+index+'" id="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" name="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option"  style="width: 152px;">';
+			html += '<option  id="-1" value="'+(parseInt(index) + 1)+'_-1">'+ $("#labelBulkReport").val()+'</option>';
+			for(var i=0 ; i<childLevelNodes.childrenNodes.length ; i++ ) {
+				html += '<option  id="'+childLevelNodes.childrenNodes[i].orgNodeId+'" value="' + (parseInt(index) + 1) + '_' + childLevelNodes.childrenNodes[i].orgNodeId+'">'+ childLevelNodes.childrenNodes[i].orgNodeName +'</option>';
+			}
+			html += '</select>';
+			html += '</td>';
+		} else {
+			// index == 3 => Class
 			html += '<td style="text-align:left; width:80%;" class="transparent" >';
-			html += '<select class="clsName" id="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" name="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" style="width: 152px;" disabled="disabled">';
-		 	html += '<option  id="2">'+ $("#labelBulkReport").val()+'</option>';
-		 	html += '</select>';
-		 	html += '</td>';
+			html += '<select class="clsName clsName-'+index+'" id="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" name="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" style="width: 152px;" disabled="disabled">';
+			html += '<option  id="-1" value="'+(parseInt(index) + 1)+'_-1">'+ $("#labelBulkReport").val()+'</option>';
+			html += '</select>';
+			html += '</td>';
 		}
 		html += '</tr>';
 	}
 	$("#criteriaOrgListBulkReport").html(html);
 	$(".clsName").change(function(){
-		var id=$(this).attr('id');
-		console.log('Change' + id);
-		populateOrgLevelDetails(orgNodeCategoryList);
+		// var optionSelected = $("option:selected", this);
+    	var valueSelected = this.value;
+		//console.log('org  id = ' + valueSelected);
+		populateOrgLevelDetails(valueSelected, childLevelNodes, orgNodeCategoryList); // 
 	})
 }
 
-function populateOrgLevelDetails(data){
-	console.log(data);
+function populateOrgLevelDetails(level_id, data, orgNodeCategoryList){
+	//console.log(JSON.stringify(data));
+	var arr = level_id.split("_");
+	var level = arr[0];
+	var id = arr[1];
+	var node = traverseChildren(data, id);
+	if(node != null) {
+		//console.log(id + ": " + node.orgNodeId + " = " + node.orgNodeName);
+		var html = '';
+		html += '<option  id="-1" value="'+(parseInt(level) + 1)+'_-1">'+ $("#labelBulkReport").val()+'</option>';
+		for(var j=0 ; j<node.childrenNodes.length ; j++) {
+			html += '<option  id="'+node.childrenNodes[j].orgNodeId+'" value="'+(parseInt(level) + 1)+'_'+node.childrenNodes[j].orgNodeId+'">'+ node.childrenNodes[j].orgNodeName +'</option>';
+		}
+		$(".clsName-" + level).html(html);
+		$(".clsName-" + level).removeAttr("disabled");
+		//console.log("Children populated successfully");
+	} else {
+		//console.log("No children with id = " + id);
+		disableOrgLevelDetails(level, orgNodeCategoryList);
+	}
 }
 
+function disableOrgLevelDetails(level, orgNodeCategoryList) {
+	for(var index=0 ; index<orgNodeCategoryList.length ; index++ ){
+		if(index >= parseInt(level)) {
+			var html = '<option  id="-1" value="'+index+'_-1">'+ $("#labelBulkReport").val()+'</option>';
+			$(".clsName-" + index).html(html);
+			$(".clsName-" + index).attr("disabled", "disabled");
+		}
+	}
+}
+
+function traverseChildren(data, id) {
+	if("" + data.orgNodeId == id) {
+		return data;
+	}
+	if(data.childrenNodes && data.childrenNodes.length > 0) {
+		for(var i=0; i<data.childrenNodes.length; i++) {
+			var node = traverseChildren(data.childrenNodes[i], id);
+			if(node != null) {
+				return node;
+			}
+		}
+	}
+	return null;
+} 
+
 function populateOrgListOptionsBulkReport(data){
- console.log('populateOrgListOptionsBulkReport');
+ //console.log('populateOrgListOptionsBulkReport');
 	if(data.length > 1){
 		$("#orgNameOptionsBulkReportLbl").show();
 		$("#orgNameOptionsBulkReport").show();
@@ -7288,7 +7336,7 @@ function fillOrgNameOptionsBulkReport(elementId, options) {
 }
 
 function getOrgListForBulkReport(){
-	console.log('getOrgListForBulkReport');	
+	//console.log('getOrgListForBulkReport');	
  	var selectElement = document.getElementById("orgNameOptionsBulkReport");
 	var chosenOption = selectElement.options[selectElement.selectedIndex];
 	var postDataObject = {};
@@ -7303,7 +7351,7 @@ function getOrgListForBulkReport(){
 		data:		postDataObject,
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){
-						populateOrgHiearchyOptions(data.parentHierarchyDetails,data.orgNodeCategoryList);
+						populateOrgHiearchyOptions(data.parentHierarchyDetails,data.orgNodeCategoryList, data.childLevelNodes);
 						$.unblockUI();		
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -7314,10 +7362,9 @@ function getOrgListForBulkReport(){
 	});
 }
 
-
 /**
 function testDateRangeHandler(radio){
- 	console.log('Radio' + radio.value);
+ 	//console.log('Radio' + radio.value);
  	if(radio.value == "AllDates"){
  		$("#startDateBulkReport").attr('disabled',true);
  		$("#endDateBulkReport").attr('disabled',true);
@@ -7326,12 +7373,83 @@ function testDateRangeHandler(radio){
  		$("#endDateBulkReport").removeAttr('disabled');
  	}
 }**/
+
+function downloadBulkReportCSV(e) {
+	//console.log('downloadBulkReportCSV');
+	var radioDate = $("input[name=bukExportDateSelection]:checked").val();
+	var startDateBulkReport = new Date($("#startDateBulkReport").val());
+	var endDateBulkReport = new Date($("#endDateBulkReport").val());
+	if(radioDate == "DateRange" && startDateBulkReport > endDateBulkReport) {
+		//alert("startDate > endDate");
+		$("#displayMessageBulkReport").show();
+		//$("#messageTitleBulkReport").show();
+		//$("#messageBulkReport").show();
+		$("#messageBulkReport").html("<b>" + $("#invalidDatesBulkReport").val() + "</b>");
+		
+	} else {
+		$("#messageBulkReport").html("");
+		$("#displayMessageBulkReport").hide();
+	}
+
+	var orgArr = [];
+	var count = 0;
+	var clsLabels = $('input[class^="clsLabel-"]');
+	//console.log("clsLabels.length = " + clsLabels.length);
+	clsLabels.each(function(i){
+		orgArr[count] = this.value;
+		count = count + 1;
+	});
+
+	var clsNames = $('select.clsName');
+	//console.log("clsNames.length = " + clsNames.length);
+	clsNames.each(function(i){
+		orgArr[count] = this.value;
+		count = count + 1;
+	});
+	
+	//var jsonStr = '{"radioDate" : "'+radioDate+'", "startDateBulkReport" : "'+$("#startDateBulkReport").val()+'", "endDateBulkReport" : "'+$("#endDateBulkReport").val()+'", "orgArr": "'+orgArr+'"}';
+	//console.log(jsonStr);
+	
+	
+	var postDataObject = {};
+	postDataObject.radioDate = radioDate;
+	postDataObject.startDateBulkReport = $("#startDateBulkReport").val();
+	postDataObject.endDateBulkReport = $("#endDateBulkReport").val();
+	postDataObject.orgArr = "" + orgArr;
+	$.ajax({
+		async:		true,
+		beforeSend:	function(){	
+						UIBlock();	
+					},
+		url:		'downloadBulkReportCSV.do', 
+		type:		'POST',
+		data:		postDataObject,
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){
+						// File Download
+						//console.log("Success: downloadBulkReportCSV");
+						$.unblockUI();		
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();
+						window.location.href="error.do";
+					}
+	  
+	});
+	
+	
+}
+
 $(document).ready(function(){
 		$('.radioDate').change(function(){
 			var chkid=$(this).attr('id');
 			if($(this).prop('checked') && chkid=='bukExportAllDates'){
 				$("#startDateBulkReport").attr('disabled',true);
 		 		$("#endDateBulkReport").attr('disabled',true);
+		 		$("#messageBulkReport").html("");
+				$("#displayMessageBulkReport").hide();
+				//$("#messageTitleBulkReport").hide();
+				//$("#messageBulkReport").hide();
 			}else{
 				$("#startDateBulkReport").removeAttr('disabled');
 		 		$("#endDateBulkReport").removeAttr('disabled');

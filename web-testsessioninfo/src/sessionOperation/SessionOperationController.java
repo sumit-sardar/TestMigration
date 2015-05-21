@@ -9712,9 +9712,9 @@ public class SessionOperationController extends PageFlowController {
 		return new Forward("success");
 	}
 
-	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") })
+	@Jpf.Action()
 	protected Forward getLoginUserOrgHierarchyBulkReport() {
-		System.out.println("getLoginUserOrgHierarchy");
+		System.out.println("getLoginUserOrgHierarchyBulkReport");
 		OutputStream stream = null;
 		HttpServletResponse resp = null;
 		try {
@@ -9740,8 +9740,7 @@ public class SessionOperationController extends PageFlowController {
 
 		} catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			System.err
-					.println("Exception while getLoginUserOrgHierarchy for Bulk Report.");
+			System.err.println("Exception while getLoginUserOrgHierarchyBulkReport for Bulk Report.");
 			e.printStackTrace();
 		} finally {
 			if (stream != null) {
@@ -9780,8 +9779,7 @@ public class SessionOperationController extends PageFlowController {
 
 		} catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			System.err
-					.println("Exception while getSelectedOrgHierarchyBulkReport for Bulk Report.");
+			System.err.println("Exception while getSelectedOrgHierarchyBulkReport for Bulk Report.");
 			e.printStackTrace();
 		} finally {
 			if (stream != null) {
@@ -9795,6 +9793,72 @@ public class SessionOperationController extends PageFlowController {
 		return null;
 
 	}
+
+	@Jpf.Action(
+		forwards = { 
+			@Jpf.Forward(name = "error", path = "bulk_state_export_report.jsp")
+		}
+	)
+	protected Forward downloadBulkReportCSV() {
+		System.out.println("downloadBulkReportCSV");
+
+		try {
+		    	String radioDate = this.getRequest().getParameter("radioDate");
+		    	String startDateBulkReport = this.getRequest().getParameter("startDateBulkReport");
+		    	String endDateBulkReport = this.getRequest().getParameter("endDateBulkReport");
+		    	String orgArr = this.getRequest().getParameter("orgArr");
+		    	
+		    	System.out.println("radioDate = " + radioDate);
+		    	System.out.println("startDateBulkReport = " + startDateBulkReport);
+		    	System.out.println("endDateBulkReport = " + endDateBulkReport);
+		    	System.out.println("orgArr = " + orgArr);
+		    	
+		    	Map<String, String> orgHierarchyMap = getOrgHierarchyMap(orgArr);
+		    	
+		    	System.out.println("orgHierarchyMap = " + orgHierarchyMap);
+		    	
+		    	/*try {
+        		    	byte[] data = "In Progress: OAS - 2732".getBytes();
+        		    	String fileName = "BulkReport.csv";
+        		    	HttpServletResponse resp = this.getResponse();        
+        		        String bodypart = "attachment; filename=\"" + fileName + "\" ";
+        		
+        		        resp.setContentType("text/csv");
+        		        resp.setHeader("Content-Disposition", bodypart);
+        		        resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+        		        resp.setHeader("Cache-Control", "cache");
+        		        resp.setHeader("Pragma", "public");
+        		        resp.flushBuffer();
+        		
+        		        OutputStream stream = resp.getOutputStream();
+        		        stream.write(data);
+        		        stream.close();
+		    	} catch (Exception e) {
+    		    		System.err.println("Exception while wtite to stream: downloadBulkReportCSV for Bulk Report.");
+    		    		e.printStackTrace();
+		    	}*/
+
+		} catch (Exception e) {
+			System.err.println("Exception while downloadBulkReportCSV for Bulk Report.");
+			e.printStackTrace();
+		} finally {
+			System.out.println("Finally block: downloadBulkReportCSV");
+		}
+		return null;
+	}
+	
+	private Map<String, String> getOrgHierarchyMap(String orgArr) {
+	    	Map<String, String> orgHierarchyMap = new LinkedHashMap<String, String>();
+        	if (orgArr != null && !orgArr.isEmpty()) {
+        	    for (String level_orgNodeIds : orgArr.split(",")) {
+        		String[] level_orgNodeId = level_orgNodeIds.split("_");
+        		String level = level_orgNodeId[0];
+        		String orgNodeId = level_orgNodeId[1];
+        		orgHierarchyMap.put(level, orgNodeId);
+        	    }
+        	}
+        	return orgHierarchyMap;
+        }
 
 	/**
 	 * Populates the org structure for the bulk state reporting
@@ -9816,8 +9880,7 @@ public class SessionOperationController extends PageFlowController {
 			bulkReportData.setParentHierarchyDetails(parentOrgDetails);
 			bulkReportData.setChildLevelNodes(childTopNode);
 		} catch (Exception e) {
-			System.err
-					.println("Exception while populateOrgStructureForReport for Bulk Report.");
+			System.err.println("Exception while populateOrgStructureForReport for Bulk Report.");
 			throw e;
 		}
 	}
@@ -9836,10 +9899,9 @@ public class SessionOperationController extends PageFlowController {
 							orgDetails);
 				}
 			}
-			return nodeDetailsMap.get(0);
+			return childrenOrgNodes[0];
 		} catch (Exception e) {
-			System.err
-					.println("Exception while processChildrenNodesList for Bulk Report.");
+			System.err.println("Exception while processChildrenNodesList for Bulk Report.");
 			throw e;
 		}
 	}
