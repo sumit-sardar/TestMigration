@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
@@ -17,6 +15,7 @@ import weblogic.logging.NonCatalogLogger;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserParentProductResource;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
 import com.ctb.util.OASLogger;
@@ -54,6 +53,7 @@ public class SoftwareOperationController extends PageFlowController {
 	
 	public boolean isLASLinkCustomer = false;
 	private boolean isEngradeCustomer = false;
+	private static final Integer LL_SUPER_FRAMEWORK_PRODUCT_ID = 70000;
 	
 	/**
 	 * @return the userName
@@ -164,6 +164,7 @@ public class SoftwareOperationController extends PageFlowController {
         this.getRequest().setAttribute("runURI_LINUX", "location.href=" + RUN_LINUX_URI);
         
         if(this.isLASLinkCustomer){
+        	populateThirdPartySoftwareLinks();// Change for: OAS - 2463 LLO 2015 - Change Download Software Page
         	return new Forward("lasLinkSuccess");
         }
         
@@ -188,8 +189,52 @@ public class SoftwareOperationController extends PageFlowController {
         return uri;
     }
 	
+    /**
+     * Set links for 3rd party software required for Laslink clients dynamically.
+     */
+    private void populateThirdPartySoftwareLinks() {
+
+		// Default Links for 3rd party software
+		String jre_url = "http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jre-7u45-oth-JPR";
+		String adobe_air = "http://helpx.adobe.com/air/kb/archived-air-sdk-version.html";
+		String flash_pl = "http://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html#Flash%20Player%20archives";
+		String flash_pgpc = "https://www.adobe.com/support/flashplayer/downloads.html";
+		String flash_pgmc = "https://www.adobe.com/support/flashplayer/";
+		
+		try {
+			UserParentProductResource[] productResource = this.testSessionStatus
+					.getProductResourceEntries(LL_SUPER_FRAMEWORK_PRODUCT_ID);
+
+			// Overwrite default links if the links are configured in Database
+			for (UserParentProductResource data : productResource) {
+				if (("JRE_URL").equalsIgnoreCase(data.getResourceTypeCode())) {
+					jre_url = data.getResourceURI();
+				} else if (("ADOBE_AIR").equalsIgnoreCase(data
+						.getResourceTypeCode())) {
+					adobe_air = data.getResourceURI();
+				} else if (("FLASH_PL").equalsIgnoreCase(data
+						.getResourceTypeCode())) {
+					flash_pl = data.getResourceURI();
+				} else if (("FLASH_PGPC").equalsIgnoreCase(data
+						.getResourceTypeCode())) {
+					flash_pgpc = data.getResourceURI();
+				} else if (("FLASH_PGMC").equalsIgnoreCase(data
+						.getResourceTypeCode())) {
+					flash_pgmc = data.getResourceURI();
+				}
+			}
+
+			this.getRequest().setAttribute("JRE_URL", jre_url);
+			this.getRequest().setAttribute("ADOBE_AIR", adobe_air);
+			this.getRequest().setAttribute("FLASH_PL", flash_pl);
+			this.getRequest().setAttribute("FLASH_PGPC", flash_pgpc);
+			this.getRequest().setAttribute("FLASH_PGMC", flash_pgmc);
+		} catch (CTBBusinessException e) {
+			System.err.print(e.getStackTrace());
+		}
+	}
     
-	/////////////////////////////////////////////////////////////////////////////////////////////    
+	// ///////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	

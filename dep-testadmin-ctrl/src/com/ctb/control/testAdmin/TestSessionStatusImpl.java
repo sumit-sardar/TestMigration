@@ -76,6 +76,7 @@ import com.ctb.exception.testAdmin.CustomerConfigurationDataNotFoundException;
 import com.ctb.exception.testAdmin.CustomerReportDataNotFoundException;
 import com.ctb.exception.testAdmin.OrgNodeDataNotFoundException;
 import com.ctb.exception.testAdmin.ProductDataNotFoundException;
+import com.ctb.exception.testAdmin.ProductResourceDataNotFound;
 import com.ctb.exception.testAdmin.RosterDataNotFoundException;
 import com.ctb.exception.testAdmin.StudentSessionStatusNotFoundException;
 import com.ctb.exception.testAdmin.TestAdminDataNotFoundException;
@@ -2806,6 +2807,25 @@ public class TestSessionStatusImpl implements TestSessionStatus
         }        
     }
     
+     /**
+ 	 * Get the entries of Product Resource table to populate dynamic links of 3rd party softwares
+ 	 * @param productId
+ 	 * @return UserParentProductResource
+ 	 * @throws CTBBusinessException
+ 	 */
+ 	public UserParentProductResource[] getProductResourceEntries(Integer productId) throws CTBBusinessException{
+ 		try{
+ 			UserParentProductResource[] productResource = this.product.getProductResourceEntries(productId);
+ 			return productResource;
+ 		}catch(SQLException se){
+ 			CTBBusinessException cbe = new ProductResourceDataNotFound("TestSessionStatusImpl: getProductResourceEntries: " + se.getMessage());
+            cbe.setStackTrace(se.getStackTrace());
+            throw cbe;
+ 		}
+ 		
+ 	}
+     
+     
     /**
      * To append extra condition in query for different product ( Datapoint joining for Item Max Score & Test Form condition )
      * @param productType

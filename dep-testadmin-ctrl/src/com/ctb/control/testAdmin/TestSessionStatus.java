@@ -13,6 +13,7 @@ import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.CustomerTestResourceData;
 import com.ctb.bean.testAdmin.ItemResponseData;
+import com.ctb.bean.testAdmin.UserParentProductResource;
 import com.ctb.exception.CTBBusinessException;
 
 /**
@@ -547,5 +548,12 @@ public interface TestSessionStatus
 	 * @throws com.ctb.exception.CTBBusinessException
 	 */
 	com.ctb.bean.testAdmin.ItemResponseAndScore[]  getScoreElementsForTS(java.lang.String userName,java.lang.String parentItemSetId, java.lang.Integer testRosterId, java.lang.Integer studentId, java.lang.Integer testAdminId, java.lang.String productType) throws com.ctb.exception.CTBBusinessException;
-
+	
+	/**
+	 * Get the entries of Product Resource table to populate dynamic links of 3rd party softwares
+	 * @param productId
+	 * @return UserParentProductResource
+	 * @throws CTBBusinessException
+	 */
+	UserParentProductResource[] getProductResourceEntries(Integer productId) throws CTBBusinessException;
 } 

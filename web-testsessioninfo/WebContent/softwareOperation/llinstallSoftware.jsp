@@ -22,6 +22,14 @@
 <% 
 	Boolean isISTEPCustomer = (Boolean)request.getAttribute("isISTEPCustomer");
 	Boolean isLasLinkCustomer = (Boolean)request.getAttribute("isLasLinkCustomer");
+	
+	String JRE_URL= (String)request.getAttribute("JRE_URL");
+	String ADOBE_AIR= (String)request.getAttribute("ADOBE_AIR");
+	String FLASH_PL= (String)request.getAttribute("FLASH_PL");
+	String FLASH_PGPC= (String)request.getAttribute("FLASH_PGPC");
+	String FLASH_PGMC= (String)request.getAttribute("FLASH_PGMC");
+	
+	
 %>
         
 <!-- ********************************************************************************************************************* -->
@@ -94,7 +102,7 @@
                    <td class="transparent-top">
                         <netui:content value="<b>For PC and MAC</b>: : Go to this Java website and download the supported Java SE Runtime Environment for free."/>
                         <br>
-                        <a href="#" onclick="newWindow(' http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jre-7u45-oth-JPR');"><netui:content value=" http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jre-7u45-oth-JPR"/></a>
+                        <a href="#" onclick="newWindow('<%=JRE_URL%>');"><netui:content value="<%=JRE_URL%>"/></a>
                         <br>
                     </td>
                 </tr>            
@@ -128,7 +136,7 @@
                     <td class="transparent-top">
                         <netui:content value="<b>For PC and MAC</b>: Go to this Adobe website and download the supported Adobe AIR for free."/>
                         <br>
-                        <a href="#" onclick="newWindow('http://helpx.adobe.com/air/kb/archived-air-sdk-version.html');"><netui:content value="http://helpx.adobe.com/air/kb/archived-air-sdk-version.html"/></a>
+                        <a href="#" onclick="newWindow('<%=ADOBE_AIR %>');"><netui:content value="<%=ADOBE_AIR %>"/></a>
                         <br>
                     </td> 
                 </tr>
@@ -183,7 +191,7 @@
 
                         <br> 
 
-                        <a href="#" onclick="newWindow('http://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html#Flash%20Player%20archives');"><netui:content value="http://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html#Flash%20Player%20archives"/></a>
+                        <a href="#" onclick="newWindow('<%=FLASH_PL %>');"><netui:content value="<%=FLASH_PL %>"/></a>
 
                         <br><br>                       
 						
@@ -195,7 +203,7 @@
 
                         <br>
 
-                        <a href="#" onclick="newWindow('https://www.adobe.com/support/flashplayer/downloads.html');"><netui:content value="https://www.adobe.com/support/flashplayer/downloads.html"/></a>
+                        <a href="#" onclick="newWindow('<%=FLASH_PGPC %>');"><netui:content value="<%=FLASH_PGPC %>"/></a>
                       
                         
                         <br><br>                       
@@ -208,7 +216,7 @@
 
                         <br>
 
-                        <a href="#" onclick="newWindow('https://www.adobe.com/support/flashplayer/ ');"><netui:content value="https://www.adobe.com/support/flashplayer/"/></a>
+                        <a href="#" onclick="newWindow('<%=FLASH_PGMC %> ');"><netui:content value="<%=FLASH_PGMC %>"/></a>
 
                         <br>
 

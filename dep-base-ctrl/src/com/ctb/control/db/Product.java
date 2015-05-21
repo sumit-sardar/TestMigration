@@ -276,4 +276,8 @@ TestProduct [] getTestCatalogForUser(String userName) throws SQLException;
     
     @JdbcControl.SQL(statement = "SELECT DISTINCT PROD.PRODUCT_ID AS PRODUCTIDS FROM PRODUCT PROD, ORG_NODE_TEST_CATALOG ONTC, CUSTOMER CUST WHERE PROD.PRODUCT_ID = ONTC.PRODUCT_ID AND CUST.CUSTOMER_ID = {customerId} AND PROD.PARENT_PRODUCT_ID= {frameworkProductId} AND CUST.CUSTOMER_ID = ONTC.CUSTOMER_ID AND ONTC.ACTIVATION_STATUS = 'AC'")
     Integer[] getProductIds (Integer customerId, Integer frameworkProductId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select p.product_id as productId , p.resource_type_code as resourceTypeCode, p.resource_uri as resourceURI from product_resource p where p.product_id = {productId}",
+    		arrayMaxLength = 0, fetchSize = 100)
+    UserParentProductResource[] getProductResourceEntries(Integer productId) throws SQLException;
 }
