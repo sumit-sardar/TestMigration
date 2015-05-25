@@ -7232,38 +7232,34 @@ function populateDataOptionsBulkReport(){
 
 function populateOrgHiearchyOptions(parentHierarchyDetails,orgNodeCategoryList,childLevelNodes){
 	var html = '';
-	for(var index=0 ; index<orgNodeCategoryList.length ; index++ ){
+	for (var index = 0; index < orgNodeCategoryList.length; index++) {
 		html += '<tr class="transparent">';
-		html += '<td style="text-align:left; width:20%;" class="transparent" >'+ orgNodeCategoryList[index].categoryName + ':</td>';
-		if(index < parentHierarchyDetails.length) {
-			// index == 0 => State
-			// index == 1 => District
-			html += '<td style="text-align:left; width:80%;" class="transparent">'+ parentHierarchyDetails[index].orgNodeName + '<input type="hidden" class="clsLabel-'+index+'" value="'+(parseInt(index) + 1)+'_'+parentHierarchyDetails[index].orgNodeId+'" /></td>';
-		} else if(index == parentHierarchyDetails.length) {
-			// index == 2 => School
+		html += '<td style="text-align:left; width:20%;" class="transparent" >' + orgNodeCategoryList[index].categoryName + ':</td>';
+		var level = orgNodeCategoryList[index].categoryLevel;
+		if (index < parentHierarchyDetails.length) {
+			html += '<td style="text-align:left; width:80%;" class="transparent">' + parentHierarchyDetails[index].orgNodeName + '<input type="hidden" class="clsLabel-' + level + '" value="' + level + '_' + parentHierarchyDetails[index].orgNodeId + '" /></td>';
+		} else if (index == parentHierarchyDetails.length) {
 			html += '<td style="text-align:left; width:80%;" class="transparent">';
-			html += '<select class="clsName clsName-'+index+'" id="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" name="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option"  style="width: 152px;">';
-			html += '<option  id="-1" value="'+(parseInt(index) + 1)+'_-1">'+ $("#labelBulkReport").val()+'</option>';
+			html += '<select class="clsName clsName-' + level + '" id="' + orgNodeCategoryList[index].orgNodeCategoryId + '_option" name="' + orgNodeCategoryList[index].orgNodeCategoryId + '_option"  style="width: 152px;">';
+			html += '<option  id="-1" value="' + level + '_-1">' + $("#labelBulkReport").val() + '</option>';
 			for(var i=0 ; i<childLevelNodes.childrenNodes.length ; i++ ) {
-				html += '<option  id="'+childLevelNodes.childrenNodes[i].orgNodeId+'" value="' + (parseInt(index) + 1) + '_' + childLevelNodes.childrenNodes[i].orgNodeId+'">'+ childLevelNodes.childrenNodes[i].orgNodeName +'</option>';
+				html += '<option  id="' + childLevelNodes.childrenNodes[i].orgNodeId + '" value="' + level + '_' + childLevelNodes.childrenNodes[i].orgNodeId + '">' + childLevelNodes.childrenNodes[i].orgNodeName + '</option>';
 			}
 			html += '</select>';
 			html += '</td>';
 		} else {
-			// index == 3 => Class
 			html += '<td style="text-align:left; width:80%;" class="transparent" >';
-			html += '<select class="clsName clsName-'+index+'" id="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" name="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" style="width: 152px;" disabled="disabled">';
-			html += '<option  id="-1" value="'+(parseInt(index) + 1)+'_-1">'+ $("#labelBulkReport").val()+'</option>';
+			html += '<select class="clsName clsName-' + level + '" id="' + orgNodeCategoryList[index].orgNodeCategoryId+'_option" name="'+orgNodeCategoryList[index].orgNodeCategoryId+'_option" style="width: 152px;" disabled="disabled">';
+			html += '<option  id="-1" value="' + level + '_-1">' + $("#labelBulkReport").val() + '</option>';
 			html += '</select>';
 			html += '</td>';
 		}
 		html += '</tr>';
 	}
 	$("#criteriaOrgListBulkReport").html(html);
-	$(".clsName").change(function(){
-		// var optionSelected = $("option:selected", this);
+	$(".clsName").change(function() {
     	var valueSelected = this.value;
-		//console.log('org  id = ' + valueSelected);
+    	//console.log("valueSelected: " + valueSelected);
 		populateOrgLevelDetails(valueSelected, childLevelNodes, orgNodeCategoryList); // 
 	})
 }
@@ -7272,6 +7268,7 @@ function populateOrgLevelDetails(level_id, data, orgNodeCategoryList){
 	//console.log(JSON.stringify(data));
 	var arr = level_id.split("_");
 	var level = arr[0];
+	var nextLevel = (parseInt(level) + 1);
 	var id = arr[1];
 	var node = traverseChildren(data, id);
 	if(node != null) {
@@ -7281,22 +7278,20 @@ function populateOrgLevelDetails(level_id, data, orgNodeCategoryList){
 		for(var j=0 ; j<node.childrenNodes.length ; j++) {
 			html += '<option  id="'+node.childrenNodes[j].orgNodeId+'" value="'+(parseInt(level) + 1)+'_'+node.childrenNodes[j].orgNodeId+'">'+ node.childrenNodes[j].orgNodeName +'</option>';
 		}
-		$(".clsName-" + level).html(html);
-		$(".clsName-" + level).removeAttr("disabled");
+		$(".clsName-" + nextLevel).html(html);
+		$(".clsName-" + nextLevel).removeAttr("disabled");
 		//console.log("Children populated successfully");
 	} else {
 		//console.log("No children with id = " + id);
-		disableOrgLevelDetails(level, orgNodeCategoryList);
+		disableOrgLevelDetails(nextLevel, orgNodeCategoryList);
 	}
 }
 
-function disableOrgLevelDetails(level, orgNodeCategoryList) {
-	for(var index=0 ; index<orgNodeCategoryList.length ; index++ ){
-		if(index >= parseInt(level)) {
-			var html = '<option  id="-1" value="'+index+'_-1">'+ $("#labelBulkReport").val()+'</option>';
-			$(".clsName-" + index).html(html);
-			$(".clsName-" + index).attr("disabled", "disabled");
-		}
+function disableOrgLevelDetails(nextLevel, orgNodeCategoryList) {
+	for (var index = nextLevel; index <= orgNodeCategoryList.length; index++) {
+		var html = '<option  id="-1" value="' + index + '_-1">' + $("#labelBulkReport").val() + '</option>';
+		$(".clsName-" + index).html(html);
+		$(".clsName-" + index).attr("disabled", "disabled");
 	}
 }
 
@@ -7362,19 +7357,9 @@ function getOrgListForBulkReport(){
 	});
 }
 
-/**
-function testDateRangeHandler(radio){
- 	//console.log('Radio' + radio.value);
- 	if(radio.value == "AllDates"){
- 		$("#startDateBulkReport").attr('disabled',true);
- 		$("#endDateBulkReport").attr('disabled',true);
- 	}else if (radio.value == "DateRange"){
- 		$("#startDateBulkReport").removeAttr('disabled');
- 		$("#endDateBulkReport").removeAttr('disabled');
- 	}
-}**/
-
-function downloadBulkReportCSV(e) {
+function downloadBulkReportCSV(element) {
+	if (isButtonDisabled(element)) 
+		return true;
 	//console.log('downloadBulkReportCSV');
 	var radioDate = $("input[name=bukExportDateSelection]:checked").val();
 	var startDateBulkReport = new Date($("#startDateBulkReport").val());
@@ -7382,15 +7367,13 @@ function downloadBulkReportCSV(e) {
 	if(radioDate == "DateRange" && startDateBulkReport > endDateBulkReport) {
 		//alert("startDate > endDate");
 		$("#displayMessageBulkReport").show();
-		//$("#messageTitleBulkReport").show();
-		//$("#messageBulkReport").show();
 		$("#messageBulkReport").html("<b>" + $("#invalidDatesBulkReport").val() + "</b>");
 		
 	} else {
 		$("#messageBulkReport").html("");
 		$("#displayMessageBulkReport").hide();
 	}
-
+	UIBlock();
 	var orgArr = [];
 	var count = 0;
 	var clsLabels = $('input[class^="clsLabel-"]');
@@ -7410,34 +7393,16 @@ function downloadBulkReportCSV(e) {
 	//var jsonStr = '{"radioDate" : "'+radioDate+'", "startDateBulkReport" : "'+$("#startDateBulkReport").val()+'", "endDateBulkReport" : "'+$("#endDateBulkReport").val()+'", "orgArr": "'+orgArr+'"}';
 	//console.log(jsonStr);
 	
-	
-	var postDataObject = {};
-	postDataObject.radioDate = radioDate;
-	postDataObject.startDateBulkReport = $("#startDateBulkReport").val();
-	postDataObject.endDateBulkReport = $("#endDateBulkReport").val();
-	postDataObject.orgArr = "" + orgArr;
-	$.ajax({
-		async:		true,
-		beforeSend:	function(){	
-						UIBlock();	
-					},
-		url:		'downloadBulkReportCSV.do', 
-		type:		'POST',
-		data:		postDataObject,
-		dataType:	'json',
-		success:	function(data, textStatus, XMLHttpRequest){
-						// File Download
-						//console.log("Success: downloadBulkReportCSV");
-						$.unblockUI();		
-					},
-		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();
-						window.location.href="error.do";
-					}
-	  
-	});
-	
-	
+	document.getElementById("dateFlagBulkReport").value = radioDate;
+	document.getElementById("startDtBulkReport").value = $("#startDateBulkReport").val();
+	document.getElementById("endDtBulkReport").value = $("#endDateBulkReport").val();
+    var element = document.getElementById("orgArrBulkReport");
+    element.value = "" + orgArr;
+    element.form.action = "downloadBulkReportCSV.do";
+    element.form.method = "POST";
+    element.form.submit();
+    $.unblockUI();
+	return false;
 }
 
 $(document).ready(function(){

@@ -10,6 +10,7 @@ import org.apache.beehive.controls.api.bean.ControlInterface;
 
 import com.ctb.bean.testAdmin.AncestorOrgDetails;
 import com.ctb.bean.testAdmin.LASLicenseNode;
+import com.ctb.bean.testAdmin.LiteracyProExportData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.Program;
@@ -718,5 +719,13 @@ public interface ScheduleTest
 	 * @throws CTBBusinessException
 	 */
 	public AncestorOrgDetails[] getChildrenOrgDetails(Integer orgNodeId) throws CTBBusinessException;
+	
+	/**
+	 * Returns the bulk report csv file download data in a two dimentional ArrayList
+	 * @param paramMap
+	 * @return
+	 * @throws CTBBusinessException
+	 */
+	public LiteracyProExportData[] getBulkReportCSVData(Map<String, Object> paramMap) throws CTBBusinessException;
 	
 } 

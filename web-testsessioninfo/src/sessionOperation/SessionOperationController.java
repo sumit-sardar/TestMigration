@@ -53,6 +53,7 @@ import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.ItemResponseAndScore;
 import com.ctb.bean.testAdmin.LASLicenseNode;
+import com.ctb.bean.testAdmin.LiteracyProExportData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
@@ -123,6 +124,7 @@ import com.ctb.testSessionInfo.utils.UserOrgHierarchyUtils;
 import com.ctb.testSessionInfo.utils.UserPasswordUtils;
 import com.ctb.testSessionInfo.utils.WebUtils;
 import com.ctb.util.HMACQueryStringEncrypter;
+import com.ctb.util.LayoutUtil;
 import com.ctb.util.OperationStatus;
 import com.ctb.util.SuccessInfo;
 import com.ctb.util.ValidationFailedInfo;
@@ -9803,22 +9805,43 @@ public class SessionOperationController extends PageFlowController {
 		System.out.println("downloadBulkReportCSV");
 
 		try {
-		    	String radioDate = this.getRequest().getParameter("radioDate");
-		    	String startDateBulkReport = this.getRequest().getParameter("startDateBulkReport");
-		    	String endDateBulkReport = this.getRequest().getParameter("endDateBulkReport");
-		    	String orgArr = this.getRequest().getParameter("orgArr");
+		    	String dateFlagBulkReport = this.getRequest().getParameter("dateFlagBulkReport");
+		    	String startDtBulkReport = this.getRequest().getParameter("startDtBulkReport");
+		    	String endDtBulkReport = this.getRequest().getParameter("endDtBulkReport");
+		    	String orgArrBulkReport = this.getRequest().getParameter("orgArrBulkReport");
 		    	
-		    	System.out.println("radioDate = " + radioDate);
-		    	System.out.println("startDateBulkReport = " + startDateBulkReport);
-		    	System.out.println("endDateBulkReport = " + endDateBulkReport);
-		    	System.out.println("orgArr = " + orgArr);
+		    	System.out.println("dateFlagBulkReport = " + dateFlagBulkReport);
+		    	System.out.println("startDtBulkReport = " + startDtBulkReport);
+		    	System.out.println("endDtBulkReport = " + endDtBulkReport);
+		    	System.out.println("orgArrBulkReport = " + orgArrBulkReport);
 		    	
-		    	Map<String, String> orgHierarchyMap = getOrgHierarchyMap(orgArr);
+		    	// TODO : Timezone change
+		    	String userTimeZone =  userManagement.getUserTimeZone(this.userName);
+		    	
+		    	Date startDate = DateUtils.getDateFromDateString(startDtBulkReport);
+		    	Date endDate = DateUtils.getDateFromDateString(endDtBulkReport);
+
+		        Date adjustedStartDate = com.ctb.util.DateUtils.getAdjustedDate(startDate, userTimeZone, "GMT", startDate);
+		        Date adjustedEndDate = com.ctb.util.DateUtils.getAdjustedDate(endDate, userTimeZone, "GMT", endDate);
+		    	
+		    	Map<String, String> orgHierarchyMap = getOrgHierarchyMap(orgArrBulkReport);
 		    	
 		    	System.out.println("orgHierarchyMap = " + orgHierarchyMap);
 		    	
-		    	/*try {
-        		    	byte[] data = "In Progress: OAS - 2732".getBytes();
+		    	Integer customerId = this.customerId;
+		    	System.out.println("customerId = " + customerId);
+		    	
+		    	Map<String, Object> paramMap = new HashMap<String, Object>();
+		    	paramMap.put("dateFlagBulkReport", dateFlagBulkReport);
+		    	paramMap.put("startDtBulkReport", com.ctb.util.DateUtils.formatDateToDateString(adjustedStartDate));
+		    	paramMap.put("endDtBulkReport", com.ctb.util.DateUtils.formatDateToDateString(adjustedEndDate));
+		    	paramMap.put("orgHierarchyMap", orgHierarchyMap);
+		    	paramMap.put("customerId", customerId);
+		    	
+		    	
+		    	try {
+		    	    	LiteracyProExportData[] tableData = scheduleTest.getBulkReportCSVData(paramMap);
+        		    	byte[] data = LayoutUtil.getLiteracyProExportDataBytes(tableData);
         		    	String fileName = "BulkReport.csv";
         		    	HttpServletResponse resp = this.getResponse();        
         		        String bodypart = "attachment; filename=\"" + fileName + "\" ";
@@ -9833,10 +9856,11 @@ public class SessionOperationController extends PageFlowController {
         		        OutputStream stream = resp.getOutputStream();
         		        stream.write(data);
         		        stream.close();
+        		        System.out.println("End File Download");
 		    	} catch (Exception e) {
     		    		System.err.println("Exception while wtite to stream: downloadBulkReportCSV for Bulk Report.");
     		    		e.printStackTrace();
-		    	}*/
+		    	}
 
 		} catch (Exception e) {
 			System.err.println("Exception while downloadBulkReportCSV for Bulk Report.");
@@ -9846,6 +9870,25 @@ public class SessionOperationController extends PageFlowController {
 		}
 		return null;
 	}
+	
+	   /*private void adjustSessionTimesToGMT(TestSession session) {
+	        Date originalStartTime = session.getDailyLoginStartTime();
+	        Date startOffSetDate = concatinateDateTime(session.getLoginStartDate(), originalStartTime);
+	        
+	        Date originalEndTime = session.getDailyLoginEndTime();
+	        Date endOffSetDate = concatinateDateTime(session.getLoginEndDate(), originalEndTime);
+			
+			String userTimeZone =  userManagement.getUserTimeZone(this.userName);
+
+	        Date adjustedStartDate = DateUtils.getAdjustedDate(startOffSetDate, userTimeZone, "GMT", startOffSetDate);
+	        Date adjustedEndDate = DateUtils.getAdjustedDate(endOffSetDate, userTimeZone, "GMT", endOffSetDate);
+	        
+	       
+	        session.setDailyLoginStartTime(adjustedStartDate);
+	        session.setDailyLoginEndTime(adjustedEndDate);
+	        session.setLoginStartDate(adjustedStartDate);
+	        session.setLoginEndDate(adjustedEndDate);
+	    }*/
 	
 	private Map<String, String> getOrgHierarchyMap(String orgArr) {
 	    	Map<String, String> orgHierarchyMap = new LinkedHashMap<String, String>();
@@ -9864,15 +9907,13 @@ public class SessionOperationController extends PageFlowController {
 	 * Populates the org structure for the bulk state reporting
 	 * @param orgNodeId
 	 */
-	private void populateOrgStructureForReport(Integer orgNodeId,
-			BulkReportData bulkReportData) throws Exception {
+	private void populateOrgStructureForReport(Integer orgNodeId, BulkReportData bulkReportData) throws Exception {
 		OrgNodeCategory[] customerHierarchyStructure = null;
 		Node[] parentOrgDetails = null;
 		AncestorOrgDetails[] childrenOrgNodes = null;
 		AncestorOrgDetails childTopNode = null;
 		try {
-			customerHierarchyStructure = scheduleTest
-					.getCustomerOrgStructure(orgNodeId);
+			customerHierarchyStructure = scheduleTest.getCustomerOrgStructure(orgNodeId);
 			parentOrgDetails = scheduleTest.getParentOrgDetails(orgNodeId);
 			childrenOrgNodes = scheduleTest.getChildrenOrgDetails(orgNodeId);
 			childTopNode = processChildrenNodesList(childrenOrgNodes);

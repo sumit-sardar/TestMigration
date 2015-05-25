@@ -16,6 +16,7 @@ import com.ctb.bean.testAdmin.OrgNodeRosterCount;
 import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.SubtestAccessCodeDetail;
 import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.LiteracyProExportData;
 
 /** 
  * Defines a new database control. 
@@ -1095,5 +1096,13 @@ public interface TestAdmin extends JdbcControl
     @JdbcControl.SQL(statement = " select org.org_node_name   as orgNodeName, org.org_node_id  as orgNodeId, org.org_node_category_id as orgNodeCategoryId, onp.parent_org_node_id  as parentOrgNodeId, onc.category_level   as categoryLevel, onc.category_name  as orgNodeCategoryName from org_node   org, org_node_category onc, org_node_ancestor ona, org_node_parent   onp where org.org_node_id = ona.org_node_id and org.org_node_id = onp.org_node_id and org.org_node_category_id = onc.org_node_category_id and ona.ancestor_org_node_id = {orgNodeId} and org.activation_status = 'AC' and onc.activation_status = 'AC' order by onc.category_level, org.org_node_name ",
     		arrayMaxLength = 0, fetchSize = 100)
     AncestorOrgDetails[] getChildrenOrgDetails(Integer orgNodeId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select tr.test_roster_id as rosterId, tr.test_admin_id as sessionID, tr.student_id as oasStudentId, st.user_name as studentID, st.last_name as lastName, st.middle_name as middleName, st.first_name as firstName, to_char(st.birthdate, 'mm/dd/yyyy') as dateofBirth, st.gender as gender, to_char(tr.start_date_time, 'mm/dd/yyyy') as assessmentDate, 'TABE' as instrument, tc.test_name as form, iset.item_set_level as lvl, iset.item_set_name as subtest, ta.test_admin_name as sessionName, ta.product_id as productId, siss.item_set_id as subtestId from test_roster tr, test_admin ta, student st, item_set iset, student_item_set_status siss, test_catalog tc, org_node org, org_node_ancestor ona, org_node_student ons where ons.student_id = st.student_id and ons.org_node_id = ona.org_node_id and ons.org_node_id = tr.org_node_id and ta.test_admin_id = tr.test_admin_id and tr.student_id = st.student_id and tr.test_roster_id = siss.test_roster_id and siss.item_set_id = iset.item_set_id and tc.product_id = ta.product_id and org.org_node_id = ona.ancestor_org_node_id and org.customer_id = ta.customer_id and (iset.item_set_level <> 'L' or  ta.product_id = 4008) and ta.activation_status = 'AC' and ons.activation_status = 'AC' and tr.activation_status = 'AC' and st.activation_status = 'AC' and tr.validation_status = 'VA' and siss.validation_status = 'VA' and siss.exemptions <> 'Y' and siss.absent <> 'Y' and tr.test_completion_status not in ('SC', 'NT', 'IP', 'IN') and siss.completion_status not in ('SC', 'NT', 'IP', 'IN') and iset.sample = 'F' and ta.product_id in (4008, 4009, 4010, 4011, 4012) and org.org_node_id = {orgNodeId} and org.customer_id = {customerId} {sql: searchCriteria}",
+		arrayMaxLength = 0, fetchSize = 100)
+    LiteracyProExportData[] getBulkReportCSVData(Integer orgNodeId, String searchCriteria, Integer customerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select distinct prod.product_id || isatd.item_set_id as subtestProdMapper, prod.product_id || reiset.item_set_id as reportingLevelId from test_catalog tc, item_set_item isi, item i, item_Set_item reisi, item_set_ancestor isa, product prod, item_set_category isc, item_set reiset, item_set_ancestor isatd where i.item_id = isi.item_id and reisi.item_id = i.item_id and isa.item_Set_id = reisi.item_Set_id and reiset.item_set_id = isa.ancestor_item_Set_id and reiset.item_set_type = 'RE' and reiset.item_set_category_id = isc.item_set_category_id and isc.framework_product_id = prod.parent_product_id and isc.item_set_category_level = prod.content_area_level and isatd.item_set_id = isi.item_Set_id and isatd.item_set_type = 'TD' and tc.item_set_id = isatd.ancestor_item_Set_id and prod.product_id = tc.product_id and prod.product_id in (4008, 4009, 4010, 4011, 4012)",
+	    arrayMaxLength = 0, fetchSize = 100)
+	    LiteracyProExportData[] getReportLevelMapper() throws SQLException;
     
 }

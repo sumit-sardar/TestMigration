@@ -84,7 +84,11 @@
 
 			</tr>
 
-		</table>		
+		</table>
+		<input type="hidden" id="dateFlagBulkReport" name="dateFlagBulkReport" />
+		<input type="hidden" id="startDtBulkReport" name="startDtBulkReport" />
+		<input type="hidden" id="endDtBulkReport" name="endDtBulkReport" />
+		<input type="hidden" id="orgArrBulkReport" name="orgArrBulkReport" />
 	</netui:form>
 	
 	<script type="text/javascript">

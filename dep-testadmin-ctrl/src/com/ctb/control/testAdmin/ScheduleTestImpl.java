@@ -32,6 +32,7 @@ import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.LicenseNodeData;
+import com.ctb.bean.testAdmin.LiteracyProExportData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.OrgNodeRosterCount;
@@ -93,6 +94,7 @@ import com.ctb.util.testAdmin.AccessCodeGenerator;
 import com.ctb.util.testAdmin.PasswordGenerator;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
 import com.ctb.util.testAdmin.TestFormSelector;
+//import com.ctb.testSessionInfo.utils.DateUtils;
 
 /**
  * Platform control provides functions related to test session
@@ -199,6 +201,13 @@ public class ScheduleTestImpl implements ScheduleTest
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.testAdmin.FormAssignment formAssignments;
 
+    
+    
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.ImmediateReportingIrs reports;
     /**
      * @common:control
      */
@@ -5345,18 +5354,13 @@ public class ScheduleTestImpl implements ScheduleTest
 	 * @return OrgNodeCategory[]
 	 * @throws CTBBusinessException
 	 */
-	public OrgNodeCategory[] getCustomerOrgStructure(Integer orgNodeId)
-			throws CTBBusinessException {
-
+	public OrgNodeCategory[] getCustomerOrgStructure(Integer orgNodeId) throws CTBBusinessException {
 		OrgNodeCategory[] orgStructure = null;
 		try {
 			orgStructure = admins.getOrgNodeCategoryListForCustomer(orgNodeId);
 			return orgStructure;
-
 		} catch (SQLException se) {
-			OrgNodeCategoryDataNotFound oe = new OrgNodeCategoryDataNotFound(
-					"StudentManagementImpl: getCustomerOrgStructure : "
-							+ se.getMessage());
+			OrgNodeCategoryDataNotFound oe = new OrgNodeCategoryDataNotFound("StudentManagementImpl: getCustomerOrgStructure : " + se.getMessage());
 			oe.setStackTrace(se.getStackTrace());
 			throw oe;
 		}
@@ -5407,5 +5411,165 @@ public class ScheduleTestImpl implements ScheduleTest
 		}
 		
 	}
+	
+	/**
+	 * Returns the bulk report csv file download data in a two dimentional ArrayList
+	 * @param paramMap
+	 * @return
+	 * @throws CTBBusinessException
+	 */
+	public LiteracyProExportData[] getBulkReportCSVData(Map<String, Object> paramMap) throws CTBBusinessException {
+	    	LiteracyProExportData[] data = null;
+	    	LiteracyProExportData[] repotingMapper;
+	    	LiteracyProExportData[] oasData = null;
+	    	String dateFlagBulkReport = (String) paramMap.get("dateFlagBulkReport");
+	    	String startDtBulkReport = (String) paramMap.get("startDtBulkReport");
+	    	String endDtBulkReport = (String) paramMap.get("endDtBulkReport");
+	    	Map<String, String> orgHierarchyMap = (HashMap<String, String>) paramMap.get("orgHierarchyMap");
+	    	Integer customerId = (Integer) paramMap.get("customerId");
+	    	
+	    	System.out.println("dateFlagBulkReport = " + dateFlagBulkReport);
+	    	System.out.println("startDtBulkReport = " + startDtBulkReport);
+	    	System.out.println("endDtBulkReport = " + endDtBulkReport);
+	    	System.out.println("orgHierarchyMap = " + orgHierarchyMap);
+	    	
+		try {
+		    	String searchCriteria = "";
+		    	if (!"AllDates".equals(dateFlagBulkReport)) {
+		    	    searchCriteria += "and trunc(ta.login_start_date) between to_date('" + startDtBulkReport + "', 'mm/dd/yy') and to_date('" + endDtBulkReport + "', 'mm/dd/yy')";
+		    	}
+		    	String orgNodeId = "";
+		    	String maxKey = "0";
+		    	for (Map.Entry<String, String> entry : orgHierarchyMap.entrySet()) {
+		    	    String key = entry.getKey();
+		    	    if (Integer.parseInt(maxKey) < Integer.parseInt(key)) {
+		    		maxKey = new String(key);
+		    		String value = entry.getValue();
+			    	if (!"-1".equals(value)) {
+			    	    orgNodeId = value;
+			    	}
+		    	    }
+		    	}
+		    	System.out.println("orgNodeId = " + orgNodeId);
+		    	oasData = admins.getBulkReportCSVData(Integer.valueOf(orgNodeId), searchCriteria, customerId);
+		    	
+		    	repotingMapper = admins.getReportLevelMapper();
+		    	
+		    	for(LiteracyProExportData oasBean : oasData){
+		    	    LiteracyProExportData d = getReportLevelMapperBean(repotingMapper, oasBean);
+		    	    oasBean.setReportingLevelId(oasBean.getSessionID() + oasBean.getOasStudentId() +  d.getReportingLevelId());
+		    	}
+		    	
+		    	//Changes for 999 limitation of SQL IN clause : Start
+			List<LiteracyProExportData> beanList = new ArrayList<LiteracyProExportData>();
+			int inClauselimit = 999;
+			int loopCounters = oasData.length / inClauselimit;
+			if ((oasData.length % inClauselimit) > 0) {
+				loopCounters = loopCounters + 1;
+			}
+
+			for (int counter = 0; counter < loopCounters; counter++) {
+			    	LiteracyProExportData[] irsData = null;
+				String inClause = "";
+				if ((counter + 1) != loopCounters) {
+				    irsData = new LiteracyProExportData[inClauselimit];
+					System.arraycopy(oasData, (counter * inClauselimit), irsData, 0, inClauselimit);
+				} else {
+					int count = oasData.length % inClauselimit;
+					irsData = new LiteracyProExportData[count];
+					System.arraycopy(oasData, ((loopCounters - 1) * inClauselimit), irsData, 0, count);
+				}
+				inClause = generateInClauseForBulkDownload(irsData);
+				String contentfact = "(TBCONFACT.SESSIONID, TBCONFACT.STUDENTID) IN "+inClause;
+				String compositefact = "(TBCOMP.SESSIONID, TBCOMP.STUDENTID) IN "+inClause;
+				LiteracyProExportData[] irsScoreData = reports.getBulkReportCSVData(contentfact, compositefact);
+				beanList.addAll(Arrays.asList(irsScoreData));
+			}
+			//End 
+		    	
+			data = mergeLiteracyProExportData(oasData, beanList);
+		    	Arrays.sort(data);
+			return data;
+		} catch (SQLException se) {
+			OrgNodeCategoryDataNotFound oe = new OrgNodeCategoryDataNotFound("StudentManagementImpl: getCustomerOrgStructure : " + se.getMessage());
+			oe.setStackTrace(se.getStackTrace());
+			throw oe;
+		}
+	}
+	
+	private LiteracyProExportData[] mergeLiteracyProExportData(LiteracyProExportData[] oasData, List<LiteracyProExportData> irsDataList) {
+	    List<LiteracyProExportData> finalList = new ArrayList<LiteracyProExportData>(); 
+	    List<LiteracyProExportData> oasDataList = Arrays.asList(oasData);
+	    for(LiteracyProExportData irsBean : irsDataList) {
+		
+		LiteracyProExportData oasBean = getLiteracyProExportBean(oasDataList, irsBean);
+		if(oasBean == null) {
+		    oasBean = getLiteracyProExportBeanUnmapped(oasDataList, irsBean);
+		}
+		if(oasBean != null) {
+		    	oasBean.setLiteracyProExportDataOAS(irsBean);
+		    	finalList.add(oasBean);
+		}
+	    }
+	    return finalList.toArray(new LiteracyProExportData[irsDataList.size()]);
+	}
+	
+	private LiteracyProExportData getLiteracyProExportBean(List<LiteracyProExportData> list, LiteracyProExportData bean) {
+	    LiteracyProExportData item = null;
+	    for (LiteracyProExportData data : list) {
+		if(bean.getReportingLevelId().equals(data.getReportingLevelId())) {
+		    item = data;
+		    break;
+		}
+	    }
+	    return item;
+	}
+	
+	private LiteracyProExportData getLiteracyProExportBeanUnmapped(List<LiteracyProExportData> oasList, LiteracyProExportData irsBean) {
+	    LiteracyProExportData item = null;
+	    for (LiteracyProExportData oasBean : oasList) {
+		if("4008".equals(oasBean.getProductId())) {
+		    item = new LiteracyProExportData(oasBean);
+		} else {
+        		if(irsBean.getOasStudentId().equals(oasBean.getOasStudentId()) && irsBean.getSessionID().equals(oasBean.getSessionID())) {
+        		    item = new LiteracyProExportData(oasBean);
+        		    item.setLvl("");
+        		    break;
+        		}
+		}
+	    }
+	    return item;
+	}
+	
+	private LiteracyProExportData getReportLevelMapperBean(LiteracyProExportData[] list, LiteracyProExportData bean) {
+	    LiteracyProExportData item = null;
+	    for (LiteracyProExportData data : list) {
+		String prodSubtestId = bean.getProductId()+bean.getSubtestId();
+		if(prodSubtestId.equals(data.getSubtestProdMapper())) {
+		    item = data;
+		    break;
+		}
+	    }
+	    return item;
+	}
+
+	
+	private String generateInClauseForBulkDownload(LiteracyProExportData[] beans) {
+	    	StringBuilder temp = new StringBuilder("");
+		String tempString = "";
+		for (LiteracyProExportData bean : beans) {
+			if(bean != null) {
+			    temp.append("("+bean.getSessionID()+", "+bean.getOasStudentId()+"),");
+			}
+		}
+		tempString = temp.toString();
+		if(tempString.length()>0){
+			tempString = tempString.substring(0, temp.length() - 1);
+			tempString = "( "+ tempString+")";
+		}
+		return tempString;
+	}
+	
+	
     
 } 
