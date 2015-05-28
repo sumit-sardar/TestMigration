@@ -28,9 +28,9 @@
 		<table class="transparent">
 			<tr class="transparent">
 				<td class="transparent" width="32" valign="top"> </td>
-				<td class="transparent" width="650" valign="top">
+				<td class="transparent" width="500" valign="top">
 					<li style="list-style-type: square;">
-						<a style="display: inline" href="/SessionWeb/sessionOperation/tabeBulkStateReporting.do">						
+						<a <%=displayStyle%> href="/SessionWeb/sessionOperation/tabeBulkStateReporting.do">						
 						<lb:label key="tabe.bulk.state.report.link" />
 						</a>
 					</li>

@@ -7368,6 +7368,7 @@ function downloadBulkReportCSV(element) {
 		//alert("startDate > endDate");
 		$("#displayMessageBulkReport").show();
 		$("#messageBulkReport").html("<b>" + $("#invalidDatesBulkReport").val() + "</b>");
+		return false;
 		
 	} else {
 		$("#messageBulkReport").html("");
