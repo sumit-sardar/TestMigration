@@ -37,7 +37,7 @@ public class LiteracyProExportData extends CTBBean implements Comparable<Literac
 	this.rosterId = obj.getRosterId();
 	this.sessionID = obj.getSessionID();
 	this.oasStudentId = obj.getOasStudentId();
-	this.studentID = obj.getSessionID();
+	this.studentID = obj.getStudentID();
 	this.lastName = obj.getLastName();
 	this.middleName = obj.getMiddleName();
 	this.firstName = obj.getFirstName();

@@ -7374,7 +7374,7 @@ function downloadBulkReportCSV(element) {
 		$("#messageBulkReport").html("");
 		$("#displayMessageBulkReport").hide();
 	}
-	UIBlock();
+	showLoadingProgress('<br/><b>Downloading file...</b><br/>');
 	var orgArr = [];
 	var count = 0;
 	var clsLabels = $('input[class^="clsLabel-"]');
@@ -7402,8 +7402,12 @@ function downloadBulkReportCSV(element) {
     element.form.action = "downloadBulkReportCSV.do";
     element.form.method = "POST";
     element.form.submit();
-    $.unblockUI();
 	return false;
+}
+
+function showLoadingProgress(msg) {	
+	$.blockUI({ message: msg, css: { height: '50px'} }); 	
+	setTimeout("$.unblockUI();", 5000);	 
 }
 
 $(document).ready(function(){
