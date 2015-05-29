@@ -7280,6 +7280,7 @@ function populateOrgLevelDetails(level_id, data, orgNodeCategoryList){
 		}
 		$(".clsName-" + nextLevel).html(html);
 		$(".clsName-" + nextLevel).removeAttr("disabled");
+		disableOrgLevelDetails((parseInt(nextLevel)+1), orgNodeCategoryList);
 		//console.log("Children populated successfully");
 	} else {
 		//console.log("No children with id = " + id);
