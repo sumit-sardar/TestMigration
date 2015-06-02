@@ -9802,35 +9802,26 @@ public class SessionOperationController extends PageFlowController {
 		}
 	)
 	protected Forward downloadBulkReportCSV() {
-		System.out.println("downloadBulkReportCSV");
-
+		System.out.println("Start: downloadBulkReportCSV()");
+		long startTime = System.currentTimeMillis();
 		try {
 		    	String dateFlagBulkReport = this.getRequest().getParameter("dateFlagBulkReport");
 		    	String startDtBulkReport = this.getRequest().getParameter("startDtBulkReport");
 		    	String endDtBulkReport = this.getRequest().getParameter("endDtBulkReport");
 		    	String orgArrBulkReport = this.getRequest().getParameter("orgArrBulkReport");
-		    	
-		    	System.out.println("dateFlagBulkReport = " + dateFlagBulkReport);
-		    	System.out.println("startDtBulkReport = " + startDtBulkReport);
-		    	System.out.println("endDtBulkReport = " + endDtBulkReport);
-		    	System.out.println("orgArrBulkReport = " + orgArrBulkReport);
-		    	
-		    	// TODO : Timezone change
+
 		    	String userTimeZone =  userManagement.getUserTimeZone(this.userName);
-		    	
+
 		    	Date startDate = DateUtils.getDateFromDateString(startDtBulkReport);
 		    	Date endDate = DateUtils.getDateFromDateString(endDtBulkReport);
 
 		        Date adjustedStartDate = com.ctb.util.DateUtils.getAdjustedDate(startDate, userTimeZone, "GMT", startDate);
 		        Date adjustedEndDate = com.ctb.util.DateUtils.getAdjustedDate(endDate, userTimeZone, "GMT", endDate);
-		    	
+
 		    	Map<String, String> orgHierarchyMap = getOrgHierarchyMap(orgArrBulkReport);
-		    	
-		    	System.out.println("orgHierarchyMap = " + orgHierarchyMap);
-		    	
+
 		    	Integer customerId = this.customerId;
-		    	System.out.println("customerId = " + customerId);
-		    	
+
 		    	Map<String, Object> paramMap = new HashMap<String, Object>();
 		    	paramMap.put("dateFlagBulkReport", dateFlagBulkReport);
 		    	paramMap.put("startDtBulkReport", com.ctb.util.DateUtils.formatDateToDateString(adjustedStartDate));
@@ -9856,7 +9847,6 @@ public class SessionOperationController extends PageFlowController {
         		        OutputStream stream = resp.getOutputStream();
         		        stream.write(data);
         		        stream.close();
-        		        System.out.println("End File Download");
 		    	} catch (Exception e) {
     		    		System.err.println("Exception while wtite to stream: downloadBulkReportCSV for Bulk Report.");
     		    		e.printStackTrace();
@@ -9866,29 +9856,12 @@ public class SessionOperationController extends PageFlowController {
 			System.err.println("Exception while downloadBulkReportCSV for Bulk Report.");
 			e.printStackTrace();
 		} finally {
-			System.out.println("Finally block: downloadBulkReportCSV");
+			System.out.println("End: downloadBulkReportCSV()");
 		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("File Download Time taken: " + (endTime - startTime) + " milliseconds");
 		return null;
 	}
-	
-	   /*private void adjustSessionTimesToGMT(TestSession session) {
-	        Date originalStartTime = session.getDailyLoginStartTime();
-	        Date startOffSetDate = concatinateDateTime(session.getLoginStartDate(), originalStartTime);
-	        
-	        Date originalEndTime = session.getDailyLoginEndTime();
-	        Date endOffSetDate = concatinateDateTime(session.getLoginEndDate(), originalEndTime);
-			
-			String userTimeZone =  userManagement.getUserTimeZone(this.userName);
-
-	        Date adjustedStartDate = DateUtils.getAdjustedDate(startOffSetDate, userTimeZone, "GMT", startOffSetDate);
-	        Date adjustedEndDate = DateUtils.getAdjustedDate(endOffSetDate, userTimeZone, "GMT", endOffSetDate);
-	        
-	       
-	        session.setDailyLoginStartTime(adjustedStartDate);
-	        session.setDailyLoginEndTime(adjustedEndDate);
-	        session.setLoginStartDate(adjustedStartDate);
-	        session.setLoginEndDate(adjustedEndDate);
-	    }*/
 	
 	private Map<String, String> getOrgHierarchyMap(String orgArr) {
 	    	Map<String, String> orgHierarchyMap = new LinkedHashMap<String, String>();

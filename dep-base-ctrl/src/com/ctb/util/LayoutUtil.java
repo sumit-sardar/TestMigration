@@ -55,7 +55,7 @@ public class LayoutUtil {
     }
 
     private static String getHeader() {
-	return "\"StudentID\",\"Last Name\",\"Middle Name\",\"First Name\",\"Date of Birth\",\"Gender\",\"AssessmentDate\",\"Instrument\",\"Form\",\"Level\",\"Subtest\",\"ScaledScore\",\"GLE\",\"Session Name\"\n";
+	return "\"Student Login ID\",\"Last Name\",\"Middle Name\",\"First Name\",\"Date of Birth\",\"Gender\",\"Assessment Date\",\"Instrument\",\"Form\",\"Level\",\"Subtest\",\"Scaled Score\",\"GLE\",\"Session Name\"\n";
     }
 
     public static String wrap(String s) {
