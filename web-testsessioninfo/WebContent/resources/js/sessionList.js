@@ -7363,8 +7363,8 @@ function downloadBulkReportCSV(element) {
 		return true;
 	//console.log('downloadBulkReportCSV');
 	var radioDate = $("input[name=bukExportDateSelection]:checked").val();
-	var startDateBulkReport = new Date($("#startDateBulkReport").val());
-	var endDateBulkReport = new Date($("#endDateBulkReport").val());
+	var startDateBulkReport = $("#startDateBulkReport").datepicker("getDate");
+	var endDateBulkReport = $("#endDateBulkReport").datepicker("getDate");
 	if(radioDate == "DateRange" && startDateBulkReport > endDateBulkReport) {
 		//alert("startDate > endDate");
 		$("#displayMessageBulkReport").show();
@@ -7396,8 +7396,11 @@ function downloadBulkReportCSV(element) {
 	//console.log(jsonStr);
 	
 	document.getElementById("dateFlagBulkReport").value = radioDate;
-	document.getElementById("startDtBulkReport").value = $("#startDateBulkReport").val();
-	document.getElementById("endDtBulkReport").value = $("#endDateBulkReport").val();
+	
+	var srartDateVar = $("#startDateBulkReport").datepicker("getDate");
+	var endDateVar = $("#endDateBulkReport").datepicker("getDate");
+	document.getElementById("startDtBulkReport").value = $.datepicker.formatDate('mm/dd/yy', srartDateVar);
+	document.getElementById("endDtBulkReport").value = $.datepicker.formatDate('mm/dd/yy', endDateVar);
     var element = document.getElementById("orgArrBulkReport");
     element.value = "" + orgArr;
     element.form.action = "downloadBulkReportCSV.do";

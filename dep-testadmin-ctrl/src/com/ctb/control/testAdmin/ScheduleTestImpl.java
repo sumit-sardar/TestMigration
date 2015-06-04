@@ -5436,8 +5436,9 @@ public class ScheduleTestImpl implements ScheduleTest
 		try {
 		    	String searchCriteria = "";
 		    	if (!"AllDates".equals(dateFlagBulkReport)) {
-		    	    searchCriteria += "and trunc(ta.login_start_date) between to_date('" + startDtBulkReport + "', 'mm/dd/yy') and to_date('" + endDtBulkReport + "', 'mm/dd/yy')";
+		    	    searchCriteria += "and trunc(ta.login_start_date) between to_date('" + startDtBulkReport + "', 'mm/dd/yyyy') and to_date('" + endDtBulkReport + "', 'mm/dd/yyyy')";
 		    	}
+		    	System.out.println("searchCriteria: " + searchCriteria);
 		    	String orgNodeId = "";
 		    	String maxKey = "0";
 		    	for (Map.Entry<String, String> entry : orgHierarchyMap.entrySet()) {

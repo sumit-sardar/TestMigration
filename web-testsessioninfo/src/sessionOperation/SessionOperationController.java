@@ -9810,6 +9810,9 @@ public class SessionOperationController extends PageFlowController {
 		    	String endDtBulkReport = this.getRequest().getParameter("endDtBulkReport");
 		    	String orgArrBulkReport = this.getRequest().getParameter("orgArrBulkReport");
 
+		    	System.out.println("startDtBulkReport: " + startDtBulkReport);
+		    	System.out.println("endDtBulkReport: " + endDtBulkReport);
+
 		    	String userTimeZone =  userManagement.getUserTimeZone(this.userName);
 
 		    	Date startDate = DateUtils.getDateFromDateString(startDtBulkReport);
@@ -9817,21 +9820,33 @@ public class SessionOperationController extends PageFlowController {
 
 		        Date adjustedStartDate = com.ctb.util.DateUtils.getAdjustedDate(startDate, userTimeZone, "GMT", startDate);
 		        Date adjustedEndDate = com.ctb.util.DateUtils.getAdjustedDate(endDate, userTimeZone, "GMT", endDate);
+		        
+		        System.out.println("startDate: " + startDate);
+		        System.out.println("endDate: " + endDate);
+		        System.out.println("adjustedStartDate: " + adjustedStartDate);
+		        System.out.println("adjustedEndDate: " + adjustedEndDate);
 
 		    	Map<String, String> orgHierarchyMap = getOrgHierarchyMap(orgArrBulkReport);
 
 		    	Integer customerId = this.customerId;
 
+		    	String sDate = com.ctb.util.DateUtils.formatDateToDateString(adjustedStartDate, "MM/dd/yyyy");
+		    	String eDate = com.ctb.util.DateUtils.formatDateToDateString(adjustedEndDate, "MM/dd/yyyy");
+		    	
+		    	System.out.println("sDate: " + sDate);
+		        System.out.println("eDate: " + eDate);
+		        
 		    	Map<String, Object> paramMap = new HashMap<String, Object>();
 		    	paramMap.put("dateFlagBulkReport", dateFlagBulkReport);
-		    	paramMap.put("startDtBulkReport", com.ctb.util.DateUtils.formatDateToDateString(adjustedStartDate));
-		    	paramMap.put("endDtBulkReport", com.ctb.util.DateUtils.formatDateToDateString(adjustedEndDate));
+		    	paramMap.put("startDtBulkReport", sDate);
+		    	paramMap.put("endDtBulkReport", eDate);
 		    	paramMap.put("orgHierarchyMap", orgHierarchyMap);
 		    	paramMap.put("customerId", customerId);
 		    	
 		    	
 		    	try {
 		    	    	LiteracyProExportData[] tableData = scheduleTest.getBulkReportCSVData(paramMap);
+		    	    	System.out.println("count = " + tableData.length);
         		    	byte[] data = LayoutUtil.getLiteracyProExportDataBytes(tableData);
         		    	String fileName = "BulkReport.csv";
         		    	HttpServletResponse resp = this.getResponse();        

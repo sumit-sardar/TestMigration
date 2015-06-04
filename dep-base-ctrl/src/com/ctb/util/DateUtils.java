@@ -104,6 +104,22 @@ public class DateUtils
         }
         return result;
     }
+    
+    public static String formatDateToDateString(Date date, String dateFormat){
+        String result = null;
+        if (date == null)
+            return result;
+
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern(dateFormat);
+        try{
+            result = sdf.format(date);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     public static String formatDateToTimeString(Date date){
         String result = null;
