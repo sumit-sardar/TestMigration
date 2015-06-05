@@ -1,12 +1,17 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="label.tld" prefix="lb" %>
 <lb:bundle baseName="testsessionApplicationResource" />
 
 <netui-data:declareBundle bundlePath="webResources" name="web" />
+<%
+	Boolean hasAllowHideTooltipsConf = (Boolean)session.getAttribute("hasAllowHideTooltipsConf");
+%>
 <input type="hidden" id="selectedNewTestId" name="selectedNewTestId" val="" />
 <input type="hidden" id="hasTestBreak" name="hasTestBreak" val="F" />
+<input type="hidden" id="hasAllowHideTooltips" name="hasAllowHideTooltips" value='<%=hasAllowHideTooltipsConf %>' />
 <input type="hidden" id="productType" name="productType"  />
 <input type="hidden" id="showStudentFeedback" name="showStudentFeedback"  />
 
@@ -97,6 +102,14 @@
 					      		<input type="checkbox" id="selectGE" name="selectGE" >
 						    	<span id="selectGELbl"><lb:label key="selectTest.label.selectGE" /></span>
 					      	</td>
+						</tr>
+						<tr>
+						<td>
+						<c:if test="${hasAllowHideTooltipsConf}">
+							  	<input type="checkbox" id="showToolTips" checked="true" disabled="disabled"/>
+						  		<lb:label key = "selectTest.label.showTooltips" />		
+							</c:if>
+							</td>
 						</tr>
                           </table></td>
 					  </tr>

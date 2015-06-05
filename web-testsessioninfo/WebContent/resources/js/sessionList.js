@@ -3092,6 +3092,10 @@ function registerDelegate(tree){
 		if(testBreak.checked) testBreak.checked = false;
 		document.getElementById("testBreak").disabled=true;
 		$("#hasTestBreak").val("F");
+		if(document.getElementById("showToolTips")!=undefined && document.getElementById("showToolTips")!=null) {
+			document.getElementById("showToolTips").checked = true;
+			document.getElementById("showToolTips").disabled=true;
+		}
 		document.getElementById("aCode").style.visibility = "hidden";
 		document.getElementById("testSessionName_lbl").innerHTML = $("#noTestSelected").val();
 		document.getElementById("subtestGrid").style.display = "none";
@@ -4234,6 +4238,14 @@ function registerDelegate(tree){
 	 		param = param+"&includeGE=GE-No";
 	 }
 	 
+	 var hasAllowHideTooltips = $('#hasAllowHideTooltips').val();;
+	 if (hasAllowHideTooltips != null && hasAllowHideTooltips == 'true') {
+	 	if (document.getElementById("showToolTips").checked)
+	 		param = param+"&showToolTipsParam=true";
+	 	else
+	 		param = param+"&showToolTipsParam=false";
+	 }
+	 
 	 param = param + "&firstLastName=";
 	 
 	 var flName = "";
@@ -4497,6 +4509,10 @@ function registerDelegate(tree){
 	    	isTestBreak = false;
 		    $("#hasTestBreak").val("F");
 		    document.getElementById("sData").disabled=true;
+		    if(document.getElementById("showToolTips")!=undefined && document.getElementById("showToolTips")!=null) {
+				document.getElementById("showToolTips").checked = true;
+				document.getElementById("showToolTips").disabled=true;
+			}
 	    }
 	    offGradeCancled = false;
 	    offGradeSubtestChanged = false;
@@ -4537,6 +4553,12 @@ function registerDelegate(tree){
 		selectedSubtestsMap = new Map();
 		populateAllSubtestMap( testJSONValue);
 		populateSelectedSubtestsMap (testJSONValue);
+		
+		if(subtestDataArr!= undefined) {
+			if(document.getElementById("showToolTips")!=undefined && document.getElementById("showToolTips")!=null) {
+				document.getElementById("showToolTips").disabled=false;
+			}
+		}
 		
 		if(subtestDataArr!= undefined && subtestDataArr.length>1){
 			if(!locatorOnlyTest){

@@ -30,6 +30,7 @@
 		
 	var forceTestBreak = false;
 	var selectGE = null;
+	var varShowToolTips = null;
 	var savedAssignedRole = "Owner";
 	var defaultDays;
 	var isEdit = false; 
@@ -106,8 +107,16 @@
 							
 							forceTestBreak = data.forceTestBreak;
 							selectGE = data.selectGE;
+							varShowToolTips = data.showToolTips;
 							if(selectGE !=null && document.getElementById("selectGE")!=undefined && document.getElementById("selectGE")!=null) {
 								document.getElementById("selectGE").checked = selectGE;
+							}
+							if(document.getElementById("showToolTips")!=undefined && document.getElementById("showToolTips")!=null) {
+								if(varShowToolTips == null ) {
+									document.getElementById("showToolTips").checked = false;
+								} else {
+									document.getElementById("showToolTips").checked = varShowToolTips;
+								}
 							}
 							//Added for Oklahoma customer
 							isOKAdmin = data.isOkAdmin;
@@ -401,6 +410,12 @@
 		 		}
 		 	}
 		 }
+		 if(document.getElementById("showToolTips")!=undefined && document.getElementById("showToolTips")!=null) {
+			 $("#showToolTips").attr('disabled',true);
+			 	if(selectedSubtests != null && selectedSubtests != undefined && selectedSubtests.length > 1) {
+			 			$("#showToolTips").attr('checked',true);
+			 	}
+ 		 }
 		 /* To set force test break on Test change: end */
     	  isPopUp = true;
   		  wizard.accordion("activate", index);		
@@ -511,6 +526,13 @@
 								
 								if (forceTestBreak) {
 									$("#testBreak").attr('disabled', true);	
+								}
+								if(document.getElementById("showToolTips")!=undefined && document.getElementById("showToolTips")!=null) {
+									if(varShowToolTips == null ) {
+										document.getElementById("showToolTips").checked = false;
+									} else {
+										document.getElementById("showToolTips").checked = varShowToolTips;
+									}
 								}
 								
 								onChangeHandler.register("Select_Test");
@@ -855,6 +877,9 @@
   		$('#testGroupList').attr("disabled",true);
   		$('#level').attr("disabled",true);
   		$('#testBreak').attr("disabled",true);
+  		if(document.getElementById("showToolTips")!=undefined && document.getElementById("showToolTips")!=null) {
+			document.getElementById("showToolTips").disabled=true;
+		}
   		if($('#aCode') != undefined && $('#aCode') != null) {
   			$('#aCode').attr("disabled",true);
   		}

@@ -280,7 +280,7 @@ public class SessionOperationController extends PageFlowController {
    /* Changes for DEX Story - Add intermediate screen : End */
 	private boolean hasDefaultTestingWindowConfig = false; //Added for user story : GA – TAS default new session duration to 5 days
 	private boolean hasViewResponseResultConf = false; //Added for user story : 
-   
+	private boolean hasAllowHideTooltipsConf = false;
 	private boolean hasShowRosterAccomAndHierarchy = false;
 	private List<ScoreDetails> sdForAllSubtests = null;
 	public LinkedHashMap getTimeZoneOptions() {
@@ -994,6 +994,7 @@ public class SessionOperationController extends PageFlowController {
         	String checkRestrictedStr = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.REMOVE_RESTRICTED_STD_AND_SAVE, true, "true");
         	Boolean checkRestricted = Boolean.valueOf(checkRestrictedStr.trim().toLowerCase());       	
         	String includeGEStr = RequestUtil.getValueFromRequest(this.getRequest(), "includeGE", false, null);
+        	String showToolTips = RequestUtil.getValueFromRequest(this.getRequest(), "showToolTipsParam", false, null);
         	
         	SessionStudent[] restStudent = null;
         	boolean licenseValidationFailed = false ;
@@ -1028,6 +1029,14 @@ public class SessionOperationController extends PageFlowController {
             	
             	if (includeGEStr != null) {
             		session.getTestSession().setLexingtonVersion(includeGEStr);
+            	}
+            	
+            	if (showToolTips != null) {
+            		if(showToolTips.equals("true")) {
+            			session.getTestSession().setShowToolTips("T");
+            		} else {
+            			session.getTestSession().setShowToolTips("F");
+            		}
             	}
             	
             	if(!validationFailedInfo.isValidationFailed()) {
@@ -1502,6 +1511,13 @@ public class SessionOperationController extends PageFlowController {
                 	vo.setSelectGE(Boolean.FALSE);
                 else
                 	vo.setSelectGE(null);
+                
+                if ((testSession.getShowToolTips() != null) && testSession.getShowToolTips().equals("T"))               	
+                	vo.setShowToolTips(true);
+                else if ((testSession.getShowToolTips() != null) && testSession.getShowToolTips().equals("F"))               	
+                	vo.setShowToolTips(false);
+                else
+                	vo.setShowToolTips(null);
     	    	
                 if(this.isTASCCustomer){   	    	 
 	       	    	 boolean isSeletedTestInvalid = this.scheduleTest.checkSelectedTestInvalid(this.getCustomerId(),
@@ -5354,6 +5370,11 @@ public class SessionOperationController extends PageFlowController {
 						null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
 					this.hasViewResponseResultConf = true;
 					this.getSession().setAttribute("hasViewResponseResultConf", this.hasViewResponseResultConf);
+				}
+				if(cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Hide_Tooltips") && 
+						null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
+					this.hasAllowHideTooltipsConf = true;
+					this.getSession().setAttribute("hasAllowHideTooltipsConf", this.hasAllowHideTooltipsConf);
 				}
 			}
 			this.isTASCCustomer = isTASCCustomer(customerConfigurations);		

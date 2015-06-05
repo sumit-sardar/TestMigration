@@ -47,6 +47,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	Map<String,ArrayList> classHierarchyMap;
 	private boolean hasShowRosterAccomAndHierarchy = false;
 	private Integer testingWindowDefaultDays = null;
+	private Boolean showToolTips = false;
 	
 	
 	private static final long serialVersionUID = 1L;
@@ -358,5 +359,13 @@ public class ScheduledSavedTestVo implements Serializable {
 
 	public void setWVProctor(boolean isWVProctor) {
 		this.isWVProctor = isWVProctor;
+	}
+
+	public Boolean getShowToolTips() {
+		return showToolTips;
+	}
+
+	public void setShowToolTips(Boolean showToolTips) {
+		this.showToolTips = showToolTips;
 	}
 }

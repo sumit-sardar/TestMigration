@@ -82,7 +82,8 @@ public class TestSession extends CTBBean
     private String isStudentsSession;
    
     private String lexingtonVersion;
-    private String isInfomaticaExported; 
+    private String isInfomaticaExported;
+    private String showToolTips;
    
     /**
 	 * @return the isStudentInTestSession
@@ -735,6 +736,14 @@ public class TestSession extends CTBBean
 
 	public void setIsInfomaticaExported(String isInfomaticaExported) {
 		this.isInfomaticaExported = isInfomaticaExported;
+	}
+
+	public String getShowToolTips() {
+		return showToolTips;
+	}
+
+	public void setShowToolTips(String showToolTips) {
+		this.showToolTips = showToolTips;
 	}
 	
 	
