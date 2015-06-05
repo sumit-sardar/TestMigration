@@ -1,13 +1,13 @@
 package com.ctb.control.db; 
 
-import com.bea.control.*;
+import java.sql.SQLException;
+
+import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
-import com.ctb.bean.testAdmin.TestProduct; 
+import com.ctb.bean.testAdmin.FormLookupData;
+import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.UserParentProductResource;
-
-import java.sql.SQLException; 
-import org.apache.beehive.controls.api.bean.ControlExtension;
 
 /** 
  * Defines a new database control. 
@@ -280,4 +280,8 @@ TestProduct [] getTestCatalogForUser(String userName) throws SQLException;
     @JdbcControl.SQL(statement = "select p.product_id as productId , p.resource_type_code as resourceTypeCode, p.resource_uri as resourceURI from product_resource p where p.product_id = {productId}",
     		arrayMaxLength = 0, fetchSize = 100)
     UserParentProductResource[] getProductResourceEntries(Integer productId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT FAL.TEST_CATALOG_ID   AS testCatalogId, FAL.PRODUCT_ID  AS productId, FAL.SCREEN_READER_FORMS  AS screenReaderForms, FAL.NON_SCREEN_READER_FORMS AS nonScreenReaderForms, FAL.TEST_NAME  AS testName FROM FORM_ASSIGNMENT_LOOKUP FAL WHERE FAL.PRODUCT_ID = {productId} AND FAL.TEST_CATALOG_ID = (select distinct test_catalog_id from test_catalog where activation_status = 'AC' and item_set_id = {itemSetId}) AND FAL.ACTIVATION_STATUS = 'AC' AND ROWNUM = 1",
+    		arrayMaxLength = 0, fetchSize = 100)
+    FormLookupData getFormValuesForCatalog (Integer itemSetId , Integer productId) throws SQLException;
 }

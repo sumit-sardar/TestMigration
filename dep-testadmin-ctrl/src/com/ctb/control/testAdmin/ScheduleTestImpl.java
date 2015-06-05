@@ -30,6 +30,7 @@ import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.EditCopyStatus;
+import com.ctb.bean.testAdmin.FormLookupData;
 import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.LicenseNodeData;
 import com.ctb.bean.testAdmin.LiteracyProExportData;
@@ -2704,6 +2705,19 @@ public class ScheduleTestImpl implements ScheduleTest
                 formCounts = formAssignments.getFormAssignmentCounts(testAdminId);
             }
             
+            /**
+             * Added for story OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+             */
+            boolean forceFormConfigPresent = false;
+            boolean  forceFormValues = false;
+            List<FormAssignmentCount> screenReaderFormList = null;
+            List<FormAssignmentCount> nonScreenReaderFormList = null;
+            FormAssignmentCount [] screenReaderFormValues = null;
+            FormAssignmentCount [] nonScreenReaderFormValues = null;
+            /**
+             * End 
+             */ 
+            
             //Start for Password Length Change
             boolean setPasswordLength = false;
             Integer passwordMinLength = new Integer(0);
@@ -2724,8 +2738,13 @@ public class ScheduleTestImpl implements ScheduleTest
             			if(passwordMaxLength <= 10 && passwordMinLength >= 6 && passwordMinLength <=passwordMaxLength)
             				setPasswordLength = true;
             		}
-            		break;
+            		//break; -- Commented out as we need to loop to check other configuration values.
             	}
+            	if ("Force_Form_Values".equalsIgnoreCase(customerConfiguration[i].getCustomerConfigurationName())
+            			&& "T".equalsIgnoreCase(customerConfiguration[i].getDefaultValue())){
+            		forceFormConfigPresent = true;
+            	}
+            	
             }
            //End for Password Length Change
             
@@ -2784,6 +2803,68 @@ public class ScheduleTestImpl implements ScheduleTest
             }
             
             
+            /** OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+			 * If form values are mentioned in lookup table,fetch permissible
+			 * form values from the table for the said Test_Catalog_Id . Also
+			 * check if the form assignment method is roundrobin.
+			 */
+            if (forceFormConfigPresent && newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)){
+            	
+            	//Fetch form data from Database lookup table named : FORM_ASSIGNMENT_LOOKUP
+				FormLookupData formLookupData = this.product.getFormValuesForCatalog(newSession.getTestSession().getItemSetId(), productId);
+				
+				// If formLookupData is present, process further.
+				if (formLookupData != null){
+					screenReaderFormList = new ArrayList<FormAssignmentCount>();
+		            nonScreenReaderFormList = new ArrayList<FormAssignmentCount>();
+					
+					studentAccommo = getScreenReaderStudentAccommodations(scheduledStudents); 
+					String[] screenReaderForms = formLookupData.getAllScreenReaderForms();
+					String[] nonScreenReaderForms = formLookupData.getAllNonScreenReaderForms();
+					
+					/**
+					 * Set all screen reader forms set in lookup table.
+					 */
+					for (String formName : screenReaderForms){
+						for (FormAssignmentCount publishedForms : formCounts){
+							if (publishedForms.getForm().equals(formName)){
+								FormAssignmentCount formCount = new FormAssignmentCount();
+								formCount.setForm(formName);
+								formCount.setCount(new Integer(0));
+								screenReaderFormList.add(formCount);
+							}
+						}
+
+					}
+					
+					/**
+					 * Set all non-screen reader forms set in lookup table.
+					 */
+					for (String formName : nonScreenReaderForms){
+						for (FormAssignmentCount publishedForms : formCounts){
+							if (publishedForms.getForm().equals(formName)){
+								FormAssignmentCount formCount = new FormAssignmentCount();
+								formCount.setForm(formName);
+								formCount.setCount(new Integer(0));
+								nonScreenReaderFormList.add(formCount);
+							}
+						}
+					}
+					
+					/**
+					 * Convert form list to array if the form values are correctly mentioned in lookup table.
+					 * */
+					if (nonScreenReaderFormList.size() > 0
+							&& screenReaderFormList.size() > 0) {
+						forceFormValues = true;//The flag set to true.This will enforce form assignement on lookup table form preferences.
+						screenReaderFormValues = screenReaderFormList.toArray(new FormAssignmentCount[screenReaderFormList.size()]);
+						nonScreenReaderFormValues = nonScreenReaderFormList.toArray(new FormAssignmentCount[nonScreenReaderFormList.size()]);
+					}
+				}
+			}
+            /**
+             * End of OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+             * */
             
             ArrayList subtestAssignments = new ArrayList();
             boolean testRestricted = "T".equals(admins.isTestRestricted(newSession.getTestSession().getItemSetId()))?true:false;
@@ -2818,7 +2899,14 @@ public class ScheduleTestImpl implements ScheduleTest
                         		Integer studentId = scheduledStudents[j].getStudentId();
                         		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                         		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                        	}else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37 || (productId.intValue() == 39 && isLiteratureTestGAEOC)){ 
+                        	}else if(forceFormValues){// Added for story OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+                                String sr = studentAccommo.get(student.getStudentId()); 
+                                if(sr!=null && sr.equalsIgnoreCase("T")){ 
+                                     form=TestFormSelector.getFormWithLowestCountAndIncrement(screenReaderFormValues);
+                                }else{ 
+                                     form = TestFormSelector.getFormWithLowestCountAndIncrement(nonScreenReaderFormValues); 
+                                } 
+                            }else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37 || (productId.intValue() == 39 && isLiteratureTestGAEOC)){ 
                                 String sr = studentAccommo.get(student.getStudentId()); 
                                 FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                                 srformCounts.toArray(fc); 
@@ -3025,6 +3113,20 @@ public class ScheduleTestImpl implements ScheduleTest
             if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
                 formCounts = formAssignments.getFormAssignmentCounts(testAdminId);
             }
+            
+            /**
+             * Added for story OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+             */
+            boolean forceFormConfigPresent = false;
+            boolean  forceFormValues = false;
+            List<FormAssignmentCount> screenReaderFormList = null;
+            List<FormAssignmentCount> nonScreenReaderFormList = null;
+            FormAssignmentCount [] screenReaderFormValues = null;
+            FormAssignmentCount [] nonScreenReaderFormValues = null;
+            /**
+             * End 
+             */ 
+            
             RosterElement [] oldUnits = rosters.getRosterForTestSession(testAdminId);
             HashMap oldMap = new HashMap();
             SessionStudent [] newUnits = newSession.getStudents();
@@ -3059,8 +3161,13 @@ public class ScheduleTestImpl implements ScheduleTest
             			if(passwordMaxLength <= 10 && passwordMinLength >= 6 && passwordMinLength <=passwordMaxLength )
             				setPasswordLength = true;
             		}
-            		break;
+            		//break; -- Commented out as we need to loop to check other configuration values.
             	}
+            	if(("Force_Form_Values".equalsIgnoreCase(customerConfiguration[i].getCustomerConfigurationName()))
+            			&& ("T".equalsIgnoreCase(customerConfiguration[i].getDefaultValue())))
+            			{
+            				forceFormConfigPresent=true;
+            			}
             }
             if (setPasswordLength)
             	System.out.println("Password Length present::Maxlength="+passwordMaxLength+" Minlength="+passwordMinLength);
@@ -3123,6 +3230,65 @@ public class ScheduleTestImpl implements ScheduleTest
 					}
 				}
             }
+            /** OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+			 * If form values are mentioned in lookup table,fetch permissible
+			 * form values from the table for the said Test_Catalog_Id . Also
+			 * check if the form assignment method is roundrobin.
+			 */
+            if (forceFormConfigPresent && newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN))
+            {
+            	FormLookupData formLookupData=this.product.getFormValuesForCatalog(newSession.getTestSession().getItemSetId(), productId);
+            	if(formLookupData!=null)
+            	{
+            		screenReaderFormList=new ArrayList<FormAssignmentCount>();
+            		nonScreenReaderFormList=new ArrayList<FormAssignmentCount>();
+            		//forceFormValues=true;
+            		studentAccommo = getScreenReaderStudentAccommodations(newUnits);
+            		String[] screenReaderForms = formLookupData.getAllScreenReaderForms();
+            		String[] nonScreenReaderForms = formLookupData.getAllNonScreenReaderForms();
+            		/**
+					 * Set all screen reader forms set in lookup table.
+					 */
+					for (String formName : screenReaderForms){
+						for (FormAssignmentCount publishedForms : formCounts){
+							if (publishedForms.getForm().equals(formName)){
+								FormAssignmentCount formCount = new FormAssignmentCount();
+								formCount.setForm(formName);
+								formCount.setCount(new Integer(0));
+								screenReaderFormList.add(formCount);
+							}
+						}
+
+					}
+					/**
+					 * Set all non screen reader forms set in lookup table.
+					 */
+					for (String formName : nonScreenReaderForms){
+						for (FormAssignmentCount publishedForms : formCounts){
+							if (publishedForms.getForm().equals(formName)){
+								FormAssignmentCount formCount = new FormAssignmentCount();
+								formCount.setForm(formName);
+								formCount.setCount(new Integer(0));
+								nonScreenReaderFormList.add(formCount);
+							}
+						}
+					}
+            		
+					/**
+					 * Convert form list to array if the form values are correctly mentioned in lookup table.
+					 * */
+					if (nonScreenReaderFormList.size() > 0
+							&& screenReaderFormList.size() > 0) {
+						forceFormValues = true;//The flag set to true.This will enforce form assignement on lookup table form preferences.
+						screenReaderFormValues = screenReaderFormList.toArray(new FormAssignmentCount[screenReaderFormList.size()]);
+						nonScreenReaderFormValues = nonScreenReaderFormList.toArray(new FormAssignmentCount[nonScreenReaderFormList.size()]);
+					}
+            	}
+            	
+            }
+            /**
+             * End of OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+             * */
             
             
             for(int j=0;newUnits!=null && j<newUnits.length;j++) {
@@ -3179,7 +3345,16 @@ public class ScheduleTestImpl implements ScheduleTest
                     		Integer studentId = newUnit.getStudentId();
                     		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                     		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                    	}else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37 || (productId.intValue() == 39 && isLiteratureTestGAEOC)){ 
+                    	}
+                    	else if(forceFormValues){// Added for story OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+                            String sr = studentAccommo.get(newUnit.getStudentId()); 
+                            if(sr!=null && sr.equalsIgnoreCase("T")){ 
+                                 form=TestFormSelector.getFormWithLowestCountAndIncrement(screenReaderFormValues);
+                            }else{ 
+                                 form = TestFormSelector.getFormWithLowestCountAndIncrement(nonScreenReaderFormValues); 
+                            } 
+                        }
+                    	else if(productId.intValue() == 32 || productId.intValue() == 35 || productId.intValue() == 37 || (productId.intValue() == 39 && isLiteratureTestGAEOC)){ 
                             String sr = studentAccommo.get(newUnit.getStudentId()); 
                             FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                             srformCounts.toArray(fc); 
@@ -3300,7 +3475,15 @@ public class ScheduleTestImpl implements ScheduleTest
                                 		Integer studentId = newUnit.getStudentId();
                                 		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                                 		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                                	}else if(productId.intValue() == 32){ 
+                                	}else if(forceFormValues){// Added for story OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+                                        String sr = studentAccommo.get(newUnit.getStudentId()); 
+                                        if(sr!=null && sr.equalsIgnoreCase("T")){ 
+                                             form=TestFormSelector.getFormWithLowestCountAndIncrement(screenReaderFormValues);
+                                        }else{ 
+                                             form = TestFormSelector.getFormWithLowestCountAndIncrement(nonScreenReaderFormValues); 
+                                        } 
+                                    }
+                                	else if(productId.intValue() == 32){ 
                                         String sr = studentAccommo.get(newUnit.getStudentId()); 
                                         FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                                         srformCounts.toArray(fc); 
@@ -3319,7 +3502,15 @@ public class ScheduleTestImpl implements ScheduleTest
                         		Integer studentId = newUnit.getStudentId();
                         		lvl = getLastCompletedOpLevel(completedLevels.get(studentId));
                         		form = TestFormSelector.getTestletFormWithLowestCountAndIncrement(formsCountByLevel.get(lvl),assignedForms.get(studentId));
-                        	}else if(productId.intValue() == 32){ 
+                        	}else if(forceFormValues){// Added for story OAS - 3161 OAS - GA TAS : Modify TAS for Scheduling
+                                String sr = studentAccommo.get(newUnit.getStudentId()); 
+                                if(sr!=null && sr.equalsIgnoreCase("T")){ 
+                                     form=TestFormSelector.getFormWithLowestCountAndIncrement(screenReaderFormValues);
+                                }else{ 
+                                     form = TestFormSelector.getFormWithLowestCountAndIncrement(nonScreenReaderFormValues); 
+                                } 
+                            }
+                        	else if(productId.intValue() == 32){ 
                                 String sr = studentAccommo.get(newUnit.getStudentId()); 
                                 FormAssignmentCount []fc = new FormAssignmentCount[srformCounts.size()]; 
                                 srformCounts.toArray(fc); 
