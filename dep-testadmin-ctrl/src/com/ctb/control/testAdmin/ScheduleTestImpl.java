@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -5613,6 +5614,7 @@ public class ScheduleTestImpl implements ScheduleTest
 	    	LiteracyProExportData[] data = null;
 	    	LiteracyProExportData[] repotingMapper;
 	    	LiteracyProExportData[] oasData = null;
+	    	Set<String> irsKeySet = new HashSet<String>();
 	    	String dateFlagBulkReport = (String) paramMap.get("dateFlagBulkReport");
 	    	String startDtBulkReport = (String) paramMap.get("startDtBulkReport");
 	    	String endDtBulkReport = (String) paramMap.get("endDtBulkReport");
@@ -5648,28 +5650,35 @@ public class ScheduleTestImpl implements ScheduleTest
 		    	repotingMapper = admins.getReportLevelMapper();
 		    	
 		    	for(LiteracyProExportData oasBean : oasData){
+		    		// add entries into set to weed out duplicate ones
+		    	    irsKeySet.add(oasBean.getSessionID() + "~"+oasBean.getOasStudentId());
+		    		
 		    	    LiteracyProExportData d = getReportLevelMapperBean(repotingMapper, oasBean);
 		    	    oasBean.setReportingLevelId(oasBean.getSessionID() + oasBean.getOasStudentId() +  d.getReportingLevelId());
 		    	}
 		    	
+		    	//convert to array from set
+		    	String[] irsKeyEntries = irsKeySet.toArray(new String[irsKeySet.size()]); 
+		    	
+		    	
 		    	//Changes for 999 limitation of SQL IN clause : Start
 			List<LiteracyProExportData> beanList = new ArrayList<LiteracyProExportData>();
 			int inClauselimit = 999;
-			int loopCounters = oasData.length / inClauselimit;
-			if ((oasData.length % inClauselimit) > 0) {
+			int loopCounters = irsKeyEntries.length / inClauselimit;
+			if ((irsKeyEntries.length % inClauselimit) > 0) {
 				loopCounters = loopCounters + 1;
 			}
 
 			for (int counter = 0; counter < loopCounters; counter++) {
-			    	LiteracyProExportData[] irsData = null;
+			    	String[] irsData = null;
 				String inClause = "";
 				if ((counter + 1) != loopCounters) {
-				    irsData = new LiteracyProExportData[inClauselimit];
-					System.arraycopy(oasData, (counter * inClauselimit), irsData, 0, inClauselimit);
+				    	irsData = new String[inClauselimit];
+					System.arraycopy(irsKeyEntries, (counter * inClauselimit), irsData, 0, inClauselimit);
 				} else {
-					int count = oasData.length % inClauselimit;
-					irsData = new LiteracyProExportData[count];
-					System.arraycopy(oasData, ((loopCounters - 1) * inClauselimit), irsData, 0, count);
+					int count = irsKeyEntries.length % inClauselimit;
+					irsData = new String[count];
+					System.arraycopy(irsKeyEntries, ((loopCounters - 1) * inClauselimit), irsData, 0, count);
 				}
 				inClause = generateInClauseForBulkDownload(irsData);
 				String contentfact = "(TBCONFACT.SESSIONID, TBCONFACT.STUDENTID) IN "+inClause;
@@ -5678,9 +5687,9 @@ public class ScheduleTestImpl implements ScheduleTest
 				beanList.addAll(Arrays.asList(irsScoreData));
 			}
 			//End 
-		    	
+		    
 			data = mergeLiteracyProExportData(oasData, beanList);
-		    	Arrays.sort(data);
+		    Arrays.sort(data);
 			return data;
 		} catch (SQLException se) {
 			OrgNodeCategoryDataNotFound oe = new OrgNodeCategoryDataNotFound("StudentManagementImpl: getCustomerOrgStructure : " + se.getMessage());
@@ -5735,23 +5744,25 @@ public class ScheduleTestImpl implements ScheduleTest
 	
 	private LiteracyProExportData getReportLevelMapperBean(LiteracyProExportData[] list, LiteracyProExportData bean) {
 	    LiteracyProExportData item = null;
+	    String prodSubtestId = bean.getProductId()+bean.getSubtestId();
 	    for (LiteracyProExportData data : list) {
-		String prodSubtestId = bean.getProductId()+bean.getSubtestId();
-		if(prodSubtestId.equals(data.getSubtestProdMapper())) {
-		    item = data;
-		    break;
-		}
+	    	if(prodSubtestId.equals(data.getSubtestProdMapper())) {
+	    		item = data;
+	    		break;
+	    	}
 	    }
 	    return item;
 	}
 
 	
-	private String generateInClauseForBulkDownload(LiteracyProExportData[] beans) {
-	    	StringBuilder temp = new StringBuilder("");
+	private String generateInClauseForBulkDownload(String[] keyArray) {
+	    StringBuilder temp = new StringBuilder("");
 		String tempString = "";
-		for (LiteracyProExportData bean : beans) {
-			if(bean != null) {
-			    temp.append("("+bean.getSessionID()+", "+bean.getOasStudentId()+"),");
+		for (String key : keyArray) {
+			String[] entries = new String[2];
+			if(key != null) {
+				entries = key.split("~");
+			    temp.append("("+entries[0]+", "+entries[1]+"),");
 			}
 		}
 		tempString = temp.toString();

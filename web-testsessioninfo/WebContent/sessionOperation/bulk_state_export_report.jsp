@@ -111,11 +111,10 @@
 				dateFormat: 'mm/dd/y'					
 			});
 			
-			var d = new Date();
+			var d = populateDataOptionsBulkReport();
+			// console.log('received: ' + d);
 			$("#startDateBulkReport").datepicker("setDate", new Date(d.getFullYear(), d.getMonth() - 1, d.getDate()));
 			$("#endDateBulkReport").datepicker("setDate", new Date());
-			
-			populateDataOptionsBulkReport();				
 		</script>
 	
 	</netui-template:section>

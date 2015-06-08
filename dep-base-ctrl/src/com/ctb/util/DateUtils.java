@@ -120,6 +120,15 @@ public class DateUtils
         }
         return result;
     }
+    
+    public static String getAdjustedTodayString(String timeZone, String dateFormat) {
+	Date now = new Date(System.currentTimeMillis());
+	System.out.println("Today: " + now.toString());
+	Date today = getAdjustedDate(now, TimeZone.getDefault().getID(), timeZone, now);
+	String todayString = formatDateToDateString(today, dateFormat);
+	System.out.println("Adjusted Today: " + todayString);
+	return todayString;
+    }
 
     public static String formatDateToTimeString(Date date){
         String result = null;

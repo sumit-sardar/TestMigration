@@ -7230,7 +7230,8 @@ function validNumber(str){
 	
 // Start of Bulk Report
 function populateDataOptionsBulkReport(){
- // console.log('populateDataOptionsBulkReport');
+	var today = new Date();
+	// console.log('populateDataOptionsBulkReport: ' + today);
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){	
@@ -7240,6 +7241,7 @@ function populateDataOptionsBulkReport(){
 		type:		'POST',
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){
+						today = new Date(data.todayOfUserTimeZone);
 						populateOrgListOptionsBulkReport(data.topLevelNodes);
 						populateOrgHiearchyOptions(data.parentHierarchyDetails,data.orgNodeCategoryList, data.childLevelNodes);
 						$.unblockUI();		
@@ -7249,6 +7251,8 @@ function populateDataOptionsBulkReport(){
 						window.location.href="error.do";
 					}
 	});
+	// console.log('return: ' + today);
+	return today;
 }
 
 

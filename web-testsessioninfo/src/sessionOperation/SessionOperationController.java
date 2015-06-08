@@ -9754,6 +9754,9 @@ public class SessionOperationController extends PageFlowController {
 				populateOrgStructureForReport(
 						associatedNodes[0].getOrgNodeId(), bulkReportData);
 			}
+			String userTimeZone =  userManagement.getUserTimeZone(this.userName);
+			String todayOfUserTimeZone = com.ctb.util.DateUtils.getAdjustedTodayString(userTimeZone, "MM/dd/yyyy");
+			bulkReportData.setTodayOfUserTimeZone(todayOfUserTimeZone);
 			Gson gson = new Gson();
 			String json = gson.toJson(bulkReportData);
 			resp.setContentType(CONTENT_TYPE_JSON);

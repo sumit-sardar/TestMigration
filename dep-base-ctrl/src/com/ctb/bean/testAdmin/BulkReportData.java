@@ -8,6 +8,7 @@ public class BulkReportData extends CTBBean {
 	private Node[] parentHierarchyDetails;
 	private OrgNodeCategory[] orgNodeCategoryList;
 	private AncestorOrgDetails childLevelNodes;
+	private String todayOfUserTimeZone;
 
 	public Node[] getTopLevelNodes() {
 		return topLevelNodes;
@@ -41,4 +42,12 @@ public class BulkReportData extends CTBBean {
 		this.childLevelNodes = childLevelNodes;
 	}
 
+	public String getTodayOfUserTimeZone() {
+	    return todayOfUserTimeZone;
+	}
+
+	public void setTodayOfUserTimeZone(String todayOfUserTimeZone) {
+	    this.todayOfUserTimeZone = todayOfUserTimeZone;
+	}
+	
 }
