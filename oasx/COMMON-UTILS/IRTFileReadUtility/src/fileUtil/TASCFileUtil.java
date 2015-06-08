@@ -126,8 +126,9 @@ public class TASCFileUtil {
 					forms.add("E3");
 				}else if ("F".equalsIgnoreCase(test_form)){
 					/*forms.add("F1");
-					forms.add("F2");*/
-					forms.add("F3");
+					forms.add("F2");
+					forms.add("F3");*/
+					forms.add("F4");
 				}else{
 					System.out.println("Content Code :"+ Content_area_initial +" Form value :"+ test_form + " ... Break the loop ... Processing next file.");
 					// System.exit(0);
@@ -198,8 +199,9 @@ public class TASCFileUtil {
 					forms.add("E3");
 				}else if ("F".equalsIgnoreCase(test_form)){
 					/*forms.add("F1");
-					forms.add("F2");*/
-					forms.add("F3");
+					forms.add("F2");
+					forms.add("F3");*/
+					forms.add("F4");
 				}else {
 					// System.out.println("Form value is not correct..Exit Called..");
 					// System.exit(0);
@@ -270,8 +272,9 @@ public class TASCFileUtil {
 					forms.add("E3");
 				}else if ("F".equalsIgnoreCase(test_form)){
 					/*forms.add("F1");
-					forms.add("F2");*/
-					forms.add("F3");
+					forms.add("F2");
+					forms.add("F3");*/
+					forms.add("F4");
 				}else {
 					// System.out.println("Form value is not correct..Exit Called..");
 					// System.exit(0);
@@ -307,7 +310,8 @@ public class TASCFileUtil {
 					System.out.println("File extension is not E or S..Exit Called..");
 					System.exit(0);
 				}
-				forms.add("D4");
+				forms.add("F4");
+				//forms.add("D4");
 				//forms.add("F3");
 				//forms.add("E3");
 				//forms.add("D3");
@@ -353,7 +357,8 @@ public class TASCFileUtil {
 					System.out.println("File extension is not E or S..Exit Called..");
 					System.exit(0);
 				}
-				forms.add("D4");
+				forms.add("F4");
+				//forms.add("D4");
 				//forms.add("F3");
 				//forms.add("E3");
 				//forms.add("D3");
