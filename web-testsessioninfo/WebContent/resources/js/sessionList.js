@@ -7233,7 +7233,7 @@ function populateDataOptionsBulkReport(){
 	var today = new Date();
 	// console.log('populateDataOptionsBulkReport: ' + today);
 	$.ajax({
-		async:		true,
+		async:		false,
 		beforeSend:	function(){	
 						UIBlock();	
 					},

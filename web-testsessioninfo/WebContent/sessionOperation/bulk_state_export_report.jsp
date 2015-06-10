@@ -114,7 +114,7 @@
 			var d = populateDataOptionsBulkReport();
 			// console.log('received: ' + d);
 			$("#startDateBulkReport").datepicker("setDate", new Date(d.getFullYear(), d.getMonth() - 1, d.getDate()));
-			$("#endDateBulkReport").datepicker("setDate", new Date());
+			$("#endDateBulkReport").datepicker("setDate", d);
 		</script>
 	
 	</netui-template:section>
