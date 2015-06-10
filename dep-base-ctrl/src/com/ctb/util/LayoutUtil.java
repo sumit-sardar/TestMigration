@@ -6,7 +6,9 @@ import java.io.IOException;
 import com.ctb.bean.testAdmin.LiteracyProExportData;
 
 public class LayoutUtil {
-
+	private static final String windowsEOL = "\r\n";
+	private static final String headerWithoutQuotes = "Student Login ID, Last Name, Middle Name, First Name, Date of Birth, Gender, Assessment Date, Instrument, Form, Level, Subtest, Scaled Score, GLE, Session Name";
+	
     public static byte[] getLiteracyProExportDataBytes(LiteracyProExportData[] tableData) {
 	if (tableData != null && tableData.length > 0) {
 	    CharArrayWriter out = new CharArrayWriter();
@@ -40,7 +42,7 @@ public class LayoutUtil {
 		    out.write(wrap(rowData.getGLE()));
 		    out.write(",");
 		    out.write(wrap(rowData.getSessionName()));
-		    out.write("\n");
+		    out.write(windowsEOL);
 		}
 		out.flush();
 		out.close();
@@ -54,8 +56,12 @@ public class LayoutUtil {
 	}
     }
 
-    private static String getHeader() {
+  /*  private static String getHeader() {
 	return "\"Student Login ID\",\"Last Name\",\"Middle Name\",\"First Name\",\"Date of Birth\",\"Gender\",\"Assessment Date\",\"Instrument\",\"Form\",\"Level\",\"Subtest\",\"Scaled Score\",\"GLE\",\"Session Name\"\n";
+    }*/
+    
+    private static String getHeader() {
+    	return headerWithoutQuotes + windowsEOL;
     }
 
     public static String wrap(String s) {
