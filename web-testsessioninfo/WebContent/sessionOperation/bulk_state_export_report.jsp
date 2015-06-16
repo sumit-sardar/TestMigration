@@ -99,7 +99,6 @@
 			$("#startDateBulkReport").datepicker({
 					inline: true,
 					clickInput:true,
-					maxDate: 'today',
 					dateFormat: 'mm/dd/y'				
 
 				});
@@ -107,14 +106,9 @@
 			$("#endDateBulkReport").datepicker({
 				inline: true,
 				clickInput:true,
-				maxDate: 'today',
 				dateFormat: 'mm/dd/y'					
 			});
-			
-			var d = populateDataOptionsBulkReport();
-			// console.log('received: ' + d);
-			$("#startDateBulkReport").datepicker("setDate", new Date(d.getFullYear(), d.getMonth() - 1, d.getDate()));
-			$("#endDateBulkReport").datepicker("setDate", d);
+			populateDataOptionsBulkReport();
 		</script>
 	
 	</netui-template:section>

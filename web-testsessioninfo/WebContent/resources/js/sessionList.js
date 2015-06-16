@@ -7230,8 +7230,6 @@ function validNumber(str){
 	
 // Start of Bulk Report
 function populateDataOptionsBulkReport(){
-	var today = new Date();
-	// console.log('populateDataOptionsBulkReport: ' + today);
 	$.ajax({
 		async:		false,
 		beforeSend:	function(){	
@@ -7241,7 +7239,13 @@ function populateDataOptionsBulkReport(){
 		type:		'POST',
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){
-						today = new Date(data.todayOfUserTimeZone);
+						var d = new Date(data.todayOfUserTimeZone);
+						$("#startDateBulkReport" ).datepicker( "option", "maxDate", new Date(d.getFullYear(), d.getMonth(), d.getDate()));
+						$("#endDateBulkReport" ).datepicker( "option", "maxDate", new Date(d.getFullYear(), d.getMonth(), d.getDate()));
+
+						$("#startDateBulkReport").datepicker("setDate", new Date(d.getFullYear(), d.getMonth() - 1, d.getDate()));
+						$("#endDateBulkReport").datepicker("setDate", new Date(d.getFullYear(), d.getMonth(), d.getDate()));
+
 						populateOrgListOptionsBulkReport(data.topLevelNodes);
 						populateOrgHiearchyOptions(data.parentHierarchyDetails,data.orgNodeCategoryList, data.childLevelNodes);
 						$.unblockUI();		
@@ -7251,8 +7255,6 @@ function populateDataOptionsBulkReport(){
 						window.location.href="error.do";
 					}
 	});
-	// console.log('return: ' + today);
-	return today;
 }
 
 
