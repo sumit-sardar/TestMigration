@@ -1,0 +1,41 @@
+#loginPre{
+width: 500px;
+height: 226px;
+margin: 15% 30% 11px
+}
+#loginForm{
+margin-top: 5%;
+margin-left: 30%;
+}
+#loginDiv{
+width:98%;
+}
+.table-bordered {
+border: 1px solid #0D0C0C;
+}
+#myCarousel{
+width: 1142px;
+height: 616px;
+padding: 25%;
+left: 8%
+}
+.heading{
+text-align: center;
+white-space: pre-line;
+background-color: #99CCFF;
+}
+
+/*.container
+{
+    display:table;
+    width: 100%;
+}
+.row
+{
+    height: 100%;
+    display: table-row;
+}
+.col-sm-4
+{
+    display: table-cell;
+}*/
