@@ -82,53 +82,57 @@ CREATE OR REPLACE PROCEDURE ASSIGN_FIXED_SET_OF_FORM_GA AS
   */
 
   CURSOR CUR_SCREEN_READER_FORMS(IN_TEST_ADMIN_ID NUMBER, IN_PRODUCT_ID NUMBER, IN_TEST_CATALOG_ID NUMBER) IS
-    SELECT TR.FORM_ASSIGNMENT AS AVAILABLE_FORMS,
-           COUNT(TR.FORM_ASSIGNMENT) AS COUNT_FORMS
+    SELECT TAS.SCREEN_READER_FORMS AS AVAILABLE_FORMS,
+           NVL(COUNT(FORM_ASSIGNMENT), 0) AS COUNT_FORMS
       FROM TEST_ROSTER TR
-     WHERE TR.TEST_ADMIN_ID = IN_TEST_ADMIN_ID
-       AND TR.FORM_ASSIGNMENT IN
-           (SELECT *
-              FROM (SELECT DISTINCT TRIM(SUBSTR(',' || SCREEN_READER_FORMS || ',',
-                                                INSTR(',' ||
-                                                      SCREEN_READER_FORMS || ',',
-                                                      ',',
-                                                      1,
-                                                      LEVEL) + 1,
-                                                INSTR(',' ||
-                                                      SCREEN_READER_FORMS || ',',
-                                                      ',',
-                                                      1,
-                                                      LEVEL + 1) -
-                                                INSTR(',' ||
-                                                      SCREEN_READER_FORMS || ',',
-                                                      ',',
-                                                      1,
-                                                      LEVEL) - 1)) AS SCREEN_READER_FORMS
-                      FROM FORM_ASSIGNMENT_LOOKUP
-                     WHERE PRODUCT_ID = IN_PRODUCT_ID
-                       AND TEST_CATALOG_ID = IN_TEST_CATALOG_ID
-                       AND ACTIVATION_STATUS = 'AC'
-                    CONNECT BY LEVEL <=
-                               LENGTH(',' || SCREEN_READER_FORMS || ',') -
-                               LENGTH(REPLACE(',' || SCREEN_READER_FORMS || ',',
-                                              ',',
-                                              '')) - 1)
-             WHERE SCREEN_READER_FORMS IN
-                   (SELECT ISET.ITEM_SET_FORM AS FORM
-                      FROM TEST_ADMIN ADM,
-                           ITEM_SET ISET,
-                           ITEM_SET_ANCESTOR ISA,
-                           FORM_ASSIGNMENT_LOOKUP FAL,
-                           (SELECT DISTINCT TEST_ROSTER_ID, FORM_ASSIGNMENT
-                              FROM TEST_ROSTER
-                             WHERE TEST_ADMIN_ID = IN_TEST_ADMIN_ID) ROS
-                     WHERE ISA.ANCESTOR_ITEM_SET_ID = ADM.ITEM_SET_ID
-                       AND ISET.ITEM_SET_ID = ISA.ITEM_SET_ID
-                       AND ROS.FORM_ASSIGNMENT(+) = ISET.ITEM_SET_FORM
-                       AND ISET.ITEM_SET_TYPE = 'TD'
-                       AND ADM.TEST_ADMIN_ID = IN_TEST_ADMIN_ID
-                     GROUP BY ISET.ITEM_SET_FORM))
-     GROUP BY TR.FORM_ASSIGNMENT
+     RIGHT JOIN (SELECT SCREEN_READER_FORMS
+                   FROM (SELECT DISTINCT TRIM(SUBSTR(',' ||
+                                                     SCREEN_READER_FORMS || ',',
+                                                     INSTR(',' ||
+                                                           SCREEN_READER_FORMS || ',',
+                                                           ',',
+                                                           1,
+                                                           LEVEL) + 1,
+                                                     INSTR(',' ||
+                                                           SCREEN_READER_FORMS || ',',
+                                                           ',',
+                                                           1,
+                                                           LEVEL + 1) -
+                                                     INSTR(',' ||
+                                                           SCREEN_READER_FORMS || ',',
+                                                           ',',
+                                                           1,
+                                                           LEVEL) - 1)) AS SCREEN_READER_FORMS
+                           FROM FORM_ASSIGNMENT_LOOKUP
+                          WHERE PRODUCT_ID = IN_PRODUCT_ID
+                            AND TEST_CATALOG_ID = IN_TEST_CATALOG_ID
+                            AND ACTIVATION_STATUS = 'AC'
+                         CONNECT BY LEVEL <=
+                                    LENGTH(',' || SCREEN_READER_FORMS || ',') -
+                                    LENGTH(REPLACE(',' || SCREEN_READER_FORMS || ',',
+                                                   ',',
+                                                   '')) - 1)
+                 
+                  WHERE SCREEN_READER_FORMS IN
+                        (SELECT ISET.ITEM_SET_FORM AS FORM
+                           FROM TEST_ADMIN ADM,
+                                ITEM_SET ISET,
+                                ITEM_SET_ANCESTOR ISA,
+                                FORM_ASSIGNMENT_LOOKUP FAL,
+                                (SELECT DISTINCT TEST_ROSTER_ID,
+                                                 FORM_ASSIGNMENT
+                                   FROM TEST_ROSTER
+                                  WHERE TEST_ADMIN_ID = IN_TEST_ADMIN_ID) ROS
+                          WHERE ISA.ANCESTOR_ITEM_SET_ID = ADM.ITEM_SET_ID
+                            AND ISET.ITEM_SET_ID = ISA.ITEM_SET_ID
+                            AND ROS.FORM_ASSIGNMENT(+) = ISET.ITEM_SET_FORM
+                            AND ISET.ITEM_SET_TYPE = 'TD'
+                            AND ADM.TEST_ADMIN_ID = IN_TEST_ADMIN_ID
+                          GROUP BY ISET.ITEM_SET_FORM)) TAS ON TR.FORM_ASSIGNMENT =
+                                                               TAS.SCREEN_READER_FORMS
+                                                           AND TR.TEST_ADMIN_ID =
+                                                               IN_TEST_ADMIN_ID
+     GROUP BY TAS.SCREEN_READER_FORMS
      ORDER BY COUNT_FORMS;
 
   /**Get all roster details for a student**
