@@ -118,6 +118,7 @@ import com.ctb.testSessionInfo.utils.SSOSig;
 import com.ctb.testSessionInfo.utils.ScheduleTestVo;
 import com.ctb.testSessionInfo.utils.ScheduledSavedStudentDetailsVo;
 import com.ctb.testSessionInfo.utils.ScheduledSavedTestVo;
+import com.ctb.testSessionInfo.utils.StudentDeleteValidationVO;
 import com.ctb.testSessionInfo.utils.TestSessionUtils;
 import com.ctb.testSessionInfo.utils.TreeData;
 import com.ctb.testSessionInfo.utils.UserOrgHierarchyUtils;
@@ -281,6 +282,7 @@ public class SessionOperationController extends PageFlowController {
 	private boolean hasDefaultTestingWindowConfig = false; //Added for user story : GA – TAS default new session duration to 5 days
 	private boolean hasViewResponseResultConf = false; //Added for user story : 
 	private boolean hasAllowHideTooltipsConf = false;
+	private boolean lloRPCustomer = false;
 	private boolean hasShowRosterAccomAndHierarchy = false;
 	private List<ScoreDetails> sdForAllSubtests = null;
 	public LinkedHashMap getTimeZoneOptions() {
@@ -972,6 +974,72 @@ public class SessionOperationController extends PageFlowController {
 		
         
     }
+    
+    @Jpf.Action()
+	protected Forward validateStudDelete() {
+		String testAdminIdString = RequestUtil.getValueFromRequest(this
+				.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
+		String delStuIdObjArray = RequestUtil.getValueFromRequest(this
+				.getRequest(), RequestUtil.DELETE_STUD_ARRAY, false, null);
+		String jsonData = "";
+		HttpServletResponse resp = getResponse();
+		resp.setCharacterEncoding("UTF-8");
+		OutputStream stream = null;
+		
+		String[] studentIdsArr=delStuIdObjArray.split(",");
+		
+		boolean isDeletionValid=false;
+		String validationMsg="The system was not able to verify that the student was removed from the test session. Please contact Customer Support for assistance.";
+		
+		try {
+			Boolean validationPassed=this.scheduleTest.validateBMTDeleteSessionStudent(new Integer(Integer.parseInt(testAdminIdString)), studentIdsArr, this.customerId);
+			if(validationPassed==null) {
+				validationMsg="The system is currently offline. Please try again later or call Customer Support if you continue to receive this message.";
+				isDeletionValid=false;
+			} else {
+				isDeletionValid=!validationPassed;
+			}
+		} catch (Exception e) {
+			System.out.println("Exception in validation from BMT"+ e.getMessage() );
+			e.printStackTrace();
+		}
+		
+		StudentDeleteValidationVO stuDeleteValVO = new StudentDeleteValidationVO();
+		stuDeleteValVO
+				.setDeletionValid(isDeletionValid);
+		stuDeleteValVO.setValidationMsg(validationMsg);
+		try {
+			Gson gson = new Gson();
+			jsonData = gson.toJson(stuDeleteValVO);
+			// System.out.println(jsonData);
+			try {
+
+				resp.setContentType(CONTENT_TYPE_JSON);
+				// resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(jsonData.getBytes("UTF-8"));
+				resp.flushBuffer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			try {
+				resp.flushBuffer();
+			} catch (Exception e1) {
+			}
+			e.printStackTrace();
+		} finally {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+		return null;
+	}
     
     	@Jpf.Action()
         protected Forward saveTest(SessionOperationForm form)
@@ -5375,6 +5443,11 @@ public class SessionOperationController extends PageFlowController {
 						null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
 					this.hasAllowHideTooltipsConf = true;
 					this.getSession().setAttribute("hasAllowHideTooltipsConf", this.hasAllowHideTooltipsConf);
+				}
+				if(cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer") && 
+						null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
+					this.lloRPCustomer = true;
+					this.getSession().setAttribute("lloRPCustomer", this.lloRPCustomer);
 				}
 			}
 			this.isTASCCustomer = isTASCCustomer(customerConfigurations);		

@@ -26,6 +26,8 @@
 	 
 	 Boolean isActiveProgramExpiredOrInactive = (Boolean) session.getAttribute("isActiveProgramExpiredOrInactive");
 	 String LLExpiredOrInactivePrograms = (String) session.getAttribute("LLExpiredOrInactivePrograms");
+	 Boolean lloRPCustomer = (Boolean)session.getAttribute("lloRPCustomer");
+	 lloRPCustomer=(lloRPCustomer==null?false:lloRPCustomer);
 %>
 	
 	<input type="hidden" id="userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
@@ -51,6 +53,7 @@
 	
 	<input type="hidden" id="isActiveProgramExpiredOrInactive" name="isActiveProgramExpiredOrInactive" value='<%=isActiveProgramExpiredOrInactive%>' />
 	<input type="hidden" id="LLExpiredOrInactivePrograms" name="LLExpiredOrInactivePrograms" value='<%=LLExpiredOrInactivePrograms%>' />
+	<input type="hidden" id="lloRPCustomer" name="lloRPCustomer" value='<%=lloRPCustomer %>' />
 	 
 	<table width="100%" cellspacing="0" cellpadding="0"> 
 		<tr>

@@ -54,4 +54,5 @@ public interface RequestParam {
 	String LOCATOR_CHECKBOX = "locatorCheckbox";
 	
 	String FIRST_LAST_NAME = "firstLastName";
+	String DELETE_STUD_ARRAY = "delStuIdArr";
 }

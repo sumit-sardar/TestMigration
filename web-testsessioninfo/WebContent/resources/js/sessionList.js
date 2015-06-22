@@ -1170,6 +1170,7 @@ function registerDelegate(tree){
 			resetOnSelectTestSessionData();
 			resetProctor();
 			$('#studentAddDeleteInfo').hide();
+			$('#studentAddDeleteErr').hide();
 			$("#proctorAddDeleteInfo").hide();
 			stdsLogIn = false;
 			selectAllForDelete = false;
@@ -1566,6 +1567,7 @@ function registerDelegate(tree){
 			onPaging: function() {
 				//clearMessage();
 				$("#studentAddDeleteInfo").hide();
+				$('#studentAddDeleteErr').hide();
 				var reqestedPage = parseInt($('#list6').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager6').text());
 				var minPageSize = 1;
@@ -1613,6 +1615,7 @@ function registerDelegate(tree){
 			},
 			onSelectAll: function (rowIds, status) {
 				$("#studentAddDeleteInfo").hide();
+				$('#studentAddDeleteErr').hide();
 				delStuIdObjArray = [];
 				deleteStudentCounter = 0;
 				if(status) {
@@ -1634,6 +1637,7 @@ function registerDelegate(tree){
 			onSelectRow: function (rowid, status) {
 				//selectAllForDelete = false;
 				$("#studentAddDeleteInfo").hide();
+				$('#studentAddDeleteErr').hide();
 				var selectedRowData = $("#list6").getRowData(rowid);
 				var selectedRowId = selectedRowData.studentId;
 				if(status) {
@@ -1759,49 +1763,102 @@ function registerDelegate(tree){
 	}
 	
 	function removeSelectedStudent() {
-	   studentDeleted = true;
-		for(var i = 0; i < delStuIdObjArray.length; i++) {
-			if(studentTempMap != undefined && studentTempMap.get(delStuIdObjArray[i]) != null && studentTempMap.get(delStuIdObjArray[i]) != undefined) {				
-				if(allSelectOrg != undefined && allSelectOrg.length > 0) {
-					for(var k = 0; k < allSelectOrg.length; k++) {
-					    if(allSelectOrg[k] == null || allSelectOrg[k] == undefined){
-					    	continue;
-					    }
-						if(allSelectOrg[k] == (studentTempMap.get(delStuIdObjArray[i])).orgNodeId || allSelectOrg[k] ==(studentTempMap.get(delStuIdObjArray[i])).orgNodeId+"_f") {
-							allSelectOrg.splice(k,1);
-							countAllSelect--;
+		var isDeletionValid=false;
+		var validationMsg="";
+		var lloRPCust= $('#lloRPCustomer').val();
+		
+		if(state == "EDIT" && (isCopySession == 'false' || isCopySession == false) && lloRPCust != null && (lloRPCust == 'true' || lloRPCust == true)) {
+			postDataObject={};
+			delStuIdArr="";
+			commaFlag=false;
+			for(var i=0;i<delStuIdObjArray.length;i++) {
+				if(delStuIdObjArray[i]==undefined || delStuIdObjArray[i]=='undefined') {
+					continue;
+				}
+				if(commaFlag)
+					delStuIdArr+=",";
+				delStuIdArr+=delStuIdObjArray[i];
+				commaFlag=true;
+			}
+			postDataObject.delStuIdArr = delStuIdArr;
+			postDataObject.testAdminId = selectedTestAdminId;
+			
+			$.ajax({
+				async:		false,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'validateStudDelete.do',
+				type:		'POST',
+				dataType:	'json',
+				data:		postDataObject,
+				success:	function(data, textStatus, XMLHttpRequest){
+								isDeletionValid = data.isDeletionValid;
+								validationMsg = data.validationMsg;
+								$.unblockUI(); 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+								
+							},
+				complete :  function(){
+								 $.unblockUI(); 
+							}
+			});
+		}
+		
+		if((state == "SCHEDULE" || (isCopySession == 'true' || isCopySession == true)) || (lloRPCust == null || (lloRPCust == 'false' || lloRPCust == false)) || (isDeletionValid != null && isDeletionValid != undefined && (isDeletionValid == 'true' || isDeletionValid == true))) {
+			if(lloRPCust != null && (lloRPCust == 'true' || lloRPCust == true)) {
+				$('#studentAddDeleteErr').hide();
+			}
+		    studentDeleted = true;
+			for(var i = 0; i < delStuIdObjArray.length; i++) {
+				if(studentTempMap != undefined && studentTempMap.get(delStuIdObjArray[i]) != null && studentTempMap.get(delStuIdObjArray[i]) != undefined) {				
+					if(allSelectOrg != undefined && allSelectOrg.length > 0) {
+						for(var k = 0; k < allSelectOrg.length; k++) {
+						    if(allSelectOrg[k] == null || allSelectOrg[k] == undefined){
+						    	continue;
+						    }
+							if(allSelectOrg[k] == (studentTempMap.get(delStuIdObjArray[i])).orgNodeId || allSelectOrg[k] ==(studentTempMap.get(delStuIdObjArray[i])).orgNodeId+"_f") {
+								allSelectOrg.splice(k,1);
+								countAllSelect--;
+							}
 						}
 					}
-				}
-				delete accomodationMap[delStuIdObjArray[i]];
-				studentTempMap.remove(delStuIdObjArray[i]);
-				savedStudentMap.remove(delStuIdObjArray[i]);
-				var stdFound = false;
-				for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
-					if (deletedStudentsFromSessionArray[d]==delStuIdObjArray[i]) {
-						stdFound = true;
-						break;
+					delete accomodationMap[delStuIdObjArray[i]];
+					studentTempMap.remove(delStuIdObjArray[i]);
+					savedStudentMap.remove(delStuIdObjArray[i]);
+					var stdFound = false;
+					for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+						if (deletedStudentsFromSessionArray[d]==delStuIdObjArray[i]) {
+							stdFound = true;
+							break;
+						}
 					}
+					if (!stdFound)
+					deletedStudentsFromSessionArray[deletedStudentsFromSessionArray.length]=delStuIdObjArray[i];
 				}
-				if (!stdFound)
-				deletedStudentsFromSessionArray[deletedStudentsFromSessionArray.length]=delStuIdObjArray[i];
 			}
+			closePopUp('removeStuConfirmationPopup');
+			returnSelectedStudent();
+					
+			delStuIdObjArray = [];
+			if(selectAllForDelete) {
+				resetStudentSelection();
+			} else {
+				cloneStudentMapToTemp();
+			}
+			$('#totalStudent').text(AddStudentLocaldata.length);
+			if($("#supportAccommodations").val() != 'false')
+		 		 $('#stuWithAcc').text(studentWithaccommodation);
+			$('#list6').GridUnload();
+			populateSelectedStudent();
+		} else if(state == "EDIT" && (isCopySession == 'false' || isCopySession == false)) {
+			$("#deleteStudErr").text(validationMsg);
+			$('#studentAddDeleteErr').show();
+			closePopUp('removeStuConfirmationPopup');
 		}
-		closePopUp('removeStuConfirmationPopup');
-		returnSelectedStudent();
-				
-		delStuIdObjArray = [];
-		if(selectAllForDelete) {
-			resetStudentSelection();
-		} else {
-			cloneStudentMapToTemp();
-		}
-		$('#totalStudent').text(AddStudentLocaldata.length);
-		if($("#supportAccommodations").val() != 'false')
-	 		 $('#stuWithAcc').text(studentWithaccommodation);
-		$('#list6').GridUnload();
-		populateSelectedStudent();
-		
 	}
 	
 	
@@ -2192,6 +2249,7 @@ function registerDelegate(tree){
 		closePopUp('onChangeTestletGroupPopup');
 		$('#list6').jqGrid('clearGridData');
 		$('#studentAddDeleteInfo').hide();
+		$('#studentAddDeleteErr').hide();
 		$('#totalStudent').text("0");
 		$('#stuWithAcc').text("0");
 		$("#cb_list6").attr("checked", false);
@@ -2255,6 +2313,7 @@ function registerDelegate(tree){
 		 closePopUp('subtestChangeConfirmationPopup');
 		 subtestChangeProcess();
 		 $('#studentAddDeleteInfo').hide();
+		 $('#studentAddDeleteErr').hide();
 		 resetStudentSelection();
 		 hideSelectStudent();
 		 $('#list6').GridUnload();

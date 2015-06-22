@@ -15,5 +15,7 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/platform"/>
 	<classpathentry kind="lib" path="jdom.jar"/>
+	<classpathentry kind="lib" path="/application-testsessioninfo/EarContent/APP-INF/lib/httpclient-4.4.1.jar"/>
+	<classpathentry kind="lib" path="/application-testsessioninfo/EarContent/APP-INF/lib/httpcore-4.4.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

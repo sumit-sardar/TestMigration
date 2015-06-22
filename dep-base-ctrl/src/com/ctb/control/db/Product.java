@@ -284,4 +284,8 @@ TestProduct [] getTestCatalogForUser(String userName) throws SQLException;
     @JdbcControl.SQL(statement = "SELECT FAL.TEST_CATALOG_ID   AS testCatalogId, FAL.PRODUCT_ID  AS productId, FAL.SCREEN_READER_FORMS  AS screenReaderForms, FAL.NON_SCREEN_READER_FORMS AS nonScreenReaderForms, FAL.TEST_NAME  AS testName FROM FORM_ASSIGNMENT_LOOKUP FAL WHERE FAL.PRODUCT_ID = {productId} AND FAL.TEST_CATALOG_ID = (select distinct test_catalog_id from test_catalog where activation_status = 'AC' and item_set_id = {itemSetId}) AND FAL.ACTIVATION_STATUS = 'AC' AND ROWNUM = 1",
     		arrayMaxLength = 0, fetchSize = 100)
     FormLookupData getFormValuesForCatalog (Integer itemSetId , Integer productId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select resource_uri from customer_resource where customer_id = {customerId} and resource_type_code = {resourceType} and rownum = 1",
+    		arrayMaxLength = 1)
+    String getBMTApiUrl (Integer customerId , String resourceType) throws SQLException;
 }

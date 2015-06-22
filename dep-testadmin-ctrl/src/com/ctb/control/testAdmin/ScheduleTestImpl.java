@@ -1,5 +1,7 @@
 package com.ctb.control.testAdmin; 
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,6 +19,10 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
@@ -96,7 +102,6 @@ import com.ctb.util.testAdmin.AccessCodeGenerator;
 import com.ctb.util.testAdmin.PasswordGenerator;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
 import com.ctb.util.testAdmin.TestFormSelector;
-//import com.ctb.testSessionInfo.utils.DateUtils;
 
 /**
  * Platform control provides functions related to test session
@@ -2524,6 +2529,22 @@ public class ScheduleTestImpl implements ScheduleTest
 		for (SessionStudent ss : newselectedStudents) {
 			if(ss != null)
 			temp.append(ss.getStudentId().intValue()).append(",");
+		}
+		tempString = temp.toString();
+		if(tempString.length()>0){
+			tempString = tempString.substring(0, temp.length() - 1);
+			tempString = columnName + "( "+ tempString+")";
+		}
+		return tempString;
+	}
+    
+    private String generateSQLCriteriaStr(String columnName, String[] newselectedStudents) {
+    	StringBuilder temp = new StringBuilder("");
+		String tempString = "";
+
+		for (String ss : newselectedStudents) {
+			if(ss != null)
+			temp.append(ss).append(",");
 		}
 		tempString = temp.toString();
 		if(tempString.length()>0){
@@ -5773,6 +5794,105 @@ public class ScheduleTestImpl implements ScheduleTest
 		return tempString;
 	}
 	
+	@Override
+	public Boolean validateBMTDeleteSessionStudent(Integer testAdminId, String[] studentIds,
+			Integer customerId) throws CTBBusinessException {
+		String bmtApiURL = null;
+		String bmtApiResourceType = "BMTAPIURL";
+		RosterElement[] rosterElement = null;
+		Boolean validationPassed = null;
+		try {
+			bmtApiURL = this.product.getBMTApiUrl(customerId,
+					bmtApiResourceType);
+			//Changes for 999 limitation of SQL IN clause : Start
+			int inClauselimit = 999;
+			int loopCounters = studentIds.length / inClauselimit;
+			if ((studentIds.length % inClauselimit) > 0) {
+				loopCounters = loopCounters + 1;
+			}
+
+			for (int counter = 0; counter < loopCounters; counter++) {
+				String[] newselectedStudents = null;
+				String searchbyStudentIds = "";
+				if ((counter + 1) != loopCounters) {
+					newselectedStudents = new String[inClauselimit];
+					System.arraycopy(studentIds, (counter * inClauselimit),
+							newselectedStudents, 0, inClauselimit);
+				} else {
+					int count = studentIds.length % inClauselimit;
+					newselectedStudents = new String[count];
+					System.arraycopy(studentIds,
+							((loopCounters - 1) * inClauselimit),
+							newselectedStudents, 0, count);
+				}
+				searchbyStudentIds = generateSQLCriteriaStr("ros.student_id IN ", newselectedStudents);
+				rosterElement = this.rosters.getRosterDataForSessionStudDelete(testAdminId, searchbyStudentIds);
+
+				// Loop for each roster data present in the session.
+				for (RosterElement roster : rosterElement) {
+					// call bmt api for each roster present in session
+					validationPassed = invokeBMTRestApi(bmtApiURL, roster
+							.getTestRosterId(), roster.getExtPin1(), roster
+							.getTestAdminId());
+					/**
+					 * Check if for any of the roster, the validation has
+					 * failed.Then break the loop and return true as validation
+					 * falied.
+					 */
+					if(validationPassed == null) {
+						return null;
+					} else if (!validationPassed) {
+						return true;
+					}
+				}
+			}
+		} catch (SQLException se) {
+			RosterDataNotFoundException rd = new RosterDataNotFoundException(
+					"StudentManagementImpl: validateBMTDeleteSessionStudent : "
+							+ se.getMessage());
+			rd.setStackTrace(rd.getStackTrace());
+			throw rd;
+		}
+		return false;
+	}
 	
+	
+	private Boolean invokeBMTRestApi(String url, Integer testRosterId,
+			String extPin1, Integer testAdminId) {
+		try {
+			HttpClient client = new DefaultHttpClient();
+			StringBuilder urlBuilder = new StringBuilder(url);
+			urlBuilder.append("/sessionId=").append(testAdminId).append(
+					"&studentId=").append(extPin1).append("&rosterId=")
+					.append(testRosterId);
+			HttpPost post = new HttpPost(urlBuilder.toString());
+
+			HttpResponse response = client.execute(post);
+
+			System.out.println("\nSending 'POST' request to URL : " + urlBuilder.toString());
+			System.out.println("Post parameters : " + post.getEntity());
+			System.out.println("Response Code : "
+					+ response.getStatusLine().getStatusCode());
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+
+			StringBuffer result = new StringBuffer();
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result.append(line);
+			}
+			System.out.println(result.toString());
+			if("false".equals(result.toString()))
+				return false;
+			else
+				return true;
+
+		} catch (Exception e) {
+			System.out.println("Exception in BMT API access"+ e.getMessage() );
+			e.printStackTrace();
+			return null;
+		}
+	}
     
 } 

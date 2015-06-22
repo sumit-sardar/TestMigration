@@ -83,6 +83,7 @@ function disableStudentMsgForTabeAdultCoreExp(){
 function showSelectStudent(){
 	clickOkMessage = true;
 	$("#studentAddDeleteInfo").hide();
+	$('#studentAddDeleteErr').hide();
 	selectedSubtestId = selectedTestId;
 	$("#Student_Tab").css('display', 'none');
 	$("#Select_Student_Tab").css('display', 'block');
@@ -988,6 +989,7 @@ function updateDupStudent(){
 	 	message = finalValue + "  " + $("#stuAddedMsg").val();
 	 } else {
 	 	$("#studentAddDeleteInfo").hide();
+	 	$('#studentAddDeleteErr').hide();
 	 }
 	 $("#studentAddDeleteInfo").show();
 	 var message = finalValue + "  " + $("#stuAddedMsg").val();
@@ -1144,6 +1146,7 @@ function returnSelectedStudent() {
 	 	message = finalValue + "  " + $("#stuAddedMsg").val();
 	 } else {
 	 	$("#studentAddDeleteInfo").hide();
+	 	$('#studentAddDeleteErr').hide();
 	 }
 	 $("#addDeleteStud").text(message);
 	 hideSelectStudentPopup();

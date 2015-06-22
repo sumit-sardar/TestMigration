@@ -728,4 +728,7 @@ public interface ScheduleTest
 	 */
 	public LiteracyProExportData[] getBulkReportCSVData(Map<String, Object> paramMap) throws CTBBusinessException;
 	
+	public Boolean validateBMTDeleteSessionStudent (Integer testAdminId, String[] studentIds,
+			Integer customerId) throws CTBBusinessException;
+	
 } 

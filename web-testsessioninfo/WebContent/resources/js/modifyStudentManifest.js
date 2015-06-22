@@ -190,6 +190,7 @@
 			caption:$("#stuListGrid").val(),
 			onPaging: function() {
 				$("#studentAddDeleteInfo").hide();
+				$('#studentAddDeleteErr').hide();
 				var reqestedPage = parseInt($('#mmStdList').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_mmStdlistPager').text());
 				var minPageSize = 1;
