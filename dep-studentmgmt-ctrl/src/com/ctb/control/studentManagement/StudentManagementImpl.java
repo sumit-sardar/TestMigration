@@ -1,5 +1,7 @@
 package com.ctb.control.studentManagement; 
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,6 +15,10 @@ import java.util.Set;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
@@ -32,6 +38,7 @@ import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
 import com.ctb.bean.studentManagement.StudentScoreReport;
+import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.Node;
@@ -89,6 +96,13 @@ public class StudentManagementImpl implements StudentManagement
 	 */
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.CustomerReportBridge reportBridge;
+	
+	
+	/**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.Product product;
 
 	/**
 	 * @common:control
@@ -1699,6 +1713,10 @@ public class StudentManagementImpl implements StudentManagement
 	public DeleteStudentStatus deleteStudent(String userName, Integer studentId) throws CTBBusinessException
 	{
 		validator.validateStudent(userName, studentId, "StudentManagementImpl.deleteStudent");
+		boolean isLLORPCustomer = false;
+		Boolean validationFailed = null;
+		Integer customerId = null;
+		
 		try {
 			// Check whether the customer has configuration for restricting delete student or not.
 			int canDeleteStudent = studentManagement.isConfigurationPresent(studentId,"Disable_Delete_Student");
@@ -1706,6 +1724,21 @@ public class StudentManagementImpl implements StudentManagement
 				CTBBusinessException be = new CTBBusinessException( 
 						"You cannot delete this student.");
 				throw be;
+			}
+			
+			//Get customer details for the username
+			Customer customer = this.users.getCustomer(userName);
+			customerId = customer.getCustomerId();
+			//Get customer details for the username
+			CustomerConfiguration[] customerConfigurations = this.studentManagement.getCustomerConfigurations(customerId);
+			
+			//Check if LLO_RP_Customer configuration is present.
+			for(CustomerConfiguration customerConfig:customerConfigurations){
+				if ("LLO_RP_Customer".equalsIgnoreCase(customerConfig.getCustomerConfigurationName())
+            			&& "T".equalsIgnoreCase(customerConfig.getDefaultValue())){
+					isLLORPCustomer = true;
+					break;
+				}
 			}
 			
 			RosterElement [] rosters = studentManagement.getRosterElementsForStudent(studentId);
@@ -1777,6 +1810,26 @@ public class StudentManagementImpl implements StudentManagement
 				"Student is associated with test administrations.");
 				throw be;
 			}
+			
+			//If LLO RP Customer and the student is to validated from BMT before deleted from OAS. 
+			if(isLLORPCustomer && deleteStatus!=0){
+				
+				//Invoke BMT Api for the associated rosters
+				validationFailed = validateBMTForStudentDelete(customerId ,rosters , studentId );
+				
+				if(validationFailed == null){
+					//BMT API is down or not configured in DB
+					CTBBusinessException be = new CTBBusinessException( 
+							"You cannot delete this student.BMT System is offline.");
+					throw be;
+				}else if(validationFailed.booleanValue()){
+					//BMT validation failed.Can't delete the student.
+					CTBBusinessException be = new CTBBusinessException( 
+							"You cannot delete this student.Student is associated with BMT test administrations.");
+					throw be;
+				}
+			}
+			
 			// Now we can either fully delete or inactivate this student
 
 			Integer [] topOrgNodeIds = studentManagement.getTopOrgNodeIdsForUser(userName);
@@ -4065,4 +4118,128 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		return testSessionName;
 	}
+    
+    
+    /**
+	 * Returns 
+	 * 		True - If student is not to be deleted
+	 * 		False - If student is to be deleted
+	 * 		null - If student is not to be deleted as BMT url is not configured or URL is down
+	 * @param customerId -
+	 *            Customerid of the student
+	 * @param rosters -
+	 *            Roster data for the student
+	 * @param studentId -
+	 *            StudentId
+	 * @return Boolean - Boolean value.
+	 * @throws SQLException
+	 */
+	private Boolean validateBMTForStudentDelete(Integer customerId,
+			RosterElement[] rosters, Integer studentId) throws SQLException {
+
+		ManageStudent studentProfile = null;
+		String bmtApiResourceType = "BMTAPIURL";
+		String bmtApiURL = null;
+		Boolean bmtValidationFailed = false;
+		
+		// If student is associated with no test-session,then fetch student profile information again
+		if (rosters == null || rosters.length == 0) {
+			studentProfile = this.studentManagement.getManageStudent(studentId);
+		}
+		
+		// Get the BMT url for database
+		bmtApiURL = this.product.getBMTApiUrl(customerId,bmtApiResourceType);
+		
+		if(bmtApiURL == null){
+		  //bmt url is not configured.Return null.
+		  return null;	
+		}		
+		if (rosters.length > 0) {
+			for (RosterElement rosterElement : rosters) {
+				//call bmt api url for each roster
+				bmtValidationFailed = invokeBMTRestApi(bmtApiURL, rosterElement
+						.getTestRosterId(), rosterElement.getExtPin1(),
+						rosterElement.getTestAdminId());
+				
+				if(bmtValidationFailed == null){
+					//BMT URL is down.
+					return null;
+				}else if(!bmtValidationFailed.booleanValue()){
+					//validation failed for one of the roster.Break the loop.Can't delete the student
+					return new Boolean(true);
+				}
+			}
+		}else{
+			//invoke bmt api with student ext-pin1 and dummy test_admin_id & dummy test_roster_id
+			bmtValidationFailed = invokeBMTRestApi(bmtApiURL, new Integer(1234), studentProfile
+					.getStudentIdNumber(), new Integer(1234));
+			
+			if(bmtValidationFailed == null){
+				//BMT URL is down.
+				return null;
+			}else if(!bmtValidationFailed.booleanValue()){
+				//Can't delete the student
+				return new Boolean(true);
+			}
+		}
+		//validation passed.Return false.Delete the student.
+		return new Boolean(false);
+	}
+    
+    /**
+	 * Invokes BMT Api with the required parameters.Returns below values upon validation 
+	 * Null - If BMT Api url is down 
+	 * False - If student is not to be deleted 
+	 * True - If student is to be deleted
+	 * 
+	 * @param url -
+	 *            BMT Url
+	 * @param testRosterId -
+	 *            Test Roster id for the student
+	 * @param extPin1 -
+	 *            ExtPin1 of the student
+	 * @param testAdminId -
+	 *            TestAdminId of the student associated with the session
+	 * @return Boolean
+	 */
+	@SuppressWarnings("deprecation")
+	private Boolean invokeBMTRestApi(String url, Integer testRosterId,
+			String extPin1, Integer testAdminId) {
+		try {
+			HttpClient client = new DefaultHttpClient();
+			StringBuilder urlBuilder = new StringBuilder(url);
+			urlBuilder.append("/sessionId=").append(testAdminId).append(
+					"&studentId=").append(extPin1).append("&rosterId=")
+					.append(testRosterId);
+			HttpPost post = new HttpPost(urlBuilder.toString());
+
+			HttpResponse response = client.execute(post);
+
+			System.out.println("\nSending 'POST' request to URL : " + urlBuilder.toString());
+			System.out.println("Post parameters : " + post.getEntity());
+			System.out.println("Response Code : "
+					+ response.getStatusLine().getStatusCode());
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+
+			StringBuffer result = new StringBuffer();
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result.append(line);
+			}
+			System.out.println(result.toString());
+			if("false".equals(result.toString()))
+				return new Boolean(false);
+			else
+				return new Boolean(true);
+
+		} catch (Exception e) {
+			System.out.println("Exception in BMT API access"+ e.getMessage() );
+			e.printStackTrace();
+			return null;
+			
+		}
+	}
+    
 } 
