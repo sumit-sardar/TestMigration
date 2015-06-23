@@ -5957,7 +5957,15 @@ function registerDelegate(tree){
 									updateModifyStdManifestButton(false);
 									updateCopySessionButton(false);
 									setSelectedTestAdminId(null);
-								} else {
+								}else if(data.bmtUrlUnaccessible){
+									var failureMsg = $("#bmtUrlUnaccessibleMsg").val();
+									setSessionSaveMessage(failureMsg, "", "errorMessage","");
+									$('#showSaveTestMessage').show();
+								}else if(data.bmtValidationFailed){
+									var failureMsg = $("#deleteBMTFailureMsg").val();
+									setSessionSaveMessage(failureMsg, "", "errorMessage","");
+									$('#showSaveTestMessage').show();
+								}else{
 									var failureMsg = $("#deleteFailureMsg").val();
 									setSessionSaveMessage(failureMsg, "", "errorMessage","");
 									$('#showSaveTestMessage').show();

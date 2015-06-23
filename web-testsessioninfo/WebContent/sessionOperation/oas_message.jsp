@@ -78,6 +78,8 @@
 <input type="hidden" id="delSessionTitle" name="delSessionTitle" value=<lb:label key="sessionList.deleteTest.title" prefix="'" suffix="'"/>/>	
 <input type="hidden" id="deleteSuccessMsg" name="deleteSuccessMsg" value=<lb:label key="session.msg.deleteSuccess" prefix="'" suffix="'"/>/>
 <input type="hidden" id="deleteFailureMsg" name="deleteFailureMsg" value=<lb:label key="session.msg.deleteFailure" prefix="'" suffix="'"/>/>
+<input type="hidden" id="deleteBMTFailureMsg" name="deleteBMTFailureMsg" value=<lb:label key="session.msg.deleteBMTFailure" prefix="'" suffix="'"/>/>
+<input type="hidden" id="bmtUrlUnaccessibleMsg" name="bmtUrlUnaccessibleMsg" value=<lb:label key="session.msg.bmtURLUnaccessible" prefix="'" suffix="'"/>/>
 <input type="hidden" id="hashDisplay" name="hashDisplay" value=<lb:label key="selectTest.label.hash" prefix="'" suffix="'"/>/>
 <input type="hidden" id="subtestNameDisplay" name="subtestNameDisplay" value=<lb:label key="selectTest.label.subtestName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="acsCodeDisplay" name="acsCodeDisplay" value=<lb:label key="selectTest.label.tstAccessCode" prefix="'" suffix="'"/>/>

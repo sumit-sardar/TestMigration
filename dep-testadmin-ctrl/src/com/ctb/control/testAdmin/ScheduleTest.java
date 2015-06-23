@@ -728,7 +728,28 @@ public interface ScheduleTest
 	 */
 	public LiteracyProExportData[] getBulkReportCSVData(Map<String, Object> paramMap) throws CTBBusinessException;
 	
+	/**
+	 * Validate from BMT during student delete from Test Session
+	 * @param testAdminId
+	 * @param studentIds
+	 * @param customerId
+	 * @return Boolean
+	 * @throws CTBBusinessException
+	 */
 	public Boolean validateBMTDeleteSessionStudent (Integer testAdminId, String[] studentIds,
 			Integer customerId) throws CTBBusinessException;
+	
+
+	/**
+	 * Validate from BMT API if the test session is to be deleted.
+	 * If BMT API allows the session to be deleted,then false is returned.Otherwise true is returned.
+	 * However if null is returned,it denotes BMT URL is down.
+	 * @param testAdminId
+	 * @param customerId
+	 * @return Boolean
+	 * @throws CTBBusinessException
+	 */
+	public Boolean validateBMTForDeleteTest(Integer testAdminId, Integer customerId)throws CTBBusinessException;
+
 	
 } 

@@ -224,6 +224,7 @@ public class ScheduleTestImpl implements ScheduleTest
     static final long serialVersionUID = 1L;
     
     private static final int CTB_CUSTOMER_ID =2;
+    private static final String BMT_API_URL = "BMTAPIURL";
     
     static final ResourceBundle rb = ResourceBundle.getBundle("security");
     
@@ -5798,7 +5799,7 @@ public class ScheduleTestImpl implements ScheduleTest
 	public Boolean validateBMTDeleteSessionStudent(Integer testAdminId, String[] studentIds,
 			Integer customerId) throws CTBBusinessException {
 		String bmtApiURL = null;
-		String bmtApiResourceType = "BMTAPIURL";
+		String bmtApiResourceType = BMT_API_URL;
 		RosterElement[] rosterElement = null;
 		Boolean validationPassed = null;
 		try {
@@ -5856,7 +5857,17 @@ public class ScheduleTestImpl implements ScheduleTest
 		return false;
 	}
 	
-	
+	/**
+	 * Invokes BMT Api with the required parameters.Returns below values upon validation 
+	 * 		  null - If BMT Api url is down
+	 * 		  false - If session is not to be deleted
+	 * 		  true - If session is to be deleted
+	 * @param url - BMT Url
+	 * @param testRosterId - Test Roster id for the student
+	 * @param extPin1 - ExtPin1 of the student
+	 * @param testAdminId - TestAdminId of the student associated with the session
+	 * @return Boolean
+	 */
 	private Boolean invokeBMTRestApi(String url, Integer testRosterId,
 			String extPin1, Integer testAdminId) {
 		try {
@@ -5893,6 +5904,59 @@ public class ScheduleTestImpl implements ScheduleTest
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	
+	/**
+	 * Validate form BMT API if the test session is to be deleted.
+	 * If BMT API allows the session to be deleted,then false is returned.Otherwise true is returned.
+	 * However if null is returned,it denotes BMT URL is down.
+	 * @param testAdminId
+	 * @param customerId
+	 * @return Boolean
+	 * @throws CTBBusinessException
+	 */
+	@Override
+	public Boolean validateBMTForDeleteTest(Integer testAdminId,
+			Integer customerId) throws CTBBusinessException {
+		String bmtApiURL = null;
+		String bmtApiResourceType = BMT_API_URL;
+		RosterElement[] rosterElement = null;
+		Boolean validationPassed = null;
+		try {
+			bmtApiURL = this.product.getBMTApiUrl(customerId,
+					bmtApiResourceType);
+			rosterElement = this.rosters.getRosterDataForSession(testAdminId);
+
+			// Loop for each roster data present in the session.
+			for (RosterElement roster : rosterElement) {
+				// call bmt api for each roster present in session
+				validationPassed = invokeBMTRestApi(bmtApiURL, roster
+						.getTestRosterId(), roster.getExtPin1(), roster
+						.getTestAdminId());
+				
+				//Bmt Url is down.Return null
+				if(validationPassed == null){
+					return null;
+				}
+				
+				/**
+				 * Check if for any of the roster, the validation has
+				 * failed.Then break the loop and return true as validation
+				 * failed.
+				 */
+				if (!validationPassed.booleanValue()) {
+					return new Boolean(true);
+				}
+			}
+		} catch (SQLException se) {
+			RosterDataNotFoundException rd = new RosterDataNotFoundException(
+					"StudentManagementImpl: validateBMTForDeleteTest : "
+							+ se.getMessage());
+			rd.setStackTrace(rd.getStackTrace());
+			throw rd;
+		}
+		return new Boolean(false);
 	}
     
 } 

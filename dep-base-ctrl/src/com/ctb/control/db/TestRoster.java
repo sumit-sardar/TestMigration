@@ -659,4 +659,22 @@ public interface TestRoster extends JdbcControl
     @JdbcControl.SQL(statement = "select ros.TEST_ROSTER_ID as testRosterId, ros.TEST_ADMIN_ID  as testAdminId, ros.STUDENT_ID  as studentId, st.ext_pin1  as extPin1 from test_roster ros , student st where ros.test_admin_id = {testAdminId} and ros.student_id = st.student_id and ros.activation_status = 'AC' and st.activation_status = 'AC' and {sql: studentIds}",
             arrayMaxLength = 0,fetchSize = 100)
     RosterElement [] getRosterDataForSessionStudDelete(Integer testAdminId, String studentIds) throws SQLException;
+    
+    
+    
+    /**
+     * @jc:sql statement::
+     * select 
+     * 		ros.TEST_ROSTER_ID as testRosterId, 
+     * 		ros.TEST_ADMIN_ID as testAdminId, 
+     * 		ros.STUDENT_ID as studentId 
+     * from 
+     * 		test_roster ros 
+     * where 
+     * 		ros.test_admin_id = {testAdminId}
+     *  and ros.activation_status = 'AC'
+     */
+    @JdbcControl.SQL(statement = "select ros.TEST_ROSTER_ID as testRosterId, ros.TEST_ADMIN_ID  as testAdminId, ros.STUDENT_ID  as studentId, st.ext_pin1  as extPin1 from test_roster ros , student st where ros.test_admin_id = {testAdminId} and ros.student_id = st.student_id and ros.activation_status = 'AC' and st.activation_status = 'AC'",
+            arrayMaxLength = 0,fetchSize = 100)
+    RosterElement [] getRosterDataForSession(Integer testAdminId) throws SQLException;
 }

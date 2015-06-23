@@ -11,7 +11,26 @@ public class OperationStatus implements Serializable{
 	private ValidationFailedInfo validationFailedInfo;
 	private SuccessInfo successInfo;
 	private boolean isLicenseError = false;
+	private boolean bmtValidationFailed = false;
+	private boolean bmtUrlUnaccessible = false;
 	
+	
+	public boolean isBmtUrlUnaccessible() {
+		return bmtUrlUnaccessible;
+	}
+
+	public void setBmtUrlUnaccessible(boolean bmtUrlUnaccessible) {
+		this.bmtUrlUnaccessible = bmtUrlUnaccessible;
+	}
+
+	public boolean isBmtValidationFailed() {
+		return bmtValidationFailed;
+	}
+
+	public void setBmtValidationFailed(boolean bmtValidationFailed) {
+		this.bmtValidationFailed = bmtValidationFailed;
+	}
+
 	/**
 	 * @return the isSuccess
 	 */

@@ -8471,6 +8471,8 @@ public class SessionOperationController extends PageFlowController {
     	    resp.setCharacterEncoding("UTF-8"); 
 			Integer testAdminId = Integer.valueOf(getRequest().getParameter("testAdminId"));
 			boolean hasStudentLoggedIn = false;
+			boolean isLLORPCustomer = false;
+			Boolean bmtValidationFailed = null; 
 			OperationStatus status = new OperationStatus();
 			try {
 				ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
@@ -8478,9 +8480,50 @@ public class SessionOperationController extends PageFlowController {
 				if(studentsLoggedIn > 0){
 					hasStudentLoggedIn = true;
 				}
+				
+				//Get customer configurations from DB if not set
+				if(this.customerConfigurations == null){
+					this.customerConfigurations = getCustomerConfigurations(this.customerId);
+				}
+				
+				//Check if the customer is LLO RP Customer
+				for(CustomerConfiguration customerConfig:customerConfigurations){
+					if ("LLO_RP_Customer".equalsIgnoreCase(customerConfig.getCustomerConfigurationName())
+	            			&& "T".equalsIgnoreCase(customerConfig.getDefaultValue())){
+						isLLORPCustomer = true;
+						break;
+					}
+					
+				}
+				
 				if(!hasStudentLoggedIn){
-					this.scheduleTest.deleteTestSession(this.userName, testAdminId);
-	            	status.setSuccess(true);
+					//LLO RP Customer is true
+					if(isLLORPCustomer){
+						//Validate test session deletion from BMT
+						bmtValidationFailed = this.scheduleTest.validateBMTForDeleteTest(testAdminId,this.customerId);
+						
+						if(bmtValidationFailed == null){
+							//BMT url is unaccessible.Do not delete
+							status.setSuccess(false);
+							status.setBmtValidationFailed(true);
+							status.setBmtUrlUnaccessible(true);
+						}else if(bmtValidationFailed.booleanValue()){
+							//BMT url is accessible.But validation failed.Do not delete
+							status.setSuccess(false);
+							status.setBmtValidationFailed(true);
+							status.setBmtUrlUnaccessible(false);
+						}
+						else{
+							//BMT validation passed.Proceed with delete
+							this.scheduleTest.deleteTestSession(this.userName, testAdminId);
+							status.setSuccess(true);
+							status.setBmtValidationFailed(false);
+							status.setBmtUrlUnaccessible(false);
+						}
+					}else{
+						this.scheduleTest.deleteTestSession(this.userName, testAdminId);
+						status.setSuccess(true);
+					}
 				}
 	            else{
 					status.setSuccess(false);
