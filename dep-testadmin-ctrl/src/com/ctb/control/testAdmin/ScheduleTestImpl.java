@@ -5896,8 +5896,10 @@ public class ScheduleTestImpl implements ScheduleTest
 			System.out.println(result.toString());
 			if("false".equals(result.toString()))
 				return false;
-			else
+			else if("true".equals(result.toString()))				
 				return true;
+			else
+				return null;
 
 		} catch (Exception e) {
 			System.out.println("Exception in BMT API access"+ e.getMessage() );

@@ -4230,9 +4230,11 @@ public class StudentManagementImpl implements StudentManagement
 			}
 			System.out.println(result.toString());
 			if("false".equals(result.toString()))
-				return new Boolean(false);
+				return false;
+			else if("true".equals(result.toString()))				
+				return true;
 			else
-				return new Boolean(true);
+				return null;
 
 		} catch (Exception e) {
 			System.out.println("Exception in BMT API access"+ e.getMessage() );
