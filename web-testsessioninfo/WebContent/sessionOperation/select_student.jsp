@@ -5,7 +5,19 @@
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 
-
+	<div id = "TASCAddStudentInfo"
+		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">	
+	<table>
+		<tbody>
+			<tr width='100%'>
+				<td>
+					<span id = 'AddstudentInfoTASC'><lb:label key="common.AddstudentInfoTASCMsg.message" prefix="" suffix=""/></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	</div>
 <div id="licenseInfoDiv" style="display: none">
 <table width="910" border=0 cellpadding="0">
     <tr>

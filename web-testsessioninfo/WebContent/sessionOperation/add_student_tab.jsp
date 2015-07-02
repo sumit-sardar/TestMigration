@@ -7,20 +7,6 @@
 <%
 	 Boolean supportAccommodations  = (Boolean) session.getAttribute("supportAccommodations");
 %>
-	<div id = "TASCAddStudentInfo"
-		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">	
-	<table>
-		<tbody>
-			<tr width='100%'>
-				<td>
-					<span id = 'AddstudentInfoTASC'><lb:label key="common.AddstudentInfoTASCMsg.message" prefix="" suffix=""/></span>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<br/>
-	</div>
-	
 	<div id = "studentAddDeleteInfo" 
 		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">	
 	<table>
