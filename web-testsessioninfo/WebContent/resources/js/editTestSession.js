@@ -132,6 +132,7 @@
 							}
 							
 							isWVAdmin = data.isWVAdmin;
+							isTASCUser = data.isTASCCustomer;
 							if(data.savedTestDetails != undefined && data.savedTestDetails.testSession != undefined && 
 									(parseInt(data.savedTestDetails.testSession.productId) == 5501)) {
 								isWVBreachProduct = true;
@@ -308,6 +309,13 @@
 						isInformaticaExported = data.savedTestDetails.testSession.isInfomaticaExported;
 						if(isInformaticaExported != undefined && isInformaticaExported != null && isInformaticaExported === "T")
 							$('#endDate').attr("disabled",true);	
+							
+						if( isTASCUser == true)
+						{
+							$("#TASCAddStudentInfo").show();
+						} else {
+							$("#TASCAddStudentInfo").hide();
+						}
 						$.unblockUI(); 
 									
 					},

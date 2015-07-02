@@ -40,6 +40,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private boolean isOkAdmin = false;
 	private boolean isWVAdmin = false;
 	private boolean isWVProctor = false;
+	private boolean isTASCCustomer = false;
 	private boolean forceTestBreak = false;
 	private Boolean selectGE = false;
 	private LASLicenseNode nonZeroActivePO = null;
@@ -367,5 +368,13 @@ public class ScheduledSavedTestVo implements Serializable {
 
 	public void setShowToolTips(Boolean showToolTips) {
 		this.showToolTips = showToolTips;
+	}
+
+	public boolean isTASCCustomer() {
+		return isTASCCustomer;
+	}
+
+	public void setTASCCustomer(boolean isTASCCustomer) {
+		this.isTASCCustomer = isTASCCustomer;
 	}
 }

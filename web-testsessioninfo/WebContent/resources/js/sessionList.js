@@ -1910,6 +1910,7 @@ function registerDelegate(tree){
 						ProductData = data;
 						isOKAdmin = data.isOkAdmin;
 						isWVAdmin = data.isWVAdmin;
+						isTASCUser = data.isTASCCustomer;
 						forceTestBreak = data.forceTestBreak;
 						selectGE = data.selectGE;
 						state = "SCHEDULE";
@@ -1955,6 +1956,14 @@ function registerDelegate(tree){
 							}
 							processStudentAccordion();
 							processProctorAccordion();
+							
+							if( isTASCUser == true)
+							{
+								$("#TASCAddStudentInfo").show();
+							} else {
+								$("#TASCAddStudentInfo").hide();
+							}
+							
 							$("#productType").val(data.product[0].productType);
 							$("#showStudentFeedback").val(data.product[0].showStudentFeedback);
 							displayProductAcknowledgement(ProductData.product[0].acknowledgmentsURL); //Added for view product Acknowledgement link

@@ -40,6 +40,7 @@ public class ScheduleTestVo implements Serializable{
 	private List<String> levelOptions = new ArrayList<String>();// level for subtest
 	private boolean isOkAdmin = false;
 	private boolean isWVAdmin = false;
+	private boolean isTASCCustomer = false;
 	private boolean forceTestBreak = false;
 	private Boolean selectGE = false;
 	private LASLicenseNode nonZeroActivePO = null;
@@ -645,6 +646,16 @@ public class ScheduleTestVo implements Serializable{
 
 	public void setLaslinkCustomer(boolean isLaslinkCustomer) {
 		this.isLaslinkCustomer = isLaslinkCustomer;
+	}
+
+
+	public boolean isTASCCustomer() {
+		return isTASCCustomer;
+	}
+
+
+	public void setTASCCustomer(boolean isTASCCustomer) {
+		this.isTASCCustomer = isTASCCustomer;
 	}
 }
 

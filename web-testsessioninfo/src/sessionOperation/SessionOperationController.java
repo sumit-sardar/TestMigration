@@ -925,6 +925,13 @@ public class SessionOperationController extends PageFlowController {
             } else {
             	vo.setWVAdmin(false);
             }
+            // New Variable added for story OAS-3276 TASC - Add UI Message for Assigning Student into Test Session
+            if(this.isTASCCustomer|| this.isTASCReadinessCustomer) {
+            vo.setTASCCustomer(true);
+            } else {
+            	vo.setTASCCustomer(false);
+            }
+    
     
             vo.setForceTestBreak(this.forceTestBreak);
             if (this.selectGE)
@@ -1571,6 +1578,13 @@ public class SessionOperationController extends PageFlowController {
                 	vo.setWVAdmin(false);
                 }
                 
+                // New Variable added for story OAS-3276 TASC - Add UI Message for Assigning Student into Test Session
+                if(this.isTASCCustomer|| this.isTASCReadinessCustomer) {
+                	vo.setTASCCustomer(true);
+                } else {
+                	vo.setTASCCustomer(false);
+                }
+                                
                 vo.setForceTestBreak(this.forceTestBreak);
                 if ((testSession.getLexingtonVersion() != null) && testSession.getLexingtonVersion().equals("GE-Yes"))               	
                 	vo.setSelectGE(Boolean.TRUE);
