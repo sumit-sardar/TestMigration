@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -32,6 +34,7 @@ import javax.sql.DataSource;
 import weblogic.utils.StringUtils;
 
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.prism.web.bean.PrismAuditLog;
 import com.ctb.prism.web.constant.PrismWebServiceConstant;
 import com.ctb.prism.web.controller.ContentDetailsTO;
 import com.ctb.prism.web.controller.ContentScoreDetailsTO;
@@ -104,6 +107,13 @@ public class PrismWebServiceDBUtility {
 	private static final String CHECK_ROSTER_STATUS = "SELECT 1  FROM TEST_ROSTER T WHERE T.TEST_ROSTER_ID = ?   AND (T.TEST_COMPLETION_STATUS = 'SC' OR T.TEST_COMPLETION_STATUS = 'NT')";
 	private static final String GET_SESSION_TIMEZONE = "SELECT TIME_ZONE as session_time_zone FROM test_admin WHERE TEST_ADMIN_ID = ?";
 	private static final String GET_ROSTER_FORM = "SELECT FORM_ASSIGNMENT FROM TEST_ROSTER WHERE TEST_ROSTER_ID = ?";
+	
+	/**
+	 * Prism Audit purpose DB Calls.
+	 */
+	private static final String INSERT_WS_AUDIT_LOG = " { CALL INSERT INTO PRISM_WS_AUDIT_LOG (INVOKE_ID, ROSTER_ID, STUDENT_ID, SESSION_ID, WS_INVOKE_TIMESTAMP, RETRY_PROCESS, RETRY_ERROR_LOG_ID , WS_TYPE, OAS_XML_SENT) VALUES ( SEQ_PRISM_AUDIT_LOG_ID.NEXTVAL , ? , ? , ? , ? , ? , ? , ? , ? ) RETURNING INVOKE_ID INTO ? } ";
+	private static final String UPDATE_WS_AUDIT_LOG = " UPDATE PRISM_WS_AUDIT_LOG  SET WS_RESPONSE_TIMESTAMP = ? ,  PRISM_PROCESS_ID = ? , PRISM_PARTITION_ID = ? , STATUS_CODE = ? , MESSAGE = ? , WS_ERROR_LOG_KEY = ? , PRISM_RESPONSE = ? , UPDATED_DATE_TIME = ?  WHERE INVOKE_ID = ?  ";
+	
 	
 	/**
 	 * Get Prism Web Service URL
@@ -244,6 +254,85 @@ public class PrismWebServiceDBUtility {
 		}
 		return rosterIds;
 	}
+	
+	/**
+	 * This method inserts audit data in PRISM_WS_AUDIT_LOG table.
+	 * @param auditLog
+	 * @return
+	 */
+	public static Long insertWSAuditTableDate(PrismAuditLog auditLog) {
+		CallableStatement cst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		long invokeId = 0;
+		try {
+			con = openOASDBcon(false);
+			cst = con.prepareCall(INSERT_WS_AUDIT_LOG);
+			cst.setLong(1, auditLog.getRosterId());
+			cst.setLong(2, auditLog.getStudentId());
+			cst.setLong(3, auditLog.getSessionId());
+			cst.setTimestamp(4, new Timestamp(auditLog.getWsInvokeTimestamp().longValue()));
+			cst.setString(5, auditLog.getRetryProcess());
+			if (auditLog.getRetryErrorLogId() == null) {
+				cst.setObject(6 , null );
+			}else {
+				cst.setLong(6 , auditLog.getRetryErrorLogId());
+			}
+			cst.setString(7, auditLog.getWsType());
+			cst.setString(8, auditLog.getOasXmlSent());
+			cst.registerOutParameter(9, Types.NUMERIC);
+			int count = cst.executeUpdate();
+			if(count > 0){
+				invokeId = cst.getLong(9);
+			}
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.insertWSAuditTableDate() method to execute query : \n " +  INSERT_WS_AUDIT_LOG);
+			e.printStackTrace();
+		} finally {
+			close(con, cst, rs);
+		}
+		return invokeId;
+	}
+	
+	
+	/**
+	 * This method inserts audit data in PRISM_WS_AUDIT_LOG table.
+	 * @param auditLog
+	 * @return
+	 */
+	public static void updateWSAuditTableDate(PrismAuditLog auditLog) {
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(UPDATE_WS_AUDIT_LOG);
+			if(auditLog.getWsResponseTimestamp() == null){
+				pst.setObject(1, null);
+			}else{
+				pst.setTimestamp(1, new Timestamp(auditLog.getWsResponseTimestamp().longValue()));
+			}
+			pst.setString(2, auditLog.getPrismProcessId());
+			pst.setString(3, auditLog.getPrismPartitionId());
+			pst.setString(4, auditLog.getStatusCode());
+			pst.setString(5, auditLog.getMessage());
+			if(auditLog.getErrorLogKey() == null){
+				pst.setObject(6, null);
+			}else{
+				pst.setLong(6, auditLog.getErrorLogKey());
+			}
+			pst.setString(7, auditLog.getPrismResponse());
+			pst.setTimestamp(8, new Timestamp(auditLog.getUpdatedDateTime().longValue()));
+			pst.setLong(9, auditLog.getInvokeId());
+			pst.executeUpdate();
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.updateWSAuditTableDate() method to execute query : \n " +  UPDATE_WS_AUDIT_LOG);
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+	}
+	
 	
 	
 	/**
@@ -2512,5 +2601,15 @@ public class PrismWebServiceDBUtility {
 	}
 	
 	
+	/**
+	 * Get the current timestamp in GMT time-zone  in long format
+	 * @return java.sql.Date
+	 */
+	public static Long getCurrentGMTDateTime() {
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+		Calendar cal=Calendar.getInstance(TimeZone.getDefault());
+		Date dateGMT=cal.getTime();
+		return new Long(dateGMT.getTime());
+	}
 	
 }
