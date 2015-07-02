@@ -26,7 +26,7 @@
 	//OK 3-8 customer Demographic Map
 	Boolean customerDemographicGroupingEnable = (Boolean)request.getAttribute("customerDemographicGroupingEnable");
 	Map<String,List> dempgraphicMap = (Map<String,List>)request.getAttribute("okDemographicMap");
-	
+	Boolean showUUIDMsg = (Boolean) session.getAttribute("showUUIDMsg");
 %>
 <%!
 	private String getDevId(String key) {
@@ -96,7 +96,14 @@
 				<h3><a href="#"><lb:label key="stu.label.info" /></a></h3>
 				
 					<div id="Student_Information" style="background-color: #FFFFFF;">
-	
+					<%if(showUUIDMsg) { %>
+						<table class="transparent">
+    						<tbody>
+      							<tr><td><lb:label key="stu.info.uuidmessage"/></td></tr>
+      							<tr><td>&nbsp;</td></tr>
+   							</tbody>
+  						</table>
+  					<% }%>
 						<table class="transparent">
 							<tbody>
 								<tr class="transparent">

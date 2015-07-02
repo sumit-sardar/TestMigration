@@ -3542,6 +3542,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
      	this.getSession().setAttribute("isWVCustomer", new Boolean(isWVCustomer));
      	this.getSession().setAttribute("hasBlockStudentCreation", new Boolean(hasBlockStudentCreation));
      	this.getSession().setAttribute("hasBlockStudentDeletion", new Boolean(hasBlockStudentDeletion));
+     	this.getSession().setAttribute("showUUIDMsg", (isTascCustomer || isTASCReadinessCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){
