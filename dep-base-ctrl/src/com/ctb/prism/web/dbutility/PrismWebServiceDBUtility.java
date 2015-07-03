@@ -326,7 +326,7 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(9, auditLog.getInvokeId());
 			pst.executeUpdate();
 		} catch (Exception e) {
-			System.err.println("Error in the PrismWebServiceDBUtility.updateWSAuditTableDate() method to execute query : \n " +  UPDATE_WS_AUDIT_LOG);
+			System.out.println("Error in the PrismWebServiceDBUtility.updateWSAuditTableDate() method to execute query : \n " +  UPDATE_WS_AUDIT_LOG);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);

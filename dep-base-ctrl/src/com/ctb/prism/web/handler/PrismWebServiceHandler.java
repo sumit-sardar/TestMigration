@@ -140,7 +140,7 @@ public class PrismWebServiceHandler {
 			if(service != null){
 				responseTO = service.loadStudentData(studentListTO);
 				
-				try{
+			try{
 				/**
 				 * Start audit logging
 				 */
@@ -156,8 +156,8 @@ public class PrismWebServiceHandler {
 				/**
 				 * End of Audit logging
 				 */
-				}catch(Exception e){
-					OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Audit logging error");
+			}catch(Exception e){
+					System.out.println("PrismWebServiceHandler.invokePrismWebService : Audit logging error");
 				}
 				
 				
@@ -178,6 +178,7 @@ public class PrismWebServiceHandler {
 					if(isFormDEF){//check for form DEF
 					  if(logkey == 0){//This is new request.Insert into ws_error_log table.
 						errorLogKey=PrismWebServiceDBUtility.insertWSErrorLogForEReesourceError(studentId, rosterId, sessionId);
+						auditLog.setErrorLogKey(errorLogKey);
 						System.out.println("Prism web service error log key : " + errorLogKey);
 					  }else{//This is a retry operation.Hence update ws_error_log table with Failed status.
 						additionalInfo = createAdditionalInfo(responseTO);
@@ -212,17 +213,22 @@ public class PrismWebServiceHandler {
 				errorLogKey = logkey;
 				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, PrismWebServiceConstant.numberOfFailedHitCnt , errorMessage, "Failed", additionalInfo, con);
 			}
-			
 			/**
-			 * Update audit table with required data.
+			 * Set audit information in case of exception
 			 */
 			if(auditLog.getMessage() == null || auditLog.getMessage().isEmpty()){
 				//This indicates that exception was received while connecting prism WS.
 				auditLog.setMessage(errorMessage);
 			}
 			auditLog.setErrorLogKey(errorLogKey);
+		}
+		finally{
+			/**
+			 * Update audit table with required data.
+			 */
 			auditLog.setUpdatedDateTime(PrismWebServiceDBUtility.getCurrentGMTDateTime());
 			updatePrismWebServiceCall(auditLog);
+			System.out.println("PrismWebServiceHandler Audit updatePrismWebServiceCall end");
 		}
 	}
 	
@@ -266,27 +272,21 @@ public class PrismWebServiceHandler {
 			// Store the sequence generated invokeId
 			auditLog.setInvokeId(invokeProcessId);
 		} catch (Exception e) {
-			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism WS Audit Logging Exception ");
+			System.out.println("PrismWebServiceHandler.logPrismWebServiceCall : Prism WS Audit Logging Exception ");
+			e.printStackTrace();
 		}
 	}
 	
 	
 	/**
-	 * Generate Audit table data and log each prism ws call
+	 * Update audit table with required data
 	 * @param auditLog
-	 * @param studentListTO
-	 * @param studentId
-	 * @param rosterId
-	 * @param sessionId
-	 * @param wsType
-	 * @param logkey
-	 * @throws UnsupportedEncodingException 
 	 */
 	private static void updatePrismWebServiceCall(PrismAuditLog auditLog) {
 		try {
 			PrismWebServiceDBUtility.updateWSAuditTableDate(auditLog);
 		} catch (Exception e) {
-			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism WS Audit Logging Exception ");
+			System.out.println("updatePrismWebServiceCall exception");
 			e.printStackTrace();
 		}
 	}
