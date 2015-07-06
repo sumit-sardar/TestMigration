@@ -33,7 +33,7 @@ public class TestDeliveryContextListener implements
 		javax.servlet.ServletContextListener {
 
 	public static final int batchSize = 10000;
-
+	public static final int BMT_DELIVERY_CLIENT_ID = 2 ;
 	private static int checkFrequency = 120; // was default to 30
 //	private static int postFrequency = 5;
 	private static RosterThread rosterThread;
