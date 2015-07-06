@@ -182,6 +182,7 @@ public class PrismWebServiceHandler {
 						System.out.println("Prism web service error log key : " + errorLogKey);
 					  }else{//This is a retry operation.Hence update ws_error_log table with Failed status.
 						additionalInfo = createAdditionalInfo(responseTO);
+						auditLog.setErrorLogKey(logkey);
 						PrismWebServiceDBUtility.updateWSErrorLog(logkey, hitCount , "eResource error", "Failed", additionalInfo, con);
 					  }
 					}else{// E-resource will not have any effect on other forms for TASC.It will process as normal and retry for PrismWebServiceConstant.numberOfFailedHitCnt times.
