@@ -1,7 +1,12 @@
 package com.ctb.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import com.ctb.bean.testAdmin.LiteracyProExportData;
 
@@ -46,12 +51,13 @@ public class LayoutUtil {
 		}
 		out.flush();
 		out.close();
-		System.out.println("Table Data bytes created");
+		System.out.println("Table Data bytes created. Rows = " + tableData.length);
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
 	    return out.toString().getBytes();
 	} else {
+	    System.out.println("0 Records. Returning header only.");
 	    return getHeader().getBytes();
 	}
     }
@@ -72,4 +78,57 @@ public class LayoutUtil {
 	sb.insert(0, "\"").append("\"");
 	return sb.toString();
     }
+    
+    /**
+	 * Creates a zip byte array from a byte array. The zip byte array can be used to create a zip file.
+	 * 
+	 * @param filePath
+	 * @param input
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] zipBytes(String fileName, byte[] input) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ZipOutputStream zos = new ZipOutputStream(baos);
+		if (fileName == null) {
+		    	System.out.println("Filename is null");
+			return "".getBytes();
+		}
+		ZipEntry entry = new ZipEntry(fileName);
+		entry.setSize(input.length);
+		zos.putNextEntry(entry);
+		zos.write(input);
+		zos.closeEntry();
+		zos.close();
+		return baos.toByteArray();
+	}
+	
+	
+    /**
+     * Creates a byte array from a zip byte array.
+     * @param zipBytes
+     * @return
+     */
+    public static byte[] unZippedBytes(byte[] zipBytes) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		try {
+			ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(
+					zipBytes));
+			ZipEntry ze = zis.getNextEntry();
+			while (ze != null) {
+				int len;
+				while ((len = zis.read(buffer)) > 0) {
+					baos.write(buffer, 0, len);
+				}
+				baos.close();
+				ze = zis.getNextEntry();
+			}
+			zis.closeEntry();
+			zis.close();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return baos.toByteArray();
+	}
 }

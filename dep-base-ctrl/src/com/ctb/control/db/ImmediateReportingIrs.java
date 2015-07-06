@@ -1,5 +1,6 @@
 package com.ctb.control.db;
 
+import java.sql.Clob;
 import java.sql.SQLException;
 
 import org.apache.beehive.controls.api.bean.ControlExtension;
@@ -7,8 +8,6 @@ import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.ItemResponseAndScore;
 import com.ctb.bean.testAdmin.StudentReportIrsScore;
-import java.sql.Clob;
-import com.ctb.bean.testAdmin.LiteracyProExportData;
 
 /** 
  * Defines a new database control. 
@@ -54,6 +53,4 @@ public interface ImmediateReportingIrs extends JdbcControl{
 	@JdbcControl.SQL(statement = "SELECT IDIM.OAS_ITEMID AS itemId, TIF.POINTS_OBTAINED AS rawScore, TIF.POINTS_POSSIBLE AS possibleScore FROM {sql: scoreTableName} TIF, ITEM_DIM IDIM WHERE IDIM.ITEMID = TIF.ITEMID AND TIF.SESSIONID = {testAdminId} AND TIF.STUDENTID = {studentId} AND TIF.POINTS_OBTAINED IS NOT NULL",arrayMaxLength = 0, fetchSize=10)
 	ItemResponseAndScore[] getObtainedScoreForItem(String scoreTableName, Integer studentId, Integer testAdminId) throws SQLException;
 	
-	@JdbcControl.SQL(statement = "SELECT REPORTING_LEVEL AS subtest, SESSIONID AS sessionID, STUDENTID AS oasStudentId, REPORTING_LEVEL_SS AS scaledScore, REPORTING_LEVEL_GE AS gLE, REPORT_LEVEL_ID AS reportingLevelId FROM (SELECT CAD.NAME AS REPORTING_LEVEL, TBCONFACT.SESSIONID AS SESSIONID, TBCONFACT.STUDENTID AS STUDENTID, TBCONFACT.SCALE_SCORE AS REPORTING_LEVEL_SS, TBCONFACT.GRADE_EQUIVALENT AS REPORTING_LEVEL_GE, TBCONFACT.SESSIONID || TBCONFACT.STUDENTID || TBCONFACT.CONTENT_AREAID AS REPORT_LEVEL_ID FROM TABE_CONTENT_AREA_FACT TBCONFACT, CONTENT_AREA_DIM CAD WHERE {sql: contentFact} AND CAD.CONTENT_AREAID = TBCONFACT.CONTENT_AREAID AND CAD.SUBJECTID <> 999999 UNION ALL SELECT COMD.NAME AS REPORTING_LEVEL, TBCOMP.SESSIONID AS SESSIONID, TBCOMP.STUDENTID AS STUDENTID, TBCOMP.SCALE_SCORE AS REPORTING_LEVEL_SS, TBCOMP.GRADE_EQUIVALENT AS REPORTING_LEVEL_GE, TBCOMP.SESSIONID || TBCOMP.STUDENTID || TBCOMP.COMPOSITEID AS REPORT_LEVEL_ID FROM TABE_COMPOSITE_FACT TBCOMP, COMPOSITE_DIM COMD, ASSESSMENT_DIM TC WHERE  {sql: compositeFact} AND COMD.COMPOSITEID = TBCOMP.COMPOSITEID AND TC.ASSESSMENTID = TBCOMP.ASSESSMENTID AND TC.TYPE <> 'TL')", arrayMaxLength = 0, fetchSize = 100)
-	LiteracyProExportData[] getBulkReportCSVData(String contentFact, String compositeFact) throws SQLException;
 }

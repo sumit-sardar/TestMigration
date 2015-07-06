@@ -53,7 +53,8 @@ import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.ItemResponseAndScore;
 import com.ctb.bean.testAdmin.LASLicenseNode;
-import com.ctb.bean.testAdmin.LiteracyProExportData;
+import com.ctb.bean.testAdmin.LiteracyProExportBean;
+import com.ctb.bean.testAdmin.LiteracyProExportRequest;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
@@ -92,6 +93,7 @@ import com.ctb.bean.testAdmin.ScoreDetails.ResponseResultDetails;
 import com.ctb.bean.testAdmin.ScoreDetails.ResponseResultDetails.OrderByItemOrder;
 import com.ctb.control.db.OrgNode;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.testAdmin.BulkReportExportException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
 import com.ctb.exception.testAdmin.ManifestUpdateFailException;
 import com.ctb.exception.testAdmin.TransactionTimeoutException;
@@ -173,6 +175,9 @@ public class SessionOperationController extends PageFlowController {
 	
 	@Control()
 	private com.ctb.control.db.OrgNode orgnode;
+	
+	@Control()
+    private com.ctb.control.testAdmin.BulkReportExport bulkReports;
     
     /**
      * @common:control
@@ -236,6 +241,7 @@ public class SessionOperationController extends PageFlowController {
 	//Added for view/monitor test status
     
 	private String userName = null;
+	private Integer userId = null;
 	private Integer customerId = null;
     private User user = null;
     private List<TestSessionVO> sessionListCUFU = new ArrayList<TestSessionVO>(); 
@@ -5221,6 +5227,7 @@ public class SessionOperationController extends PageFlowController {
 	        getSession().setAttribute("schedulerUserId", this.user.getUserId().toString());
 	        getSession().setAttribute("schedulerUserName", this.user.getUserName());
 	        //System.out.println("supportAccommodations==>"+supportAccommodations);
+	        this.userId = this.user.getUserId();
         }
         catch (CTBBusinessException be)
         {
@@ -9867,7 +9874,8 @@ public class SessionOperationController extends PageFlowController {
 
 	@Jpf.Action()
 	protected Forward getLoginUserOrgHierarchyBulkReport() {
-		System.out.println("getLoginUserOrgHierarchyBulkReport");
+		System.out.println("Start: SessionOperationController.getLoginUserOrgHierarchyBulkReport()");
+		long startTime = System.currentTimeMillis();
 		OutputStream stream = null;
 		HttpServletResponse resp = null;
 		try {
@@ -9877,12 +9885,14 @@ public class SessionOperationController extends PageFlowController {
 			if (this.userName == null) {
 				getLoggedInUserPrincipal();
 			}
+			if(this.userId == null){
+				getUserDetails();
+			}
 			Node[] associatedNodes = scheduleTest
 					.getAllTopLevelNodesForUser(this.userName);
 			bulkReportData.setTopLevelNodes(associatedNodes);
 			if (associatedNodes != null) {
-				populateOrgStructureForReport(
-						associatedNodes[0].getOrgNodeId(), bulkReportData);
+				populateOrgStructureForReport(associatedNodes[0].getOrgNodeId(), bulkReportData);
 			}
 			String userTimeZone =  userManagement.getUserTimeZone(this.userName);
 			String todayOfUserTimeZone = com.ctb.util.DateUtils.getAdjustedTodayString(userTimeZone, "MM/dd/yyyy");
@@ -9907,21 +9917,22 @@ public class SessionOperationController extends PageFlowController {
 				}
 			}
 		}
+		System.out.println("End: SessionOperationController.getLoginUserOrgHierarchyBulkReport(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 		return null;
 
 	}
 
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") })
 	protected Forward getSelectedOrgHierarchyBulkReport() {
-		System.out.println("getSelectedOrgHierarchyBulkReport");
+	    	System.out.println("Start: SessionOperationController.getSelectedOrgHierarchyBulkReport()");
+	    	long startTime = System.currentTimeMillis();
 		OutputStream stream = null;
 		HttpServletResponse resp = null;
 		try {
 			resp = getResponse();
 			resp.setCharacterEncoding("UTF-8");
 			BulkReportData bulkReportData = new BulkReportData();
-			Integer associatedOrgNodeId = Integer.valueOf(this.getRequest()
-					.getParameter("selectedOrgId"));
+			Integer associatedOrgNodeId = Integer.valueOf(this.getRequest().getParameter("selectedOrgId"));
 			if (associatedOrgNodeId == null) {
 				return null;
 			}
@@ -9932,7 +9943,6 @@ public class SessionOperationController extends PageFlowController {
 			resp.flushBuffer();
 			stream = resp.getOutputStream();
 			stream.write(json.getBytes("UTF-8"));
-
 		} catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			System.err.println("Exception while getSelectedOrgHierarchyBulkReport for Bulk Report.");
@@ -9946,49 +9956,47 @@ public class SessionOperationController extends PageFlowController {
 				}
 			}
 		}
+		System.out.println("End: SessionOperationController.getSelectedOrgHierarchyBulkReport(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 		return null;
 
 	}
-
-	@Jpf.Action(
-		forwards = { 
-			@Jpf.Forward(name = "error", path = "bulk_state_export_report.jsp")
-		}
-	)
-	protected Forward downloadBulkReportCSV() {
-		System.out.println("Start: downloadBulkReportCSV()");
+	
+	@Jpf.Action()
+	protected Forward submitBulkReportRequest() {
+	    	System.out.println("Start: SessionOperationController.submitBulkReportRequest()");
 		long startTime = System.currentTimeMillis();
+		double rand = Math.random();
 		try {
 		    	String dateFlagBulkReport = this.getRequest().getParameter("dateFlagBulkReport");
 		    	String startDtBulkReport = this.getRequest().getParameter("startDtBulkReport");
 		    	String endDtBulkReport = this.getRequest().getParameter("endDtBulkReport");
 		    	String orgArrBulkReport = this.getRequest().getParameter("orgArrBulkReport");
-
-		    	System.out.println("startDtBulkReport: " + startDtBulkReport);
-		    	System.out.println("endDtBulkReport: " + endDtBulkReport);
-
+	
+		    	//System.out.println("startDtBulkReport: " + startDtBulkReport);
+		    	//System.out.println("endDtBulkReport: " + endDtBulkReport);
+	
 		    	String userTimeZone =  userManagement.getUserTimeZone(this.userName);
-
+	
 		    	Date startDate = DateUtils.getDateFromDateString(startDtBulkReport);
 		    	Date endDate = DateUtils.getDateFromDateString(endDtBulkReport);
-
+	
 		        Date adjustedStartDate = com.ctb.util.DateUtils.getAdjustedDate(startDate, userTimeZone, "GMT", startDate);
 		        Date adjustedEndDate = com.ctb.util.DateUtils.getAdjustedDate(endDate, userTimeZone, "GMT", endDate);
 		        
-		        System.out.println("startDate: " + startDate);
-		        System.out.println("endDate: " + endDate);
-		        System.out.println("adjustedStartDate: " + adjustedStartDate);
-		        System.out.println("adjustedEndDate: " + adjustedEndDate);
-
+		        //System.out.println("startDate: " + startDate);
+		        //System.out.println("endDate: " + endDate);
+		        //System.out.println("adjustedStartDate: " + adjustedStartDate);
+		        //System.out.println("adjustedEndDate: " + adjustedEndDate);
+	
 		    	Map<String, String> orgHierarchyMap = getOrgHierarchyMap(orgArrBulkReport);
-
+	
 		    	Integer customerId = this.customerId;
-
+	
 		    	String sDate = com.ctb.util.DateUtils.formatDateToDateString(adjustedStartDate, "MM/dd/yyyy");
 		    	String eDate = com.ctb.util.DateUtils.formatDateToDateString(adjustedEndDate, "MM/dd/yyyy");
 		    	
-		    	System.out.println("sDate: " + sDate);
-		        System.out.println("eDate: " + eDate);
+		    	//System.out.println("sDate: " + sDate);
+		        //System.out.println("eDate: " + eDate);
 		        
 		    	Map<String, Object> paramMap = new HashMap<String, Object>();
 		    	paramMap.put("dateFlagBulkReport", dateFlagBulkReport);
@@ -9996,42 +10004,135 @@ public class SessionOperationController extends PageFlowController {
 		    	paramMap.put("endDtBulkReport", eDate);
 		    	paramMap.put("orgHierarchyMap", orgHierarchyMap);
 		    	paramMap.put("customerId", customerId);
+		    	paramMap.put("rand", rand);
+		    	//System.out.println("User ID = " + this.userId);
+		    	paramMap.put("userId", this.userId);
 		    	
+			String todayOfUserTimeZone = com.ctb.util.DateUtils.getAdjustedTodayString(userTimeZone, "MM/dd/yyyy");
+			paramMap.put("todayOfUserTimeZone", todayOfUserTimeZone);
+				
+			Gson gson = new Gson();
+			paramMap.put("msg", gson.toJson(paramMap));
 		    	
+		    	LiteracyProExportRequest litProExportRequest = bulkReports.insertBulkReportData(paramMap);
+		    	if(litProExportRequest != null){
+		    		paramMap.put("litProExportRequest", litProExportRequest);
+		    		final Map<String, Object> finalParamMap = paramMap;
+		    		bulkReports.bulkReportExportProcess(finalParamMap);
+		    		System.out.println("("+rand+")Process started in a new Thread.");
+		    	}
+		    	System.out.println("("+rand+")Request for Bulk State Reporting Export Submitted Successfully.");
+		} catch (CTBBusinessException se) {
+			BulkReportExportException oe = new BulkReportExportException("SessionOperationController: processBulkExportRequest : " + se.getMessage());
+			oe.setStackTrace(se.getStackTrace());
+			oe.printStackTrace();
+		} finally {
+			long endTime = System.currentTimeMillis();
+			System.out.println("("+rand+")File download request submitted in : " + (endTime - startTime) + " milliseconds");
+		}
+		System.out.println("("+rand+")End: SessionOperationController.submitBulkReportRequest(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
+		return null;
+	}
+	
+	
+	@Jpf.Action()
+	protected Forward getBulkReportDetails(){
+	    	System.out.println("Start: SessionOperationController.getBulkReportDetails()");
+	    	long startTime = System.currentTimeMillis();
+		HttpServletResponse resp = null;
+		String json = "";
+		OutputStream stream = null;
+		try{
+			LiteracyProExportBean literacybean = new LiteracyProExportBean();
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			Integer customerId = this.customerId;
+			paramMap.put("customerId", customerId);
+			//System.out.println("User ID = " + this.userId);
+			paramMap.put("userId", this.userId);
+        	    	LiteracyProExportRequest[] litExportDetails = bulkReports.getSumittedExportDetails(paramMap);
+        	    	if(litExportDetails != null){
+        	    		literacybean.setLiteracyExportData(litExportDetails);
+        	    	}
+        	    	Gson gson = new Gson();
+			json = gson.toJson(literacybean);
+			try{
+				resp = getResponse();
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes("UTF-8"));
+			} catch (Exception e) {
+				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				e.printStackTrace();
+			} finally {
+				if (stream != null) {
+					try {
+						stream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} catch (CTBBusinessException se) {
+			BulkReportExportException oe = new BulkReportExportException("SessionOperationController: getBulkReportDetails : " + se.getMessage());
+			oe.setStackTrace(se.getStackTrace());
+			oe.printStackTrace();
+		}
+		System.out.println("End: SessionOperationController.getBulkReportDetails(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
+		return null;
+	}
+
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "error", path = "bulk_state_export_report.jsp") })
+	protected Forward downloadBulkReportCSV() {
+	    	System.out.println("--Start: SessionOperationController.downloadBulkReportCSV()");
+		long startTime = System.currentTimeMillis();
+		try {
+		    	String exportRequestIdStr = this.getRequest().getParameter("exportRequestId");
+		    	Long exportRequestId = Long.parseLong(exportRequestIdStr);
+		    	Integer customerId = this.customerId;
+		    	Map<String, Object> paramMap = new HashMap<String, Object>();
+		    	paramMap.put("exportRequestId", exportRequestId);
+		    	paramMap.put("customerId", customerId);
+		    	//System.out.println("User ID = " + this.userId);
+		    	paramMap.put("userId", this.userId);
 		    	try {
-		    	    	LiteracyProExportData[] tableData = scheduleTest.getBulkReportCSVData(paramMap);
-		    	    	System.out.println("count = " + tableData.length);
-        		    	byte[] data = LayoutUtil.getLiteracyProExportDataBytes(tableData);
-        		    	String fileName = "BulkReport.csv";
+        		    	LiteracyProExportRequest litExportObj = bulkReports.getBulkReportCSVData(paramMap);
+        		    	long beginstartTime = System.currentTimeMillis();
+        		    	int contentLength = (int) litExportObj.getFileContent().length();  
+        		    	System.out.println("Blob size = "+contentLength);
+        		    	byte[] data = litExportObj.getFileContent().getBytes(1, contentLength);
+        		    	String fileName = litExportObj.getFileName();
         		    	HttpServletResponse resp = this.getResponse();        
-        		        String bodypart = "attachment; filename=\"" + fileName + "\" ";
-        		
-        		        resp.setContentType("text/csv");
-        		        resp.setHeader("Content-Disposition", bodypart);
-        		        resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-        		        resp.setHeader("Cache-Control", "cache");
-        		        resp.setHeader("Pragma", "public");
-        		        resp.flushBuffer();
-        		
-        		        OutputStream stream = resp.getOutputStream();
-        		        stream.write(data);
-        		        stream.close();
+        		    	String bodypart = "attachment; filename=\"" + fileName + "\" ";
+        		    	resp.setContentType("text/csv");
+        		    	byte [] unzipData = LayoutUtil.unZippedBytes(data);
+        		    	resp.setContentLength(unzipData.length);
+        		    	resp.setHeader("Content-Disposition", bodypart);
+        		    	resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+        		    	resp.setHeader("Cache-Control", "cache");
+        		    	resp.setHeader("Pragma", "public");
+        		    	resp.flushBuffer();
+        		    	System.out.println("Wrinting file content to response output stream...");
+        		    	OutputStream stream = resp.getOutputStream();
+        		    	stream.write(unzipData);
+        		    	stream.close();
+        		    	System.out.println("File write Time taken: " + (System.currentTimeMillis() - beginstartTime) + " milliseconds");
 		    	} catch (Exception e) {
     		    		System.err.println("Exception while wtite to stream: downloadBulkReportCSV for Bulk Report.");
     		    		e.printStackTrace();
 		    	}
-
 		} catch (Exception e) {
 			System.err.println("Exception while downloadBulkReportCSV for Bulk Report.");
 			e.printStackTrace();
 		} finally {
-			System.out.println("End: downloadBulkReportCSV()");
+		    	System.out.println("--End: SessionOperationController.downloadBulkReportCSV()");
+			long endTime = System.currentTimeMillis();
+			System.out.println("File Download Time taken: " + (endTime - startTime) + " milliseconds");
+			System.out.println("End: SessionOperationController.downloadBulkReportCSV(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 		}
-		long endTime = System.currentTimeMillis();
-		System.out.println("File Download Time taken: " + (endTime - startTime) + " milliseconds");
 		return null;
 	}
-	
+
 	private Map<String, String> getOrgHierarchyMap(String orgArr) {
 	    	Map<String, String> orgHierarchyMap = new LinkedHashMap<String, String>();
         	if (orgArr != null && !orgArr.isEmpty()) {
@@ -10050,6 +10151,8 @@ public class SessionOperationController extends PageFlowController {
 	 * @param orgNodeId
 	 */
 	private void populateOrgStructureForReport(Integer orgNodeId, BulkReportData bulkReportData) throws Exception {
+	    	System.out.println("Start: SessionOperationController.populateOrgStructureForReport()");
+	    	long startTime = System.currentTimeMillis();
 		OrgNodeCategory[] customerHierarchyStructure = null;
 		Node[] parentOrgDetails = null;
 		AncestorOrgDetails[] childrenOrgNodes = null;
@@ -10066,10 +10169,12 @@ public class SessionOperationController extends PageFlowController {
 			System.err.println("Exception while populateOrgStructureForReport for Bulk Report.");
 			throw e;
 		}
+		System.out.println("End: SessionOperationController.populateOrgStructureForReport(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 	}
 
-	private AncestorOrgDetails processChildrenNodesList(
-			AncestorOrgDetails[] childrenOrgNodes) throws Exception {
+	private AncestorOrgDetails processChildrenNodesList(AncestorOrgDetails[] childrenOrgNodes) throws Exception {
+	    	System.out.println("Start: SessionOperationController.processChildrenNodesList()");
+	    	long startTime = System.currentTimeMillis();
 		try {
 			Map<Integer, AncestorOrgDetails> nodeDetailsMap = new HashMap<Integer, AncestorOrgDetails>();
 			for (int index = 0; index < childrenOrgNodes.length; index++) {
@@ -10078,14 +10183,15 @@ public class SessionOperationController extends PageFlowController {
 				Integer parentId = orgDetails.getParentOrgNodeId();
 				nodeDetailsMap.put(orgNodeId, orgDetails);
 				if (index != 0) {
-					nodeDetailsMap.get(parentId).getChildrenNodes().add(
-							orgDetails);
+					nodeDetailsMap.get(parentId).getChildrenNodes().add(orgDetails);
 				}
 			}
 			return childrenOrgNodes[0];
 		} catch (Exception e) {
 			System.err.println("Exception while processChildrenNodesList for Bulk Report.");
 			throw e;
+		} finally {
+		    System.out.println("End: SessionOperationController.processChildrenNodesList(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 		}
 	}
 

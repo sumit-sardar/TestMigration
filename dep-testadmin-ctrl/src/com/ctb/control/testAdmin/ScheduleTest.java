@@ -721,14 +721,6 @@ public interface ScheduleTest
 	public AncestorOrgDetails[] getChildrenOrgDetails(Integer orgNodeId) throws CTBBusinessException;
 	
 	/**
-	 * Returns the bulk report csv file download data in a two dimentional ArrayList
-	 * @param paramMap
-	 * @return
-	 * @throws CTBBusinessException
-	 */
-	public LiteracyProExportData[] getBulkReportCSVData(Map<String, Object> paramMap) throws CTBBusinessException;
-	
-	/**
 	 * Validate from BMT during student delete from Test Session
 	 * @param testAdminId
 	 * @param studentIds

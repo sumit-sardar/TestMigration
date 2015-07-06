@@ -7306,10 +7306,12 @@ function validNumber(str){
 	
 // Start of Bulk Report
 function populateDataOptionsBulkReport(){
+	UIBlock();
+	bulkExportStatus();
 	$.ajax({
 		async:		false,
+		cache:		false,
 		beforeSend:	function(){	
-						UIBlock();	
 					},
 		url:		'getLoginUserOrgHierarchyBulkReport.do', 
 		type:		'POST',
@@ -7324,13 +7326,13 @@ function populateDataOptionsBulkReport(){
 
 						populateOrgListOptionsBulkReport(data.topLevelNodes);
 						populateOrgHiearchyOptions(data.parentHierarchyDetails,data.orgNodeCategoryList, data.childLevelNodes);
-						$.unblockUI();		
+						$("#bulkExportReportAcor").show();
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();
 						window.location.href="error.do";
 					}
 	});
+	$.unblockUI();
 }
 
 
@@ -7363,20 +7365,18 @@ function populateOrgHiearchyOptions(parentHierarchyDetails,orgNodeCategoryList,c
 	$("#criteriaOrgListBulkReport").html(html);
 	$(".clsName").change(function() {
     	var valueSelected = this.value;
-    	//console.log("valueSelected: " + valueSelected);
 		populateOrgLevelDetails(valueSelected, childLevelNodes, orgNodeCategoryList); // 
 	})
 }
 
 function populateOrgLevelDetails(level_id, data, orgNodeCategoryList){
-	//console.log(JSON.stringify(data));
+	hideErrorOrInfo();
 	var arr = level_id.split("_");
 	var level = arr[0];
 	var nextLevel = (parseInt(level) + 1);
 	var id = arr[1];
 	var node = traverseChildren(data, id);
 	if(node != null) {
-		//console.log(id + ": " + node.orgNodeId + " = " + node.orgNodeName);
 		var html = '';
 		html += '<option  id="-1" value="'+(parseInt(level) + 1)+'_-1">'+ $("#labelBulkReport").val()+'</option>';
 		for(var j=0 ; j<node.childrenNodes.length ; j++) {
@@ -7385,9 +7385,7 @@ function populateOrgLevelDetails(level_id, data, orgNodeCategoryList){
 		$(".clsName-" + nextLevel).html(html);
 		$(".clsName-" + nextLevel).removeAttr("disabled");
 		disableOrgLevelDetails((parseInt(nextLevel)+1), orgNodeCategoryList);
-		//console.log("Children populated successfully");
 	} else {
-		//console.log("No children with id = " + id);
 		disableOrgLevelDetails(nextLevel, orgNodeCategoryList);
 	}
 }
@@ -7416,7 +7414,6 @@ function traverseChildren(data, id) {
 } 
 
 function populateOrgListOptionsBulkReport(data){
- //console.log('populateOrgListOptionsBulkReport');
 	if(data.length > 1){
 		$("#orgNameOptionsBulkReportLbl").show();
 		$("#orgNameOptionsBulkReport").show();
@@ -7436,13 +7433,13 @@ function fillOrgNameOptionsBulkReport(elementId, options) {
 }
 
 function getOrgListForBulkReport(){
-	//console.log('getOrgListForBulkReport');	
+	hideErrorOrInfo();
  	var selectElement = document.getElementById("orgNameOptionsBulkReport");
 	var chosenOption = selectElement.options[selectElement.selectedIndex];
 	var postDataObject = {};
 	postDataObject.selectedOrgId = chosenOption.value;
 	$.ajax({
-		async:		true,
+		async:		false,
 		beforeSend:	function(){	
 						UIBlock();	
 					},
@@ -7462,54 +7459,89 @@ function getOrgListForBulkReport(){
 	});
 }
 
-function downloadBulkReportCSV(element) {
+function hideErrorOrInfo() {
+	$("#messageIconErrorBulkReport").hide();
+	$("#messageIconInfoBulkReport").hide();
+	$("#messageBulkReport").hide();
+}
+
+function submitBulkReportRequest(element) {
+	hideErrorOrInfo();
 	if (isButtonDisabled(element)) 
 		return true;
-	//console.log('downloadBulkReportCSV');
 	var radioDate = $("input[name=bukExportDateSelection]:checked").val();
 	var startDateBulkReport = $("#startDateBulkReport").datepicker("getDate");
 	var endDateBulkReport = $("#endDateBulkReport").datepicker("getDate");
 	if(radioDate == "DateRange" && startDateBulkReport > endDateBulkReport) {
-		//alert("startDate > endDate");
-		$("#displayMessageBulkReport").show();
-		$("#messageBulkReport").html("<b>" + $("#invalidDatesBulkReport").val() + "</b>");
+		$("#messageIconErrorBulkReport").show();
+		$("#messageBulkReport").show();
+		$("#messageBulkReport").html('<b><font style="color: red; font-size:12px; font-weight:bold">' + $("#invalidDatesBulkReport").val() + '</font></b>');
 		return false;
 		
 	} else {
-		$("#messageBulkReport").html("");
-		$("#displayMessageBulkReport").hide();
+		hideErrorOrInfo();
 	}
 	showLoadingProgress('<br/><b>Downloading file...</b><br/>');
 	var orgArr = [];
 	var count = 0;
 	var clsLabels = $('input[class^="clsLabel-"]');
-	//console.log("clsLabels.length = " + clsLabels.length);
 	clsLabels.each(function(i){
 		orgArr[count] = this.value;
 		count = count + 1;
 	});
 
 	var clsNames = $('select.clsName');
-	//console.log("clsNames.length = " + clsNames.length);
 	clsNames.each(function(i){
 		orgArr[count] = this.value;
 		count = count + 1;
 	});
-	
-	//var jsonStr = '{"radioDate" : "'+radioDate+'", "startDateBulkReport" : "'+$("#startDateBulkReport").val()+'", "endDateBulkReport" : "'+$("#endDateBulkReport").val()+'", "orgArr": "'+orgArr+'"}';
-	//console.log(jsonStr);
-	
+
 	document.getElementById("dateFlagBulkReport").value = radioDate;
-	
+
 	var srartDateVar = $("#startDateBulkReport").datepicker("getDate");
 	var endDateVar = $("#endDateBulkReport").datepicker("getDate");
 	document.getElementById("startDtBulkReport").value = $.datepicker.formatDate('mm/dd/yy', srartDateVar);
 	document.getElementById("endDtBulkReport").value = $.datepicker.formatDate('mm/dd/yy', endDateVar);
-    var element = document.getElementById("orgArrBulkReport");
-    element.value = "" + orgArr;
+	$("#orgArrBulkReport").val(""+orgArr);
+
+	var postDataObject = {};
+	postDataObject.dateFlagBulkReport = $("#dateFlagBulkReport").val();
+	postDataObject.startDtBulkReport = $("#startDtBulkReport").val();
+	postDataObject.endDtBulkReport = $("#endDtBulkReport").val();
+	postDataObject.orgArrBulkReport = $("#orgArrBulkReport").val();
+	$.ajax({
+		async:		false,
+		beforeSend:	function(){	
+						UIBlock();
+					},
+		url:		'submitBulkReportRequest.do', 
+		type:		'POST',
+		data:		postDataObject,
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){
+						$.unblockUI();
+						$("#messageIconInfoBulkReport").show();
+						$("#messageBulkReport").show();
+						$("#messageBulkReport").html('<b><font style="font-size:12px; font-weight:bold">Request for Bulk State Reporting Export Submitted Successfully.<br />Please expand Export Status to view status of the request and download the file.</font></b>');	
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();
+						window.location.href="error.do";
+					}
+	  
+	});
+}
+
+function downloadBulkReportCSV(element) {
+	if($("#downloadBulkExportFileFlag").val() == "0") {
+		return false;
+	}
+	UIBlock();
+    var element = document.getElementById("exportRequestId");
     element.form.action = "downloadBulkReportCSV.do";
     element.form.method = "POST";
     element.form.submit();
+    $.unblockUI();
 	return false;
 }
 
@@ -7524,10 +7556,7 @@ $(document).ready(function(){
 			if($(this).prop('checked') && chkid=='bukExportAllDates'){
 				$("#startDateBulkReport").attr('disabled',true);
 		 		$("#endDateBulkReport").attr('disabled',true);
-		 		$("#messageBulkReport").html("");
-				$("#displayMessageBulkReport").hide();
-				//$("#messageTitleBulkReport").hide();
-				//$("#messageBulkReport").hide();
+				hideErrorOrInfo();
 			}else{
 				$("#startDateBulkReport").removeAttr('disabled');
 		 		$("#endDateBulkReport").removeAttr('disabled');
@@ -7535,5 +7564,143 @@ $(document).ready(function(){
 		
 		})
 });
-// End of Bulk Report
+
+
+var reportWizard;
+function bulkExportStatus() {
+	reportWizard = $("#bulkExportReportAcor").accordion({ header: "h3", active: 0, event:false });
+	$("h3", reportWizard).each(function(index) {
+		$(this).bind("click", function(e) {
+		  if($(this).parent().attr("id") == 'viewBulkExportReport') {
+			viewBulkExportDetails(index);
+		  }else {
+			reportWizard.accordion("activate", index);
+		  }
+	  });
+	});
+}
+
+function viewBulkExportDetails(index){
+	var exportGridLoaded = false;
+	var postDataObject = {};
+	UIBlock();
+	$("#viewBulkExportStatusList").jqGrid({
+		url: 'getBulkReportDetails.do',   
+		mtype: 'POST',
+		datatype: 'json',
+		colNames:['Date of Export', 'File Name', 'Status'],
+	  	colModel:[
+	  		{name:'exportDate',index:'exportDate', width:200, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+	  		{name:'fileName',index:'fileName', width:340, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+	  		{name:'status',index:'status', width:150, editable: false, align:"left",sorttype:'number', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+	  	],
+	  	jsonReader: { repeatitems : false, root:"literacyExportData", id:"exportRequestId"},
+	    onSelectRow: function (rowid) {
+				var selectedExportId = rowid;
+				if ($('#viewBulkExportStatusList').getCell(rowid, '2') == "Completed") {
+					$('#downloadBulkExportFileButton').removeAttr("disabled");
+					$("#downloadBulkExportFileButton").removeClass('ui-state-disabled');
+					$('#downloadBulkExportFileFlag').val("1");
+				} else {
+					$("#downloadBulkExportFileButton").addClass('ui-state-disabled');
+					$("#downloadBulkExportFileButton").attr("disabled", true);
+					$('#downloadBulkExportFileFlag').val("0");
+				}
+				$("#exportRequestId").val(selectedExportId);
+		},
+	  	loadui: "disable",
+		rowNum:5,
+		gridview: true,
+		multiselect:false,
+		viewrecords: true, 
+		height: 60,			
+		caption: "Files Exported",
+		pager: '#viewBulkExportStatusPager',
+		sortname: 'exportDate', 
+		sortorder: "desc",
+		gridComplete: function(){
+			exportGridLoaded = true;
+		}, 
+		loadError: function(XMLHttpRequest, textStatus, errorThrown){
+			window.location.href="/SessionWeb/logout.do";
+		}
+ 	});
+ 	reportWizard.accordion("activate", index);
+ 	/**/
+ 	var pager_center = document.getElementById('viewBulkExportStatusPager_center');
+	pager_center.style.display = 'none';
+	var pager_right = document.getElementById('viewBulkExportStatusPager_right');
+	pager_right.style.display = 'none';
+ 	
+ 	$.unblockUI();
+ 	jQuery("#viewBulkExportStatusList").navGrid('#viewBulkExportStatusPager', { search: false,add:false,edit:false,del:false });
+	jQuery("#refresh_viewBulkExportStatusList").bind("click",function(){
+		refreshBulkExportGrid();
+	});
 	
+	if(exportGridLoaded == false){
+		refreshBulkExportGrid();
+	}
+}
+
+function refreshBulkExportGrid(){
+	jQuery("#viewBulkExportStatusList").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
+     	   var urlVal = 'getBulkReportDetails.do';
+     	   jQuery("#viewBulkExportStatusList").jqGrid('setGridParam', {url:urlVal,page:1}).trigger("reloadGrid");
+           jQuery("#viewBulkExportStatusList").sortGrid('exportDate',true,'desc');
+}
+
+function populateExportStatusListGrid(data) {
+	var mydata = data.literacyExportData;
+	$("#viewBulkExportStatusList").jqGrid({
+		data: mydata,   
+		datatype: "local",
+		colNames:['Date of Export', 'File Name', 'Status'],
+		colModel:[
+			{name:'exportDate',index:'exportDate', width:200, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+			{name:'fileName',index:'fileName', width:340, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+			{name:'status',index:'status', width:150, editable: false, align:"left",sorttype:'number', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		],
+		localReader: { repeatitems : false, id:"exportRequestId"},
+		onSelectRow: function (rowid) {
+			var selectedExportId = rowid;
+			if ($('#viewBulkExportStatusList').getCell(rowid, '2') == "Completed") {
+				$('#downloadBulkExportFileButton').removeAttr("disabled");
+				$("#downloadBulkExportFileButton").removeClass('ui-state-disabled');
+				$('#downloadBulkExportFileFlag').val("1");
+			} else {
+				$("#downloadBulkExportFileButton").addClass('ui-state-disabled');
+				$("#downloadBulkExportFileButton").attr("disabled", true);
+				$('#downloadBulkExportFileFlag').val("0");
+			}
+			$("#exportRequestId").val(selectedExportId);
+		},
+		loadui: "disable",
+		rowNum:20,
+		loadonce:true,
+		pager: '#viewBulkExportStatusPager',
+		gridview: true,
+		multiselect:false,
+		viewrecords: true, 
+		height: 90,
+		caption: "Files Exported",
+		sortname: 'exportDate', 
+		sortorder: "desc"
+	});
+
+	jQuery("#viewBulkExportStatusList").navGrid('#viewBulkExportStatusPager', {	});
+
+	jQuery("#refresh_viewBulkExportStatusList").bind("click",function(){
+		bulkExportStatus();
+		$('#bulkExportReportAcor').trigger('click');
+	});
+
+	var addButton = document.getElementById('add_viewBulkExportStatusList');
+	addButton.style.display = 'none';
+	var editButton = document.getElementById('edit_viewBulkExportStatusList');
+	editButton.style.display = 'none';
+	var deleteButton = document.getElementById('del_viewBulkExportStatusList');
+	deleteButton.style.display = 'none';
+	var searchButton = document.getElementById('search_viewBulkExportStatusList');
+	searchButton.style.display = 'none';
+}

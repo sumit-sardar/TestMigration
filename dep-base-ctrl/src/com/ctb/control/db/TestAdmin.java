@@ -10,6 +10,7 @@ import com.ctb.bean.testAdmin.ActiveSession;
 import com.ctb.bean.testAdmin.AncestorOrgDetails;
 import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.LicenseNodeData;
+import com.ctb.bean.testAdmin.LiteracyProExportRequest;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.OrgNodeRosterCount;
@@ -1103,6 +1104,20 @@ public interface TestAdmin extends JdbcControl
     
     @JdbcControl.SQL(statement = "select distinct prod.product_id || isatd.item_set_id as subtestProdMapper, prod.product_id || reiset.item_set_id as reportingLevelId from test_catalog tc, item_set_item isi, item i, item_Set_item reisi, item_set_ancestor isa, product prod, item_set_category isc, item_set reiset, item_set_ancestor isatd where i.item_id = isi.item_id and reisi.item_id = i.item_id and isa.item_Set_id = reisi.item_Set_id and reiset.item_set_id = isa.ancestor_item_Set_id and reiset.item_set_type = 'RE' and reiset.item_set_category_id = isc.item_set_category_id and isc.framework_product_id = prod.parent_product_id and isc.item_set_category_level = prod.content_area_level and isatd.item_set_id = isi.item_Set_id and isatd.item_set_type = 'TD' and tc.item_set_id = isatd.ancestor_item_Set_id and prod.product_id = tc.product_id and prod.product_id in (4008, 4009, 4010, 4011, 4012)",
 	    arrayMaxLength = 0, fetchSize = 100)
-	    LiteracyProExportData[] getReportLevelMapper() throws SQLException;
+	LiteracyProExportData[] getReportLevelMapper() throws SQLException;
     
+    @JdbcControl.SQL(statement = "select seq_export_request_id.nextval from dual ",arrayMaxLength = 1)
+    Long getExportSequenceId() throws SQLException;
+    
+    @JdbcControl.SQL(statement = "INSERT INTO BULK_EXPORT_DATA_FILE (EXPORT_REQUEST_ID, USER_ID, CUSTOMER_ID, EXPORT_DATE, FILE_NAME, STATUS, MESSAGE) VALUES ({literacyReqObj.exportRequestId}, {literacyReqObj.userID}, {literacyReqObj.customerId}, SYSDATE , (SELECT ORG.ORG_NODE_NAME ||'_' || TO_CHAR(SYSDATE,'MMDDYYYYHHMMSS')||'.csv' FROM ORG_NODE ORG WHERE ORG.ORG_NODE_ID = {literacyReqObj.orgNodeName}), {literacyReqObj.status}, {literacyReqObj.message})")
+    void insertBulkReportRequestData(LiteracyProExportRequest literacyReqObj) throws SQLException;
+
+    @JdbcControl.SQL(statement = "select bedf.export_request_id as exportRequestId, bedf.user_id as userID, bedf.customer_id as customerId, bedf.export_date as exportDate, bedf.file_name as fileName, bedf.status as status, bedf.message as message from bulk_export_data_file bedf where bedf.customer_id = {customerId} and bedf.user_id = {userId} order by 1 desc ",arrayMaxLength = 0, fetchSize = 10)
+    LiteracyProExportRequest[] getBulkExportReportDetailsForUser(Integer customerId, Integer userId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select bedf.file_name as fileName,  bedf.file_content as fileContent from bulk_export_data_file bedf where bedf.customer_id = {customerId} and bedf.user_id = {userId} and bedf.export_request_id = {exportReqId}",arrayMaxLength = 1)
+    LiteracyProExportRequest getBulkExportReport(Integer customerId, Integer userId, Long exportReqId) throws SQLException;
+
+    @JdbcControl.SQL(statement = "DELETE FROM BULK_EXPORT_DATA_FILE WHERE EXPORT_REQUEST_ID IN (SELECT EXPORT_REQUEST_ID FROM (SELECT ROWNUM R, T.* FROM (SELECT * FROM BULK_EXPORT_DATA_FILE WHERE USER_ID = {userId} AND CUSTOMER_ID = {customerId} ORDER BY EXPORT_DATE DESC) T) S WHERE R > 4)")
+    void deleteBulkReportRequestData(Integer customerId, Integer userId) throws SQLException;
 }
