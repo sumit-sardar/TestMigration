@@ -161,4 +161,7 @@ public class LiteracyProExportRequest extends CTBBean {
 	this.message = message;
     }
 
+    public String toString() {
+        return exportDate + " - " + fileName + " - " + status;
+    }
 }

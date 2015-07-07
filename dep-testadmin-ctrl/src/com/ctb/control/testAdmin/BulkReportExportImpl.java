@@ -73,6 +73,10 @@ public class BulkReportExportImpl implements BulkReportExport {
 	    LiteracyProExportRequest literacyRequestObj = new LiteracyProExportRequest(userId, customerId, exportedDate, Integer.parseInt(orgNodeId), status, msg);
 	    exportRequestId = admins.getExportSequenceId();
 	    literacyRequestObj.setExportRequestId(exportRequestId);
+	    String dateFormat = "ddMMyyyyHHmmss";
+	    String userTimeZone = (String) paramMap.get("userTimeZone");
+	    String nowStr = com.ctb.util.DateUtils.getAdjustedTodayString(userTimeZone, dateFormat);
+	    literacyRequestObj.setFileName("_" + nowStr + ".csv");
 	    admins.insertBulkReportRequestData(literacyRequestObj);
 	    //System.out.println("Record inserted in " + (System.currentTimeMillis() - insertStart) + " milliseconds");
 	    System.out.println("End: BulkReportExportImpl.insertBulkReportData(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
@@ -155,6 +159,9 @@ public class BulkReportExportImpl implements BulkReportExport {
 	Integer userId = (Integer) paramMap.get("userId");
 	try {
 	    LiteracyProExportRequest[] literacyRequestArr = admins.getBulkExportReportDetailsForUser(customerId, userId);
+	    for(LiteracyProExportRequest bean : literacyRequestArr) {
+		System.out.println(bean);
+	    }
 	    return literacyRequestArr;
 	} catch (SQLException se) {
 	    BulkReportExportException bre = new BulkReportExportException("BulkReportExportImpl: getSumittedExportDetails : " + se.getMessage());

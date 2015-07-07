@@ -29,6 +29,10 @@
 			<br/>
 		</tr>
 	</table>
+	<style type="text/css">
+		#bulkExportReportBody {height: auto!important;}
+		#viewExportStatus {height: auto!important;}
+	</style>
 
 	<table width="55%" border="0" style="margin-left: 15px; visibility: hidden;" id="bulkExportReportAcorTable">
 	<tr>

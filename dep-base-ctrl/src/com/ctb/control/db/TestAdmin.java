@@ -1109,7 +1109,7 @@ public interface TestAdmin extends JdbcControl
     @JdbcControl.SQL(statement = "select seq_export_request_id.nextval from dual ",arrayMaxLength = 1)
     Long getExportSequenceId() throws SQLException;
     
-    @JdbcControl.SQL(statement = "INSERT INTO BULK_EXPORT_DATA_FILE (EXPORT_REQUEST_ID, USER_ID, CUSTOMER_ID, EXPORT_DATE, FILE_NAME, STATUS, MESSAGE) VALUES ({literacyReqObj.exportRequestId}, {literacyReqObj.userID}, {literacyReqObj.customerId}, SYSDATE , (SELECT ORG.ORG_NODE_NAME ||'_' || TO_CHAR(SYSDATE,'MMDDYYYYHHMMSS')||'.csv' FROM ORG_NODE ORG WHERE ORG.ORG_NODE_ID = {literacyReqObj.orgNodeName}), {literacyReqObj.status}, {literacyReqObj.message})")
+    @JdbcControl.SQL(statement = "INSERT INTO BULK_EXPORT_DATA_FILE (EXPORT_REQUEST_ID, USER_ID, CUSTOMER_ID, EXPORT_DATE, FILE_NAME, STATUS, MESSAGE) VALUES ({literacyReqObj.exportRequestId}, {literacyReqObj.userID}, {literacyReqObj.customerId}, SYSDATE , (SELECT ORG.ORG_NODE_NAME || {literacyReqObj.fileName} FROM ORG_NODE ORG WHERE ORG.ORG_NODE_ID = {literacyReqObj.orgNodeName}), {literacyReqObj.status}, {literacyReqObj.message})")
     void insertBulkReportRequestData(LiteracyProExportRequest literacyReqObj) throws SQLException;
 
     @JdbcControl.SQL(statement = "select bedf.export_request_id as exportRequestId, bedf.user_id as userID, bedf.customer_id as customerId, bedf.export_date as exportDate, bedf.file_name as fileName, bedf.status as status, bedf.message as message from bulk_export_data_file bedf where bedf.customer_id = {customerId} and bedf.user_id = {userId} order by 1 desc ",arrayMaxLength = 0, fetchSize = 10)

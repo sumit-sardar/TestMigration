@@ -3,6 +3,7 @@ package sessionOperation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10007,6 +10008,7 @@ public class SessionOperationController extends PageFlowController {
 		    	paramMap.put("rand", rand);
 		    	//System.out.println("User ID = " + this.userId);
 		    	paramMap.put("userId", this.userId);
+		    	paramMap.put("userTimeZone", userTimeZone);
 		    	
 			String todayOfUserTimeZone = com.ctb.util.DateUtils.getAdjustedTodayString(userTimeZone, "MM/dd/yyyy");
 			paramMap.put("todayOfUserTimeZone", todayOfUserTimeZone);
@@ -10049,9 +10051,24 @@ public class SessionOperationController extends PageFlowController {
 			paramMap.put("customerId", customerId);
 			//System.out.println("User ID = " + this.userId);
 			paramMap.put("userId", this.userId);
+			String userTimeZone =  userManagement.getUserTimeZone(this.userName);
         	    	LiteracyProExportRequest[] litExportDetails = bulkReports.getSumittedExportDetails(paramMap);
         	    	if(litExportDetails != null){
+                	    	for(LiteracyProExportRequest bean : litExportDetails) {
+                			String exportDate = bean.getExportDate();
+                			try {
+                			    String dateFormat = "MMM dd, yyyy h:m:s a";
+					    String adjustedExportDate = com.ctb.util.DateUtils.getAdjustedDateString(exportDate, userTimeZone, dateFormat);
+					    bean.setExportDate(adjustedExportDate);
+					} catch (ParseException e) {
+					    // TODO Auto-generated catch block
+					    e.printStackTrace();
+					}
+                		}
         	    		literacybean.setLiteracyExportData(litExportDetails);
+        	    	}
+        	    	for(LiteracyProExportRequest bean : litExportDetails) {
+        	    	    System.out.println(bean);
         	    	}
         	    	Gson gson = new Gson();
 			json = gson.toJson(literacybean);

@@ -1,7 +1,10 @@
 package com.ctb.util; 
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class DateUtils 
@@ -123,11 +126,46 @@ public class DateUtils
     
     public static String getAdjustedTodayString(String timeZone, String dateFormat) {
 	Date now = new Date(System.currentTimeMillis());
-	//System.out.println("Today: " + now.toString());
+	System.out.println("Today: " + now.toString() + "TimeZone.getDefault().getID()" + TimeZone.getDefault().getDisplayName());
 	Date today = getAdjustedDate(now, TimeZone.getDefault().getID(), timeZone, now);
 	String todayString = formatDateToDateString(today, dateFormat);
-	//System.out.println("Adjusted Today: " + todayString);
+	System.out.println("Adjusted Today: " + todayString);
 	return todayString;
+    }
+    
+    public static String getAdjustedDateString(String dateStr, String userTimeZone, String dateFormat) throws ParseException{
+	DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+	Date date = format.parse(dateStr);
+	System.out.println("//Date: " + date);
+	Date today = getAdjustedDate(date, TimeZone.getDefault().getID(), userTimeZone, date);
+	String str = formatDateToDateString(today, dateFormat);
+	System.out.println("//Adjusted Date: " + str);
+	return str;
+    }
+    
+    public static String getAdjustedDateString(String dateStr, String dateStrFormat, String userTimeZone, String dateFormat) throws ParseException{
+	DateFormat format = new SimpleDateFormat(dateStrFormat, Locale.ENGLISH);
+	Date date = format.parse(dateStr);
+	System.out.println("//Date: " + date);
+	Date today = getAdjustedDate(date, TimeZone.getDefault().getID(), userTimeZone, date);
+	String str = formatDateToDateString(today, dateFormat);
+	System.out.println("//Adjusted Date: " + str);
+	return str;
+    }
+    
+    public static void main(String[] args) throws ParseException {
+	String userTimeZone = "America/Denver";
+	String dateFormat = "ddMMyyyy hhmmss";
+	String s = com.ctb.util.DateUtils.getAdjustedTodayString(userTimeZone, dateFormat);
+	System.out.println("s: " + s);
+	
+	userTimeZone = "India/Kolkata";
+	dateFormat = "ddMMyyyy HH:mm:ss";
+	//s = com.ctb.util.DateUtils.getAdjustedTodayString(userTimeZone, dateFormat);
+	Date d = new java.util.Date();
+	DateFormat format = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
+	String dateStr = format.format(d);
+	System.out.println("date = " + dateStr.toString());
     }
 
     public static String formatDateToTimeString(Date date){
@@ -144,5 +182,6 @@ public class DateUtils
             e.printStackTrace();
         }
         return result;
-    }    
+    }
+
 } 

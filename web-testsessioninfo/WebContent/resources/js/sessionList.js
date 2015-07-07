@@ -7572,6 +7572,7 @@ function bulkExportStatus() {
 	$("h3", reportWizard).each(function(index) {
 		$(this).bind("click", function(e) {
 		  if($(this).parent().attr("id") == 'viewBulkExportReport') {
+		    //$("#viewBulkExportStatusList").jqGrid('resetSelection');
 			viewBulkExportDetails(index);
 		  }else {
 			reportWizard.accordion("activate", index);
@@ -7587,12 +7588,13 @@ function viewBulkExportDetails(index){
 	$("#viewBulkExportStatusList").jqGrid({
 		url: 'getBulkReportDetails.do',   
 		mtype: 'POST',
+		async: false,
 		datatype: 'json',
 		colNames:['Date of Export', 'File Name', 'Status'],
 	  	colModel:[
-	  		{name:'exportDate',index:'exportDate', width:200, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-	  		{name:'fileName',index:'fileName', width:340, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-	  		{name:'status',index:'status', width:150, editable: false, align:"left",sorttype:'number', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+	  		{name:'exportDate',index:'exportDate', width:200, editable: false, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+	  		{name:'fileName',index:'fileName', width:340, editable: false, align:"left",sorttype:'text', sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+	  		{name:'status',index:'status', width:150, editable: false, align:"left",sorttype:'number', sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 	  	],
 	  	jsonReader: { repeatitems : false, root:"literacyExportData", id:"exportRequestId"},
 	    onSelectRow: function (rowid) {
@@ -7617,7 +7619,7 @@ function viewBulkExportDetails(index){
 		caption: "Files Exported",
 		pager: '#viewBulkExportStatusPager',
 		sortname: 'exportDate', 
-		sortorder: "desc",
+		sortorder: 'desc',
 		gridComplete: function(){
 			exportGridLoaded = true;
 		}, 
@@ -7645,62 +7647,7 @@ function viewBulkExportDetails(index){
 
 function refreshBulkExportGrid(){
 	jQuery("#viewBulkExportStatusList").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
-     	   var urlVal = 'getBulkReportDetails.do';
-     	   jQuery("#viewBulkExportStatusList").jqGrid('setGridParam', {url:urlVal,page:1}).trigger("reloadGrid");
-           jQuery("#viewBulkExportStatusList").sortGrid('exportDate',true,'desc');
-}
-
-function populateExportStatusListGrid(data) {
-	var mydata = data.literacyExportData;
-	$("#viewBulkExportStatusList").jqGrid({
-		data: mydata,   
-		datatype: "local",
-		colNames:['Date of Export', 'File Name', 'Status'],
-		colModel:[
-			{name:'exportDate',index:'exportDate', width:200, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-			{name:'fileName',index:'fileName', width:340, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-			{name:'status',index:'status', width:150, editable: false, align:"left",sorttype:'number', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
-		],
-		localReader: { repeatitems : false, id:"exportRequestId"},
-		onSelectRow: function (rowid) {
-			var selectedExportId = rowid;
-			if ($('#viewBulkExportStatusList').getCell(rowid, '2') == "Completed") {
-				$('#downloadBulkExportFileButton').removeAttr("disabled");
-				$("#downloadBulkExportFileButton").removeClass('ui-state-disabled');
-				$('#downloadBulkExportFileFlag').val("1");
-			} else {
-				$("#downloadBulkExportFileButton").addClass('ui-state-disabled');
-				$("#downloadBulkExportFileButton").attr("disabled", true);
-				$('#downloadBulkExportFileFlag').val("0");
-			}
-			$("#exportRequestId").val(selectedExportId);
-		},
-		loadui: "disable",
-		rowNum:20,
-		loadonce:true,
-		pager: '#viewBulkExportStatusPager',
-		gridview: true,
-		multiselect:false,
-		viewrecords: true, 
-		height: 90,
-		caption: "Files Exported",
-		sortname: 'exportDate', 
-		sortorder: "desc"
-	});
-
-	jQuery("#viewBulkExportStatusList").navGrid('#viewBulkExportStatusPager', {	});
-
-	jQuery("#refresh_viewBulkExportStatusList").bind("click",function(){
-		bulkExportStatus();
-		$('#bulkExportReportAcor').trigger('click');
-	});
-
-	var addButton = document.getElementById('add_viewBulkExportStatusList');
-	addButton.style.display = 'none';
-	var editButton = document.getElementById('edit_viewBulkExportStatusList');
-	editButton.style.display = 'none';
-	var deleteButton = document.getElementById('del_viewBulkExportStatusList');
-	deleteButton.style.display = 'none';
-	var searchButton = document.getElementById('search_viewBulkExportStatusList');
-	searchButton.style.display = 'none';
+    var urlVal = 'getBulkReportDetails.do';
+    jQuery("#viewBulkExportStatusList").jqGrid('setGridParam', {url:urlVal,page:1}).trigger("reloadGrid");
+    jQuery("#viewBulkExportStatusList").sortGrid('exportDate',true,'desc');
 }
