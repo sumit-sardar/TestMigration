@@ -1,10 +1,19 @@
 package com.ctb.control.testAdmin;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.apache.beehive.controls.api.bean.Threading;
@@ -12,6 +21,7 @@ import org.apache.beehive.controls.api.bean.Threading;
 import com.ctb.bean.testAdmin.LiteracyProExportRequest;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.BulkReportExportException;
+import com.ctb.util.LiteracyDownloadProcess;
 import com.ctb.util.LiteracyExportProcessor;
 
 /**
@@ -37,7 +47,13 @@ public class BulkReportExportImpl implements BulkReportExport {
      */
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.ImmediateReportingIrs reports;
-
+    
+    
+    
+    private static final String oasDtataSourceJndiName = "oasDataSource";
+    private Connection oasCon;
+    private static String GET_FILE_CONTENT = " select FILE_CONTENT as fileContent , FILE_NAME as fileName from BULK_EXPORT_DATA_FILE where EXPORT_REQUEST_ID = ? ";
+    
     /**
      * Insert export request in database and return the generated export id
      * 
@@ -101,13 +117,11 @@ public class BulkReportExportImpl implements BulkReportExport {
 	System.out.println("Start: BulkReportExportImpl.getBulkReportCSVData()");
 	long startTime = System.currentTimeMillis();
 	System.out.println(paramMap);
-	Integer customerId = (Integer) paramMap.get("customerId");
-	Integer userId = (Integer) paramMap.get("userId");
 	Long exportReqId = (Long) paramMap.get("exportRequestId");
 	try {
-	    LiteracyProExportRequest literacyRequestObj = admins.getBulkExportReport(customerId, userId, exportReqId);
+	    LiteracyProExportRequest literacyRequestObj = getFileContent(exportReqId);
 	    return literacyRequestObj;
-	} catch (SQLException se) {
+	} catch (BulkReportExportException se) {
 	    BulkReportExportException bre = new BulkReportExportException("BulkReportExportImpl: getBulkReportCSVData : " + se.getMessage());
 	    bre.setStackTrace(se.getStackTrace());
 	    throw bre;
@@ -115,7 +129,161 @@ public class BulkReportExportImpl implements BulkReportExport {
 	    System.out.println("End: BulkReportExportImpl.getBulkReportCSVData(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 	}
     }
+    
+    
+    
+    /**
+     * JDBC Calls 
+     * 
+     **/
+    
+    private LiteracyProExportRequest getFileContent(Long exportRequestId) throws BulkReportExportException {
+	PreparedStatement ps = null;
+	ResultSet rset = null;
+	LiteracyProExportRequest fileContent = null;
+	try {	this.oasCon = openOASDBcon(false);
+		ps = oasCon.prepareStatement(GET_FILE_CONTENT);
+		ps.setLong(1, exportRequestId);
+		rset = ps.executeQuery();
+		while(rset.next()){
+			fileContent = new LiteracyProExportRequest();
+			fileContent.setFileContent(rset.getBlob(1));
+			fileContent.setFileName(rset.getString("fileName"));
+		}
+	} catch (SQLException se) {
+		BulkReportExportException oe = new BulkReportExportException("LiteracyExportProcessor: getFileContent : " + se.getMessage());
+		oe.setStackTrace(se.getStackTrace());
+		throw oe;
+	}catch (CTBBusinessException se) {
+		BulkReportExportException oe = new BulkReportExportException("LiteracyExportProcessor: getFileContent : " + se.getMessage());
+		oe.setStackTrace(se.getStackTrace());
+		throw oe;
+	}
+	finally {
+		close(oasCon,ps,rset);
+	}
+	return fileContent;
+}
 
+    /**
+     * Get OAS DB connection
+     * @param isCommitable
+     * @return
+     * @throws CTBBusinessException
+     */
+    private static Connection openOASDBcon(boolean isCommitable)
+    		throws CTBBusinessException {
+    	Connection conn = null;
+    	try {
+    		DataSource ds = locateDataSource(oasDtataSourceJndiName);
+    		conn = ds.getConnection();
+    		if (isCommitable) {
+    			conn.setAutoCommit(false);
+    		}else{
+    			conn.setAutoCommit(true);
+    		}
+    	} catch (NamingException e) {
+    		System.err.println("NamingException:"
+    				+ "JNDI name for oas datasource does not exists.");
+    		throw new CTBBusinessException("NamingException:"
+    				+ "JNDI name for oas datasource does not exists.");
+    	} catch (SQLException e) {
+    		System.err.println("SQLException:"
+    				+ "while getting oas database connection.");
+    		throw new CTBBusinessException("SQLException:"
+    				+ "while getting oas database connection.");
+    	} catch (Exception e) {
+    		System.err.println("Exception:"
+    				+ "while getting oas database connection.");
+    		throw new CTBBusinessException("Exception:"
+    				+ "while getting oas database connection.");
+    	}
+    
+    	return conn;
+    
+    }
+    
+    /**
+     * 
+     * @param jndiName
+     * @return
+     * @throws NamingException
+     */
+    private static DataSource locateDataSource(String jndiName ) throws NamingException{
+    	Context ctx = new InitialContext();
+    	DataSource ds =  (DataSource) ctx.lookup(jndiName);
+    	return ds;
+    }
+    
+    
+    
+    /**
+     * Close result set
+     * @param rs
+     */
+    private static void close(ResultSet rs) {
+    	if (rs != null) {
+    		try {
+    			rs.close();
+    		} catch (SQLException e) {
+    			// do nothing
+    		}
+    	}
+    
+    }
+    
+    
+    /**
+     * Close connection
+     * @param con
+     */
+    private static void close(Connection con) {
+    	if (con != null) {
+    		try {
+    			if(!con.getAutoCommit())
+    				con.rollback();
+    			con.close();
+    		} catch (SQLException e) {
+    			// do nothing
+    		}
+    	}
+    
+    }
+    
+    
+    /**
+     * Close statement
+     * @param st
+     */
+    private static void close(Statement st) {
+    	if (st != null) {
+    		try {
+    			st.close();
+    		} catch (SQLException e) {
+    			// do nothing
+    		}
+    	}
+    
+    }
+    
+    /**
+     * Close connection, statement and result set 
+     * @param con
+     * @param st
+     * @param rs
+     */
+    private static void close(Connection con, Statement st, ResultSet rs) {
+    	close(rs);
+    	close(st);
+    	close(con);
+    
+    }
+    
+    
+    /** End 
+    **/
+    
+    
     private String getOrgNodeId(Map<String, String> orgHierarchyMap) {
 	String orgNodeId = "";
 	String maxKey = "0";
@@ -170,6 +338,29 @@ public class BulkReportExportImpl implements BulkReportExport {
 	} finally {
 	    System.out.println("End: BulkReportExportImpl.getSumittedExportDetails(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 	}
+    }
+    
+    /**
+	 * Bulk Report download process
+	 * @param paramMap
+	 * @throws CTBBusinessException
+	 */
+    @Override
+    public void downloadBulkReportProcess(Map<String, Object> paramMap) throws CTBBusinessException{
+    	System.out.println("Start: BulkReportExportImpl.downloadBulkReportProcess()");
+    	long startTime = System.currentTimeMillis();
+    	System.out.println(paramMap);
+    	ExecutorService executor = Executors.newSingleThreadExecutor();
+    	Thread thread = new Thread(new LiteracyDownloadProcess(paramMap));
+    	executor.execute(thread);
+    	executor.shutdown();
+    	try {
+	    thread.join();
+	} catch (InterruptedException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+    	System.out.println("End: BulkReportExportImpl.downloadBulkReportProcess(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
     }
 
 }

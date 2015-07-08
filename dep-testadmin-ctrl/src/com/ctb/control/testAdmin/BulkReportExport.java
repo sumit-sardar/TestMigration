@@ -49,4 +49,12 @@ public interface BulkReportExport {
 	public LiteracyProExportRequest[] getSumittedExportDetails(Map<String, Object> paramMap) throws CTBBusinessException;
 	
 	
+	/**
+	 * Bulk Report download process
+	 * @param paramMap
+	 * @throws CTBBusinessException
+	 */
+	public void downloadBulkReportProcess(Map<String, Object> paramMap) throws CTBBusinessException;
+	
+	
 }

@@ -178,7 +178,12 @@ public class SessionOperationController extends PageFlowController {
 	private com.ctb.control.db.OrgNode orgnode;
 	
 	@Control()
-    private com.ctb.control.testAdmin.BulkReportExport bulkReports;
+	private com.ctb.control.testAdmin.BulkReportExport bulkReports;
+	
+	
+	
+	@Control()
+	private com.ctb.control.testAdmin.BulkReportExport bulkReportsDownload;
     
     /**
      * @common:control
@@ -10099,56 +10104,100 @@ public class SessionOperationController extends PageFlowController {
 		return null;
 	}
 
-	@Jpf.Action(forwards = { @Jpf.Forward(name = "error", path = "bulk_state_export_report.jsp") })
-	protected Forward downloadBulkReportCSV() {
-	    	System.out.println("--Start: SessionOperationController.downloadBulkReportCSV()");
-		long startTime = System.currentTimeMillis();
-		try {
-		    	String exportRequestIdStr = this.getRequest().getParameter("exportRequestId");
-		    	Long exportRequestId = Long.parseLong(exportRequestIdStr);
-		    	Integer customerId = this.customerId;
-		    	Map<String, Object> paramMap = new HashMap<String, Object>();
-		    	paramMap.put("exportRequestId", exportRequestId);
-		    	paramMap.put("customerId", customerId);
-		    	//System.out.println("User ID = " + this.userId);
-		    	paramMap.put("userId", this.userId);
-		    	try {
-        		    	LiteracyProExportRequest litExportObj = bulkReports.getBulkReportCSVData(paramMap);
-        		    	long beginstartTime = System.currentTimeMillis();
-        		    	int contentLength = (int) litExportObj.getFileContent().length();  
-        		    	System.out.println("Blob size = "+contentLength);
-        		    	byte[] data = litExportObj.getFileContent().getBytes(1, contentLength);
-        		    	String fileName = litExportObj.getFileName();
-        		    	HttpServletResponse resp = this.getResponse();        
-        		    	String bodypart = "attachment; filename=\"" + fileName + "\" ";
-        		    	resp.setContentType("text/csv");
-        		    	byte [] unzipData = LayoutUtil.unZippedBytes(data);
-        		    	resp.setContentLength(unzipData.length);
-        		    	resp.setHeader("Content-Disposition", bodypart);
-        		    	resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-        		    	resp.setHeader("Cache-Control", "cache");
-        		    	resp.setHeader("Pragma", "public");
-        		    	resp.flushBuffer();
-        		    	System.out.println("Wrinting file content to response output stream...");
-        		    	OutputStream stream = resp.getOutputStream();
-        		    	stream.write(unzipData);
-        		    	stream.close();
-        		    	System.out.println("File write Time taken: " + (System.currentTimeMillis() - beginstartTime) + " milliseconds");
-		    	} catch (Exception e) {
-    		    		System.err.println("Exception while wtite to stream: downloadBulkReportCSV for Bulk Report.");
-    		    		e.printStackTrace();
-		    	}
+    @Jpf.Action(forwards = { @Jpf.Forward(name = "error", path = "bulk_state_export_report.jsp") })
+    protected Forward downloadBulkReportCSV() {
+	System.out.println("--Start: SessionOperationController.downloadBulkReportCSV()");
+	long startTime = System.currentTimeMillis();
+	HttpServletResponse resp = null;
+	OutputStream stream = null;
+	try {
+	    String exportRequestIdStr = this.getRequest().getParameter("exportRequestId");
+	    Long exportRequestId = Long.parseLong(exportRequestIdStr);
+	    Map<String, Object> paramMap = new HashMap<String, Object>();
+	    paramMap.put("exportRequestId", exportRequestId);
+	    
+	    ClassLoader cl = this.getClass().getClassLoader();
+	    this.bulkReportsDownload = (com.ctb.control.testAdmin.BulkReportExportBean) java.beans.Beans.instantiate(cl, "com.ctb.control.testAdmin.BulkReportExportBean");
+	    
+	    LiteracyProExportRequest litExportObj = this.bulkReportsDownload.getBulkReportCSVData(paramMap);
+	    long beginstartTime = System.currentTimeMillis();
+	    int contentLength = (int) litExportObj.getFileContent().length();
+	    System.out.println("Blob size = " + contentLength);
+	    byte[] data = litExportObj.getFileContent().getBytes(1,  contentLength);
+	    String fileName = litExportObj.getFileName();
+	    String bodypart = "attachment; filename=\"" + fileName + "\" ";
+	    try {
+		resp = this.getResponse();
+		resp.setContentType("text/csv");
+		byte[] unzipData = LayoutUtil.unZippedBytes(data);
+		resp.setContentLength(unzipData.length);
+		resp.setHeader("Content-Disposition", bodypart);
+		resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+		resp.setHeader("Cache-Control", "cache");
+		resp.setHeader("Pragma", "public");
+
+		stream = resp.getOutputStream();
+		System.out.println("Wrinting file content to response output stream...");
+		stream.write(unzipData);
+		resp.flushBuffer();
 		} catch (Exception e) {
-			System.err.println("Exception while downloadBulkReportCSV for Bulk Report.");
-			e.printStackTrace();
+		    System.out.println("Exception while wtite to stream: " + e.getMessage());
+		    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		    try {
+			resp.flushBuffer();
+		    } catch (Exception e1) {
+		    }
+		    e.printStackTrace();
 		} finally {
-		    	System.out.println("--End: SessionOperationController.downloadBulkReportCSV()");
-			long endTime = System.currentTimeMillis();
-			System.out.println("File Download Time taken: " + (endTime - startTime) + " milliseconds");
-			System.out.println("End: SessionOperationController.downloadBulkReportCSV(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
+		    if (stream != null) {
+			try {
+			    	stream.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				stream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		    }
 		}
-		return null;
+
+	} catch (Exception e) {
+	    System.out.println("Exception while downloadBulkReportCSV for Bulk Report.");
+	    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	    e.printStackTrace();
+	} finally {
+	    System.out.println("--End: SessionOperationController.downloadBulkReportCSV()");
+	    long endTime = System.currentTimeMillis();
+	    System.out.println("File Download Time taken: " + (endTime - startTime) + " milliseconds");
+	    System.out.println("End: SessionOperationController.downloadBulkReportCSV(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 	}
+	return null;
+    }
+	
+	/*@Jpf.Action(forwards = { @Jpf.Forward(name = "error", path = "bulk_state_export_report.jsp") })
+	protected Forward downloadBulkReportCSV() {
+		System.out.println("--Start: SessionOperationController.downloadBulkReportCSV()");
+		try {
+			String exportRequestIdStr = this.getRequest().getParameter("exportRequestId");
+			if(exportRequestIdStr != null){
+				Long exportRequestId = Long.parseLong(exportRequestIdStr);
+				final Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("exportRequestId", exportRequestIdStr);
+				paramMap.put("response", this.getResponse());
+				bulkReports.downloadBulkReportProcess(paramMap);
+			}
+			//Thread.sleep(5000);
+		//} catch (InterruptedException e) {
+		    // TODO Auto-generated catch block
+		    //e.printStackTrace();
+		} catch (Exception se) {
+			se.printStackTrace();
+		}
+		
+		return null;
+	}*/
 
 	private Map<String, String> getOrgHierarchyMap(String orgArr) {
 	    	Map<String, String> orgHierarchyMap = new LinkedHashMap<String, String>();

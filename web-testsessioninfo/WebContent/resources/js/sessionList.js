@@ -7572,7 +7572,6 @@ function bulkExportStatus() {
 	$("h3", reportWizard).each(function(index) {
 		$(this).bind("click", function(e) {
 		  if($(this).parent().attr("id") == 'viewBulkExportReport') {
-		    //$("#viewBulkExportStatusList").jqGrid('resetSelection');
 			viewBulkExportDetails(index);
 		  }else {
 			reportWizard.accordion("activate", index);
@@ -7581,7 +7580,22 @@ function bulkExportStatus() {
 	});
 }
 
+function enableDisableBulkDownloadFileButton(flag) {
+	if(flag && flag == true) {
+		// Enabled
+		$('#downloadBulkExportFileButton').removeAttr("disabled");
+		$("#downloadBulkExportFileButton").removeClass('ui-state-disabled');
+		$('#downloadBulkExportFileFlag').val("1");
+	} else {
+		// Disabled
+		$("#downloadBulkExportFileButton").addClass('ui-state-disabled');
+		$("#downloadBulkExportFileButton").attr("disabled", true);
+		$('#downloadBulkExportFileFlag').val("0");
+	}
+}
+
 function viewBulkExportDetails(index){
+	enableDisableBulkDownloadFileButton(false);
 	var exportGridLoaded = false;
 	var postDataObject = {};
 	UIBlock();
@@ -7593,20 +7607,22 @@ function viewBulkExportDetails(index){
 		colNames:['Date of Export', 'File Name', 'Status'],
 	  	colModel:[
 	  		{name:'exportDate',index:'exportDate', width:200, editable: false, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-	  		{name:'fileName',index:'fileName', width:340, editable: false, align:"left",sorttype:'text', sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-	  		{name:'status',index:'status', width:150, editable: false, align:"left",sorttype:'number', sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+	  		{name:'fileName',index:'fileName', width:340, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+	  		{name:'status',index:'status', width:150, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
 	  	],
 	  	jsonReader: { repeatitems : false, root:"literacyExportData", id:"exportRequestId"},
 	    onSelectRow: function (rowid) {
 				var selectedExportId = rowid;
 				if ($('#viewBulkExportStatusList').getCell(rowid, '2') == "Completed") {
-					$('#downloadBulkExportFileButton').removeAttr("disabled");
+					/*$('#downloadBulkExportFileButton').removeAttr("disabled");
 					$("#downloadBulkExportFileButton").removeClass('ui-state-disabled');
-					$('#downloadBulkExportFileFlag').val("1");
+					$('#downloadBulkExportFileFlag').val("1");*/
+					enableDisableBulkDownloadFileButton(true);
 				} else {
-					$("#downloadBulkExportFileButton").addClass('ui-state-disabled');
+					/*$("#downloadBulkExportFileButton").addClass('ui-state-disabled');
 					$("#downloadBulkExportFileButton").attr("disabled", true);
-					$('#downloadBulkExportFileFlag').val("0");
+					$('#downloadBulkExportFileFlag').val("0");*/
+					enableDisableBulkDownloadFileButton(false);
 				}
 				$("#exportRequestId").val(selectedExportId);
 		},
@@ -7615,6 +7631,8 @@ function viewBulkExportDetails(index){
 		gridview: true,
 		multiselect:false,
 		viewrecords: true, 
+		loadonce: true, // to enable sorting on client side
+		sortable: true, // to enable sorting of the grid
 		height: 60,			
 		caption: "Files Exported",
 		pager: '#viewBulkExportStatusPager',
@@ -7627,6 +7645,7 @@ function viewBulkExportDetails(index){
 			window.location.href="/SessionWeb/logout.do";
 		}
  	});
+ 	$("#viewBulkExportStatusList").jqGrid('resetSelection');
  	reportWizard.accordion("activate", index);
  	/**/
  	var pager_center = document.getElementById('viewBulkExportStatusPager_center');
