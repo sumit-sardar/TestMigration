@@ -165,6 +165,7 @@ var reTestLocation = "";
 var isReSetValue = true;
 var newProductLicenseEnabled;
 var itemCRResponseMap; // Added for item and CR response map in view status 
+var exportGridAccordoinLoaded =false;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -7571,10 +7572,13 @@ function bulkExportStatus() {
 	reportWizard = $("#bulkExportReportAcor").accordion({ header: "h3", active: 0, event:false });
 	$("h3", reportWizard).each(function(index) {
 		$(this).bind("click", function(e) {
-		  if($(this).parent().attr("id") == 'viewBulkExportReport') {
+		  if(($(this).parent().attr("id") == 'viewBulkExportReport') && !exportGridAccordoinLoaded) {
 			viewBulkExportDetails(index);
 		  }else {
 			reportWizard.accordion("activate", index);
+			hideErrorOrInfo();
+			if(!($(this).parent().attr("id") == 'viewBulkExportReport'))
+				exportGridAccordoinLoaded = false;
 		  }
 	  });
 	});
@@ -7611,6 +7615,9 @@ function viewBulkExportDetails(index){
 	  		{name:'status',index:'status', width:150, editable: false, align:"left",sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
 	  	],
 	  	jsonReader: { repeatitems : false, root:"literacyExportData", id:"exportRequestId"},
+	  	onSortCol:function(){
+				enableDisableBulkDownloadFileButton(false);
+		},
 	    onSelectRow: function (rowid) {
 				var selectedExportId = rowid;
 				if ($('#viewBulkExportStatusList').getCell(rowid, '2') == "Completed") {
@@ -7640,6 +7647,7 @@ function viewBulkExportDetails(index){
 		sortorder: 'desc',
 		gridComplete: function(){
 			exportGridLoaded = true;
+			exportGridAccordoinLoaded = true;
 		}, 
 		loadError: function(XMLHttpRequest, textStatus, errorThrown){
 			window.location.href="/SessionWeb/logout.do";
@@ -7665,6 +7673,7 @@ function viewBulkExportDetails(index){
 }
 
 function refreshBulkExportGrid(){
+	enableDisableBulkDownloadFileButton(false);
 	jQuery("#viewBulkExportStatusList").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
     var urlVal = 'getBulkReportDetails.do';
     jQuery("#viewBulkExportStatusList").jqGrid('setGridParam', {url:urlVal,page:1}).trigger("reloadGrid");
