@@ -1,5 +1,6 @@
 package sessionOperation;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
@@ -9967,6 +9968,11 @@ public class SessionOperationController extends PageFlowController {
 
 	}
 	
+	/**
+	 * This method is called when user hits the "Export" button.
+	 * 
+	 * @return
+	 */
 	@Jpf.Action()
 	protected Forward submitBulkReportRequest() {
 	    	System.out.println("Start: SessionOperationController.submitBulkReportRequest()");
@@ -9978,9 +9984,6 @@ public class SessionOperationController extends PageFlowController {
 		    	String endDtBulkReport = this.getRequest().getParameter("endDtBulkReport");
 		    	String orgArrBulkReport = this.getRequest().getParameter("orgArrBulkReport");
 	
-		    	//System.out.println("startDtBulkReport: " + startDtBulkReport);
-		    	//System.out.println("endDtBulkReport: " + endDtBulkReport);
-	
 		    	String userTimeZone =  userManagement.getUserTimeZone(this.userName);
 	
 		    	Date startDate = DateUtils.getDateFromDateString(startDtBulkReport);
@@ -9989,20 +9992,12 @@ public class SessionOperationController extends PageFlowController {
 		        Date adjustedStartDate = com.ctb.util.DateUtils.getAdjustedDate(startDate, userTimeZone, "GMT", startDate);
 		        Date adjustedEndDate = com.ctb.util.DateUtils.getAdjustedDate(endDate, userTimeZone, "GMT", endDate);
 		        
-		        //System.out.println("startDate: " + startDate);
-		        //System.out.println("endDate: " + endDate);
-		        //System.out.println("adjustedStartDate: " + adjustedStartDate);
-		        //System.out.println("adjustedEndDate: " + adjustedEndDate);
-	
 		    	Map<String, String> orgHierarchyMap = getOrgHierarchyMap(orgArrBulkReport);
 	
 		    	Integer customerId = this.customerId;
 	
 		    	String sDate = com.ctb.util.DateUtils.formatDateToDateString(adjustedStartDate, "MM/dd/yyyy");
 		    	String eDate = com.ctb.util.DateUtils.formatDateToDateString(adjustedEndDate, "MM/dd/yyyy");
-		    	
-		    	//System.out.println("sDate: " + sDate);
-		        //System.out.println("eDate: " + eDate);
 		        
 		    	Map<String, Object> paramMap = new HashMap<String, Object>();
 		    	paramMap.put("dateFlagBulkReport", dateFlagBulkReport);
@@ -10011,8 +10006,8 @@ public class SessionOperationController extends PageFlowController {
 		    	paramMap.put("orgHierarchyMap", orgHierarchyMap);
 		    	paramMap.put("customerId", customerId);
 		    	paramMap.put("rand", rand);
-		    	//System.out.println("User ID = " + this.userId);
 		    	paramMap.put("userId", this.userId);
+		    	paramMap.put("userName", this.userName);
 		    	paramMap.put("userTimeZone", userTimeZone);
 		    	
 			String todayOfUserTimeZone = com.ctb.util.DateUtils.getAdjustedTodayString(userTimeZone, "MM/dd/yyyy");
@@ -10041,7 +10036,11 @@ public class SessionOperationController extends PageFlowController {
 		return null;
 	}
 	
-	
+	/**
+	 * This method is called when user hits the refresh icon or the "View Export Status" accordion is expanded.
+	 * 
+	 * @return
+	 */
 	@Jpf.Action()
 	protected Forward getBulkReportDetails(){
 	    	System.out.println("Start: SessionOperationController.getBulkReportDetails()");
@@ -10072,9 +10071,9 @@ public class SessionOperationController extends PageFlowController {
                 		}
         	    		literacybean.setLiteracyExportData(litExportDetails);
         	    	}
-        	    	for(LiteracyProExportRequest bean : litExportDetails) {
+        	    	/*for(LiteracyProExportRequest bean : litExportDetails) {
         	    	    System.out.println(bean);
-        	    	}
+        	    	}*/
         	    	Gson gson = new Gson();
 			json = gson.toJson(literacybean);
 			try{
@@ -10104,6 +10103,11 @@ public class SessionOperationController extends PageFlowController {
 		return null;
 	}
 
+    /**
+     * This method is called when user hits the "Download File" button.
+     * 
+     * @return
+     */
     @Jpf.Action(forwards = { @Jpf.Forward(name = "error", path = "bulk_state_export_report.jsp") })
     protected Forward downloadBulkReportCSV() {
 	System.out.println("--Start: SessionOperationController.downloadBulkReportCSV()");
@@ -10127,51 +10131,58 @@ public class SessionOperationController extends PageFlowController {
 	    String fileName = litExportObj.getFileName();
 	    String bodypart = "attachment; filename=\"" + fileName + "\" ";
 	    try {
-		resp = this.getResponse();
-		resp.setContentType("text/csv");
-		byte[] unzipData = LayoutUtil.unZippedBytes(data);
-		resp.setContentLength(unzipData.length);
-		resp.setHeader("Content-Disposition", bodypart);
-		resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-		resp.setHeader("Cache-Control", "cache");
-		resp.setHeader("Pragma", "public");
-
-		stream = resp.getOutputStream();
-		System.out.println("Wrinting file content to response output stream...");
-		stream.write(unzipData);
-		resp.flushBuffer();
-		} catch (Exception e) {
-		    System.out.println("Exception while wtite to stream: " + e.getMessage());
-		    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		    try {
-			resp.flushBuffer();
-		    } catch (Exception e1) {
-		    }
-		    e.printStackTrace();
-		} finally {
-		    if (stream != null) {
+        		resp = this.getResponse();
+        		resp.setContentType("text/csv");
+        		byte[] unzipData = LayoutUtil.unZippedBytes(data);
+        		resp.setContentLength(unzipData.length);
+        		resp.setHeader("Content-Disposition", bodypart);
+			resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+			resp.setHeader("Cache-Control", "cache");
+			resp.setHeader("Pragma", "public");
+        		stream = resp.getOutputStream();
+        		System.out.println("Wrinting file content to response output stream...");
+        		ByteArrayInputStream inStream = new ByteArrayInputStream(unzipData);
+        	        byte[] buffer = new byte[4096];
+        	        int bytesRead = -1;
+        	        while ((bytesRead = inStream.read(buffer)) != -1) {
+        	            stream.write(buffer, 0, bytesRead);
+        	        }
+        		resp.flushBuffer();
+        		inStream.close();
+        		System.out.println("File content successfully written to response output stream!!!");
+	    } catch (Exception e) {
+			System.out.println("Exception while wtite to stream: " + e.getMessage());
+        		resp.setStatus(HttpServletResponse.SC_OK);
+                        try {
+                            resp.flushBuffer();
+                        } catch (Exception e1) {
+                            System.out.println("Exception: " + e1.getMessage());
+                        }
+        		e.printStackTrace();
+	    } finally {
+		   if (stream != null) {
 			try {
 			    	stream.flush();
 			} catch (IOException e) {
+			    	System.out.println("Exception: " + e.getMessage());
 				e.printStackTrace();
 			}
 			try {
 				stream.close();
 			} catch (IOException e) {
+			    System.out.println("Exception: " + e.getMessage());
 				e.printStackTrace();
 			}
 		    }
-		}
-
+	    }
 	} catch (Exception e) {
-	    System.out.println("Exception while downloadBulkReportCSV for Bulk Report.");
-	    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	    System.out.println("Exception while downloadBulkReportCSV for Bulk Report: " + e.getMessage());
+	    resp.setStatus(HttpServletResponse.SC_OK);
 	    e.printStackTrace();
 	} finally {
-	    System.out.println("--End: SessionOperationController.downloadBulkReportCSV()");
 	    long endTime = System.currentTimeMillis();
 	    System.out.println("File Download Time taken: " + (endTime - startTime) + " milliseconds");
-	    System.out.println("End: SessionOperationController.downloadBulkReportCSV(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
+	    System.out.println("--End: SessionOperationController.downloadBulkReportCSV(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 	}
 	return null;
     }

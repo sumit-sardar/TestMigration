@@ -7532,19 +7532,60 @@ function submitBulkReportRequest(element) {
 	  
 	});
 }
+/*
+function downloadBulkReportCSV(element) {
+	if($("#downloadBulkExportFileFlag").val() == "0") {
+		return false;
+	}
+	var postDataObject = {};
+	postDataObject.exportRequestId = document.getElementById("exportRequestId").value;
+    $.ajax({
+    	beforeSend:	function(){	
+						UIBlock();
+					},
+		url:		'downloadBulkReportCSV.do', 
+		type:		'POST',
+		data:		postDataObject,
+		dataType:	'text',
+		success:	function(data, textStatus, XMLHttpRequest){
+							$.unblockUI();
+							var csvURI ='data:text/csv;charset=utf-8,' + encodeURIComponent(data); //convert to data uri
+							//triggers the download of an encoded URI with a specified file name
+							var link = document.createElement('a');
+							if (typeof link.download === 'string') {
+								document.body.appendChild(link); 
+								link.download = $("#downloadBulkExportFileName").val();
+								link.href = csvURI;
+								link.click();
+								document.body.removeChild(link); // remove the link when done
+							} else {
+								window.location.href = csvURI;
+							}
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();
+						//alert("Errr: " + textStatus);
+						//window.location.href="error.do";
+					}
+	  
+	});
+	return false;
+}*/
 
 function downloadBulkReportCSV(element) {
 	if($("#downloadBulkExportFileFlag").val() == "0") {
 		return false;
 	}
-	UIBlock();
+	showLoadingProgress('<br/><b>Downloading file...</b><br/>');
+	//UIBlock();
     var element = document.getElementById("exportRequestId");
     element.form.action = "downloadBulkReportCSV.do";
     element.form.method = "POST";
     element.form.submit();
-    $.unblockUI();
+    //$.unblockUI();
 	return false;
 }
+
 
 function showLoadingProgress(msg) {	
 	$.blockUI({ message: msg, css: { height: '50px'} }); 	
@@ -7584,7 +7625,8 @@ function bulkExportStatus() {
 	});
 }
 
-function enableDisableBulkDownloadFileButton(flag) {
+function enableDisableBulkDownloadFileButton(flag, fileName) {
+	$("#downloadBulkExportFileName").val(fileName);
 	if(flag && flag == true) {
 		// Enabled
 		$('#downloadBulkExportFileButton').removeAttr("disabled");
@@ -7599,7 +7641,7 @@ function enableDisableBulkDownloadFileButton(flag) {
 }
 
 function viewBulkExportDetails(index){
-	enableDisableBulkDownloadFileButton(false);
+	enableDisableBulkDownloadFileButton(false, "");
 	var exportGridLoaded = false;
 	var postDataObject = {};
 	UIBlock();
@@ -7616,20 +7658,15 @@ function viewBulkExportDetails(index){
 	  	],
 	  	jsonReader: { repeatitems : false, root:"literacyExportData", id:"exportRequestId"},
 	  	onSortCol:function(){
-				enableDisableBulkDownloadFileButton(false);
+				enableDisableBulkDownloadFileButton(false, "");
 		},
 	    onSelectRow: function (rowid) {
 				var selectedExportId = rowid;
 				if ($('#viewBulkExportStatusList').getCell(rowid, '2') == "Completed") {
-					/*$('#downloadBulkExportFileButton').removeAttr("disabled");
-					$("#downloadBulkExportFileButton").removeClass('ui-state-disabled');
-					$('#downloadBulkExportFileFlag').val("1");*/
-					enableDisableBulkDownloadFileButton(true);
+					var fileName = $('#viewBulkExportStatusList').getCell(rowid, '1');
+					enableDisableBulkDownloadFileButton(true, fileName);
 				} else {
-					/*$("#downloadBulkExportFileButton").addClass('ui-state-disabled');
-					$("#downloadBulkExportFileButton").attr("disabled", true);
-					$('#downloadBulkExportFileFlag').val("0");*/
-					enableDisableBulkDownloadFileButton(false);
+					enableDisableBulkDownloadFileButton(false, "");
 				}
 				$("#exportRequestId").val(selectedExportId);
 		},
@@ -7673,7 +7710,7 @@ function viewBulkExportDetails(index){
 }
 
 function refreshBulkExportGrid(){
-	enableDisableBulkDownloadFileButton(false);
+	enableDisableBulkDownloadFileButton(false, "");
 	jQuery("#viewBulkExportStatusList").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
     var urlVal = 'getBulkReportDetails.do';
     jQuery("#viewBulkExportStatusList").jqGrid('setGridParam', {url:urlVal,page:1}).trigger("reloadGrid");
