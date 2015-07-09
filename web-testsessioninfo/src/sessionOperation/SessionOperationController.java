@@ -249,6 +249,7 @@ public class SessionOperationController extends PageFlowController {
     
 	private String userName = null;
 	private Integer userId = null;
+	private String userTimeZone = null;
 	private Integer customerId = null;
     private User user = null;
     private List<TestSessionVO> sessionListCUFU = new ArrayList<TestSessionVO>(); 
@@ -5235,6 +5236,7 @@ public class SessionOperationController extends PageFlowController {
 	        getSession().setAttribute("schedulerUserName", this.user.getUserName());
 	        //System.out.println("supportAccommodations==>"+supportAccommodations);
 	        this.userId = this.user.getUserId();
+	        this.userTimeZone = this.user.getTimeZone();
         }
         catch (CTBBusinessException be)
         {
@@ -10055,7 +10057,7 @@ public class SessionOperationController extends PageFlowController {
 			paramMap.put("customerId", customerId);
 			//System.out.println("User ID = " + this.userId);
 			paramMap.put("userId", this.userId);
-			String userTimeZone =  userManagement.getUserTimeZone(this.userName);
+			String userTimeZone =  this.user.getTimeZone();//userManagement.getUserTimeZone(this.userName);
         	    	LiteracyProExportRequest[] litExportDetails = bulkReports.getSumittedExportDetails(paramMap);
         	    	if(litExportDetails != null){
                 	    	for(LiteracyProExportRequest bean : litExportDetails) {
@@ -10083,7 +10085,7 @@ public class SessionOperationController extends PageFlowController {
 				resp.flushBuffer();
 				stream.write(json.getBytes("UTF-8"));
 			} catch (Exception e) {
-				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			    	resp.setStatus(HttpServletResponse.SC_OK);
 				e.printStackTrace();
 			} finally {
 				if (stream != null) {
@@ -10095,9 +10097,10 @@ public class SessionOperationController extends PageFlowController {
 				}
 			}
 		} catch (CTBBusinessException se) {
-			BulkReportExportException oe = new BulkReportExportException("SessionOperationController: getBulkReportDetails : " + se.getMessage());
-			oe.setStackTrace(se.getStackTrace());
-			oe.printStackTrace();
+			/*BulkReportExportException oe = new BulkReportExportException("SessionOperationController: getBulkReportDetails : " + se.getMessage());
+			oe.setStackTrace(se.getStackTrace());*/
+		    	resp.setStatus(HttpServletResponse.SC_OK);
+			se.printStackTrace();
 		}
 		System.out.println("End: SessionOperationController.getBulkReportDetails(): " + (System.currentTimeMillis() - startTime) + " milliseconds");
 		return null;
