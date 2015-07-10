@@ -10096,7 +10096,7 @@ public class SessionOperationController extends PageFlowController {
 					}
 				}
 			}
-		} catch (CTBBusinessException se) {
+		} catch (Exception se) {
 			/*BulkReportExportException oe = new BulkReportExportException("SessionOperationController: getBulkReportDetails : " + se.getMessage());
 			oe.setStackTrace(se.getStackTrace());*/
 		    	resp.setStatus(HttpServletResponse.SC_OK);
