@@ -91,7 +91,7 @@
 					</tr>
 					<tr class="transparent" height="50px">
 						<td style="padding-top : 15px;">
-							<div id="export_ReportStatus" style="float: right; padding-right: 5px; padding-top: 5px;"><a href="#" id="downloadBulkExportFileButton" onclick="javascript:downloadBulkReportCSV(this);" class="rounded {transparent} button ui-state-disabled" disabled><lb:label key="bulk.state.report.downloadFileButton.title" /></a></div>
+							<div id="export_ReportStatus" style="float: right; padding-right: 5px; padding-top: 5px;"><a href="#" id="downloadBulkExportFileButton" onclick="javascript:downloadBulkReportCSV(this);" class="rounded {transparent} buttonDisabled"><lb:label key="bulk.state.report.downloadFileButton.title" /></a></div>
 							<input type="hidden" id="downloadBulkExportFileFlag" value="0" />
 							<input type="hidden" id="downloadBulkExportFileName" value="" />
 						</td>

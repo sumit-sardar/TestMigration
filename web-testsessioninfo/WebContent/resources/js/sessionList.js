@@ -7629,13 +7629,11 @@ function enableDisableBulkDownloadFileButton(flag, fileName) {
 	$("#downloadBulkExportFileName").val(fileName);
 	if(flag && flag == true) {
 		// Enabled
-		$('#downloadBulkExportFileButton').removeAttr("disabled");
-		$("#downloadBulkExportFileButton").removeClass('ui-state-disabled');
+		setAnchorButtonState('downloadBulkExportFileButton', false);
 		$('#downloadBulkExportFileFlag').val("1");
 	} else {
 		// Disabled
-		$("#downloadBulkExportFileButton").addClass('ui-state-disabled');
-		$("#downloadBulkExportFileButton").attr("disabled", true);
+		setAnchorButtonState('downloadBulkExportFileButton', true);
 		$('#downloadBulkExportFileFlag').val("0");
 	}
 }
