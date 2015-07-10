@@ -24,10 +24,10 @@ import com.mhe.ctb.oas.BMTSync.model.Endpoint;
 public class EndpointDAO implements EndpointSelector {
 
 	// Return map names
-	private static final String QUERY = "SELECT CUSTOMER_ID, URL_ENDPOINT FROM BMTSYNC_CUSTOMER";
+	private static final String QUERY = "SELECT CUSTOMER_ID, URL_ENDPOINT, FETCH_RESPONSES FROM BMTSYNC_CUSTOMER";
 
 	// Map of endpoints to URLs
-	private Map<Integer, String> endpointMap;
+	private Map<Integer, Endpoint> endpointMap;
 	
 	// The data source
 	private DataSource _dataSource;
@@ -67,29 +67,61 @@ public class EndpointDAO implements EndpointSelector {
 	@Override
 	public String getEndpoint(Integer customerId) {
 		LOGGER.debug("Fetching endpoint for customer id. [customerId=" + customerId + "]");
-		String endpoint = endpointMap.get(customerId);
+		Endpoint endpoint = endpointMap.get(customerId);
 		if (endpoint == null) {
 			LOGGER.warn("Endpoint for customerId is null. Reloading endpoint database to confirm. [customerId=" + customerId + "]");
 			endpointMap = loadEndpointsFromDatabase(_jdbcTemplate);
 			endpoint = endpointMap.get(customerId);
 			if (endpoint == null) {
 				LOGGER.error("Endpoint for customerId is still null! Exiting out. [customerId=" + customerId + "]");
+				return null;
 			} else {
-				LOGGER.debug("Endpoint for customerId identified. [customerId=" + customerId + ",endpoint=" + endpoint + "]");
+				LOGGER.debug("Endpoint for customerId loaded. [customerId=" + customerId + "]");
 			}
-		} else {
-			LOGGER.debug("Endpoint for customerId identified. [customerId=" + customerId + ",endpoint=" + endpoint + "]");
 		}
-		return endpoint;
+		String endpointURL = endpoint.getEndpoint();
+		if (endpointURL == null) {
+			LOGGER.error("Endpoint URL for customerId is null! Exiting out. [customerId=" + customerId + "]");
+		} else {
+			LOGGER.debug("Endpoint URL for customerId found. [customerId=" + customerId + "]");
+		}
+		return endpointURL;
 	}
 
-	private Map<Integer, String> loadEndpointsFromDatabase(final JdbcTemplate template) {
-		final Map<Integer, String> endpointMap = new HashMap<Integer, String>();
+	/**
+	 * Return the endpoint to the code that calls it.
+	 */
+	@Override
+	public Boolean getFetchResponses(Integer customerId) {
+		LOGGER.debug("Fetching endpoint for customer id. [customerId=" + customerId + "]");
+		Endpoint endpoint = endpointMap.get(customerId);
+		if (endpoint == null) {
+			LOGGER.warn("Endpoint for customerId is null. Reloading endpoint database to confirm. [customerId=" + customerId + "]");
+			endpointMap = loadEndpointsFromDatabase(_jdbcTemplate);
+			endpoint = endpointMap.get(customerId);
+			if (endpoint == null) {
+				LOGGER.error("Endpoint for customerId is still null! Exiting out. [customerId=" + customerId + "]");
+				return null;
+			} else {
+				LOGGER.debug("Endpoint for customerId loaded. [customerId=" + customerId + "]");
+			}
+		}
+		Boolean endpointFetchResponses = endpoint.getFetchResponses();
+		if (endpointFetchResponses == null) {
+			LOGGER.error("Endpoint URL for customerId is null! Exiting out. [customerId=" + customerId + "]");
+		} else {
+			LOGGER.debug("Endpoint URL for customerId found. [customerId=" + customerId + "]");
+		}
+		return endpointFetchResponses;
+	}	
+	
+	private Map<Integer, Endpoint> loadEndpointsFromDatabase(final JdbcTemplate template) {
+		final Map<Integer, Endpoint> endpointMap = new HashMap<Integer, Endpoint>();
 		List<Endpoint> endpoints = template.query(QUERY, new EndpointRowMapper());
 		for (final Endpoint endpoint : endpoints) {
 			LOGGER.info("Adding customer endpoint to map. [customerId=" + endpoint.getCustomerId()
 					+ ",endpoint=" + endpoint.getEndpoint() + "]");
-			endpointMap.put(endpoint.getCustomerId(),  endpoint.getEndpoint());
+			endpointMap.put(endpoint.getCustomerId(),  endpoint);
 		}
 		System.out.println("ENDPOINT ENTRY COUNT IN DAO: " + endpointMap.size());
 

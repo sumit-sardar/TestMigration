@@ -18,14 +18,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TestStatus {
 	static private Logger logger = Logger.getLogger(TestStatus.class);
 	
-	private int oasRosterId;
+	private Integer oasCustomerId;
+	private Integer oasRosterId;
 	private String oasTestId;
 	private String deliveryStatus;
+	private Long assignmentId;
 	private String startedDate;
 	private String completedDate;
 	private Integer _errorCode;
 	private String _errorMessage; 	
 	
+	public Integer getOasCustomerId() {
+		return oasCustomerId;
+	}
+	@JsonProperty(value="oasCustomerId", required=false)
+	public void setOasCustomerId(Integer oasCustomerId) {
+		this.oasCustomerId = oasCustomerId;
+	}
 	public int getOasRosterId() {
 		return oasRosterId;
 	}
@@ -48,6 +57,16 @@ public class TestStatus {
 	@JsonProperty(value="deliverystatus")
 	public void setDeliveryStatus(String deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
+	}
+	
+	
+	public Long getAssignmentId() {
+		return assignmentId;
+	}
+	
+	@JsonProperty(value="assignmentId")
+	public void setAssignmentId(final Long assignmentId) {
+		this.assignmentId = assignmentId;
 	}
 	
 	public String getStartedDate() {
@@ -85,6 +104,17 @@ public class TestStatus {
 		_errorMessage = errorMessage;
 	}
 	
+	public Integer getValidatedCustomerId() {
+		// Per Prem, customer ID can be zero if there's an error in BMT; this is a validator function that will convert zero to null for
+		// other code.
+		if (oasCustomerId == null) {
+			return null;
+		}
+		if (oasCustomerId == 0) {
+			return null;
+		}
+		return oasCustomerId;
+	}
 	
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -97,13 +127,11 @@ public class TestStatus {
 	}
 	
 	public String toString() {
-		
 		return "oasRosterId: "+this.oasRosterId+
 			", oasTestId: "+this.oasTestId+
 			", deliveryStatus: "+this.deliveryStatus+
+			", assignmentId: "+this.assignmentId+
 			", startedDate: "+this.startedDate+
 			", completedDate: "+this.completedDate;
 	}
-	
-
 }

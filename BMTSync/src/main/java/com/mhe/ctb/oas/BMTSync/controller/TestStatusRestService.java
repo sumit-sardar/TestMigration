@@ -1,19 +1,27 @@
 package com.mhe.ctb.oas.BMTSync.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
+import com.mhe.ctb.oas.BMTSync.model.ItemResponse;
 import com.mhe.ctb.oas.BMTSync.model.TestStatus;
+import com.mhe.ctb.oas.BMTSync.rest.CreateItemResponsesRequest;
+import com.mhe.ctb.oas.BMTSync.rest.CreateItemResponsesResponse;
 import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusRequest;
 import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusResponse;
 import com.mhe.ctb.oas.BMTSync.rest.SuccessFailCounter;
+import com.mhe.ctb.oas.BMTSync.spring.dao.ItemResponseDAO;
 import com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO;
 
 
@@ -24,6 +32,15 @@ public class TestStatusRestService {
 	
 	/** The test status DAO. */
 	private TestStatusDAO testStatusDAO;
+	
+	/** The item response DAO. */
+	private ItemResponseDAO itemResponseDAO;
+	
+	/** The endpoint selector (technically a DAO but loaded once at runtime). */
+	private EndpointSelector endpointSelector;
+	
+	/** Rest Template. New by default, can be overridden for testing. */
+	private RestTemplate restTemplate;
 	
 	/** An error message */
 	String errorMsg;	
@@ -39,8 +56,12 @@ public class TestStatusRestService {
 	 * Actual constructor, takes a test status DAO so it can be tested.
 	 * @param testStatusDAO
 	 */
-	public TestStatusRestService(final TestStatusDAO testStatusDAO) {
+	public TestStatusRestService(final TestStatusDAO testStatusDAO, final ItemResponseDAO itemResponseDAO,
+			final EndpointSelector endpointSelector) {
 		this.testStatusDAO = testStatusDAO;
+		this.endpointSelector = endpointSelector;
+		this.itemResponseDAO = itemResponseDAO;
+		this.restTemplate = new RestTemplate();
 	}	
 	
 	/**
@@ -59,7 +80,7 @@ public class TestStatusRestService {
 		// Setup the success/failure counters
 		SuccessFailCounter counter = new SuccessFailCounter(request.getTestStatus().size());
 		
-		if (request.getTestStatus().size()  > 0) {
+		if (request.getTestStatus().size() > 0) {
 			response.setSuccessful(true);
 		} else {
 			response.setSuccessful(false);
@@ -73,17 +94,81 @@ public class TestStatusRestService {
 			
 			for (TestStatus testStatus : request.getTestStatus()) {
 				TestStatus testStatusRet = new TestStatus();
+			
+				// If the test status is CO or IN, and this is a LasLinks customer ID, load the customer data.
+				if (testStatus.getValidatedCustomerId() == null) {
+					logger.info("[ItemResponses] Customer ID from BMT is null; skipping responses.");
+				} else {
+					// If the customer ID says to get the endpoint and we're in the right status, do the thing.
+					if (endpointSelector.getFetchResponses(testStatus.getValidatedCustomerId()) &&
+							(testStatus.getDeliveryStatus().equals("CO")) || testStatus.getDeliveryStatus().equals("IN")) {
+						logger.info("[ItemResponses] Customer ID from BMT requires requests and status is final; fetching responses. [customerId='"
+								+ testStatus.getValidatedCustomerId() + ",testStatus=" + testStatus.getDeliveryStatus() + "]");
+						final String endpoint = endpointSelector.getEndpoint(testStatus.getValidatedCustomerId());
+						CreateItemResponsesResponse itemResponses = null;
+						CreateItemResponsesRequest itemResponsesRequest = new CreateItemResponsesRequest();
+						itemResponsesRequest.setAssignmentId(testStatus.getAssignmentId());
+						try {
+							// Send the assignmentId to BMT for a list of itemResponses.
+					        itemResponses = restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
+					        		itemResponsesRequest, CreateItemResponsesResponse.class);
+					        // Persist the item responses in the database.
+						} catch (RestClientException rce) {
+							// If something goes wrong with the REST call, log the error.
+							logger.error("[ItemResponses] Http Client Error: " + rce.getMessage(), rce);			
+							testStatus.setErrorCode(412);
+							testStatus.setErrorMessage("[ItemResponses] Unable to get item responses: " + rce.getMessage()
+									+ " [assignmentId=" + testStatus.getAssignmentId() + "]");
+						} catch (final Exception e) {
+							// If something unexpected goes wrong, log it.
+							logger.error("[ItemResponses] Error in TestStatusRestService class : "+e.getMessage(), e);
+							testStatus.setErrorCode(500);
+							testStatus.setErrorMessage("[ItemResponses] Error in TestStatusRestService class : "+e.getMessage()
+									+ " [assignmentId=" + testStatus.getAssignmentId() + "]");
+						}
+
+				        if (itemResponses != null) {
+				        	// If BMT responds, log the response.
+				        	logger.info("[ItemResponses] Response json from BMT: " + itemResponses.toJson());
+				        	try {
+				        		processResponses(testStatus, itemResponses);
+				        	} catch (final Exception e) {
+					        	logger.error("[ItemResponses] Error storing responses in database: " + e.getMessage(), e);
+								testStatus.setErrorCode(500);
+								testStatus.setErrorMessage("Error storing responses in database: " + e.getMessage());					        					        		
+				        	}
+				        } else {
+				        	logger.error("[ItemResponses] Response json from BMT is null; logging error!");
+							testStatus.setErrorCode(400);
+							testStatus.setErrorMessage("[ItemResponses] Null response from BMT!");					        	
+				        }
+					}
+				}
 				
-				testStatusRet = testStatusDAO.validateSaveData(testStatus.getOasRosterId(), 
-	                       testStatus.getOasTestId(), 
-	                       testStatus.getDeliveryStatus(), 
-	                       testStatus.getStartedDate(), 
-	                       testStatus.getCompletedDate());
+				// If the error code is set at this point, clone the object for return. Otherwise, save the data and build a new response object.
+				if (testStatus.getErrorCode() > 0) {
+					testStatusRet = new TestStatus();
+					testStatusRet.setAssignmentId(testStatus.getAssignmentId());
+					testStatusRet.setCompletedDate(testStatus.getCompletedDate());
+					testStatusRet.setDeliveryStatus(testStatus.getDeliveryStatus());
+					testStatusRet.setErrorCode(testStatus.getErrorCode());
+					testStatusRet.setErrorMessage(testStatus.getErrorMessage());
+					testStatusRet.setOasCustomerId(testStatus.getOasCustomerId());
+					testStatusRet.setOasRosterId(testStatus.getOasRosterId());
+					testStatusRet.setOasTestId(testStatus.getOasTestId());
+					testStatusRet.setStartedDate(testStatus.getStartedDate());
+				} else {
+					testStatusRet = testStatusDAO.validateSaveData(testStatus.getOasRosterId(), 
+							testStatus.getOasTestId(), 
+							testStatus.getDeliveryStatus(), 
+							testStatus.getStartedDate(), 
+							testStatus.getCompletedDate());
+				}
 				
 				// If Failure add failure to response
-			    if (testStatusRet.getErrorCode() > 0) { 
-				   testStatusErrList.add(testStatusRet);
-				   counter.failure();
+				if (testStatusRet.getErrorCode() > 0) { 
+					testStatusErrList.add(testStatusRet);
+					counter.failure();
 			    } else {
 			    	counter.successful();
 			    }
@@ -102,6 +187,20 @@ public class TestStatusRestService {
 		
 		return response;
 	}
-	
 
+	private void processResponses(TestStatus testStatus, CreateItemResponsesResponse itemResponses) throws RestClientException, SQLException {
+		// Calling function has validated that testStatus and itemResponses are not null.
+		
+		final Integer testRosterId = testStatus.getOasRosterId();
+		final String subTestId = testStatus.getOasTestId();
+		
+		final List<ItemResponse> itemResponseList = itemResponses.getItemResponses();
+		if (CollectionUtils.isEmpty(itemResponseList)) {
+			throw new RestClientException("Item response list should not be empty! [assignmentId=" + testStatus.getAssignmentId() + "]");
+		}
+
+		itemResponseDAO.addItemResponses(testRosterId, subTestId, itemResponseList);
+	}
+	
+	
 }

@@ -70,10 +70,15 @@
 		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
 	</bean>
 	
+	<bean id="itemResponseDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.ItemResponseDAO">
+		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
+	</bean>
+	
 	<!-- Set up the REST clients. -->
 	<bean id="studentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.StudentRestClient">
 		<constructor-arg index="0" ref="studentDAO" />
 	    <constructor-arg index="1" ref="endpointDAO" />
+	    <constructor-arg index="2" ref="itemResponseDAO" />
 	</bean>
 	
 	<bean id="testAssignmentRestClient" class="com.mhe.ctb.oas.BMTSync.controller.AssignmentRestClient">
@@ -88,6 +93,7 @@
 
 	<bean id="testStatusRestService" class="com.mhe.ctb.oas.BMTSync.controller.TestStatusRestService">
 		<constructor-arg index="0" ref="testStatusDAO" />
+		<constructor-arg index="1" ref="endpointDAO" />
 	</bean>
 
 	

@@ -7,4 +7,6 @@ public interface EndpointSelector {
 	 * @return the BMT endpoint.
 	 */
 	String getEndpoint(final Integer customerId);
+	
+	Boolean getFetchResponses(final Integer customerId);
 }

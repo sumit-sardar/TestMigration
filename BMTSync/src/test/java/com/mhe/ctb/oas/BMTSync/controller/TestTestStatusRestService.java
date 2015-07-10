@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.mhe.ctb.oas.BMTSync.model.TestStatus;
 import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusRequest;
 import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusResponse;
+import com.mhe.ctb.oas.BMTSync.spring.dao.ItemResponseDAO;
 import com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -24,12 +25,16 @@ import com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO;
 public class TestTestStatusRestService {
 
 	private TestStatusRestService client;
-	private TestStatusDAO dao;
+	private TestStatusDAO testStatusDAO;
+	private ItemResponseDAO itemResponseDAO;
+	private EndpointSelector selector;
 	
 	@Before
 	public void setUp() {
-		dao = mock(TestStatusDAO.class);
-		client = new TestStatusRestService(dao);
+		testStatusDAO = mock(TestStatusDAO.class);
+		selector = mock(EndpointSelector.class);
+		itemResponseDAO = mock(ItemResponseDAO.class);
+		client = new TestStatusRestService(testStatusDAO, itemResponseDAO, selector);
 	}
 	
 	@Test
@@ -47,7 +52,7 @@ public class TestTestStatusRestService {
 		status.setErrorCode(0);
 		status.setErrorMessage("");
 		
-		when(dao.validateSaveData(status.getOasRosterId(), 
+		when(testStatusDAO.validateSaveData(status.getOasRosterId(), 
 				status.getOasTestId(), 
 				status.getDeliveryStatus(), 
 				status.getStartedDate(), 
@@ -74,7 +79,7 @@ public class TestTestStatusRestService {
 		status.setErrorCode(102);
 		status.setErrorMessage("Bloop");
 		
-		when(dao.validateSaveData(status.getOasRosterId(), 
+		when(testStatusDAO.validateSaveData(status.getOasRosterId(), 
 				status.getOasTestId(), 
 				status.getDeliveryStatus(), 
 				status.getStartedDate(), 

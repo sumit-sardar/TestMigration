@@ -47,7 +47,7 @@ public class DataSourceConfiguration {
         // Default to direct database access, only used for desktop testing.
         BasicDataSource remoteDS = new BasicDataSource();
         remoteDS.setDriverClassName("oracle.jdbc.OracleDriver");
-        remoteDS.setUrl("jdbc:oracle:thin:@//nj09mhe0393-vip.mhe.mhc:1521/OASR5T");
+        remoteDS.setUrl("jdbc:oracle:thin:@//nj09mhe0394-vip.mhe.mhc:1521/OASR5T");
         remoteDS.setUsername("oas");
         remoteDS.setPassword("qoasr5");
         logger.info("[DataSource] Using direct database access via JDBC driver.");

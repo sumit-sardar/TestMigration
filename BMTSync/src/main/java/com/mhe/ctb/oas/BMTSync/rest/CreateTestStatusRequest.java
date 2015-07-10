@@ -24,9 +24,6 @@ public class CreateTestStatusRequest {
 	public CreateTestStatusRequest() {
 		_testStatus = new ArrayList<TestStatus>();
 	}	
-	
-	
-	
 
 	public List<TestStatus> getTestStatus() {
 		return _testStatus;
@@ -36,8 +33,6 @@ public class CreateTestStatusRequest {
 	public void setTestStatus(List<TestStatus> testStatus) {
 		_testStatus = testStatus;
 	}
-	
-	
 
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();

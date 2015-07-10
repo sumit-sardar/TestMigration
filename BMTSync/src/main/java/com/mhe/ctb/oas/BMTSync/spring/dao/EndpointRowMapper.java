@@ -21,6 +21,7 @@ public class EndpointRowMapper implements RowMapper<Endpoint> {
 
 		endpoint.setCustomerId(rs.getInt("CUSTOMER_ID"));
 		endpoint.setEndpoint(rs.getString("URL_ENDPOINT"));
+		endpoint.setFetchResponses(rs.getString("FETCH_RESPONSES").equals("Y"));
 		return endpoint;
 	}
 }

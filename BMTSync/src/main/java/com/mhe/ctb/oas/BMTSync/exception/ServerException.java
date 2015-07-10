@@ -4,7 +4,6 @@ public class ServerException extends Exception {
 
 	private static final long serialVersionUID = 4172409459179156593L;
 
-
 	public ServerException() {
 		super();
 	}
