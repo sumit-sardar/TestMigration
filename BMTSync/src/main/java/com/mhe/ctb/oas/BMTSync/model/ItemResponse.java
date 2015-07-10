@@ -24,7 +24,7 @@ public class ItemResponse {
 		return itemCode;
 	}
 	@JsonProperty(value="itemCode", required=true)
-	private void setItemCode(final Integer itemCode) {
+	public void setItemCode(final Integer itemCode) {
 		this.itemCode = itemCode;
 	}
 
@@ -32,7 +32,7 @@ public class ItemResponse {
 		return itemType;
 	}
 	@JsonProperty(value="itemType", required=true)
-	private void setItemType(final String itemType) {
+	public void setItemType(final String itemType) {
 		this.itemType = itemType;
 	}
 
@@ -40,7 +40,7 @@ public class ItemResponse {
 		return itemResponse;
 	}
 	@JsonProperty(value="itemResponse", required=true)
-	private void setItemResponse(final String itemResponse) {
+	public void setItemResponse(final String itemResponse) {
 		this.itemResponse = itemResponse;
 	}
 
@@ -48,7 +48,7 @@ public class ItemResponse {
 		return itemResponseTime;
 	}
 	@JsonProperty(value="itemResponseTime", required=true)
-	private void setItemResponseTime(final Integer itemResponseTime) {
+	public void setItemResponseTime(final Integer itemResponseTime) {
 		this.itemResponseTime = itemResponseTime;
 	}
 	

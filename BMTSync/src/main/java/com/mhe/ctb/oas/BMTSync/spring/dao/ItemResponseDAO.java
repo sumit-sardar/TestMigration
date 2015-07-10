@@ -205,7 +205,7 @@ public class ItemResponseDAO {
 	private boolean constructedEntryExists(final Integer testRosterId, final Integer itemSetId, final Integer itemId)
 			throws SQLException {
 		try {
-			return (template.queryForObject(SELECT_UNIQUE_CONSTRUCTED_RESPONSE, Integer.class, testRosterId, itemSetId, itemId) == 1);
+			return template.queryForObject(SELECT_UNIQUE_CONSTRUCTED_RESPONSE, Integer.class, testRosterId, itemSetId, itemId) == 1;
 		} catch (final DataAccessException sqle) {
 			LOGGER.error("[ItemResponseDAO] Error trying to validate uniqueness of constructed response: " + sqle.getMessage()
 					+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemId + "]", sqle);
