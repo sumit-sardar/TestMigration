@@ -7583,6 +7583,25 @@ function downloadBulkReportCSV(element) {
     element.form.method = "POST";
     element.form.submit();
     //$.unblockUI();
+    /*$(document).ready(function() {
+		$('form[id=tabeBulkStateReportingForm]').submit(function(e){
+			e.preventDefault();
+			$.ajax({
+				type: 'POST',
+				cache: false,
+				url: 'downloadBulkReportCSV.do',
+				data: 'id=header_contact_send&'+$(this).serialize(), 
+				success: function(msg) {
+					$.unblockUI();
+					alert("success");
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					$.unblockUI();
+					alert("error");
+				}
+			});
+		});
+	});*/
 	return false;
 }
 
@@ -7646,7 +7665,7 @@ function viewBulkExportDetails(index){
 	$("#viewBulkExportStatusList").jqGrid({
 		url: 'getBulkReportDetails.do',   
 		mtype: 'POST',
-		async: false,
+		async: true,
 		datatype: 'json',
 		colNames:['Date of Export', 'File Name', 'Status'],
 	  	colModel:[

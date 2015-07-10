@@ -10047,7 +10047,7 @@ public class SessionOperationController extends PageFlowController {
 	protected Forward getBulkReportDetails(){
 	    	System.out.println("Start: SessionOperationController.getBulkReportDetails()");
 	    	long startTime = System.currentTimeMillis();
-		HttpServletResponse resp = null;
+		HttpServletResponse resp = this.getResponse();
 		String json = "";
 		OutputStream stream = null;
 		try{
@@ -10079,7 +10079,6 @@ public class SessionOperationController extends PageFlowController {
         	    	Gson gson = new Gson();
 			json = gson.toJson(literacybean);
 			try{
-				resp = getResponse();
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
 				resp.flushBuffer();
@@ -10115,7 +10114,7 @@ public class SessionOperationController extends PageFlowController {
     protected Forward downloadBulkReportCSV() {
 	System.out.println("--Start: SessionOperationController.downloadBulkReportCSV()");
 	long startTime = System.currentTimeMillis();
-	HttpServletResponse resp = null;
+	HttpServletResponse resp = resp = this.getResponse();
 	OutputStream stream = null;
 	try {
 	    String exportRequestIdStr = this.getRequest().getParameter("exportRequestId");
@@ -10134,14 +10133,12 @@ public class SessionOperationController extends PageFlowController {
 	    String fileName = litExportObj.getFileName();
 	    String bodypart = "attachment; filename=\"" + fileName + "\" ";
 	    try {
-        		resp = this.getResponse();
         		resp.setContentType("text/csv");
         		byte[] unzipData = LayoutUtil.unZippedBytes(data);
         		resp.setContentLength(unzipData.length);
         		resp.setHeader("Content-Disposition", bodypart);
-			resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-			resp.setHeader("Cache-Control", "cache");
-			resp.setHeader("Pragma", "public");
+        		resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+			resp.setHeader("Pragma", "no-cache");
         		stream = resp.getOutputStream();
         		System.out.println("Wrinting file content to response output stream...");
         		ByteArrayInputStream inStream = new ByteArrayInputStream(unzipData);

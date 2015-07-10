@@ -14,7 +14,7 @@
 <netui-template:setAttribute name="title" value="${bundle.web['reports.window.title']}"/>
     <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.reports']}"/>
     <netui-template:section name="bodySection">
-    <netui:form action="tabeBulkStateReporting">
+    <netui:form action="tabeBulkStateReporting" id="tabeBulkStateReportingForm">
     <input type="hidden" id="menuId" name="menuId" value="reportsLink" />
     <input type="hidden" id="invalidDatesBulkReport" value=<lb:label key="common.invalidDates.message" prefix="'" suffix="'"/> />
 	<table width="75%" border="0" style="margin-left: 15px;"> 
