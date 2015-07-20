@@ -230,20 +230,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_COPY_LLO_RP_CONTENT AS
          SCORABLE)
         (SELECT V_NEW_FF_PRODUCT_ID, --CHANGE
                 SYSDATE,
-                PRODUCT_DESCRIPTION || 'BMT', -- CHANGE
+                PRODUCT_DESCRIPTION,
                 CREATED_BY,
                 VERSION,
                 NULL,
                 SYSDATE,
                 ACTIVATION_STATUS,
-                PRODUCT_TYPE,
-                PRODUCT_NAME || 'BMT', -- CHANGE
+                PRODUCT_TYPE,-- SAME AS CF
+                PRODUCT_NAME,
                 SCORING_ITEM_SET_LEVEL,
                 PREVIEW_ITEM_SET_LEVEL,
                 PARENT_PRODUCT_ID, --NULL
                 EXT_PRODUCT_ID,
                 CONTENT_AREA_LEVEL,
-                INTERNAL_DISPLAY_NAME || 'BMT', --CHANGE
+                INTERNAL_DISPLAY_NAME,
                 SEC_SCORING_ITEM_SET_LEVEL,
                 IBS_SHOW_CMS_ID,
                 PRINTABLE,
@@ -1183,20 +1183,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_COPY_LLO_RP_CONTENT AS
          SCORABLE)
         (SELECT V_NEW_PRODUCT_ID, --CHANGE
                 SYSDATE,
-                PRODUCT_DESCRIPTION || ' BMT', -- CHANGE
+                PRODUCT_DESCRIPTION,
                 CREATED_BY,
                 VERSION,
                 NULL,
                 SYSDATE,
                 ACTIVATION_STATUS,
-                PRODUCT_TYPE || 'BMT',
-                PRODUCT_NAME || ' BMT', -- CHANGE
+                PRODUCT_TYPE || 'BMT', -- CHANGE
+                PRODUCT_NAME,
                 SCORING_ITEM_SET_LEVEL,
                 PREVIEW_ITEM_SET_LEVEL,
                 IN_NEW_FF_PRODUCT_ID, -- PARENT PRODUCT_ID
                 EXT_PRODUCT_ID,
                 CONTENT_AREA_LEVEL,
-                INTERNAL_DISPLAY_NAME || ' BMT', --CHANGE
+                INTERNAL_DISPLAY_NAME,
                 SEC_SCORING_ITEM_SET_LEVEL,
                 IBS_SHOW_CMS_ID,
                 PRINTABLE,
