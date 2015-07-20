@@ -246,4 +246,113 @@ public class ItemResponseMapper extends AbstractDBMapper {
         }
     	return responses;
     }
+
+    //Added for TASC and TASC Readiness FT TE Items response 
+	public List findFTItemResponsesBySubtest(final Long itemSetId, final Long testRosterId) throws CTBSystemException{
+		String sql = "SELECT DERIVED.ITEM_RESPONSE_ID      AS itemResponseId, " +
+					"       DERIVED.ITEM_SET_ID           AS itemSetId, " +
+					"       DERIVED.TEST_ROSTER_ID        AS testRosterId, " +
+					"       DERIVED.RESPONSE_METHOD       AS responseMethod, " +
+					"       DERIVED.RESPONSE              AS response, " +
+					"       DERIVED.RESPONSE_ELAPSED_TIME AS responseElapsedTime, " +
+					"       DERIVED.RESPONSE_SEQ_NUM      AS responseSeqNum, " +
+					"       DERIVED.CREATED_DATE_TIME     AS createdDateTime, " +
+					"       DERIVED.ITEM_ID               AS itemId, " +
+					"       DERIVED.EXT_ANSWER_CHOICE_ID  AS extAnswerChoiceId, " +
+					"       DERIVED.STUDENT_MARKED        AS studentMarked, " +
+					"       DERIVED.CREATED_BY            AS createdBy, " +
+					"       DERIVED.CONSTRUCTED_RESPONSE  AS teItemResponse, " +
+					"       DERIVED.ITEM_TYPE             AS itemType, " +
+					"       DERIVED.DAS_ITEM_ID           AS parentDasItemId, " +
+					"       CHILDDAS.DAS_ITEM_ID          AS childDasItemId, " +
+					"       CHILDDAS.SCORE_TYPE           AS interactionType, " +
+					"       CHILDDAS.ITEM_ORDER           AS itemOrder " +
+					"  FROM (SELECT IR.ITEM_RESPONSE_ID, " +
+					"               IR.ITEM_SET_ID, " +
+					"               IR.TEST_ROSTER_ID, " +
+					"               IR.RESPONSE_METHOD, " +
+					"               NVL(IR.RESPONSE, '-') AS response, " +
+					"               IR.RESPONSE_ELAPSED_TIME, " +
+					"               IR.RESPONSE_SEQ_NUM, " +
+					"               IR.CREATED_DATE_TIME, " +
+					"               IR.ITEM_ID, " +
+					"               IR.EXT_ANSWER_CHOICE_ID, " +
+					"               IR.STUDENT_MARKED, " +
+					"               IR.CREATED_BY, " +
+					"               IRC.CONSTRUCTED_RESPONSE, " +
+					"               ITEM.ITEM_TYPE, " +
+					"               PARENTDAS.DAS_ITEM_ID " +
+					"          FROM ITEM_RESPONSE        IR, " +
+					"               ITEM_SET_ITEM        ISI, " +
+					"               ITEM, " +
+					"               TEST_ROSTER          TR, " +
+					"               ITEM_SET             ISET, " +
+					"               TEST_ADMIN           ADM, " +
+					"               PRODUCT              PROD, " +
+					"               ITEM_RESPONSE_CR     IRC, " +
+					"               OAS_DAS_ITEM_MAPPING PARENTDAS " +
+					"         WHERE IR.ITEM_SET_ID = ? " +
+					"           AND IR.TEST_ROSTER_ID = ? " +
+					"           AND ITEM.ITEM_ID = IR.ITEM_ID " +
+					"           AND ISI.ITEM_SET_ID = IR.ITEM_SET_ID " +
+					"           AND ISI.FIELD_TEST = 'T' " +
+					"           AND ISI.ITEM_ID = ITEM.ITEM_ID " +
+					"           AND ITEM.ITEM_TYPE = 'IN' " +
+					"           AND IR.RESPONSE_SEQ_NUM = " +
+					"               (SELECT MAX(RESPONSE_SEQ_NUM) " +
+					"                  FROM item_response " +
+					"                 WHERE test_roster_id = ir.test_roster_id " +
+					"                   AND item_id = ir.item_id) " +
+					"           AND ISET.ITEM_SET_ID = ISI.ITEM_SET_ID " +
+					"           AND TR.TEST_ROSTER_ID = IR.TEST_ROSTER_ID " +
+					"           AND ADM.TEST_ADMIN_ID = TR.TEST_ADMIN_ID " +
+					"           AND PROD.PRODUCT_ID = ADM.PRODUCT_ID " +
+					"           AND IR.TEST_ROSTER_ID = IRC.TEST_ROSTER_ID(+) " +
+					"           AND IR.ITEM_SET_ID = IRC.ITEM_SET_ID(+) " +
+					"           AND IR.ITEM_ID = IRC.ITEM_ID(+) " +
+					"           AND PARENTDAS.OAS_ITEM_ID = ITEM.ITEM_ID " +
+					"           AND PARENTDAS.ACTIVATION_STATUS = 'AC' " +
+					"           AND PARENTDAS.PARENT_DAS_ITEM_ID IS NULL " +
+					"         ORDER BY IR.RESPONSE_SEQ_NUM ASC) DERIVED, " +
+					"       OAS_DAS_ITEM_MAPPING CHILDDAS " +
+					" WHERE DERIVED.DAS_ITEM_ID = CHILDDAS.PARENT_DAS_ITEM_ID(+)";
+			
+	    List responses = new ArrayList();
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+	    try {
+	    	ps = conn.prepareStatement(sql);
+	    	ps.setLong(1, itemSetId.longValue());
+	    	ps.setLong(2, testRosterId.longValue());
+	    	rs = ps.executeQuery();
+	    	while (rs.next()){
+	    		ItemResponseVO response = new ItemResponseVO();
+	    		response.setItemResponseId(SQLUtil.getInteger(rs, "itemResponseId"));
+	    		response.setItemSetId(SQLUtil.getInteger(rs, "itemSetId"));
+	    		response.setTestRosterId(SQLUtil.getInteger(rs, "testRosterId"));
+	    		response.setResponseMethod(SQLUtil.getString(rs, "responseMethod"));
+	    		response.setResponse(SQLUtil.getString(rs, "response"));
+	    		response.setResponseElapsedTime(SQLUtil.getInteger(rs, "responseElapsedTime"));
+	    		response.setResponseSeqNum(SQLUtil.getInteger(rs, "responseSeqNum"));
+	    		response.setCreatedDateTime(SQLUtil.getDate(rs, "createdDateTime"));
+	    		response.setItemId(SQLUtil.getString(rs, "itemId"));
+	    		response.setExtAnswerChoiceId(SQLUtil.getString(rs, "extAnswerChoiceId"));
+	    		response.setStudentMarked(SQLUtil.getString(rs, "studentMarked"));
+	    		response.setCreatedBy(SQLUtil.getInteger(rs, "createdBy"));
+	    		response.setTeItemResponse(SQLUtil.getClob(rs, "teItemResponse"));
+	    		response.setItemType(SQLUtil.getString(rs, "itemType"));
+	    		response.setParentDasItemId(SQLUtil.getString(rs, "parentDasItemId"));
+	    		response.setChildDasItemId(SQLUtil.getString(rs, "childDasItemId"));
+	    		response.setInteractionType(SQLUtil.getString(rs, "interactionType"));
+	    		response.setItemOrder(SQLUtil.getInteger(rs, "itemOrder"));
+	    		responses.add(response);
+	    	}
+	    } catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBSystemException(e.getMessage());
+		} finally {
+	        SQLUtil.close(rs, ps);
+	    }
+		return responses;
+	}
 }

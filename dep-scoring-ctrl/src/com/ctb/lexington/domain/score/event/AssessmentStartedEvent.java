@@ -3,11 +3,11 @@ package com.ctb.lexington.domain.score.event;
 import com.ctb.lexington.domain.teststructure.ProductType;
 
 public class AssessmentStartedEvent extends AssessmentEvent {
-    private Integer studentId;
+    private Long studentId;
     private String studentFirstName;
     private String studentMiddleName;
     private String studentLastName;
-    private Integer testAdminId;
+    private Long testAdminId;
     private Integer parentItemSetId;
     private String testDisplayName;
     private Integer currentItemSetId;
@@ -15,6 +15,8 @@ public class AssessmentStartedEvent extends AssessmentEvent {
     private final ProductType productType;
     private final String grade;
     private String productTypeValue;
+    private Long invokeKey;
+    private boolean retryProcessFT;
 
     public AssessmentStartedEvent(final Long testRosterId, final Integer productId,
             final String productType, final String grade) {
@@ -34,6 +36,28 @@ public class AssessmentStartedEvent extends AssessmentEvent {
         //TODO: pass in ProductType enum
         this.productType = (productType == null ? null : ProductType.getByCode(productType));
         this.grade = grade;
+    }
+    
+    public AssessmentStartedEvent(final Long testRosterId, final Integer productId,
+            final String productType, final String grade,  final Long invokeKey, final boolean retryProcessFT) {
+        super(testRosterId);
+        if (null == testRosterId)
+            throw new NullPointerException("Cannot start an assessment for null testRosterId");
+        if (null == productId)
+            throw new NullPointerException("Cannot start an assessment for null productId");
+        if (null == productType)
+            throw new NullPointerException("Cannot start an assessment for null productType");
+        // HACKTAG: Shouldnt have biz logic here, but i need to move on...
+        if (null == grade && !ProductType.isTabe(productType) && !ProductType.isSofa(productType))
+            throw new NullPointerException("Cannot start an assessment for null grade for non SOFA and non TABE test");
+
+        this.productId = productId;
+        this.productTypeValue = productType;
+        //TODO: pass in ProductType enum
+        this.productType = (productType == null ? null : ProductType.getByCode(productType));
+        this.grade = grade;
+        this.invokeKey = invokeKey;
+        this.retryProcessFT = retryProcessFT;
     }
 
     /**
@@ -95,14 +119,14 @@ public class AssessmentStartedEvent extends AssessmentEvent {
     /**
      * @return Returns the studentId.
      */
-    public Integer getStudentId() {
+    public Long getStudentId() {
         return studentId;
     }
 
     /**
      * @param studentId The studentId to set.
      */
-    public void setStudentId(final Integer studentId) {
+    public void setStudentId(final Long studentId) {
         this.studentId = studentId;
     }
 
@@ -137,14 +161,14 @@ public class AssessmentStartedEvent extends AssessmentEvent {
     /**
      * @return Returns the testAdminId.
      */
-    public Integer getTestAdminId() {
+    public Long getTestAdminId() {
         return testAdminId;
     }
 
     /**
      * @param testAdminId The testAdminId to set.
      */
-    public void setTestAdminId(final Integer testAdminId) {
+    public void setTestAdminId(final Long testAdminId) {
         this.testAdminId = testAdminId;
     }
 
@@ -200,4 +224,33 @@ public class AssessmentStartedEvent extends AssessmentEvent {
 	public void setProductTypeValue(String productTypeValue) {
 		this.productTypeValue = productTypeValue;
 	}
+	
+	/**
+	 * @return the invokeKey
+	 */
+	public Long getInvokeKey() {
+		return invokeKey;
+	}
+
+	/**
+	 * @param invokeKey the invokeKey to set
+	 */
+	public void setInvokeKey(Long invokeKey) {
+		this.invokeKey = invokeKey;
+	}
+
+	/**
+	 * @return the retryProcessFT
+	 */
+	public boolean isRetryProcessFT() {
+		return retryProcessFT;
+	}
+
+	/**
+	 * @param retryProcessFT the retryProcessFT to set
+	 */
+	public void setRetryProcessFT(boolean retryProcessFT) {
+		this.retryProcessFT = retryProcessFT;
+	}
+	
 }

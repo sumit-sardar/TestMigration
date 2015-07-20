@@ -2,8 +2,10 @@ package com.ctb.lexington.db.mapper.tsmapper;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData;
 import com.ctb.lexington.db.mapper.AbstractDBMapper;
+import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
  * @author Rama_Rao
@@ -46,4 +48,19 @@ public class IrsTASCCompositeFactMapper extends AbstractDBMapper{
   	  	if(record != null)
   	  		delete(DELETE_BY_CONTENTAREAFACTID, record);
     }
+	
+	public SqlMapClient insertBatch(IrsTASCCompositeFactData record, SqlMapClient sqlMap)throws SQLException{
+		sqlMap = insertBatch(INSERT_INTO_COMPOSITEFACT, record, sqlMap);
+		return sqlMap;
+    }
+
+	public SqlMapClient deleteBatch(IrsTASCCompositeFactData record, SqlMapClient sqlMap)throws SQLException{
+		if(record != null)
+			sqlMap = deleteBatch(DELETE_BY_CONTENTAREAFACTID, record, sqlMap);
+		return sqlMap;
+    }
+	
+	public void executeItemBatch(SqlMapClient sqlClient) throws SQLException{
+		executeBatchProcess(sqlClient);
+	}
 }

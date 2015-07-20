@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
@@ -15,6 +16,7 @@ import com.ctb.lexington.db.data.StudentTestData;
 import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCContentAreaFactMapper;
+import com.ibatis.sqlmap.client.SqlMapClient;
 
 public class StudentContentAreaScoresController {
     private StudentSubtestScoresData subtestData;
@@ -37,13 +39,22 @@ public class StudentContentAreaScoresController {
 
     public void run() throws SQLException {
     	IrsTASCContentAreaFactData [] facts = getContentAreaFactBeans();
-    	for(int i=0;i<facts.length;i++) {
-            IrsTASCContentAreaFactData newFact = facts[i];
-            mapper.delete(newFact);
-            if(new Long(1).equals(newFact.getCurrentResultid()))  {
-                mapper.insert(newFact);
+    	
+    	SqlMapClient insertSqlMap = null;
+        SqlMapClient deleteSqlMap = null;
+        ArrayList<Long> contentList = new ArrayList<Long>();
+        for(int i=0;i<facts.length;i++) {
+        	IrsTASCContentAreaFactData newFact = facts[i];
+            deleteSqlMap = mapper.deleteBatch(newFact,deleteSqlMap);
+            if(new Long(1).equals(newFact.getCurrentResultid()) && !contentList.contains(newFact.getContentAreaid()))  {
+                contentList.add(newFact.getContentAreaid());
+            	insertSqlMap = mapper.insertBatch(newFact, insertSqlMap);
             }
         }
+        
+        mapper.executeItemBatch(deleteSqlMap);
+        mapper.executeItemBatch(insertSqlMap);
+        contentList.clear();
     }
     
     public IrsTASCContentAreaFactData [] getContentAreaFactBeans() {

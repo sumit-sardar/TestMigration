@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.TimeZone;
 
 import com.ctb.lexington.db.data.AdminData;
@@ -51,6 +49,8 @@ public class TRTestResultController implements TestResultController {
         StudentTestData testData = data.getTestData();
         StudentItemScoreData studentItemScoreData = data.getStudentItemScoreData();
         StudentItemResponseData studentItemResponseData = data.getStudentItemResponseData();
+        StudentItemScoreData studentfieldTestTEItemScoreData = data.getStudentfieldTestTEItemScoreData();
+        boolean isRetryFieldTestTE = data.isRetryFieldTestTE();
         
         /*StsTestResultFactData factData = data.getStsTestResultFactData();
         UserData userData = data.getUserData();
@@ -84,21 +84,29 @@ public class TRTestResultController implements TestResultController {
         context.setAssessmentType(adminData.getAssessmentType());
         context.setProgramId(adminData.getProgramId());
         
-        new CurriculumController(conn, curriculumData, adminData, context).run();
-        System.out.println("***** SCORING: Persisted dimension data.");
-        
-        // persist scores
-        /*  new StudentContentAreaScoresController(conn, studentSubtestScoresData, factData, curriculumData, testData, adminData, context).run();
-        System.out.println("***** SCORING: TestResultController: Persisted content area fact data.");
-        
-        new StudentObjectiveScoresController(conn, studentScoreSummaryData, curriculumData, testData, adminData, context).run(); 
-        System.out.println("***** SCORING: TestResultController: Persisted objective fact data."); */
-        
-      	new StudentItemScoresController(conn, studentItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context).run();
-        System.out.println("***** SCORING: TestResultController: Persisted item fact data.");
-    
-        new StudentResultStatusController(conn, context).run();
-        System.out.println("***** SCORING: Marked prior results non-current as necessary.");
+        if(isRetryFieldTestTE) {
+        	new CurriculumController(conn, curriculumData, adminData, context).runFTTE();
+        	System.out.println("***** SCORING: Persisted dimension data for field test TE item.");
+        	
+        	new StudentItemScoresController(conn, studentItemScoreData, studentfieldTestTEItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context, isRetryFieldTestTE).run();
+            System.out.println("***** SCORING: TestResultController: Persisted item fact data only for field test TE item.");
+        } else {
+	        new CurriculumController(conn, curriculumData, adminData, context).run();
+	        System.out.println("***** SCORING: Persisted dimension data.");
+	        
+	        // persist scores
+	        /*  new StudentContentAreaScoresController(conn, studentSubtestScoresData, factData, curriculumData, testData, adminData, context).run();
+	        System.out.println("***** SCORING: TestResultController: Persisted content area fact data.");
+	        
+	        new StudentObjectiveScoresController(conn, studentScoreSummaryData, curriculumData, testData, adminData, context).run(); 
+	        System.out.println("***** SCORING: TestResultController: Persisted objective fact data."); */
+	        
+	      	new StudentItemScoresController(conn, studentItemScoreData, studentfieldTestTEItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context, isRetryFieldTestTE).run();
+	        System.out.println("***** SCORING: TestResultController: Persisted item fact data.");
+	    
+	        new StudentResultStatusController(conn, context).run();
+	        System.out.println("***** SCORING: Marked prior results non-current as necessary.");
+        }
     }
     
     public IrsDemographicData getIrsDemographics(StudentDemographicData data){

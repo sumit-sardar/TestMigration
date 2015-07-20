@@ -48,6 +48,28 @@ public class ScheduleRosterBO {
 		
 	}
 	
+	public void scheduleRoster(String rosterIdLogKey){
+		InitialContext ic = null;
+		QueueSend qs = null;
+		
+		try{
+			getResourceValue();
+			ic = QueueSend.getInitialContext(jndiFactory, jmsURL, jmsPrincipal, jmsCredentials);
+			qs = new QueueSend();
+			qs.init(ic, jmsFactory, jmsQueue);
+			
+			System.out.println("MSS TE Retry Schedular will invoke scoring for RosterId#InvokeKey "+rosterIdLogKey+".");
+			invokeScoring(qs, rosterIdLogKey);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			ClosableHelper.close(qs);
+			ClosableHelper.close(ic);
+		}
+		
+	}
+	
 	
 	
 	 private void getResourceValue() throws Exception {
@@ -66,5 +88,11 @@ public class ScheduleRosterBO {
 		
 	}
 	
+	 @SuppressWarnings("static-access")
+	private void invokeScoring(QueueSend qs, String rosterIdLogKey)
+			throws Exception {
+		qs.readAndSend(qs, rosterIdLogKey);
+
+	}
 	 
 }

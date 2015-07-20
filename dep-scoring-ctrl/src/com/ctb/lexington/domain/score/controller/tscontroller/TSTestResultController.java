@@ -58,6 +58,8 @@ public class TSTestResultController implements TestResultController {
         UserData userData = data.getUserData();
         StsTotalStudentScoreData totalStudentScoreData = data.getStsTotalStudentScoreData();
         StudentItemResponseData studentItemResponseData = data.getStudentItemResponseData();
+        StudentItemScoreData studentfieldTestTEItemScoreData = data.getStudentfieldTestTEItemScoreData();
+        boolean isRetryFieldTestTE = data.isRetryFieldTestTE();
         
         // persist context
         new OrgNodeController(conn, orgNodeData, adminData).run();
@@ -84,28 +86,36 @@ public class TSTestResultController implements TestResultController {
         context.setAssessmentType(adminData.getAssessmentType());
         context.setProgramId(adminData.getProgramId());
         
-        new CurriculumController(conn, curriculumData, adminData, context).run();
-        System.out.println("***** SCORING: Persisted dimension data.");
+        if(isRetryFieldTestTE) {
+        	new CurriculumController(conn, curriculumData, adminData, context).runFTTE();
+        	System.out.println("***** SCORING: Persisted dimension data for field test TE item.");
+        	
+        	new StudentItemScoresController(conn, studentItemScoreData, studentfieldTestTEItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context, isRetryFieldTestTE).run();
+            System.out.println("***** SCORING: TestResultController: Persisted item fact data only for field test TE item.");
+        } else {
+        	new CurriculumController(conn, curriculumData, adminData, context).run();
+        	System.out.println("***** SCORING: Persisted dimension data.");
         
-        // persist scores
-        new StudentCompositeScoresController(conn, totalStudentScoreData, curriculumData, context).run();
-        System.out.println("***** SCORING: TestResultController: Persisted composite fact data.");
-        new StudentContentAreaScoresController(conn, studentSubtestScoresData, factData, curriculumData, testData, adminData, context).run();
-        System.out.println("***** SCORING: TestResultController: Persisted content area fact data.");
-        new StudentObjectiveScoresController(conn, factData, studentScoreSummaryData, curriculumData, testData, adminData, context).run();
-        System.out.println("***** SCORING: TestResultController: Persisted objective fact data.");
-        new StudentItemScoresController(conn, studentItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context).run();
-        System.out.println("***** SCORING: TestResultController: Persisted item fact data.");
-    
-        new StudentResultStatusController(conn, context).run();
-        System.out.println("***** SCORING: Marked prior results non-current as necessary.");
-        
-        //Prism web service is called for scoring
-        try {
-        	PrismWebServiceHandler.scoring(data.getTestRosterId(), studentData.getOasStudentId().intValue(), adminData.getSessionId(), 0, 0, null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        	// persist scores
+	        new StudentCompositeScoresController(conn, totalStudentScoreData, curriculumData, context).run();
+	        System.out.println("***** SCORING: TestResultController: Persisted composite fact data.");
+	        new StudentContentAreaScoresController(conn, studentSubtestScoresData, factData, curriculumData, testData, adminData, context).run();
+	        System.out.println("***** SCORING: TestResultController: Persisted content area fact data.");
+	        new StudentObjectiveScoresController(conn, factData, studentScoreSummaryData, curriculumData, testData, adminData, context).run();
+	        System.out.println("***** SCORING: TestResultController: Persisted objective fact data.");
+	        new StudentItemScoresController(conn, studentItemScoreData, studentfieldTestTEItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context, isRetryFieldTestTE).run();
+	        System.out.println("***** SCORING: TestResultController: Persisted item fact data.");
+	    
+	        new StudentResultStatusController(conn, context).run();
+	        System.out.println("***** SCORING: Marked prior results non-current as necessary.");
+	        
+	        //Prism web service is called for scoring
+	        try {
+	        	PrismWebServiceHandler.scoring(data.getTestRosterId(), studentData.getOasStudentId().intValue(), adminData.getSessionId(), 0, 0, null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+        }
     }
     
     public IrsDemographicData getIrsDemographics(StudentDemographicData data){

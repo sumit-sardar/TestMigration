@@ -1,5 +1,6 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
+import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
@@ -19,8 +20,10 @@ public abstract class AbstractResponseCalculator extends Calculator {
         super(channel, scorer);
         channel.subscribe(this, SubtestItemCollectionEvent.class);
         channel.subscribe(this, ResponseReceivedEvent.class);
-
+        channel.subscribe(this, FTResponseReceivedEvent.class);
+        
         mustPrecede(SubtestItemCollectionEvent.class, ResponseReceivedEvent.class);
+        mustPrecede(SubtestItemCollectionEvent.class, FTResponseReceivedEvent.class);
     }
 
     public void onEvent(SubtestItemCollectionEvent event) {
@@ -45,4 +48,6 @@ public abstract class AbstractResponseCalculator extends Calculator {
     }
 
     public abstract void onEvent(final ResponseReceivedEvent event);
+    
+    public abstract void onEvent(final FTResponseReceivedEvent event);
 }

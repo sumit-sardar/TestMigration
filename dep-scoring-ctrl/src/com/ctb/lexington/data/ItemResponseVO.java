@@ -56,6 +56,11 @@ public class ItemResponseVO implements Persistent, Serializable, java.lang.Clone
     private Integer crResponse;	//Added for TASC
     private String conditionCode;	// Added for TASC
     private Clob teItemResponse;
+    private String parentDasItemId;
+    private String childDasItemId;
+    private String interactionType;
+    private Integer itemOrder;
+    
 
 	/**
 	 * @return Returns the constructedResponse.
@@ -362,5 +367,53 @@ public class ItemResponseVO implements Persistent, Serializable, java.lang.Clone
 	public void setTeItemResponse(Clob teItemResponse) {
 		this.teItemResponse = teItemResponse;
 	}
-    
+	/**
+	 * @return the parentDasItemId
+	 */
+	public String getParentDasItemId() {
+		return parentDasItemId;
+	}
+	/**
+	 * @param parentDasItemId the parentDasItemId to set
+	 */
+	public void setParentDasItemId(String parentDasItemId) {
+		this.parentDasItemId = parentDasItemId;
+	}
+	/**
+	 * @return the childDasItemId
+	 */
+	public String getChildDasItemId() {
+		return childDasItemId;
+	}
+	/**
+	 * @param childDasItemId the childDasItemId to set
+	 */
+	public void setChildDasItemId(String childDasItemId) {
+		this.childDasItemId = childDasItemId;
+	}
+	/**
+	 * @return the interactionType
+	 */
+	public String getInteractionType() {
+		return interactionType;
+	}
+	/**
+	 * @param interactionType the interactionType to set
+	 */
+	public void setInteractionType(String interactionType) {
+		this.interactionType = interactionType;
+	}
+	/**
+	 * @return the subquestionIndex
+	 */
+	public Integer getItemOrder() {
+		return itemOrder;
+	}
+	/**
+	 * @param subquestionIndex the subquestionIndex to set
+	 */
+	public void setItemOrder(Integer itemOrder) {
+		this.itemOrder = itemOrder;
+	}
+	
 }

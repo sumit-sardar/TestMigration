@@ -11,6 +11,7 @@ import com.ctb.lexington.data.ItemContentArea;
 import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.ContentAreaNumberCorrectEvent;
 import com.ctb.lexington.domain.score.event.CorrectResponseEvent;
+import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.IncorrectResponseEvent;
 import com.ctb.lexington.domain.score.event.NoResponseEvent;
 import com.ctb.lexington.domain.score.event.Objective;
@@ -245,4 +246,8 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
             return contentAreaId.hashCode();
         }
     }
+
+	public void onEvent(FTResponseReceivedEvent event) {
+		
+	}
 }

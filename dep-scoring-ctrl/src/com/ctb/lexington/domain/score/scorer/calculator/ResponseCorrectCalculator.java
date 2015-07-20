@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.domain.score.event.CorrectResponseEvent;
+import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.IncorrectResponseEvent;
 import com.ctb.lexington.domain.score.event.NoResponseEvent;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
@@ -127,5 +128,17 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Calculation is for FT item only 
+	 * Sends a <code>CorrectResponseEvent</code> event if the answer is correct and a
+	 * <code>IncorrectResponseEvent</code> if the answer is incorrect. NOTE: A condition code
+	 * constitutes neither a correct nor incorrect answer! An item is considered incorrect only if
+	 * an incorrect choice is marked and no other choice is marked.
+	 * 
+	 * @param event
+	 */
+	public void onEvent(FTResponseReceivedEvent event) {
 	}
 }

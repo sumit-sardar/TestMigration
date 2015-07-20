@@ -3,6 +3,7 @@ package com.ctb.lexington.domain.score.controller.tscontroller;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
 import com.ctb.lexington.db.data.StsTotalStudentScoreData;
@@ -10,6 +11,7 @@ import com.ctb.lexington.db.data.StsTotalStudentScoreDetail;
 import com.ctb.lexington.db.data.CurriculumData.Composite;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCCompositeFactMapper;
+import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
  * @author ncohen
@@ -30,13 +32,22 @@ public class StudentCompositeScoresController {
 
     public void run() throws SQLException {
         IrsTASCCompositeFactData [] facts = getCompositeFactBeans();
+        
+        SqlMapClient insertSqlMap = null;
+        SqlMapClient deleteSqlMap = null;
+        ArrayList<Long> contentList = new ArrayList<Long>();
         for(int i=0;i<facts.length;i++) {
-            IrsTASCCompositeFactData newFact = facts[i];
-            mapper.delete(newFact);
-            if(new Long(1).equals(newFact.getCurrentResultid()))  {
-                mapper.insert(newFact);
+        	IrsTASCCompositeFactData newFact = facts[i];
+            deleteSqlMap = mapper.deleteBatch(newFact,deleteSqlMap);
+            if(new Long(1).equals(newFact.getCurrentResultid()) && !contentList.contains(newFact.getCompositeid()))  {
+                contentList.add(newFact.getCompositeid());
+            	insertSqlMap = mapper.insertBatch(newFact, insertSqlMap);
             }
         }
+        
+        mapper.executeItemBatch(deleteSqlMap);
+        mapper.executeItemBatch(insertSqlMap);
+        contentList.clear();
     }
     
     public IrsTASCCompositeFactData [] getCompositeFactBeans() {

@@ -875,6 +875,7 @@ public class CurriculumData {
     private PrimaryObjective [] primaryObjectives;
     private SecondaryObjective [] secondaryObjectives;
     private Item [] items;
+    private Item [] TEItems;
     private Map crItemMap;
     
     public Item getItemForOASItemId(String oasItemId) {
@@ -1275,6 +1276,14 @@ public class CurriculumData {
 	 */
 	public void setVirtualPrimObjs(VirtualPrimObjsForTABECCSS[] virtualPrimObjs) {
 		this.virtualPrimObjs = virtualPrimObjs;
+	}
+
+	public Item[] getTEItems() {
+		return TEItems;
+	}
+
+	public void setTEItems(Item[] items) {
+		this.TEItems = items;
 	}
 	
 }

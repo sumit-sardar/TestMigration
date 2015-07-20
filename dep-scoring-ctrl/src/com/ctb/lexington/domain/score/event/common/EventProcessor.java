@@ -11,8 +11,11 @@ import com.ctb.lexington.domain.score.event.ContributingCorrectResponseEvent;
 import com.ctb.lexington.domain.score.event.ContributingIncorrectResponseEvent;
 import com.ctb.lexington.domain.score.event.ContributingPointEvent;
 import com.ctb.lexington.domain.score.event.CorrectResponseEvent;
+import com.ctb.lexington.domain.score.event.FTPointEvent;
+import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.IncorrectResponseEvent;
 import com.ctb.lexington.domain.score.event.LocatorCompositeScoreEvent;
+import com.ctb.lexington.domain.score.event.MosaicErrorHandleEvent;
 import com.ctb.lexington.domain.score.event.NoContributingResponseEvent;
 import com.ctb.lexington.domain.score.event.NoResponseEvent;
 import com.ctb.lexington.domain.score.event.ObjectiveEvent;
@@ -162,6 +165,13 @@ public abstract class EventProcessor implements EventRecipient {
         //For TASC
         if (event instanceof SecondaryObjectiveDerivedScoreEvent)
         	this.onEvent((SecondaryObjectiveDerivedScoreEvent) event);
+        //For field Test item Score
+        if (event instanceof FTResponseReceivedEvent)
+    		this.onEvent((FTResponseReceivedEvent) event);
+        if (event instanceof FTPointEvent)
+        	this.onEvent((FTPointEvent) event);
+        if (event instanceof MosaicErrorHandleEvent)
+        	this.onEvent((MosaicErrorHandleEvent) event);
     }
 
     /**
@@ -484,6 +494,27 @@ public abstract class EventProcessor implements EventRecipient {
 	 * @param event
 	 */
 	public void onEvent(SecondaryObjectiveDerivedScoreEvent event) {
+		//System.out.println("BAD!!! calling empty onEvent() for: " + event.getClass().getName());
+	}
+	
+	/**
+	 * @param event
+	 */
+	public void onEvent(FTResponseReceivedEvent event) {
+		//System.out.println("BAD!!! calling empty onEvent() for: " + event.getClass().getName());
+	}
+	
+	/**
+	 * @param event
+	 */
+	public void onEvent(FTPointEvent event) throws CTBSystemException {
+		//System.out.println("BAD!!! calling empty onEvent() for: " + event.getClass().getName());
+	}
+	
+	/**
+	 * @param event
+	 */
+	public void onEvent(MosaicErrorHandleEvent event) throws CTBSystemException {
 		//System.out.println("BAD!!! calling empty onEvent() for: " + event.getClass().getName());
 	}
 }

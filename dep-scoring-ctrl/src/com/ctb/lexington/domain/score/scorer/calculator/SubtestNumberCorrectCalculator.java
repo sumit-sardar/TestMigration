@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.ctb.lexington.domain.score.event.CorrectResponseEvent;
+import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.IncorrectResponseEvent;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
@@ -82,4 +83,8 @@ public class SubtestNumberCorrectCalculator extends AbstractResponseCalculator {
                 ScorerHelper.calculatePercentage(
                         correctAnswers.size(), numberOfItems)));
     }
+
+	public void onEvent(FTResponseReceivedEvent event) {
+		
+	}
 }

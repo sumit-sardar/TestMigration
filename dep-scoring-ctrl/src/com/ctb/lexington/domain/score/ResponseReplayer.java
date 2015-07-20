@@ -5,9 +5,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.NamingException;
 
@@ -21,6 +23,8 @@ import com.ctb.lexington.db.mapper.ItemSetMapper;
 import com.ctb.lexington.db.mapper.StudentItemSetStatusMapper;
 import com.ctb.lexington.db.mapper.TestRosterMapper;
 import com.ctb.lexington.db.utils.DatabaseHelper;
+import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
+import com.ctb.lexington.domain.score.event.MosaicErrorHandleEvent;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestScoreReceivedEvent;
@@ -74,6 +78,8 @@ public class ResponseReplayer {
     private Integer productId = null;
     private static String productType = null;
     private HashMap subtestMapBySubject = new SafeHashMap(String.class, ArrayList.class);
+    private static Long invokeKey = null;
+    private static boolean isFTRetryProcess = false;
     
     /**
      * Constructs a new <code>ResponseReplayer</code> with the given
@@ -532,7 +538,8 @@ public class ResponseReplayer {
         return events;
     }
     
-    //Added for TABE Cat Adaptive
+
+	//Added for TABE Cat Adaptive
     private static void addSubtestScoreEvents(final Long testRosterId, final List events, final ItemSetVO itemSet) {
     	
     	String[] pipeSeparated = itemSet.getObjectiveScore().split("\\|");
@@ -593,8 +600,20 @@ public class ResponseReplayer {
             final ItemResponseMapper itemResponseMapper) {
     	
     	if("TS".equals(productType) || "TR".equals(productType)) {
-	        events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASCOrg(
-	        		asLong(itemSet.getItemSetId()), testRosterId)));
+	    	try {
+	    		List ftresponse = itemResponseMapper.findFTItemResponsesBySubtest(
+		        			asLong(itemSet.getItemSetId()), testRosterId);
+	    		if(isFTRetryProcess){
+	    			events.addAll(getFTResponseEvents(ftresponse));
+	    		}else {
+			        events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASCOrg(
+			        		asLong(itemSet.getItemSetId()), testRosterId)));
+			        events.addAll(getFTResponseEvents(ftresponse));
+	    		}
+	    		getMosaicErrorHandleEvent(events, ftresponse, testRosterId);
+	    	} catch (CTBSystemException e) {
+				e.printStackTrace();
+			}
     	}else if("TC".equals(productType)) {
     		try { // This block is written for simple JDBC
 				events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTabeCC(
@@ -607,6 +626,13 @@ public class ResponseReplayer {
 	                asLong(itemSet.getItemSetId()), testRosterId)));
     	}
     }
+    
+    private static void getMosaicErrorHandleEvent(final List events,
+			final List responses, final Long testRosterId) {
+		if (!responses.isEmpty()) {
+			events.add(new MosaicErrorHandleEvent(testRosterId, invokeKey, isFTRetryProcess));
+		}
+	}
     
     private static void addSubtestEndedEvent(final List events,
             final ItemSetVO itemSet, final boolean requireSubtestsComplete,
@@ -658,6 +684,19 @@ public class ResponseReplayer {
 
         return events;
     }
+    
+    private static List getFTResponseEvents(final List responses) {
+    	if (responses.isEmpty()) return Collections.EMPTY_LIST;
+		final List events = new ArrayList(responses.size());
+		Set<String> ftItemsCollection = new HashSet<String>();
+		Map<String, FTResponseReceivedEvent> ftResponseEvents = new HashMap<String, FTResponseReceivedEvent>();
+        for (final Iterator it = responses.iterator(); it.hasNext();)
+            createFTResponseReceivedEvent((ItemResponseVO) it.next(), ftResponseEvents);
+
+        events.addAll((!ftResponseEvents.isEmpty())?ftResponseEvents.values():Collections.EMPTY_LIST);
+        
+        return events;
+	}
 
     private void replayEvents(final Long testRosterId,
             final boolean requireCompleteSubtests, final Scorer scorer) {
@@ -752,6 +791,41 @@ public class ResponseReplayer {
 
         return event;
     }
+    
+    private static void createFTResponseReceivedEvent(
+            final ItemResponseVO response, Map<String, FTResponseReceivedEvent> ftResponseEvents) {
+        
+        if(!ftResponseEvents.containsKey(response.getItemId())){
+        	final FTResponseReceivedEvent event = new FTResponseReceivedEvent(
+                    DatabaseHelper.asLong(response.getTestRosterId()),
+                    response.getItemId(), response.getItemSetId());
+        	
+             event.setExtAnswerChoiceId(response.getExtAnswerChoiceId());
+             event.setItemResponseId(response.getItemResponseId());
+             event.setItemSortOrder(response.getItemSortOrder());
+             event.setPointsObtained(response.getPoints());
+             event.setResponse(response.getResponse());
+             event.setResponseElapsedTime(response.getResponseElapsedTime());
+             event.setResponseMethod(response.getResponseMethod());
+             event.setResponseSeqNum(response.getResponseSeqNum());
+             event.setConditionCodeId(response.getConditionCodeId());
+             event.setStudentMarked(CTBConstants.TRUE.equals(response.getStudentMarked()));
+             event.setComments(response.getComments());
+             event.setCrResponse(response.getCrResponse());
+             event.setConditionCode(response.getConditionCode());
+             event.setTeItemResponse(response.getTeItemResponse());
+             event.setDasItemId(response.getParentDasItemId());
+             event.addChildItems(response.getChildDasItemId(), response.getInteractionType(), response.getItemOrder());
+             
+             
+             ftResponseEvents.put(event.getItemId(), event);
+        }else{
+        	FTResponseReceivedEvent event = ftResponseEvents.get(response.getItemId());
+        	if(event.getDasItemId().equals(response.getParentDasItemId())) {
+        		event.addChildItems(response.getChildDasItemId(), response.getInteractionType(), response.getItemOrder());
+        	}
+        }
+    }
 
     private ItemResponseMapper getItemResponseMapper(final Connection conn) {
         return null != itemResponseMapper
@@ -844,4 +918,33 @@ public class ResponseReplayer {
 	public void setProductType(String productType) {
 		this.productType = productType;
 	}
+	
+	/**
+	 * @return the invokeKey
+	 */
+	public static Long getInvokeKey() {
+		return invokeKey;
+	}
+
+	/**
+	 * @param invokeKey the invokeKey to set
+	 */
+	public static void setInvokeKey(Long invokeKey) {
+		ResponseReplayer.invokeKey = invokeKey;
+	}
+
+	/**
+	 * @return the isFTRetryProcess
+	 */
+	public boolean isFTRetryProcess() {
+		return isFTRetryProcess;
+	}
+
+	/**
+	 * @param isFTRetryProcess the isFTRetryProcess to set
+	 */
+	public void setFTRetryProcess(boolean isFTRetryProcess) {
+		this.isFTRetryProcess = isFTRetryProcess;
+	}
+	
 }

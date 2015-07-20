@@ -1,11 +1,11 @@
 package com.ctb.lexington.db.mapper.tsmapper;
 
-import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData;
 import com.ctb.lexington.db.mapper.AbstractDBMapper;
+import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
  * @author Rama_Rao
@@ -19,6 +19,7 @@ public class IrsTASCItemFactMapper extends AbstractDBMapper{
 	private static final String UPDATE_BY_FACTID = "TSupdateTABEItemFact";
 	private static final String DELETE_BY_FACTID = "TSdeleteByItemFactId";
     private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTASCItemFactCurrentResult";
+    private static final String INSERT_FT_INTO_TASCITEMFACT = "TSinsertFieldTestItemFact";
     
     public IrsTASCItemFactMapper(Connection conn){
 		super(conn);
@@ -48,4 +49,25 @@ public class IrsTASCItemFactMapper extends AbstractDBMapper{
 		if(record != null)	
 			delete(DELETE_BY_FACTID, record);	
     }
+	
+	public SqlMapClient insertBatch(IrsTASCItemFactData record, SqlMapClient sqlMap)throws SQLException{
+		sqlMap = insertBatch(INSERT_INTO_TASCITEMFACT, record, sqlMap);
+		return sqlMap;
+    }
+	
+	public SqlMapClient insertFTBatch(IrsTASCItemFactData record, SqlMapClient sqlMap)throws SQLException{
+		sqlMap = insertBatch(INSERT_FT_INTO_TASCITEMFACT, record, sqlMap);
+		return sqlMap;
+    }
+	
+	
+	public SqlMapClient deleteBatch(IrsTASCItemFactData record, SqlMapClient sqlMap)throws SQLException{
+		if(record != null)
+			sqlMap = deleteBatch(DELETE_BY_FACTID, record, sqlMap);
+		return sqlMap;
+    }
+	
+	public void executeItemBatch(SqlMapClient sqlClient) throws SQLException{
+		executeBatchProcess(sqlClient);
+	}
 }

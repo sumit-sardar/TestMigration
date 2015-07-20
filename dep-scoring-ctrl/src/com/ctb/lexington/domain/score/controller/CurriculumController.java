@@ -44,11 +44,25 @@ public class CurriculumController {
     private IrsSecObjDimMapper soMapper;
     private IrsItemDimMapper iMapper;
     String subtestName = null;
+    private boolean isRetryFieldTestTE;
 
     public CurriculumController(Connection conn, CurriculumData data, AdminData adminData, ContextData context) {
         this.data = data;
         this.adminData = adminData;
         this.context = context;
+        this.compMapper = new IrsCompositeDimMapper(conn);
+        this.caMapper = new IrsContentAreaDimMapper(conn);
+        this.poMapper = new IrsPrimObjDimMapper(conn);
+        this.soMapper = new IrsSecObjDimMapper(conn);
+        this.iMapper = new IrsItemDimMapper(conn);
+        this.subMapper = new IrsSubjectDimMapper(conn);
+    }
+    
+    public CurriculumController(Connection conn, CurriculumData data, AdminData adminData, boolean isRetryFieldTestTE, ContextData context) {
+        this.data = data;
+        this.adminData = adminData;
+        this.context = context;
+        this.isRetryFieldTestTE = isRetryFieldTestTE;
         this.compMapper = new IrsCompositeDimMapper(conn);
         this.caMapper = new IrsContentAreaDimMapper(conn);
         this.poMapper = new IrsPrimObjDimMapper(conn);
@@ -283,7 +297,10 @@ public class CurriculumController {
         IrsItemDimData [] items = getIrsItemBeans(data);
         
         // Changes for iBatis Batch Process implementation
-        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType()))){
+        if (null != adminData
+				&& ("TC".equalsIgnoreCase(adminData.getAssessmentType()) 
+						|| "TR".equalsIgnoreCase(adminData.getAssessmentType())
+						|| "TS".equalsIgnoreCase(adminData.getAssessmentType()))){
         	SqlMapClient insertItemClient = null;
             SqlMapClient updateItemClient = null;
             Map<String, IrsItemDimData> existItemMap = new HashMap<String, IrsItemDimData>();
@@ -349,6 +366,62 @@ public class CurriculumController {
         }
         copySubjectIdsToCurrData(composites, contentAreas, data);
         copyItemIdsToCurrData(items, data);
+               
+        // Handle FT TE Items only
+       	handleFieldTestTEItems();
+    }
+    
+    public void runFTTE() throws SQLException, IOException, DataException {
+
+		// Handle FT TE Items only
+		handleFieldTestTEItems();
+	}
+    
+    private void handleFieldTestTEItems() throws SQLException{
+    	
+    	if(null != adminData && ("TS".equalsIgnoreCase(adminData.getAssessmentType())
+        		|| "TR".equalsIgnoreCase(adminData.getAssessmentType()))){
+        	IrsItemDimData [] TEItems = getIrsTEItemBeans(data);
+        	
+        	SqlMapClient insertItemClient = null;
+            SqlMapClient updateItemClient = null;
+            Map<String, IrsItemDimData> existItemMap = new HashMap<String, IrsItemDimData>();
+            ArrayList<IrsItemDimData> itemArrList= new ArrayList<IrsItemDimData>();
+        	existItemMap = iMapper.findByOASItemIdAndSecObjId(new ArrayList<IrsItemDimData>(Arrays.asList(TEItems)), "key");
+        	for(int i=0;i<TEItems.length;i++) {
+                IrsItemDimData newItem = TEItems[i];
+                	String key = newItem.getOasItemid()+newItem.getSecObjid()+newItem.getAssessmentid();
+                	if(existItemMap.containsKey(key)) {
+    	            	IrsItemDimData dbItem = (IrsItemDimData)existItemMap.get(key);
+    	                if(!newItem.equals(dbItem)) {
+   	                		newItem.setCorrectResponse("N/A");
+    	                    updateItemClient = iMapper.updateBatch(newItem, updateItemClient);
+    	                }
+    	                newItem.setItemid(dbItem.getItemid());
+    	            } else{
+   	            		newItem.setCorrectResponse("N/A");
+    	            	insertItemClient = iMapper.insertBatch(newItem, insertItemClient);
+    	            	itemArrList.add(newItem);
+    	            	existItemMap.put(key, newItem);
+    	            }
+        	}
+        	
+        	iMapper.executeItemBatch(insertItemClient); // item inserted
+        	iMapper.executeItemBatch(updateItemClient); // item updated
+        	
+        	if(null != itemArrList && itemArrList.size() > 0){
+        		Map newItemMap = iMapper.findByOASItemIdAndSecObjId(itemArrList, "key");
+        		for(int i=0;i<TEItems.length;i++) {
+        			IrsItemDimData item = TEItems[i];
+        			String key = (item.getOasItemid()+item.getSecObjid()+item.getAssessmentid());
+        			if(newItemMap.containsKey(key)){
+        				IrsItemDimData newItem = (IrsItemDimData)newItemMap.get(key);
+        				item.setItemid(newItem.getItemid());
+        			}
+        		}
+        	}
+        	copyTEItemIdsToCurrData(TEItems, data);
+        }
     }
     
     private IrsCompositeDimData [] getIrsCompositeBeans(CurriculumData data) {
@@ -478,6 +551,26 @@ public class CurriculumController {
         return idd;
     }
     
+  //Added for TASC and TASC Readiness FT TE Items scoring
+    private IrsItemDimData [] getIrsTEItemBeans(CurriculumData data) {
+        IrsItemDimData [] idd = new IrsItemDimData[data.getTEItems().length];
+        for(int i =0;i<data.getTEItems().length;i++) {
+            idd[i] = new IrsItemDimData();
+            Item item = data.getTEItems()[i];
+            idd[i].setCorrectResponse(item.getItemCorrectResponse());
+            idd[i].setItemIndex(item.getItemIndex());
+            idd[i].setItemText(item.getItemText());
+            idd[i].setItemType(item.getItemType());
+            idd[i].setOasItemid(item.getOasItemId());
+            idd[i].setPointsPossible(item.getItemPointsPossible());
+            SecondaryObjective so = data.getSecObjById(item.getSecondaryObjectiveId());
+            idd[i].setSecObjid(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(item.getSecondaryObjectiveId()))));
+            idd[i].setAssessmentid(context.getAssessmentId());
+        }
+        
+        return idd;
+    }
+    
     private IrsPrimObjDimData [] getIrsVirtualPrimObjBeans(CurriculumData data, Long objectiveIndex) {
         Map<Long, VirtualPrimObjsForTABECCSS> primMap = new HashMap<Long, VirtualPrimObjsForTABECCSS>();
         for(VirtualPrimObjsForTABECCSS virtualPrim : data.getVirtualPrimObjs()){
@@ -539,6 +632,13 @@ public class CurriculumController {
         for(int i =0;i<irsItems.length;i++) {
             Item item = data.getItems()[i];
             item.setItemId(irsItems[i].getItemid());
+        }
+    }
+    
+    private void copyTEItemIdsToCurrData(IrsItemDimData [] irsTEItems, CurriculumData data) {
+        for(int i =0;i<irsTEItems.length;i++) {
+            Item item = data.getTEItems()[i];
+            item.setItemId(irsTEItems[i].getItemid());
         }
     }
     

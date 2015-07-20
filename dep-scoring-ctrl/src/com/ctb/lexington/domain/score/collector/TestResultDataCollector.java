@@ -114,6 +114,7 @@ public class TestResultDataCollector {
         data.setStudentItemScoreData(new StudentItemScoreData());
         data.setStudentScoreSummaryData(new StudentScoreSummaryData());
         data.setStudentSubtestScoresData(new StudentSubtestScoresData());
+        data.setStudentfieldTestTEItemScoreData(new StudentItemScoreData());
         data.setStsTestResultFactData(new StsTestResultFactData());
         data.setStsTotalStudentScoreData(new StsTotalStudentScoreData());
         data.setCaResponseWsTv(new WsTvStudentItemResponseData());
@@ -144,6 +145,7 @@ public class TestResultDataCollector {
         ArrayList primObjList = new ArrayList();
         ArrayList secObjList = new ArrayList();
         ArrayList itemList = new ArrayList();
+        ArrayList TEItemList = new ArrayList();
         Map crItemMap = new HashMap();
         
         for(int i=0;i<contentAreas.length;i++) {
@@ -201,6 +203,15 @@ public class TestResultDataCollector {
                                         }
                                     }
                                 }
+                                if("TS".equalsIgnoreCase(productType) || "TR".equalsIgnoreCase(productType)){
+                                	Item [] TEItems = currData.getTEItems();
+	                                for(int l=0;l<TEItems.length;l++) {
+	                                    if(TEItems[l].getSecondaryObjectiveId().equals(secObjs[k].getSecondaryObjectiveId()) &&
+	                                    	TEItems[l].getSubtestLevel().equals(contentAreas[i].getSubtestLevel())) {
+	                                    	TEItemList.add(TEItems[l]);
+	                                    }
+	                                }
+                                }
                             }
                         }
                     }
@@ -211,6 +222,7 @@ public class TestResultDataCollector {
         filteredCurrData.setPrimaryObjectives((PrimaryObjective[]) primObjList.toArray(new PrimaryObjective[0]));
         filteredCurrData.setSecondaryObjectives((SecondaryObjective[]) secObjList.toArray(new SecondaryObjective[0]));
         filteredCurrData.setItems((Item[]) itemList.toArray(new Item[0]));
+        filteredCurrData.setTEItems((Item[]) TEItemList.toArray(new Item[TEItemList.size()]));
         filteredCurrData.setCrItemMap(crItemMap);
         filteredCurrData.setVirtualPrimObjs(currData.getVirtualPrimObjs());
         return filteredCurrData;

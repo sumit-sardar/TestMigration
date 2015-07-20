@@ -50,6 +50,7 @@ public class CurriculumCollector {
         if("TS".equalsIgnoreCase(productType) || "TR".equalsIgnoreCase(productType)) {
         	data.setSecondaryObjectives(getSecondaryObjectivesForTASC(oasRosterId));
             data.setItems(getItemsForTASC(oasRosterId));
+            data.setTEItems(getTEItemsForTASC(oasRosterId));
         }
         else if("TC".equalsIgnoreCase(productType)) {
         	data.setSecondaryObjectives(getSecondaryObjectivesForTABECCSS(oasRosterId));
@@ -2354,6 +2355,121 @@ public class CurriculumCollector {
                "and item.item_id = secisi.item_id " + 
                "and secisi.suppressed = 'F'" +
                "and tdisi.item_id = item.item_id " + 
+               "and td.item_set_id = tdisi.item_set_id " + 
+               "and td.item_set_type = 'TD' " + 
+               "and tdisa.item_set_id = td.item_set_id " + 
+               "and adm.item_set_id = tdisa.ancestor_item_set_id " + 
+               "and seccat.item_Set_category_id = sec.item_set_category_id " +  
+               "and seccat.item_set_category_level = prod.sec_scoring_item_Set_level " + 
+               "and td.item_set_form = ros.form_assignment " +
+               "and dp.item_id = item.item_id " +
+               "and dp.item_set_id = sec.item_set_id " + 
+               "and td.sample = 'F' " + 
+               "AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " + 
+               "and seccat.framework_product_id = prod.PARENT_PRODUCT_ID " +
+               "and prog.program_id = adm.program_id " +
+               "and pval.item_display_name (+) = item.item_id " +
+            "group by " +
+               "sec.item_set_id, " + 
+               "item.item_id, " +  
+               "item.description, " +  
+               "tdisi.item_sort_order, " +  
+               "item.item_type, " +  
+               "item.correct_answer, " + 
+               "item.answer_area, " +
+               "dp.max_points, " +  
+               "td.item_set_form, " + 
+               "td.item_set_level, " + 
+               "td.item_set_id, " + 
+               "td.item_set_name, " +
+               "pval.grade, " +
+               "pval.norm_group, " +
+               "pval.p_value " +
+           "order by " +  
+               "tdisi.item_sort_order";
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(casql);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Item item = (Item) items.get(rs.getString("oasItemId"));
+                if(item == null) item = new Item();
+                item.setOasItemId(rs.getString("oasItemId"));
+                item.setSecondaryObjectiveId(new Long(rs.getLong("secondaryObjectiveId")));
+                item.setItemCorrectResponse(rs.getString("itemCorrectResponse"));
+                item.setItemIndex(new Long(rs.getLong("itemIndex")));
+                item.setItemPointsPossible(new Long(rs.getLong("itemPointsPossible")));          
+                item.setItemText(rs.getString("itemIndex"));
+                item.setItemType(rs.getString("itemType"));
+                item.setSubtestId(new Long(rs.getLong("subtestId")));
+                item.setSubtestForm(rs.getString("subtestForm"));
+                item.setSubtestLevel(rs.getString("subtestLevel"));
+                item.setSubtestName(rs.getString("subtestName"));
+                item.setAnswerArea(rs.getString("answerArea"));
+                if(rs.getBigDecimal("nationalAverage") != null) {
+                    item.setNationalAverage(rs.getString("pvalNormGroup") + String.valueOf(rs.getInt("pvalGrade")), rs.getBigDecimal("nationalAverage"));
+                }      
+                items.put(rs.getString("oasItemId"), item);
+            }
+        } finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+        return (Item []) items.values().toArray(new Item[0]);
+    }
+    
+    public Item [] getTEItemsForTASC(Long oasRosterId) throws SQLException {
+        HashMap items = new HashMap();
+        final String casql = 
+        	"select distinct " + 
+               "sec.item_set_id as secondaryObjectiveId, " + 
+               "item.item_id as oasItemId, " +  
+               "item.description as itemText, " +  
+               "tdisi.item_sort_order as itemIndex, " +  
+               "item.item_type as itemType, " +  
+               "item.correct_answer as itemCorrectResponse, " +
+               "item.answer_area as answerArea, " +
+               "dp.max_points as itemPointsPossible, " +  
+               "td.item_set_form as subtestForm, " + 
+               "td.item_set_level as subtestLevel, " + 
+               "td.item_set_id as subtestId, " + 
+               "td.item_set_name as subtestName, " +
+               "pval.grade as pvalGrade, " +
+               "pval.norm_group as pvalNormGroup, " +
+               "round(pval.p_value * 100, 1) as nationalAverage " +
+            "from " +   
+               "item, " +  
+               "item_set sec, " +  
+               "item_Set_category seccat, " +  
+               "item_set_ancestor secisa, " + 
+               "item_Set_item secisi, " + 
+               "item_set td, " + 
+               "item_set_ancestor tdisa, " + 
+               "item_set_item tdisi, " +   
+               "datapoint dp, " +  
+               "test_roster ros, " +  
+               "test_Admin adm, " +  
+               "test_catalog tc, " +  
+               "product prod, " +
+               "program prog, " +
+               "item_p_value pval " +
+            "where " +  
+               "ros.test_roster_id = ? " + 
+               "and adm.test_admin_id = ros.test_admin_id " + 
+               "and tc.test_catalog_id = adm.test_catalog_id " + 
+               "and prod.product_id = tc.product_id " + 
+               "and item.ACTIVATION_STATUS = 'AC' " +
+               "and item.item_type='IN' " +  
+               "and tc.ACTIVATION_STATUS = 'AC' " +  
+               "and sec.item_Set_id = secisa.ancestor_item_Set_id " + 
+               "and sec.item_set_type = 'RE' " +  
+               "and secisa.item_set_id = secisi.item_Set_id " + 
+               "and item.item_id = secisi.item_id " + 
+               "and tdisi.item_id = item.item_id " +
+               "and tdisi.field_test = 'T' " +
                "and td.item_set_id = tdisi.item_set_id " + 
                "and td.item_set_type = 'TD' " + 
                "and tdisa.item_set_id = td.item_set_id " + 

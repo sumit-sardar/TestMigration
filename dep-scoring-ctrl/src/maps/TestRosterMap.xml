@@ -41,4 +41,53 @@
              TEST_ROSTER_ID = #testRosterId:NUMERIC#
     </update>
 
+	<insert id="insertMosaicErrorRecord" parameterClass="com.ctb.lexington.db.data.ScoringInvokeRecord">
+		INSERT INTO SCORING_INVOKE_LOG I
+		  (I.SCORING_INVOKE_LOG_KEY,
+		   I.STUDENT_ID,
+		   I.ROSTER_ID,
+		   I.SESSION_ID,
+		   I.STATUS,
+		   I.INVOKE_COUNT,
+		   I.SCORER_TYPE,
+		   I.ADDITIONAL_INFO,
+		   I.MESSAGE,
+		   I.CREATED_DATE,
+		   I.UPDATED_DATE)
+		VALUES
+		  (seq_scoring_invoke_log_key.nextval,
+		   #studentId:NUMERIC#,
+		   #testRosterId:NUMERIC#,
+		   #sessionId:NUMERIC#,
+		   #status:VARCHAR#,
+		   #invokeCount:NUMERIC#,
+		   #scorerType:VARCHAR#,
+		   #additionalInfo:VARCHAR#,
+		   #messages:VARCHAR#,
+		   SYSDATE,
+		   SYSDATE)
+	</insert>
+	
+	<update id="updateMosaicErrorRecord" parameterClass="com.ctb.lexington.db.data.ScoringInvokeRecord">
+        UPDATE SCORING_INVOKE_LOG U
+		   SET U.STATUS          = DECODE((U.INVOKE_COUNT + 1), 5, 'Failed', U.STATUS),
+		       U.INVOKE_COUNT    = (U.INVOKE_COUNT + 1),
+		       U.ADDITIONAL_INFO = #additionalInfo:VARCHAR#,
+		       U.MESSAGE         = #messages:VARCHAR#,
+		       U.UPDATED_DATE    = SYSDATE
+		 WHERE U.ROSTER_ID = #testRosterId:NUMERIC#
+		 AND   U.SCORING_INVOKE_LOG_KEY = #invokeKey:NUMERIC#
+    </update>
+    
+    <update id="updateMosaicErrorRecordSuccess" parameterClass="com.ctb.lexington.db.data.ScoringInvokeRecord">
+        UPDATE SCORING_INVOKE_LOG U
+		   SET U.STATUS          = #status:VARCHAR#,
+		       U.INVOKE_COUNT    = (U.INVOKE_COUNT + 1),
+		       U.ADDITIONAL_INFO = #additionalInfo:VARCHAR#,
+		       U.MESSAGE         = #messages:VARCHAR#,
+		       U.UPDATED_DATE    = SYSDATE
+		 WHERE U.ROSTER_ID = #testRosterId:NUMERIC#
+		 AND   U.SCORING_INVOKE_LOG_KEY = #invokeKey:NUMERIC#
+    </update>
+    
 </sqlMap>

@@ -62,7 +62,12 @@ public class ScorerFactory {
                     ResponseReplayer responseReplayer = new ResponseReplayer(scorer);
                     responseReplayer.setProductId(assessment.getProductId());
                     responseReplayer.setProductType(assessment.getProductType().getCode());
+                    if (assessment.isRetryProcessFT()){
+                    	ResponseReplayer.setInvokeKey(assessment.getInvokeKey());
+                    	responseReplayer.setFTRetryProcess(assessment.isRetryProcessFT());
+                    }
                     responseReplayer.replaySubtests(assessment.getTestRosterId(), scorer);
+                    
                 } else {
                 	//setCompletionStatusForUnscoredTest(assessment.getTestRosterId());
                 }
@@ -227,11 +232,11 @@ public class ScorerFactory {
         return scoringThread;
     }
     
-    public static void scoreWithEventsInForeground(final Long testRosterId,
+    public static void scoreWithEventsInForeground(final Long testRosterId, final Long invokeKey,
             final Integer productId, final String productType, final String grade,
-			final boolean updateContextData, final boolean performMatching) {
+			final boolean updateContextData, final boolean performMatching, final boolean retryProcessFT) {
         try {
-            Scorer scorer = createScorer(new AssessmentStartedEvent(testRosterId, productId, productType, grade)); // replays events
+            Scorer scorer = createScorer(new AssessmentStartedEvent(testRosterId, productId, productType, grade, invokeKey, retryProcessFT)); // replays events
             scorer.getResultHolder().getStudentData().setPerformMatching(performMatching);
             System.out.println("***** SCORING: ScorerFactory: scoreWithEventsInForeground: finished event replay");
             releaseScorer(testRosterId, updateContextData);
@@ -269,10 +274,10 @@ public class ScorerFactory {
     }
     
     public static void invokeScoring(Integer testRosterId, boolean runInBackGround, boolean updateContextData) throws CTBSystemException, NamingException {
-    	invokeScoring(testRosterId, runInBackGround, updateContextData, true);
+    	invokeScoring(testRosterId, null, runInBackGround, updateContextData, true, false);
     }
     
-    public static void invokeScoring(Integer testRosterId, boolean runInBackGround, boolean updateContextData, boolean performMatching) throws CTBSystemException, NamingException {
+    public static void invokeScoring(Integer testRosterId, Long invokeKey, boolean runInBackGround, boolean updateContextData, boolean performMatching, boolean retryFTProcess) throws CTBSystemException, NamingException {
     	System.out.println("***** SCORING: ScorerFactory: invokeScoring: called for roster: " + testRosterId);
     	Connection conn = null;
         PreparedStatement ps = null;
@@ -325,13 +330,13 @@ public class ScorerFactory {
 	            scoreWithEventsInBackground(DatabaseHelper.asLong(testRosterId), productId, productType, studentGrade, updateContextData, performMatching);
 	        } else {
 	        	System.out.println("***** SCORING: ScorerFactory: invokeScoring: scoring in foreground");
-	            scoreWithEventsInForeground(DatabaseHelper.asLong(testRosterId), productId, productType, studentGrade, updateContextData, performMatching);
+	            scoreWithEventsInForeground(DatabaseHelper.asLong(testRosterId), invokeKey, productId, productType, studentGrade, updateContextData, performMatching, retryFTProcess);
 	        }
         }else {
         	System.out.println("ScorerFactory.invokeScoring(testRosterId, runInBackGround): no product info for roster: " + testRosterId);
         }
     }
-
+    
     private static Class getScorerClass(final ProductType productType) throws ClassNotFoundException {
         return ScorerFactory.class.getClassLoader().loadClass(getScorerClassName(productType));
     }

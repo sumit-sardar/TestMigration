@@ -20,6 +20,7 @@ public class IrsTRItemFactMapper extends AbstractDBMapper{
 	private static final String UPDATE_BY_FACTID = "TRupdateItemFact";
 	private static final String DELETE_BY_FACTID = "TRdeleteByItemFactId";
     private static final String UPDATE_CURRENTRESULT_STATUS = "TRupdateItemFactCurrentResult";
+    private static final String INSERT_FT_INTO_ITEMFACT = "TRinsertFieldTestItemFact";
     
     public IrsTRItemFactMapper(Connection conn){
 		super(conn);
@@ -49,8 +50,14 @@ public class IrsTRItemFactMapper extends AbstractDBMapper{
 		if(record != null)	
 			delete(DELETE_BY_FACTID, record);	
     }
+	
 	public SqlMapClient insertBatch(IrsTRItemFactData record, SqlMapClient sqlMap)throws SQLException{
 		sqlMap = insertBatch(INSERT_INTO_ITEMFACT, record, sqlMap);
+		return sqlMap;
+    }
+	
+	public SqlMapClient insertFTBatch(IrsTRItemFactData record, SqlMapClient sqlMap)throws SQLException{
+		sqlMap = insertBatch(INSERT_FT_INTO_ITEMFACT, record, sqlMap);
 		return sqlMap;
     }
 	

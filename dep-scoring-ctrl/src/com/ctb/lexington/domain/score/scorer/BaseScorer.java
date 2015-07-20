@@ -43,6 +43,8 @@ import com.ctb.lexington.domain.score.controller.tvcontroller.TVTestResultContro
 import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
 import com.ctb.lexington.domain.score.event.ContentAreaRawScoreEvent;
+import com.ctb.lexington.domain.score.event.FTPointEvent;
+import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.ObjectivePrimaryCumulativeNumberCorrectEvent;
 import com.ctb.lexington.domain.score.event.ObjectivePrimaryNumberCorrectEvent;
@@ -139,6 +141,9 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         // place item scores into result holder
         channel.subscribe(this, ResponseReceivedEvent.class);
         channel.subscribe(this, PointEvent.class);
+        
+        channel.subscribe(this, FTResponseReceivedEvent.class);
+        channel.subscribe(this, FTPointEvent.class);
 
         channel.subscribe(this, ScoringStatusEvent.class);
         channel.subscribe(this, TestCompletionStatusEvent.class);
@@ -199,6 +204,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                     TestResultDataCollector collector = new TestResultDataCollector();
                     System.out.println("***** SCORING: BaseScorer: handleAssessmentStartedEvent: collecting context");
                     resultHolder = collector.collect(testRosterId, this);
+                    setTEScoringDetails((AssessmentStartedEvent)event); // for only Field Test TE item score
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new CTBSystemException("9300", "Error collecting test result data", e);
@@ -216,7 +222,13 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         }
     }
 
-    private void handleAssessmentEndedEvent(Event event) throws CTBSystemException {
+    private void setTEScoringDetails(AssessmentStartedEvent event) {
+    	event.setStudentId(resultHolder.getStudentData().getOasStudentId());
+        event.setTestAdminId(resultHolder.getAdminData().getSessionId());
+        getResultHolder().setRetryFieldTestTE(event.isRetryProcessFT());
+	}
+
+	private void handleAssessmentEndedEvent(Event event) throws CTBSystemException {
         // TODO: There's no unit test for the persistence behavior on the scorers yet
         if (event instanceof AssessmentEndedEvent) {
         	System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: starting persistence");
@@ -461,8 +473,14 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
     		 
     	 }
     }
+    
+    public void onEvent(FTPointEvent event) {
+		StudentItemScoreDetails detail = getResultHolder()
+				.getStudentfieldTestTEItemScoreData().get(event.getItemId());
+		detail.setPoints(event.getPointsObtained());
+	}
 
-    //TODO: this should probably move into collectors/controllers
+    // TODO: this should probably move into collectors/controllers
     public void onEvent(SubtestObjectiveCollectionEvent event) throws CTBSystemException {
     	 this.subtestObjectives = event;
         StudentItemScoreData studentItemScoreData = getResultHolder().getStudentItemScoreData();
@@ -509,14 +527,32 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
     }
 
     public void onEvent(final SubtestItemCollectionEvent event) {
-        copyScoreHistoryFromOasToAts(getResultHolder(), event.getItems().iterator(), event
+    	copyScoreHistoryFromOasToAts(getResultHolder(), event.getItems().iterator(), event
                 .getItemSetName(),subtestObjectives);
     }
 
-    public static final void copyScoreHistoryFromOasToAts(final ScoreMoveData scoreMoveData,
+    public static final void copyScoreHistoryForFieldTestTEItems(final ScoreMoveData scoreMoveData,
+			final Iterator subtestItemCollectionData, final String itemSetName) {
+    	final StudentItemScoreData studentFTTEItemScoreData = scoreMoveData.getStudentfieldTestTEItemScoreData();
+    	while (subtestItemCollectionData.hasNext()) {
+            final ItemVO item = (ItemVO) subtestItemCollectionData.next();
+            if(ItemVO.ITEM_TYPE_IN.equals(item.getItemType())){
+            	final StudentItemScoreDetails detail = studentFTTEItemScoreData.get(item.getItemId());
+    			detail.setTestItemNum(item.getItemSortOrder());
+    			//detail.setCorrectAnswer(item.getCorrectAnswer());
+    			detail.setMaxPoints(item.getMaxPoints());
+    			detail.setMinPoints(item.getMinPoints());
+    			detail.setItemType(item.getItemType());
+    			detail.setTestItemSetName(itemSetName);
+    			detail.setTestItemSetId(item.getItemSetId());
+    			detail.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
+            }
+        }
+	}
+
+	public static final void copyScoreHistoryFromOasToAts(final ScoreMoveData scoreMoveData,
             final Iterator subtestItemCollectionData, final String itemSetName,SubtestObjectiveCollectionEvent subtestObjectives) {
         final StudentItemScoreData studentItemScoreData = scoreMoveData.getStudentItemScoreData();
-//System.out.println("copyScoreHistoryFromOasToAts");
         while (subtestItemCollectionData.hasNext()) {
             final ItemVO item = (ItemVO) subtestItemCollectionData.next();
             try {
@@ -687,5 +723,44 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                 }
             } 
         }
+    }
+    
+    protected void setFTItemStatus(List contentAreaNames, String validScore) {
+
+        CurriculumData currData = getResultHolder().getCurriculumData();
+        StsTestResultFactData stsTestResultFactData = getResultHolder().getStsTestResultFactData();
+        StudentScoreSummaryData summaryData = getResultHolder().getStudentScoreSummaryData();
+        StudentItemScoreData teItemData = getResultHolder().getStudentfieldTestTEItemScoreData();
+        for (Iterator iter = contentAreaNames.iterator(); iter.hasNext();) {
+            String name = (String) iter.next();
+            StsTestResultFactDetails details = stsTestResultFactData.get(name);
+            if(!(CTBConstants.VALID_SCORE.equals(details.getValidScore()) && CTBConstants.INVALID_SCORE.equals(validScore))) {
+                details.setValidScore(validScore);
+                if(CTBConstants.INVALID_SCORE.equals(validScore)) {
+                    List contentAreas = currData.getContentAreasByName(name);
+                    Iterator caIter = contentAreas.iterator();
+                    while(caIter.hasNext()) {
+                        ContentArea ca = (ContentArea) caIter.next();
+                        summaryData.markObjectivesNonValidForSubtest(ca.getSubtestId());
+                        teItemData.markItemsNonValidForSubtest(ca.getSubtestId());
+                    }
+                } else if(CTBConstants.VALID_SCORE.equals(validScore)) {
+                    List contentAreas = currData.getContentAreasByName(name);
+                    Iterator caIter = contentAreas.iterator();
+                    while(caIter.hasNext()) {
+                        ContentArea ca = (ContentArea) caIter.next();
+                        Long caid = ca.getContentAreaId();
+                        PrimaryObjective[] prims = currData.getPrimaryObjectives();
+                        for(int i=0;i<prims.length;i++) {
+                            if(caid.equals(prims[i].getContentAreaId())) {
+                                summaryData.get(prims[i].getPrimaryObjectiveId()).setAtsArchive("T");
+                            }
+                        }
+                        teItemData.markItemsValidForSubtest(ca.getSubtestId());
+                    }
+                }
+            } 
+        }
+    
     }
 }

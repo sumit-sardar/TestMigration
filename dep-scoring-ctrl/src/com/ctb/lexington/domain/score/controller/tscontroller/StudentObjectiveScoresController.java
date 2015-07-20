@@ -16,6 +16,7 @@ import com.ctb.lexington.db.data.StudentTestData;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCSecObjFactMapper;
+import com.ibatis.sqlmap.client.SqlMapClient;
 
 
 public class StudentObjectiveScoresController {
@@ -40,15 +41,23 @@ public class StudentObjectiveScoresController {
     public void run() throws SQLException {
     	// As for TASC Content Area and Primary Objective levels are 
     	// same so Scoring at Primary Objective level is not required
+    	
+    	SqlMapClient insertSqlMap = null;
+        SqlMapClient deleteSqlMap = null;
+        ArrayList<Long> objectiveList = new ArrayList<Long>();
         
         IrsTASCSecObjFactData [] sfacts = getSecObjFactBeans();
         for(int i=0;i<sfacts.length;i++) {
-            IrsTASCSecObjFactData newFact = sfacts[i];
-            soMapper.delete(newFact);
-            if(new Long(1).equals(newFact.getCurrentResultid()))  {
-                soMapper.insert(newFact);
+        	IrsTASCSecObjFactData newFact = sfacts[i];
+            deleteSqlMap = soMapper.deleteBatch(newFact,deleteSqlMap);
+            if(new Long(1).equals(newFact.getCurrentResultid())  && !objectiveList.contains(newFact.getSecObjid()))  {
+            	objectiveList.add(newFact.getSecObjid());
+            	insertSqlMap = soMapper.insertBatch(newFact,insertSqlMap);
             }
         }
+        soMapper.executeItemBatch(deleteSqlMap);
+        soMapper.executeItemBatch(insertSqlMap);
+        objectiveList.clear();
     }
     
     public IrsTASCSecObjFactData [] getSecObjFactBeans() {

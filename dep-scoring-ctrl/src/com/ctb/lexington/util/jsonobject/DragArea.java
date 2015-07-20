@@ -8,6 +8,7 @@ public class DragArea implements Serializable{
 	private String id;
 	private String format;
 	private String response;
+	private String htmlresponse;
 	
 	public DragArea(){
 		
@@ -35,6 +36,20 @@ public class DragArea implements Serializable{
 
 	public void setResponse(String response) {
 		this.response = response;
+	}
+
+	/**
+	 * @return the htmlresponse
+	 */
+	public String getHtmlresponse() {
+		return htmlresponse;
+	}
+
+	/**
+	 * @param htmlresponse the htmlresponse to set
+	 */
+	public void setHtmlresponse(String htmlresponse) {
+		this.htmlresponse = htmlresponse;
 	}
 	
 }

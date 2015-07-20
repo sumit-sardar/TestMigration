@@ -3,6 +3,7 @@ package com.ctb.lexington.domain.score.scorer.calculator;
 import java.io.ByteArrayInputStream;
 import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,12 +15,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.ctb.lexington.data.ItemVO;
+import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.PointEvent;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
 import com.ctb.lexington.util.jsonobject.JsonContent;
 import com.ctb.lexington.util.jsonobject.ScoreResponse;
+import com.ctb.lexington.util.mosaicobject.MSSResponseWrapper;
 import com.google.gson.Gson;
 
 public class ResponsePointCalculator extends AbstractResponseCalculator {
@@ -126,6 +129,58 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 						new Integer(0)));
 			}
 		}
+	}
+	
+	public void onEvent(FTResponseReceivedEvent event) {
+		/*validateItemSetId(event.getItemSetId());
+		final String itemId = event.getItemId();
+		if ("TS".equals(sicEvent.getProductType()) || "TR".equals(sicEvent.getProductType())){
+			if (ItemVO.ITEM_TYPE_IN.equals(sicEvent.getType(itemId))) {
+				Map<String, MSSResponseWrapper> responseMap = getFTResponse(event);
+				if(responseMap != null && !responseMap.isEmpty()){
+					final Integer attempted = computeMosaicPointsAttempted(event, responseMap);
+					final Integer obtained = computeMosaicPointsObtained(event, responseMap);
+					System.out.println("****** ResonsePointCalculator : onEvent(FTResponseReceivedEvent event) ****** :: ItemId ::"+event.getItemId()+" :: Obtained :: "+ obtained + " :: Attempted :: "+attempted);
+					channel.send(new FTPointEvent(event.getTestRosterId(), event
+							.getItemId(), event.getItemSetId(), attempted, obtained));
+				}else{
+					channel.send(new FTPointEvent(event.getTestRosterId(), event
+							.getItemId(), event.getItemSetId(), new Integer(0),
+							new Integer(0)));
+				}
+			}
+		}*/
+	}
+
+	private Integer computeMosaicPointsObtained(FTResponseReceivedEvent event,
+			Map<String, MSSResponseWrapper> responseMap) {
+		
+		Integer pointsObtained = event.getPointsObtained();
+		if (null == pointsObtained) {
+			if (responseMap.containsKey(event.getItemId())) {
+				Double value = (null != responseMap.get(event.getItemId()).getMosaicScoringResponse() 
+						&& !responseMap.get(event.getItemId()).getMosaicScoringResponse().getItemScore().isEmpty()) 
+							? Double.parseDouble(responseMap.get(event.getItemId()).getMosaicScoringResponse().getItemScore()) 
+								: sicEvent.getMinPoints(event.getItemId());
+				pointsObtained = Integer.valueOf(value.intValue());
+			} else {
+				pointsObtained = sicEvent.getMinPoints(event.getItemId());
+			}
+		}
+		return pointsObtained;
+	}
+
+	private Integer computeMosaicPointsAttempted(FTResponseReceivedEvent event,
+			Map<String, MSSResponseWrapper> responseMap) {
+		
+		Integer pointsAttempted = new Integer(0);
+		if(responseMap.containsKey(event.getItemId())){
+			pointsAttempted = (null != responseMap.get(event.getItemId()).getMosaicScoringResponse() 
+					&& !responseMap.get(event.getItemId()).getMosaicScoringResponse().getItemScore().isEmpty()) 
+						? sicEvent.getMaxPoints(event.getItemId()) 
+								: pointsAttempted;
+		}
+		return pointsAttempted;
 	}
 
 	private Integer computePointsAttempted(ResponseReceivedEvent event,
@@ -257,6 +312,17 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 		return null;
 	}
 	
+	/*private Map<String, MSSResponseWrapper> getFTResponse(FTResponseReceivedEvent event) {
+		Map<String, MSSResponseWrapper> responseMap = null;
+		try {
+			MosaicResponseProcessor processor = new MosaicResponseProcessor(event);
+			responseMap = processor.process();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseMap;
+	}*/
+	
 	private String getCharacterDataFromElement(Element e) {
 		  Node child = e.getFirstChild();
 		  if (child instanceof CharacterData) {
@@ -265,4 +331,5 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 		  }
 		  return "";
 	}
+	
 }

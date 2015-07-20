@@ -33,6 +33,7 @@ import com.ctb.lexington.domain.score.event.SubtestInvalidEvent;
 import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestValidEvent;
 import com.ctb.lexington.domain.score.scorer.calculator.ContentAreaNumberCorrectCalculator;
+import com.ctb.lexington.domain.score.scorer.calculator.MosaicResponseProcessCalculator;
 import com.ctb.lexington.domain.score.scorer.calculator.TASCCompositeScoreCalculator;
 import com.ctb.lexington.domain.score.scorer.calculator.TASCContentAreaDerivedScoreCalculator;
 import com.ctb.lexington.domain.score.scorer.calculator.TASCSecondaryObjectiveDerivedScoreCalculator;
@@ -46,12 +47,14 @@ public class TSScorer extends STScorer {
     public TSScorer() throws CTBSystemException, IOException {
         super();
 
+        addCalculator(new MosaicResponseProcessCalculator(channel, this));
         addCalculator(new ContentAreaNumberCorrectCalculator(channel, this));
         addCalculator(new TASCContentAreaDerivedScoreCalculator(channel, this));
         addCalculator(new TASCSecondaryObjectiveDerivedScoreCalculator(channel, this));
       	addCalculator(new TASCCompositeScoreCalculator(channel,this));
       	
         channel.subscribe(this, AssessmentStartedEvent.class);
+        channel.subscribe(this, SubtestItemCollectionEvent.class);
         channel.subscribe(this, ContentAreaNumberCorrectEvent.class);
         channel.subscribe(this, ContentAreaDerivedScoreEvent.class);
         channel.subscribe(this, SecondaryObjectiveDerivedScoreEvent.class);
@@ -72,6 +75,10 @@ public class TSScorer extends STScorer {
         final StudentSubtestScoresDetails subtestScoresDetail = subtestScoresData.get(DatabaseHelper.asLong(
                 event.getItemSetId()));
         subtestScoresDetail.setItemSetName(event.getItemSetName());
+        
+        //added for field test TE item scoring 
+    	copyScoreHistoryForFieldTestTEItems(getResultHolder(), event.getItems()
+				.iterator(), event.getItemSetName());
     }
 
     // NOTE: This is the same code in TBScorer and TVScorer
@@ -121,10 +128,11 @@ public class TSScorer extends STScorer {
     }
     
     public void onEvent(SubtestValidEvent event) {
-        //setStatuses(event.getContentAreaNames(), CTBConstants.VALID_SCORE);
+    	setFTItemStatus(event.getContentAreaNames(), CTBConstants.VALID_SCORE);
     }
 
     public void onEvent(SubtestInvalidEvent event) {
+    	setFTItemStatus(event.getContentAreaNames(), CTBConstants.INVALID_SCORE);
     	invalidSubtestIds.add(event.getItemSetId());
     }
     
@@ -203,6 +211,7 @@ public class TSScorer extends STScorer {
     private void markObjectiveAndItemsForSubtest(String contentArea, String validScore ){
         StudentScoreSummaryData summaryData = getResultHolder().getStudentScoreSummaryData();
         StudentItemScoreData itemData = getResultHolder().getStudentItemScoreData();
+        StudentItemScoreData teItemData = getResultHolder().getStudentfieldTestTEItemScoreData();
     	CurriculumData currData = getResultHolder().getCurriculumData();
         SecondaryObjective[] sec = currData.getSecondaryObjectives();
         StsTestResultFactData factData = getResultHolder().getStsTestResultFactData();
@@ -234,8 +243,10 @@ public class TSScorer extends STScorer {
                  }
                  if(CTBConstants.VALID_SCORE.equals(validScore) && computeValidSubtestScoreFlag(ca.getSubtestId().intValue())){
                 	 itemData.markItemsValidForSubtest(ca.getSubtestId());
+                	 teItemData.markItemsValidForSubtest(ca.getSubtestId());
                  }else {
                 	 itemData.markItemsNonValidForSubtest(ca.getSubtestId());
+                	 teItemData.markItemsNonValidForSubtest(ca.getSubtestId());
                  }
     	 }
     }

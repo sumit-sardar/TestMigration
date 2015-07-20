@@ -12,6 +12,7 @@ import com.ctb.lexington.data.WsTvCaItemPeidVo;
 import com.ctb.lexington.db.mapper.ItemMapper;
 import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
+import com.ctb.lexington.domain.score.event.MosaicErrorHandleEvent;
 import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestStartedEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
@@ -19,30 +20,36 @@ import com.ctb.lexington.domain.score.scorer.Scorer;
 
 public class SubtestItemCollectionCalculator extends Calculator {
     private Integer productId;
-    private String productType;
-    private String currentWsTvSubject;
-    private String subtestName = null;
-    private String subtestIdCA = null;
+	private String productType;
+	private Long studentId;
+	private Long testAdminId;
+	private String currentWsTvSubject;
+	private String subtestName = null;
+	private String subtestIdCA = null;
 
     /**
-     * @param channel
-     * @param scorer
-     */
+	 * @param channel
+	 * @param scorer
+	 */
     public SubtestItemCollectionCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
 
         channel.subscribe(this, AssessmentStartedEvent.class);
         channel.subscribe(this, SubtestStartedEvent.class);
+        channel.subscribe(this, MosaicErrorHandleEvent.class);
         mustPrecede(AssessmentStartedEvent.class, SubtestStartedEvent.class);
     }
 
     public void onEvent(AssessmentStartedEvent event) {
         productId = event.getProductId();
         productType = event.getProductType().getCode();
+        studentId = event.getStudentId();
+        testAdminId = event.getTestAdminId();
     }
 
     public void onEvent(SubtestStartedEvent event) {
         Collection items;
+        Collection ftItems;
         Connection oasConnection = null;
         Connection oasWsTvConnection = null;
         try {
@@ -67,6 +74,10 @@ public class SubtestItemCollectionCalculator extends Calculator {
             			"TR".equals(scorer.getResultHolder().getAdminData().getAssessmentType())) {
             	items = new ItemMapper(oasConnection).findItemByItemSetId(DatabaseHelper.asLong(event
                         .getItemSetId()), DatabaseHelper.asLong(this.productId));
+            	
+            	// Fetch field test TE item details 
+            	items.addAll(new ItemMapper(oasConnection).findFtItemByItemSetId(DatabaseHelper.asLong(event
+                        .getItemSetId()), DatabaseHelper.asLong(this.productId)));
             } else {
             	items = new ItemMapper(oasConnection).findItemByItemSetId(DatabaseHelper.asLong(event
                         .getItemSetId()));
@@ -146,5 +157,10 @@ public class SubtestItemCollectionCalculator extends Calculator {
 	 	        channel.send(subtestItemsEvent);
 	        }
 	    }
+    }
+    
+    public void onEvent(MosaicErrorHandleEvent event) {
+    	event.setSessionId(new Long(testAdminId));
+    	event.setStudentId(new Long(studentId));
     }
 }

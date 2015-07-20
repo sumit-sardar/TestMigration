@@ -1,10 +1,11 @@
 package com.ctb.lexington.db.mapper.tsmapper;
 
-import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData;
 import com.ctb.lexington.db.mapper.AbstractDBMapper;
+import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
  * @author Rama_Rao
@@ -47,4 +48,19 @@ public class IrsTASCSecObjFactMapper extends AbstractDBMapper{
   	  	if(record != null)
   	  		delete(DELETE_BY_SECOBJFACTID, record);
     }
+	
+	public SqlMapClient insertBatch(IrsTASCSecObjFactData record, SqlMapClient sqlMap)throws SQLException{
+		sqlMap = insertBatch(INSERT_INTO_TASCSECOBJFACT, record, sqlMap);
+		return sqlMap;
+    }
+	
+	public SqlMapClient deleteBatch(IrsTASCSecObjFactData record, SqlMapClient sqlMap)throws SQLException{
+		if(record != null)
+			sqlMap = deleteBatch(DELETE_BY_SECOBJFACTID, record, sqlMap);
+		return sqlMap;
+    }
+	
+	public void executeItemBatch(SqlMapClient sqlClient) throws SQLException{
+		executeBatchProcess(sqlClient);
+	}
 }

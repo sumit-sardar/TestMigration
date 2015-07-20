@@ -11,6 +11,7 @@ import com.ctb.lexington.domain.score.event.SubtestInvalidEvent;
 import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestValidEvent;
 import com.ctb.lexington.domain.score.scorer.calculator.ContentAreaNumberCorrectCalculator;
+import com.ctb.lexington.domain.score.scorer.calculator.MosaicResponseProcessCalculator;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.util.CTBConstants;
 
@@ -18,9 +19,11 @@ public class TRScorer extends STScorer {
 	
 	public TRScorer() throws CTBSystemException, IOException {
 		super();
+		addCalculator(new MosaicResponseProcessCalculator(channel, this));
 		addCalculator(new ContentAreaNumberCorrectCalculator(channel, this));
 		
 		channel.subscribe(this, AssessmentStartedEvent.class);
+		channel.subscribe(this, SubtestItemCollectionEvent.class);
 		channel.subscribe(this, ContentAreaNumberCorrectEvent.class);
 	}
 
@@ -31,13 +34,19 @@ public class TRScorer extends STScorer {
 		final StudentSubtestScoresDetails subtestScoresDetail = subtestScoresData
 				.get(DatabaseHelper.asLong(event.getItemSetId()));
 		subtestScoresDetail.setItemSetName(event.getItemSetName());
+		
+		//added for field test TE item scoring 
+		copyScoreHistoryForFieldTestTEItems(getResultHolder(), event.getItems()
+				.iterator(), event.getItemSetName());
 	}
 
 	public void onEvent(SubtestValidEvent event) {
+		setFTItemStatus(event.getContentAreaNames(), CTBConstants.VALID_SCORE);
 		setStatuses(event.getContentAreaNames(), CTBConstants.VALID_SCORE);
 	}
 
 	public void onEvent(SubtestInvalidEvent event) {
+		setFTItemStatus(event.getContentAreaNames(), CTBConstants.INVALID_SCORE);
 		setStatuses(event.getContentAreaNames(), CTBConstants.INVALID_SCORE);
 	}
 	

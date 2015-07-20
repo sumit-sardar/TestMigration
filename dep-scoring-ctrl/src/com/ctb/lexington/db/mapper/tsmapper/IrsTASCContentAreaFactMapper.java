@@ -1,11 +1,11 @@
 package com.ctb.lexington.db.mapper.tsmapper;
 
-import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.ctb.lexington.db.mapper.AbstractDBMapper;;
+import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData;
+import com.ctb.lexington.db.mapper.AbstractDBMapper;
+import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
  * @author Dipak Dutta (381623)
@@ -52,4 +52,19 @@ public class IrsTASCContentAreaFactMapper extends AbstractDBMapper{
 		if(record != null)
 			delete(DELETE_BY_CONTENTAREAFACTID, record);
     }
+	
+	public SqlMapClient insertBatch(IrsTASCContentAreaFactData record, SqlMapClient sqlMap)throws SQLException{
+		sqlMap = insertBatch(INSERT_INTO_CONTENTAREAFACT, record, sqlMap);
+		return sqlMap;
+    }
+
+	public SqlMapClient deleteBatch(IrsTASCContentAreaFactData record, SqlMapClient sqlMap)throws SQLException{
+		if(record != null)
+			sqlMap = deleteBatch(DELETE_BY_CONTENTAREAFACTID, record, sqlMap);
+		return sqlMap;
+    }
+	
+	public void executeItemBatch(SqlMapClient sqlClient) throws SQLException{
+		executeBatchProcess(sqlClient);
+	}
 }

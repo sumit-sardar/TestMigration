@@ -33,6 +33,8 @@ public class ScoreMoveData {
     private Map<String,String> caLossHoss;
     private UrlData urlData;
     private String rosterLevel; //Added for TABE CCSS
+    private boolean isRetryFieldTestTE;
+    private StudentItemScoreData studentfieldTestTEItemScoreData;
 
 	/**
 	 * @return the rosterLevel
@@ -276,4 +278,30 @@ public class ScoreMoveData {
 	public void setUrlData(UrlData urlData) {
 		this.urlData = urlData;
 	}
+	/**
+	 * @return the isRetryFieldTestTE
+	 */
+	public boolean isRetryFieldTestTE() {
+		return isRetryFieldTestTE;
+	}
+	/**
+	 * @param isRetryFieldTestTE the isRetryFieldTestTE to set
+	 */
+	public void setRetryFieldTestTE(boolean isRetryFieldTestTE) {
+		this.isRetryFieldTestTE = isRetryFieldTestTE;
+	}
+	/**
+	 * @return the studentfieldTestTEItemScoreData
+	 */
+	public StudentItemScoreData getStudentfieldTestTEItemScoreData() {
+		return studentfieldTestTEItemScoreData;
+	}
+	/**
+	 * @param studentfieldTestTEItemScoreData the studentfieldTestTEItemScoreData to set
+	 */
+	public void setStudentfieldTestTEItemScoreData(
+			StudentItemScoreData studentfieldTestTEItemScoreData) {
+		this.studentfieldTestTEItemScoreData = studentfieldTestTEItemScoreData;
+	}
+	
 }
