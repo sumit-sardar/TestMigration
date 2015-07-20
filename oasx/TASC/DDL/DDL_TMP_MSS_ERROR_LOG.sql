@@ -1,0 +1,10 @@
+CREATE TABLE TMP_MSS_ERROR_LOG (
+INVOKE_LOG_KEY NUMBER,
+TMP_ID NUMBER)
+
+create sequence SEQ_TMP_MSS_LOG_ID
+minvalue 1
+maxvalue 999999999999999999999999999
+start with 1000
+increment by 1
+cache 20;
