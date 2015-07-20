@@ -11,6 +11,7 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
+import com.ctb.mssretry.MSSTEScoringRetryHelper;
 import com.ctb.prismws.PrismWebServiceHelper;
 import com.ctb.schedular.Configuration;
 
@@ -46,6 +47,15 @@ public class CronTriggerRunner {
 				.build();
 	    // schedule a job with JobDetail and Trigger
 	    scheduler.scheduleJob(wsJobDetail, wsTrigger);
+	    
+	 // Initiate JobDetail with job name, job group, and executable job class
+	    JobDetail mssRetryJobDetail = newJob(FTTERescoreJob.class)
+	    							.withIdentity("MSSTEScoringRetryJob", "MSSTEScoringRetryGroup").build();
+	    CronTrigger mssRetryTrigger = newTrigger().withIdentity("trigger1", "MSSTEScoringRetryGroup")
+				.withSchedule(cronSchedule(new MSSTEScoringRetryHelper().getMSSRetryCronExpression()))
+				.build();
+	    // schedule a job with JobDetail and Trigger
+	    scheduler.scheduleJob(mssRetryJobDetail, mssRetryTrigger);
 	    
 	    // start the scheduler
 	    scheduler.start();

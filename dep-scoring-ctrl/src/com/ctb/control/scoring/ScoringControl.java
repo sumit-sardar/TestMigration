@@ -20,4 +20,7 @@ public interface ScoringControl
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     java.lang.String scoreCompletedRostersForCustomer(java.lang.Integer customerId);
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    java.lang.String rertyInvokeFTTEScoring(java.lang.String testRosterId, java.lang.String invokeKey);
 } 

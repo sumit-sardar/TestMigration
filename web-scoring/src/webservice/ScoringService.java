@@ -32,6 +32,9 @@ public class ScoringService {
 		return scoringControl.scoreCompletedRostersForCustomer(customerId); 
     }
 
-	
+	@WebMethod
+	public String rertyInvokeFTTEScoring(String testRosterId, String invokeKey) {
+		return scoringControl.rertyInvokeFTTEScoring(testRosterId, invokeKey);
+	}
 	
 }

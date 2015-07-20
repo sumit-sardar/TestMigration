@@ -30,6 +30,21 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="rertyInvokeFTTEScoring">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="testRosterId" type="xs:string"/>
+            <xs:element name="invokeKey" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="rertyInvokeFTTEScoringResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="return" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="scoreCompletedRostersForProduct">
         <xs:complexType>
           <xs:sequence>
@@ -72,6 +87,12 @@
   <s0:message name="scoreCompletedRostersForCustomerResponse">
     <s0:part element="s1:scoreCompletedRostersForCustomerResponse" name="parameters"/>
   </s0:message>
+  <s0:message name="rertyInvokeFTTEScoring">
+    <s0:part element="s1:rertyInvokeFTTEScoring" name="parameters"/>
+  </s0:message>
+  <s0:message name="rertyInvokeFTTEScoringResponse">
+    <s0:part element="s1:rertyInvokeFTTEScoringResponse" name="parameters"/>
+  </s0:message>
   <s0:message name="scoreCompletedRostersForProduct">
     <s0:part element="s1:scoreCompletedRostersForProduct" name="parameters"/>
   </s0:message>
@@ -92,6 +113,10 @@
     <s0:operation name="scoreCompletedRostersForCustomer" parameterOrder="parameters">
       <s0:input message="s1:scoreCompletedRostersForCustomer"/>
       <s0:output message="s1:scoreCompletedRostersForCustomerResponse"/>
+    </s0:operation>
+    <s0:operation name="rertyInvokeFTTEScoring" parameterOrder="parameters">
+      <s0:input message="s1:rertyInvokeFTTEScoring"/>
+      <s0:output message="s1:rertyInvokeFTTEScoringResponse"/>
     </s0:operation>
     <s0:operation name="scoreCompletedRostersForProduct" parameterOrder="parameters">
       <s0:input message="s1:scoreCompletedRostersForProduct"/>
@@ -114,6 +139,15 @@
       </s0:output>
     </s0:operation>
     <s0:operation name="scoreCompletedRostersForCustomer">
+      <s2:operation style="document"/>
+      <s0:input>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:input>
+      <s0:output>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:output>
+    </s0:operation>
+    <s0:operation name="rertyInvokeFTTEScoring">
       <s2:operation style="document"/>
       <s0:input>
         <s2:body parts="parameters" use="literal"/>

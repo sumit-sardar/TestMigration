@@ -29,10 +29,18 @@ public class ScoreStudent
   public void onMessage(Message msg) {
     if (msg instanceof ObjectMessage) {
         try {
-            ObjectMessage objMsg = (ObjectMessage) msg;
-            Integer rosterId = (Integer) objMsg.getObject();
-            System.out.println("***** SCORING: ScoreStudentMessageEJB: onMessage: got a roster: " + rosterId);
-            ScorerFactory.invokeScoring(rosterId, false, true, false);
+        	ObjectMessage objMsg = (ObjectMessage) msg;
+            if((objMsg.getObject() instanceof String) && ((String)objMsg.getObject()).contains("#")){
+            	String msgStr = (String)objMsg.getObject();
+            	Integer rosterId = Integer.valueOf(msgStr.substring(0, msgStr.indexOf("#")));
+            	Long invokeKey = Long.valueOf(msgStr.substring(msgStr.indexOf("#")+1));
+	            System.out.println("***** SCORING: ScoreStudentMessageEJB: onMessage: got a roster: " + rosterId);
+	            ScorerFactory.invokeScoring(rosterId, invokeKey, false, true, false, true);
+            }else {
+	        	Integer rosterId = (Integer) objMsg.getObject();
+	            System.out.println("***** SCORING: ScoreStudentMessageEJB: onMessage: got a roster: " + rosterId);
+	            ScorerFactory.invokeScoring(rosterId, null, false, true, false, false);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("***** SCORING: ScoreStudentMessageEJB: onMessage: An error has occured: " + e.getMessage());

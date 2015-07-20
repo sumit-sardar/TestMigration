@@ -59,6 +59,11 @@ public class QueueSend {
 		msg.setObject(new Integer(testRosterId));  
 	    qsender.send(msg);
 	  }
+	  
+	  public void send(String rosterIdLogKey) throws JMSException {
+		msg.setObject(rosterIdLogKey);  
+	    qsender.send(msg);
+	  }
 
 	  /**
 	   * Closes JMS objects.
@@ -76,6 +81,15 @@ public class QueueSend {
 	  {
 	    if (testRosterId != null) {
 	        qs.send(testRosterId);
+	        System.out.println("JMS Message Sent");
+	     } 
+	  }
+	  
+	  public static void readAndSend(QueueSend qs,String rosterIdLogKey)
+	    throws IOException, JMSException
+	  {
+	    if (rosterIdLogKey != null) {
+	        qs.send(rosterIdLogKey);
 	        System.out.println("JMS Message Sent");
 	     } 
 	  }

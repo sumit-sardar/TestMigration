@@ -25,7 +25,7 @@ public class ScoringControlImpl implements ScoringControl
     public String invokeScoring(String testRosterId)
     {
         try {
-            ScorerFactory.invokeScoring(new Integer(Integer.parseInt(testRosterId)), false, true, false);
+            ScorerFactory.invokeScoring(new Integer(Integer.parseInt(testRosterId)), null, false, true, false, false);
             return("success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,7 +41,7 @@ public class ScoringControlImpl implements ScoringControl
         try {
             int [] rosters = oasdb.getCompletedRostersForAdmin(testAdminId.intValue());
             for(int i=0;i<rosters.length;i++) {
-                ScorerFactory.invokeScoring(new Integer(rosters[i]), false, true, false);
+                ScorerFactory.invokeScoring(new Integer(rosters[i]), null, false, true, false, false);
             }
             return("success");
         } catch (Exception e) {
@@ -59,7 +59,7 @@ public class ScoringControlImpl implements ScoringControl
             int [] rosters = oasdb.getCompletedRostersForProduct(productId.intValue());
             for(int i=0;i<rosters.length;i++) {
                 try {
-                    ScorerFactory.invokeScoring(new Integer(rosters[i]), false, true, false);
+                    ScorerFactory.invokeScoring(new Integer(rosters[i]), null, false, true, false, false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -80,7 +80,7 @@ public class ScoringControlImpl implements ScoringControl
             int [] rosters = oasdb.getCompletedRostersForCustomer(customerId.intValue());
             for(int i=0;i<rosters.length;i++) {
                 try {
-                    ScorerFactory.invokeScoring(new Integer(rosters[i]), false, true, false);
+                    ScorerFactory.invokeScoring(new Integer(rosters[i]), null, false, true, false, false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -91,4 +91,17 @@ public class ScoringControlImpl implements ScoringControl
             return("error: " + e.getMessage());
         }
     }
+
+	/**
+	 * @common:operation
+	 */
+	public String rertyInvokeFTTEScoring(String testRosterId, String invokeKey) {
+		try {
+            ScorerFactory.invokeScoring(new Integer(Integer.parseInt(testRosterId)), new Long(Long.parseLong(invokeKey)), false, true, false, true);
+            return("success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return("error: " + e.getMessage());
+        }
+	}
 } 
