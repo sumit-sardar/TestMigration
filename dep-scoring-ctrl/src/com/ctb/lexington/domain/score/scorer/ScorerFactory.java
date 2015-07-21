@@ -63,7 +63,7 @@ public class ScorerFactory {
                     responseReplayer.setProductId(assessment.getProductId());
                     responseReplayer.setProductType(assessment.getProductType().getCode());
                     if (assessment.isRetryProcessFT()){
-                    	ResponseReplayer.setInvokeKey(assessment.getInvokeKey());
+                    	responseReplayer.setInvokeKey(assessment.getInvokeKey());
                     	responseReplayer.setFTRetryProcess(assessment.isRetryProcessFT());
                     }
                     responseReplayer.replaySubtests(assessment.getTestRosterId(), scorer);

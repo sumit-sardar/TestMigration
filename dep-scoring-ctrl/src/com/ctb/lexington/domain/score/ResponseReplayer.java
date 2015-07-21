@@ -78,8 +78,8 @@ public class ResponseReplayer {
     private Integer productId = null;
     private static String productType = null;
     private HashMap subtestMapBySubject = new SafeHashMap(String.class, ArrayList.class);
-    private static Long invokeKey = null;
-    private static boolean isFTRetryProcess = false;
+    private Long invokeKey = null;
+    private boolean isFTRetryProcess = false;
     
     /**
      * Constructs a new <code>ResponseReplayer</code> with the given
@@ -596,14 +596,14 @@ public class ResponseReplayer {
     
     
 
-    private static void addResponseEvents(final Long testRosterId, final List events, final ItemSetVO itemSet,
+    private void addResponseEvents(final Long testRosterId, final List events, final ItemSetVO itemSet,
             final ItemResponseMapper itemResponseMapper) {
     	
     	if("TS".equals(productType) || "TR".equals(productType)) {
 	    	try {
 	    		List ftresponse = itemResponseMapper.findFTItemResponsesBySubtest(
 		        			asLong(itemSet.getItemSetId()), testRosterId);
-	    		if(isFTRetryProcess){
+	    		if(this.isFTRetryProcess){
 	    			events.addAll(getFTResponseEvents(ftresponse));
 	    		}else {
 			        events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASCOrg(
@@ -626,12 +626,12 @@ public class ResponseReplayer {
     	}
     }
     
-    private static void getMosaicErrorHandleEvent(final List events,
+    private void getMosaicErrorHandleEvent(final List events,
 			final Long testRosterId) {
 		for (Object event : events) {
 			if (event instanceof FTResponseReceivedEvent) {
-				events.add(new MosaicErrorHandleEvent(testRosterId, invokeKey,
-						isFTRetryProcess));
+				events.add(new MosaicErrorHandleEvent(testRosterId, this.invokeKey,
+						this.isFTRetryProcess));
 				break;
 			}
 		}
@@ -925,22 +925,22 @@ public class ResponseReplayer {
 	/**
 	 * @return the invokeKey
 	 */
-	public static Long getInvokeKey() {
-		return invokeKey;
+	public Long getInvokeKey() {
+		return this.invokeKey;
 	}
 
 	/**
 	 * @param invokeKey the invokeKey to set
 	 */
-	public static void setInvokeKey(Long invokeKey) {
-		ResponseReplayer.invokeKey = invokeKey;
+	public void setInvokeKey(Long invokeKey) {
+		this.invokeKey = invokeKey;
 	}
 
 	/**
 	 * @return the isFTRetryProcess
 	 */
 	public boolean isFTRetryProcess() {
-		return isFTRetryProcess;
+		return this.isFTRetryProcess;
 	}
 
 	/**
