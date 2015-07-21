@@ -17,7 +17,7 @@ import java.util.Map;
 public class LasFileUtil {
 	
 	private static final String lasProductDisplayName = "LASLINKS";
-	private static final String lasFrameWorkCode = "LL2ND";
+	private static final String lasFrameWorkCode = "LL2NDBMT";
 	
 	private static PreparedStatement ps = null;
 	private static ResultSet rs=null;
@@ -63,14 +63,14 @@ public class LasFileUtil {
 					grade = firstLine.split("Grade:")[1].substring(0,2);
 				}
 				Test_Level = processTestLevel(Test_Level); 
-				score_lookup_id	= lasFrameWorkCode+"_2012_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
+				score_lookup_id	= lasFrameWorkCode+"_2015_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
 				success=FileUtil.writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,lasFrameWorkCode,lasProductDisplayName);
 				if(Product_type.equalsIgnoreCase("T")) {
-					product_id = "7502";
+					product_id = "7802";
 				}else if(Product_type.equalsIgnoreCase("C")) {
-					product_id = "7501";
+					product_id = "7801";
 				}else if(Product_type.equalsIgnoreCase("D")) {
-					product_id = "7505";
+					product_id = "7805";
 				}
 				
 				itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
@@ -92,7 +92,7 @@ public class LasFileUtil {
 				}
 				Source_score_type_code = "SCL";
 				dest_Score_type_code = "PL";
-				score_lookup_id	= lasFrameWorkCode+"_2012_"+test_form+"_";
+				score_lookup_id	= lasFrameWorkCode+"_2015_"+test_form+"_";
 				contentOfFile=FileUtil.readFileData(file_location);
 				success = writeInSCORE_LOOKUP_PL(contentOfFile,Source_score_type_code,dest_Score_type_code,
 						score_lookup_id,test_form,lasFrameWorkCode,
@@ -124,7 +124,7 @@ public class LasFileUtil {
 					grade = firstLine.split("Grade:")[1].substring(0,2);
 				}
 				Test_Level = processTestLevel(Test_Level);
-				score_lookup_id	= lasFrameWorkCode+"_2012_NCE_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
+				score_lookup_id	= lasFrameWorkCode+"_2015_NCE_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
 				contentOfFile=FileUtil.readFileData(file_location);
 				success = writeInSCORE_LOOKUP_NCE(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,lasFrameWorkCode,lasProductDisplayName);
 			}
@@ -154,7 +154,7 @@ public class LasFileUtil {
 					grade = firstLine.split("Grade:")[1].substring(0,2);
 				}
 				Test_Level = processTestLevel(Test_Level);
-				score_lookup_id	= lasFrameWorkCode+"_2012_PR_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
+				score_lookup_id	= lasFrameWorkCode+"_2015_PR_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
 				contentOfFile=FileUtil.readFileData(file_location);
 				success = writeInSCORE_LOOKUP_NCE(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,lasFrameWorkCode,lasProductDisplayName);
 			
@@ -180,7 +180,7 @@ public class LasFileUtil {
 				contentOfFile=FileUtil.readFileData(file_location);
 				Content_area_initial=firstLine.split("Content:")[1].substring(0,2);
 				Content_area = processContentAreaName(Content_area_initial);
-				score_lookup_id = lasFrameWorkCode+"_2012_LXL_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
+				score_lookup_id = lasFrameWorkCode+"_2015_LXL_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
 				contentOfFile=FileUtil.readFileData(file_location);
 				success = writeInSCORE_LOOKUP_LXL(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,lasFrameWorkCode,lasProductDisplayName);
 				
@@ -301,7 +301,7 @@ public static String processContentAreaName(String caShortName) {
 		int save=0;
 		String contentArea = null;
 		String grade = null;
-		String normYear = "2012";
+		String normYear = "2015";
 		String test_level="";
 		try{
 		con=SqlUtil.openOASDBcon();
@@ -427,7 +427,7 @@ public static String processContentAreaName(String caShortName) {
 				ps.setString(6, test_form);
 				ps.setString(7, Test_Level);
 				ps.setString(8, Content_area);
-				ps.setString(9, "2012");
+				ps.setString(9, "2015");
 				ps.setString(10, framework_code);
 				ps.setString(11,product_internal_display_name);
 //				save=ps.executeUpdate();
@@ -480,7 +480,7 @@ public static String processContentAreaName(String caShortName) {
 				ps.setString(6, test_form);
 				ps.setString(7, Test_Level);
 				ps.setString(8, Content_area);
-				ps.setString(9, "");
+				ps.setString(9, "2015");
 				ps.setString(10, framework_code);
 				ps.setString(11,product_internal_display_name);
 				save=ps.executeUpdate();
