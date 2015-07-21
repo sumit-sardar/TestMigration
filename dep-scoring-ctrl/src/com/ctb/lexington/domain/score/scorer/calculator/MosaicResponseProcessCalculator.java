@@ -1,14 +1,10 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,7 +17,6 @@ import javax.naming.NamingException;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.db.data.ScoringInvokeRecord;
-import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData;
 import com.ctb.lexington.db.mapper.TestRosterMapper;
 import com.ctb.lexington.domain.score.event.FTPointEvent;
 import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
@@ -45,7 +40,6 @@ import com.ctb.lexington.util.mosaicobject.MSSResponseWrapper;
 import com.ctb.lexington.util.mosaicobject.MosaicScoringRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ibatis.sqlmap.client.SqlMapClient;
 
 public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	
@@ -105,7 +99,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 			deleteMosaicErrorRecordTemp(event);
 		}
 		
-		System.out.println("!!!Started Writing Audit Log!!!");
+		System.out.println("***** SCORING: MosaicResponseProcessCalculator: MosaicErrorHandleEvent: Started Writing Audit Log!");
 		if(mssWsAuditList != null && !mssWsAuditList.isEmpty()){
 			for(int i=0;i<mssWsAuditList.size();i++) {
 				mssWsAuditList.get(i).setRosterId(event.getTestRosterId());
@@ -117,7 +111,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 			
 			insertMSSAuditLog();
 		}
-		System.out.println("!!!Audit Log Writing completed!!!");
+		System.out.println("***** SCORING: MosaicResponseProcessCalculator: MosaicErrorHandleEvent: Audit Log Writing completed!");
 	}
 	
 	public void processScore(FTResponseReceivedEvent event) throws Exception{
@@ -192,7 +186,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 		if (mssResponse != null && !mssResponse.isEmpty()) {
 			
 			MSSResponseWrapper mssResponseBody = new Gson().fromJson(mssResponse, MSSResponseWrapper.class);
-			System.out.println("***onEvent(FTResponseReceivedEvent)*** Mosaic response for item : "+event.getItemId()+" : child DAS Item : "+DASitemId+" :: "+ mssResponse);
+			System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent: Mosaic response for item: "+event.getItemId()+" child DAS Item: "+DASitemId+" :: "+ mssResponse);
 			//: scoring is done and score is received from MSS
 			if (mssResponseBody.getResponseCode() == null) {
 				final Integer obtained = computeMosaicPointsObtained(event, mssResponseBody);
@@ -228,7 +222,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 		if (mssResponse != null && !mssResponse.isEmpty()) {
 			
 			MSSResponseWrapper mssResponseBody = new Gson().fromJson(mssResponse, MSSResponseWrapper.class);
-			System.out.println("***onEvent(FTResponseReceivedEvent)*** Mosaic response for item : "+event.getItemId()+" : DAS Item : "+event.getDasItemId()+" :: "+ mssResponse);
+			System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent: Mosaic response for item: "+event.getItemId()+" DAS Item: "+event.getDasItemId()+" :: "+ mssResponse);
 			//: scoring is done and score is received from MSS
 			if (mssResponseBody.getResponseCode() == null) {
 				final Integer attempted = computeMosaicPointsAttempted(event, mssResponseBody);
@@ -381,7 +375,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 				.setExclusionStrategies(new MosaicCustomStrategy(interactionType))
 				.serializeNulls().create();
 		String json = gson.toJson(mssRequest);
-		System.out.println("****onEvent(FTResponseReceivedEvent) ******* Request Mosaic JSON :: "+ json);
+		System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent: Request Mosaic JSON::"+ json);
 		return json;
 	}
 

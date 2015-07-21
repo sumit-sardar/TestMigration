@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -28,14 +29,31 @@ import com.ctb.lexington.util.jsonobject.DragArea;
 import com.ctb.lexington.util.mosaicobject.CandidateItemResponse;
 
 public class MosaicConstantUtils {
-
-	final public static String ANSWER_TAG = "answer";
-	final public static String CHARACTER_ENCODE = "UTF-8";
+	
+	private static final ResourceBundle rb = ResourceBundle.getBundle("config");
+	
+	final public static String HTTP_REQUEST_TYPE = rb.getString("http.request.type");
+	final public static String CONTENT_TYPE = rb.getString("content.type");
+	final public static String MOSAIC_ENCRYPTION_METHOD_TITLE = rb.getString("mosaic.encryption.method.title");
+	final public static String MOSAIC_TIMESTAMP_TITLE = rb.getString("mosaic.timestamp.title");
+	final public static String MOSAIC_VERSION_TITLE = rb.getString("mosaic.version.title");
+	final public static String MOSAIC_AUTHORIZATION_TITLE = rb.getString("mosaic.authorization.title");
+	final public static String MOSAIC_VERSION_VALUE = rb.getString("mosaic.version.value");
+	final public static String HEADER_KEY_SEPARATION = rb.getString("header.key.separation");
+	final public static String HEADER_SEPARATION = rb.getString("header.separation");
+	final public static String API_ENDPOINT = rb.getString("api.endpoint");
+	final public static String MOSAIC_ACCESS_KEY = rb.getString("mosaic.access.key");
+	final public static String MOSAIC_API_TITLE = rb.getString("mosaic.api.title");
+	final public static String CHARACTER_ENCODE = rb.getString("encode.charset");
+	final public static String ZERO_PADD = rb.getString("zero.padd");
+	final public static String MOSAIC_URL = rb.getString("mosaic.url");
 
 	// : Constant value of MSS Request JSON parameter
-	final public static String ITEM_RESPONSE_SOURCE = "OAS";
-	final public static String ITEM_SOURCE = "DAS";
-	final public static String ITEM_BANK_ID = "Indiana Itembank";
+	final public static String ITEM_RESPONSE_SOURCE = rb.getString("mosaic.item.response.source");
+	final public static String ITEM_SOURCE = rb.getString("mosaic.item.source");
+	final public static String ITEM_BANK_ID = rb.getString("mosaic.item.bank.id");
+	
+	final public static String ANSWER_TAG = "answer";
 
 	// : MSS Request JSON object final property id
 	final public static String MSS_REQUEST_PARAM = "MosaicScoringRequest";

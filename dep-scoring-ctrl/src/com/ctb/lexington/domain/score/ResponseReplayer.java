@@ -256,7 +256,7 @@ public class ResponseReplayer {
                     itemResponseMapper,
                     getSubtestStatus(subtest, subtestStatuses)));
         }
-
+        getMosaicErrorHandleEvent(events, testRosterId);
         return events;
     }
     /**
@@ -610,7 +610,6 @@ public class ResponseReplayer {
 			        		asLong(itemSet.getItemSetId()), testRosterId)));
 			        events.addAll(getFTResponseEvents(ftresponse));
 	    		}
-	    		getMosaicErrorHandleEvent(events, ftresponse, testRosterId);
 	    	} catch (CTBSystemException e) {
 				e.printStackTrace();
 			}
@@ -628,9 +627,13 @@ public class ResponseReplayer {
     }
     
     private static void getMosaicErrorHandleEvent(final List events,
-			final List responses, final Long testRosterId) {
-		if (!responses.isEmpty()) {
-			events.add(new MosaicErrorHandleEvent(testRosterId, invokeKey, isFTRetryProcess));
+			final Long testRosterId) {
+		for (Object event : events) {
+			if (event instanceof FTResponseReceivedEvent) {
+				events.add(new MosaicErrorHandleEvent(testRosterId, invokeKey,
+						isFTRetryProcess));
+				break;
+			}
 		}
 	}
     
