@@ -132,24 +132,7 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 	}
 	
 	public void onEvent(FTResponseReceivedEvent event) {
-		/*validateItemSetId(event.getItemSetId());
-		final String itemId = event.getItemId();
-		if ("TS".equals(sicEvent.getProductType()) || "TR".equals(sicEvent.getProductType())){
-			if (ItemVO.ITEM_TYPE_IN.equals(sicEvent.getType(itemId))) {
-				Map<String, MSSResponseWrapper> responseMap = getFTResponse(event);
-				if(responseMap != null && !responseMap.isEmpty()){
-					final Integer attempted = computeMosaicPointsAttempted(event, responseMap);
-					final Integer obtained = computeMosaicPointsObtained(event, responseMap);
-					System.out.println("****** ResonsePointCalculator : onEvent(FTResponseReceivedEvent event) ****** :: ItemId ::"+event.getItemId()+" :: Obtained :: "+ obtained + " :: Attempted :: "+attempted);
-					channel.send(new FTPointEvent(event.getTestRosterId(), event
-							.getItemId(), event.getItemSetId(), attempted, obtained));
-				}else{
-					channel.send(new FTPointEvent(event.getTestRosterId(), event
-							.getItemId(), event.getItemSetId(), new Integer(0),
-							new Integer(0)));
-				}
-			}
-		}*/
+		
 	}
 
 	private Integer computeMosaicPointsObtained(FTResponseReceivedEvent event,

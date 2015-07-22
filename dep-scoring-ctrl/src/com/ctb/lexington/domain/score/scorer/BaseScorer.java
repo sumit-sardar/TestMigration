@@ -44,7 +44,6 @@ import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
 import com.ctb.lexington.domain.score.event.ContentAreaRawScoreEvent;
 import com.ctb.lexington.domain.score.event.FTPointEvent;
-import com.ctb.lexington.domain.score.event.FTResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.ObjectivePrimaryCumulativeNumberCorrectEvent;
 import com.ctb.lexington.domain.score.event.ObjectivePrimaryNumberCorrectEvent;
@@ -142,7 +141,6 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         channel.subscribe(this, ResponseReceivedEvent.class);
         channel.subscribe(this, PointEvent.class);
         
-        channel.subscribe(this, FTResponseReceivedEvent.class);
         channel.subscribe(this, FTPointEvent.class);
 
         channel.subscribe(this, ScoringStatusEvent.class);

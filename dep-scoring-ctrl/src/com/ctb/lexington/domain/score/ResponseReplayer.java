@@ -691,8 +691,7 @@ public class ResponseReplayer {
     private static List getFTResponseEvents(final List responses) {
     	if (responses.isEmpty()) return Collections.EMPTY_LIST;
 		final List events = new ArrayList(responses.size());
-		Set<String> ftItemsCollection = new HashSet<String>();
-		Map<String, FTResponseReceivedEvent> ftResponseEvents = new HashMap<String, FTResponseReceivedEvent>();
+		final Map<String, FTResponseReceivedEvent> ftResponseEvents = new HashMap<String, FTResponseReceivedEvent>();
         for (final Iterator it = responses.iterator(); it.hasNext();)
             createFTResponseReceivedEvent((ItemResponseVO) it.next(), ftResponseEvents);
 
@@ -796,38 +795,40 @@ public class ResponseReplayer {
     }
     
     private static void createFTResponseReceivedEvent(
-            final ItemResponseVO response, Map<String, FTResponseReceivedEvent> ftResponseEvents) {
+            final ItemResponseVO response, final Map<String, FTResponseReceivedEvent> ftResponseEvents) {
         
-        if(!ftResponseEvents.containsKey(response.getItemId())){
-        	final FTResponseReceivedEvent event = new FTResponseReceivedEvent(
-                    DatabaseHelper.asLong(response.getTestRosterId()),
-                    response.getItemId(), response.getItemSetId());
-        	
-             event.setExtAnswerChoiceId(response.getExtAnswerChoiceId());
-             event.setItemResponseId(response.getItemResponseId());
-             event.setItemSortOrder(response.getItemSortOrder());
-             event.setPointsObtained(response.getPoints());
-             event.setResponse(response.getResponse());
-             event.setResponseElapsedTime(response.getResponseElapsedTime());
-             event.setResponseMethod(response.getResponseMethod());
-             event.setResponseSeqNum(response.getResponseSeqNum());
-             event.setConditionCodeId(response.getConditionCodeId());
-             event.setStudentMarked(CTBConstants.TRUE.equals(response.getStudentMarked()));
-             event.setComments(response.getComments());
-             event.setCrResponse(response.getCrResponse());
-             event.setConditionCode(response.getConditionCode());
-             event.setTeItemResponse(response.getTeItemResponse());
-             event.setDasItemId(response.getParentDasItemId());
-             event.addChildItems(response.getChildDasItemId(), response.getInteractionType(), response.getItemOrder());
-             
-             
-             ftResponseEvents.put(event.getItemId(), event);
-        }else{
-        	FTResponseReceivedEvent event = ftResponseEvents.get(response.getItemId());
-        	if(event.getDasItemId().equals(response.getParentDasItemId())) {
-        		event.addChildItems(response.getChildDasItemId(), response.getInteractionType(), response.getItemOrder());
-        	}
-        }
+    	if(response != null){
+	        if(!ftResponseEvents.containsKey(response.getItemId())){
+	        	final FTResponseReceivedEvent event = new FTResponseReceivedEvent(
+	                    DatabaseHelper.asLong(response.getTestRosterId()),
+	                    response.getItemId(), response.getItemSetId());
+	        	
+	             event.setExtAnswerChoiceId(response.getExtAnswerChoiceId());
+	             event.setItemResponseId(response.getItemResponseId());
+	             event.setItemSortOrder(response.getItemSortOrder());
+	             event.setPointsObtained(response.getPoints());
+	             event.setResponse(response.getResponse());
+	             event.setResponseElapsedTime(response.getResponseElapsedTime());
+	             event.setResponseMethod(response.getResponseMethod());
+	             event.setResponseSeqNum(response.getResponseSeqNum());
+	             event.setConditionCodeId(response.getConditionCodeId());
+	             event.setStudentMarked(CTBConstants.TRUE.equals(response.getStudentMarked()));
+	             event.setComments(response.getComments());
+	             event.setCrResponse(response.getCrResponse());
+	             event.setConditionCode(response.getConditionCode());
+	             event.setTeItemResponse(response.getTeItemResponse());
+	             event.setDasItemId(response.getParentDasItemId());
+	             event.addChildItems(response.getChildDasItemId(), response.getInteractionType(), response.getItemOrder());
+	             
+	             
+	             ftResponseEvents.put(event.getItemId(), event);
+	        }else{
+	        	FTResponseReceivedEvent event = ftResponseEvents.get(response.getItemId());
+	        	if(event.getDasItemId().equals(response.getParentDasItemId())) {
+	        		event.addChildItems(response.getChildDasItemId(), response.getInteractionType(), response.getItemOrder());
+	        	}
+	        }
+    	}
     }
 
     private ItemResponseMapper getItemResponseMapper(final Connection conn) {

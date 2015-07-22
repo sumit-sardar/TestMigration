@@ -29,7 +29,6 @@ import com.ctb.lexington.util.MosaicAuthentication;
 import com.ctb.lexington.util.MosaicConstantUtils;
 import com.ctb.lexington.util.MosaicCustomSerializer;
 import com.ctb.lexington.util.MosaicCustomStrategy;
-import com.ctb.lexington.util.SafeHashMap;
 import com.ctb.lexington.util.jsonobject.Answer;
 import com.ctb.lexington.util.jsonobject.ScoreData;
 import com.ctb.lexington.util.jsonobject.ScoreResponse;
@@ -43,7 +42,7 @@ import com.google.gson.GsonBuilder;
 
 public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	
-	private final Map<String,MSSResponseWrapper> erroneousCollection = new SafeHashMap(String.class, MSSResponseWrapper.class);
+	private final Map<String,MSSResponseWrapper> erroneousCollection = new HashMap<String, MSSResponseWrapper>();
 	private final List<MSSAuditLogVO> mssWsAuditList = new ArrayList<MSSAuditLogVO>();
 	
 	public MosaicResponseProcessCalculator(Channel channel, Scorer scorer) {
@@ -57,9 +56,10 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 		// Do when operation TE Item scoring implementation needed
 	}
 	
-	public void onEvent(FTResponseReceivedEvent event) {
+	public void onEvent(final FTResponseReceivedEvent event) {
 		validateItemSetId(event.getItemSetId());
 		final String itemId = event.getItemId();
+		System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent event call: Thread"+ Thread.currentThread().getId() + " :: " + event.getItemId()+ "&" +event.getItemSetId()+ "&"+event.getTestRosterId());
 		if (ItemVO.ITEM_TYPE_IN.equals(sicEvent.getType(itemId))) {
 			try {
 				processScore(event);
@@ -69,9 +69,10 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 		}
 	}
 	
-	public void onEvent(MosaicErrorHandleEvent event) {
+	public void onEvent(final MosaicErrorHandleEvent event) {
 		
 		if(erroneousCollection != null && !erroneousCollection.isEmpty()){
+			System.out.println("***** SCORING: MosaicResponseProcessCalculator: MosaicErrorHandleEvent: Thread"+ Thread.currentThread().getId() + " Erroneous record size "+erroneousCollection.size());
 			StringBuilder itemIds = new StringBuilder();
 			StringBuilder messages = new StringBuilder();
 			for(String itemId : erroneousCollection.keySet()){
@@ -99,7 +100,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 			deleteMosaicErrorRecordTemp(event);
 		}
 		
-		System.out.println("***** SCORING: MosaicResponseProcessCalculator: MosaicErrorHandleEvent: Started Writing Audit Log!");
+		System.out.println("***** SCORING: MosaicResponseProcessCalculator: MosaicErrorHandleEvent: Thread"+ Thread.currentThread().getId() + " Started Writing Audit Log!");
 		if(mssWsAuditList != null && !mssWsAuditList.isEmpty()){
 			for(int i=0;i<mssWsAuditList.size();i++) {
 				mssWsAuditList.get(i).setRosterId(event.getTestRosterId());
@@ -111,10 +112,10 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 			
 			insertMSSAuditLog();
 		}
-		System.out.println("***** SCORING: MosaicResponseProcessCalculator: MosaicErrorHandleEvent: Audit Log Writing completed!");
+		System.out.println("***** SCORING: MosaicResponseProcessCalculator: MosaicErrorHandleEvent: Thread"+ Thread.currentThread().getId() + " Audit Log Writing completed!");
 	}
 	
-	public void processScore(FTResponseReceivedEvent event) throws Exception{
+	public void processScore(final FTResponseReceivedEvent event) throws Exception{
 		
 		List<ChildDASItems> childitems = null;
 		if(!event.getChildItems().isEmpty()){
@@ -140,13 +141,13 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	    
 	    	//: Process actual request JSON creation 
 	    if(studentResponse != null && !studentResponse.isEmpty()){
-	    	Map<String, Integer> itemOrderMap = new SafeHashMap(String.class, Integer.class);
+	    	final Map<String, Integer> itemOrderMap = new HashMap<String, Integer>();
 	    	
-	    	Map<String, String> requests = processStudentResponse(childitems, studentResponse, mssRequestResponse, itemOrderMap);
+	    	final Map<String, String> requests = processStudentResponse(childitems, studentResponse, mssRequestResponse, itemOrderMap);
 	    	
 	    	if(!requests.isEmpty()){
 	    		if(childitems!= null){
-		    		List<CandidateItemResponse> candidateResponseList = new ArrayList<CandidateItemResponse>();
+		    		final List<CandidateItemResponse> candidateResponseList = new ArrayList<CandidateItemResponse>();
 			    	Iterator<String> it = requests.keySet().iterator();
 			    	while(it.hasNext()){
 			    		String DASitemId = it.next();
@@ -169,7 +170,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	    }
 	}
 	
-	private CandidateItemResponse getMosaicResponse(FTResponseReceivedEvent event, String processedrequset, String timeStampUTC, int childItemOrder, String DASitemId) {
+	private CandidateItemResponse getMosaicResponse(final FTResponseReceivedEvent event, String processedrequset, String timeStampUTC, int childItemOrder, String DASitemId) {
 
 		//: Authenticate response now from MSS.
     	MosaicAuthentication mssAuthentication = new MosaicAuthentication();
@@ -186,7 +187,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 		if (mssResponse != null && !mssResponse.isEmpty()) {
 			
 			MSSResponseWrapper mssResponseBody = new Gson().fromJson(mssResponse, MSSResponseWrapper.class);
-			System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent: Mosaic response for item: "+event.getItemId()+" child DAS Item: "+DASitemId+" :: "+ mssResponse);
+			System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent: Thread"+ Thread.currentThread().getId() + " Mosaic response for item: "+event.getItemId()+" child DAS Item: "+DASitemId+" :: "+ mssResponse);
 			//: scoring is done and score is received from MSS
 			if (mssResponseBody.getResponseCode() == null) {
 				final Integer obtained = computeMosaicPointsObtained(event, mssResponseBody);
@@ -205,7 +206,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	}
 
 	
-	private void processMosaicResponse(FTResponseReceivedEvent event, String processedrequset, String timeStampUTC) {
+	private void processMosaicResponse(final FTResponseReceivedEvent event, final String processedrequset, final String timeStampUTC) {
 
 		//: Authenticate response now from MSS.
     	MosaicAuthentication mssAuthentication = new MosaicAuthentication();
@@ -222,7 +223,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 		if (mssResponse != null && !mssResponse.isEmpty()) {
 			
 			MSSResponseWrapper mssResponseBody = new Gson().fromJson(mssResponse, MSSResponseWrapper.class);
-			System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent: Mosaic response for item: "+event.getItemId()+" DAS Item: "+event.getDasItemId()+" :: "+ mssResponse);
+			System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent: Thread"+ Thread.currentThread().getId() + " Mosaic response for item: "+event.getItemId()+" DAS Item: "+event.getDasItemId()+" :: "+ mssResponse);
 			//: scoring is done and score is received from MSS
 			if (mssResponseBody.getResponseCode() == null) {
 				final Integer attempted = computeMosaicPointsAttempted(event, mssResponseBody);
@@ -247,8 +248,8 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	 * @param mssRequestResponse
 	 * @return Map<String, String>
 	 */
-	private Map<String, String>  processStudentResponse(List<ChildDASItems> childitems, String studentResponse,
-			MSSRequestResponse mssRequestResponse, Map<String, Integer> itemOrderMap)
+	private Map<String, String>  processStudentResponse(final List<ChildDASItems> childitems, String studentResponse,
+			MSSRequestResponse mssRequestResponse, final Map<String, Integer> itemOrderMap)
 			throws CTBBusinessException {
 
 		Map<String, String> responseMap = new HashMap<String, String>();
@@ -259,15 +260,15 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
     	
     	if(scoreResponseObject != null){
     		
-	    	List<List<ScoreData>> outerList = scoreResponseObject.getJsonContent().getScoring();
-	    	for(List<ScoreData> innerList: outerList){
+	    	final List<List<ScoreData>> outerList = scoreResponseObject.getJsonContent().getScoring();
+	    	for(final List<ScoreData> innerList: outerList){
 	    		for(ScoreData scoreJson: innerList){ // DAS child item List
 	    			
 	    			//: Initialize
-	    			List<CandidateItemResponse> candidateResponseList = new ArrayList<CandidateItemResponse>();
+	    			final List<CandidateItemResponse> candidateResponseList = new ArrayList<CandidateItemResponse>();
 	    			int orderCounter = 0;
 	    			String interactionType = scoreJson.getInteractionType();
-	    			List<Answer> answerList = scoreJson.getAnswered();
+	    			final List<Answer> answerList = scoreJson.getAnswered();
 	    			
 	    			//: get child item Id if available
 	    			if(childitems != null){
@@ -294,7 +295,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 		    				
 						});*/
 	    				
-		    			for(Answer answer: answerList){
+		    			for(final Answer answer: answerList){
 		    				if(answer.getDroparea() != null){
 		    					
 		    					if(answer.getDragarea() != null && !answer.getDragarea().isEmpty()){
@@ -325,7 +326,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	 * @param response
 	 * @return
 	 */
-	private Integer computeMosaicPointsObtained(FTResponseReceivedEvent event,
+	private Integer computeMosaicPointsObtained(final FTResponseReceivedEvent event,
 			MSSResponseWrapper response) {
 
 		Integer pointsObtained = event.getPointsObtained();
@@ -350,7 +351,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	 * @param response
 	 * @return
 	 */
-	private Integer computeMosaicPointsAttempted(FTResponseReceivedEvent event,
+	private Integer computeMosaicPointsAttempted(final FTResponseReceivedEvent event,
 			MSSResponseWrapper response) {
 		
 		Integer pointsAttempted = new Integer(0);
@@ -369,17 +370,17 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	 * @param interactionType
 	 * @return String - MSS request JSON structure
 	 */
-	private String convetObjectToJson(MSSRequestResponse mssRequest, final String interactionType) throws CTBBusinessException{
+	private String convetObjectToJson(final MSSRequestResponse mssRequest, final String interactionType) throws CTBBusinessException{
 		Gson gson = new GsonBuilder()
 				.registerTypeAdapter(MSSRequestResponse.class,new MosaicCustomSerializer())
 				.setExclusionStrategies(new MosaicCustomStrategy(interactionType))
 				.serializeNulls().create();
 		String json = gson.toJson(mssRequest);
-		System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent: Request Mosaic JSON::"+ json);
+		System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent: Thread"+ Thread.currentThread().getId() + " Request Mosaic JSON::"+ json);
 		return json;
 	}
 
-	private void storeErroneousData(String oasItemId, MSSResponseWrapper mssResponseBody){
+	private void storeErroneousData(final String oasItemId, final MSSResponseWrapper mssResponseBody){
 		if(!erroneousCollection.containsKey(oasItemId)){
 			erroneousCollection.put(oasItemId, mssResponseBody);
 		}
@@ -391,7 +392,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	 * @param string
 	 * @param string2
 	 */
-	private void insertMosaicErrorRecord(MosaicErrorHandleEvent event, String itemIds, String messages) {
+	private void insertMosaicErrorRecord(final MosaicErrorHandleEvent event, final String itemIds, final String messages) {
 		
 		String additionInfo = itemIds.substring(0, itemIds.lastIndexOf(","));
 		String message = messages.substring(0, messages.lastIndexOf(","));
@@ -409,7 +410,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	/**
 	 * update error record against the invoke key in scoring invoke log table up to invoke count 5
 	 */
-	private void updateMosaicErrorRecord(MosaicErrorHandleEvent event, String itemIds, String messages) {
+	private void updateMosaicErrorRecord(final MosaicErrorHandleEvent event, final String itemIds, final String messages) {
 		
 		String additionInfo = itemIds.substring(0, itemIds.lastIndexOf(","));
 		String message = messages.substring(0, messages.lastIndexOf(","));
@@ -426,7 +427,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	/**
 	 * update error record against the invoke key in scoring invoke log table to success
 	 */
-	private void updateMosaicErrorRecordSuccess(MosaicErrorHandleEvent event) {
+	private void updateMosaicErrorRecordSuccess(final MosaicErrorHandleEvent event) {
 		
 		ScoringInvokeRecord record = new ScoringInvokeRecord(event.getTestRosterId(),
 				event.getStudentId(), event.getSessionId(), MosaicConstantUtils.INVOKE_STATUS_SUCCESS, null, null, null, null, event.getInvokeKey());
@@ -441,7 +442,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	/**
 	 * Delete error record from TMP_MSS_ERROR_LOG table
 	 */
-	private void deleteMosaicErrorRecordTemp(MosaicErrorHandleEvent event) {
+	private void deleteMosaicErrorRecordTemp(final MosaicErrorHandleEvent event) {
 		PreparedStatement pst = null;
 		Connection con = null;
 		try {

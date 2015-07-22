@@ -29,8 +29,8 @@ public class FTResponseReceivedEvent extends ResponseEvent {
     protected List<ChildDASItems> childItems;
     
 	
-	public FTResponseReceivedEvent(Long testRosterId, String itemId,
-			Integer itemSetId) {
+	public FTResponseReceivedEvent(final Long testRosterId, final String itemId,
+			final Integer itemSetId) {
 		super(testRosterId, itemId, itemSetId);
 	}
 
@@ -206,8 +206,7 @@ public class FTResponseReceivedEvent extends ResponseEvent {
 		protected String interationType;
 		protected Integer itemOrder;
 		
-		public ChildDASItems(String childDasItemId, String interationType, Integer itemOrder) {
-			super();
+		public ChildDASItems(final String childDasItemId, final String interationType, final Integer itemOrder) {
 			this.childDasItemId = childDasItemId;
 			this.interationType = interationType;
 			this.itemOrder = itemOrder;
