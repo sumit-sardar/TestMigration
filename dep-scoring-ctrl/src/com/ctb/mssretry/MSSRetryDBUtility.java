@@ -102,6 +102,8 @@ public class MSSRetryDBUtility {
 			System.err.println("Error in the MSSRetryDBUtility.retryMSSTEScoringProgress() method to execute query : \n ");
 			e.printStackTrace();
 		} finally {
+			con.commit();
+			con.setAutoCommit(true);
 			close(con);
 		}
 	}
