@@ -274,7 +274,7 @@ public class ScheduleTestVo implements Serializable{
 		 return testList;
      }
 	 private boolean isLasLinkProduct(String productType) {
-	     	return ("LL".equals(productType) || isLaslinkCustomer);
+	     	return ("LL".equals(productType) || "LLBMT".equals(productType) || isLaslinkCustomer);
 	     }
 
 	public void populate(String userName, TestProduct[] tps, ItemSet itemSet, ScheduleTest scheduleTest) throws SQLException, CTBBusinessException {

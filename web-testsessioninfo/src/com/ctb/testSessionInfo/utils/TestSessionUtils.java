@@ -1089,7 +1089,7 @@ public class TestSessionUtils
             return TABE_LOCATOR_PRODUCT_TYPE;
         else if (productType.equals("TA"))
         	return TABE_ADAPTIVE_PRODUCT_TYPE;
-        else if (productType.equals("LL"))
+        else if (productType.equals("LL") || productType.equals("LLBMT"))
         	return LASLINKS_PRODUCT_TYPE;
         else if (productType.equals("TS"))
         	return TASC_PRODUCT_TYPE;

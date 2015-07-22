@@ -289,7 +289,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     }
     
     private float[] getStudentWidths() {
-        boolean isLasLinksProduct = "LL".equals(this.testProduct.getProductType()); 
+        boolean isLasLinksProduct = "LL".equals(this.testProduct.getProductType()) || "LLBMT".equals(this.testProduct.getProductType()); 
         if (isLasLinksProduct) 
             return STUDENT_WIDTHS_FOR_LASLINKS;
         else
@@ -1547,7 +1547,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     }
     
     private float[] getStudentWidthsToPrintClassName() {
-        boolean isLasLinksProduct = "LL".equals(this.testProduct.getProductType()); 
+        boolean isLasLinksProduct = "LL".equals(this.testProduct.getProductType()) || "LLBMT".equals(this.testProduct.getProductType()); 
         if (isLasLinksProduct) 
             return STUDENT_WIDTHS_FOR_LASLINKS_WITH_CLASSNAME;
         else

@@ -7125,6 +7125,17 @@ function validNumber(str){
 					//** if selected testGroup is from an inactive or expired program, dont allow save
 					return false;
 				}
+				//**for LLO RP
+				if (selectedTestGroup >= 7200 && selectedTestGroup < 7300 && LLExpPrograms[i]==7200)
+				{
+					//** if selected testGroup is from an inactive or expired program, dont allow save
+					return false;
+				}
+				else if (selectedTestGroup >= 7800 && selectedTestGroup < 7900 && LLExpPrograms[i]==7800)
+				{
+					//** if selected testGroup is from an inactive or expired program, dont allow save
+					return false;
+				}
 			}
 		}
 		return true;
@@ -7577,38 +7588,16 @@ function downloadBulkReportCSV(element) {
 		return false;
 	}
 	showLoadingProgress('<br/><b>Downloading file...</b><br/>');
-	//UIBlock();
     var element = document.getElementById("exportRequestId");
-    element.form.action = "downloadBulkReportCSV.do";
+    element.form.action = "DownloadBulkReport";
     element.form.method = "POST";
     element.form.submit();
-    //$.unblockUI();
-    /*$(document).ready(function() {
-		$('form[id=tabeBulkStateReportingForm]').submit(function(e){
-			e.preventDefault();
-			$.ajax({
-				type: 'POST',
-				cache: false,
-				url: 'downloadBulkReportCSV.do',
-				data: 'id=header_contact_send&'+$(this).serialize(), 
-				success: function(msg) {
-					$.unblockUI();
-					alert("success");
-				},
-				error: function(XMLHttpRequest, textStatus, errorThrown) {
-					$.unblockUI();
-					alert("error");
-				}
-			});
-		});
-	});*/
 	return false;
 }
 
-
 function showLoadingProgress(msg) {	
 	$.blockUI({ message: msg, css: { height: '50px'} }); 	
-	setTimeout("$.unblockUI();", 5000);	 
+	setTimeout("$.unblockUI()", 5000);
 }
 
 $(document).ready(function(){
@@ -7623,7 +7612,8 @@ $(document).ready(function(){
 		 		$("#endDateBulkReport").removeAttr('disabled');
 		}
 		
-		})
+		});
+		enableDisableBulkDownloadFileButton(false, "");
 });
 
 
@@ -7693,7 +7683,6 @@ function viewBulkExportDetails(index){
 		multiselect:false,
 		viewrecords: true, 
 		loadonce: true, // to enable sorting on client side
-		sortable: true, // to enable sorting of the grid
 		height: 60,			
 		caption: "Files Exported",
 		pager: '#viewBulkExportStatusPager',
