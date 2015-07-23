@@ -8,7 +8,9 @@ import java.sql.Clob;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
@@ -51,7 +53,7 @@ public class MosaicConstantUtils {
 	// : Constant value of MSS Request JSON parameter
 	final public static String ITEM_RESPONSE_SOURCE = rb.getString("mosaic.item.response.source");
 	final public static String ITEM_SOURCE = rb.getString("mosaic.item.source");
-	final public static String ITEM_BANK_ID = rb.getString("mosaic.item.bank.id");
+	final public static String ITEM_BANK_IDS = rb.getString("mosaic.item.bank.id");
 	
 	final public static String ANSWER_TAG = "answer";
 
@@ -77,6 +79,16 @@ public class MosaicConstantUtils {
 	final public static String INVOKE_STATUS_SUCCESS = "Success";
 	
 	final public static String PARENT_DAS_INTERACTION = "Parent";
+	
+	final public static Map<String, String> ITEM_BANK_COLLECTION = new HashMap<String, String>();
+	
+	static{
+		String[] bankDetails = ITEM_BANK_IDS.split("\\|");
+		for(int indx=0; indx < bankDetails.length; indx++){
+			String[] mapper = bankDetails[indx].split("~");
+			ITEM_BANK_COLLECTION.put(mapper[0], mapper[1]);
+		}
+	}
 	
 	/**
 	 * Convert string object to Base64 String

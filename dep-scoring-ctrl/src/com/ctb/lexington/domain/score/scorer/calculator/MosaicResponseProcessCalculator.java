@@ -59,7 +59,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	public void onEvent(final FTResponseReceivedEvent event) {
 		validateItemSetId(event.getItemSetId());
 		final String itemId = event.getItemId();
-		System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent event call: Thread"+ Thread.currentThread().getId() + " :: " + event.getItemId()+ "&" +event.getItemSetId()+ "&"+event.getTestRosterId());
+		// System.out.println("***** SCORING: MosaicResponseProcessCalculator: FTResponseReceivedEvent event call: Thread"+ Thread.currentThread().getId() + " :: " + event.getItemId()+ "&" +event.getItemSetId()+ "&"+event.getTestRosterId());
 		if (ItemVO.ITEM_TYPE_IN.equals(sicEvent.getType(itemId))) {
 			try {
 				processScore(event);
@@ -72,7 +72,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 	public void onEvent(final MosaicErrorHandleEvent event) {
 		
 		if(erroneousCollection != null && !erroneousCollection.isEmpty()){
-			System.out.println("***** SCORING: MosaicResponseProcessCalculator: MosaicErrorHandleEvent: Thread"+ Thread.currentThread().getId() + " Erroneous record size "+erroneousCollection.size());
+			// System.out.println("***** SCORING: MosaicResponseProcessCalculator: MosaicErrorHandleEvent: Thread"+ Thread.currentThread().getId() + " Erroneous record size "+erroneousCollection.size());
 			StringBuilder itemIds = new StringBuilder();
 			StringBuilder messages = new StringBuilder();
 			for(String itemId : erroneousCollection.keySet()){
@@ -130,7 +130,7 @@ public class MosaicResponseProcessCalculator extends AbstractResponseCalculator{
 				MosaicConstantUtils.ITEM_RESPONSE_SOURCE, 
 				MosaicConstantUtils.ITEM_SOURCE,
 				event.getDasItemId(),
-				MosaicConstantUtils.ITEM_BANK_ID,
+				MosaicConstantUtils.ITEM_BANK_COLLECTION.get(sicEvent.getProductType()),
 				timeStampUTC);
 		MSSRequestResponse mssRequestResponse = new MSSRequestResponse(mssRequest);
 		String studentResponse = null;		
