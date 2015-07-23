@@ -21,7 +21,4 @@ public class SqlDateConverter implements Converter<Date, Calendar>
 		returnCal.setTimeInMillis(date.getTime());
 		return returnCal;
 	}
-
-
-
 }

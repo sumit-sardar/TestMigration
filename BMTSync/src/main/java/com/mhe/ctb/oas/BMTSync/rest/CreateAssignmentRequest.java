@@ -17,10 +17,17 @@ import com.mhe.ctb.oas.BMTSync.model.TestAssignment;
 public class CreateAssignmentRequest {
 	private static final Logger logger = Logger.getLogger(CreateAssignmentRequest.class);
 	
+	private final ObjectMapper mapper;
+	
 	private List<TestAssignment> _testAssignments;
 	
 	public CreateAssignmentRequest() {
+		this(new ObjectMapper());
+	}
+	
+	public CreateAssignmentRequest(final ObjectMapper mapper) {
 		_testAssignments = new ArrayList<TestAssignment>();
+		this.mapper = mapper;
 	}
 	
 	public List<TestAssignment> getTestAssignments() {
@@ -36,9 +43,8 @@ public class CreateAssignmentRequest {
 	public void addTestAssignments(List<TestAssignment> testAssignments) {
 		_testAssignments.addAll(testAssignments);
 	}
-		
+
 	public String toJson() {
-		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.writeValueAsString(this);
 		} catch (JsonProcessingException e) {
