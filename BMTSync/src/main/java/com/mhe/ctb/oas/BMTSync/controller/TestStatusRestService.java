@@ -111,8 +111,8 @@ public class TestStatusRestService {
 						logger.info("[ItemResponses] Request json to BMT :"+itemResponsesRequest.toJson());
 						try {
 							// Send the assignmentId to BMT for a list of itemResponses.
-					        itemResponses = restTemplate.postForObject(endpoint+RestURIConstants.POST_RESPONSES,
-					        		testStatus.getAssignmentId(), CreateItemResponsesResponse.class);
+					        itemResponses = restTemplate.getForObject(endpoint+RestURIConstants.POST_RESPONSES + "/"
+					        		+ testStatus.getAssignmentId(), CreateItemResponsesResponse.class);
 						} catch (RestClientException rce) {
 							// If something goes wrong with the REST call, log the error.
 							logger.error("[ItemResponses] Http Client Error: " + rce.getMessage(), rce);			
