@@ -150,7 +150,7 @@ public class SubtestValidationCalculator extends Calculator {
         final StudentItemScoreData studentData = scorer.getResultHolder().getStudentItemScoreData();
         //Added for Laslink Product
         productType = scorer.getResultHolder().getAdminData().getAssessmentType();
-        if(productType.equals("LL") || productType.equals("ll")) {
+        if(productType.equals("LL") || productType.equals("ll") || productType.equals("LLBMT")) {
         	String valid = "IN";
         	
         	Connection conn = null;

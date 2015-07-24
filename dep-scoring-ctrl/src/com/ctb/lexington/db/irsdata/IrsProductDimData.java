@@ -37,10 +37,11 @@ public class IrsProductDimData implements Persistent{
     }
     
     public boolean equals(Object other) {
-        return
-            this.getName() != null && 
-            this.getName().equals(((IrsProductDimData) other).getName());
-    }
+		return this.getName() != null
+				&& this.getName().equals(((IrsProductDimData) other).getName())
+				&& this.getProductTypeid() != null
+				&& this.getProductTypeid().equals(((IrsProductDimData) other).getProductTypeid());
+	}
 
     public int hashCode() {
         return (int) productid.longValue();

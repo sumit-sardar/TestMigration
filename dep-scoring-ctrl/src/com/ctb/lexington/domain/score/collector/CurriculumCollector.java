@@ -342,7 +342,7 @@ public class CurriculumCollector {
             return composites;
         } 
         // For Laslink Scoring
-        else if ("LL".equals(productType)) {
+        else if ("LL".equals(productType) || "LLBMT".equals(productType)) {
         	Composite [] composites = new Composite[1];
             composites[0] = new Composite();
             composites[0].setCompositeName("Overall Score");
@@ -703,7 +703,8 @@ public class CurriculumCollector {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
         }
-        if(productId == 7501 || productId == 7502 || productId == 7505){
+        if(productId == 7501 || productId == 7502 || productId == 7505
+        		|| productId == 7801 || productId == 7802 || productId == 7805){
         	contentAreas = getVirtualContentAreaForLaslinkSecEdition(contentAreas, productId, subtestLevel, subtestForm);
         }
         return (ContentArea []) contentAreas.toArray(new ContentArea[0]);
@@ -1225,9 +1226,11 @@ public class CurriculumCollector {
                 primaryObjectives.add(primaryObjective);
                 objectiveIndex = primaryObjective.getPrimaryObjectiveIndex();
             }
-            if(productId == 7501 || productId == 7502 || productId == 7505){
-            	primaryObjectives = getVirtualPrimaryObjectiveForLaslinkSecEdition(primaryObjectives, productId, subtestLevel, subtestForm, ++objectiveIndex);
-            }
+            if (productId == 7501 || productId == 7502 || productId == 7505 || productId == 7801
+					|| productId == 7802 || productId == 7805) {
+				primaryObjectives = getVirtualPrimaryObjectiveForLaslinkSecEdition(
+						primaryObjectives, productId, subtestLevel, subtestForm, ++objectiveIndex);
+			}
         } finally {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
@@ -1811,7 +1814,8 @@ public class CurriculumCollector {
                 
                 secondaryObjectives.add(secondaryObjective);
             }
-            if(productId == 7501 || productId == 7502 || productId == 7505){
+            if(productId == 7501 || productId == 7502 || productId == 7505
+            		|| productId == 7801 || productId == 7802 || productId == 7805){
             	secondaryObjectives = calculateAcademicScore((SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]), oasRosterId);
             }
             

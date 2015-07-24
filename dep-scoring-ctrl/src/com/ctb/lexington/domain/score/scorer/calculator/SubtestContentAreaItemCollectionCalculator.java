@@ -32,7 +32,8 @@ public class SubtestContentAreaItemCollectionCalculator extends Calculator {
         		? getItemByContentAreaForTABECCSS(event.getItemSetId(), event.getProductId())
         		: getItemsByContentArea(event.getItemSetId(),
                 event.getProductId()));
-        if(event.getProductId() == 7501 || event.getProductId() == 7502 || event.getProductId() == 7505){
+        if(event.getProductId() == 7501 || event.getProductId() == 7502 || event.getProductId() == 7505
+        		|| event.getProductId() == 7801 || event.getProductId() == 7802 || event.getProductId() == 7805){
         	final Map<String,Long> contentMap = getAllVirtualContentArea(event.getItemSetId(),event.getProductId());
         	itemsByContentAreaQueryResults = populateContentListWithVirtual(itemsByContentAreaQueryResults, contentMap);
         }

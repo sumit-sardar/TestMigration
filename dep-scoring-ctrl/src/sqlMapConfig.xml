@@ -94,4 +94,9 @@
     <sqlMap resource="maps/tcfactmaps/IrsTCPrimObjFact.xml"/>
     <sqlMap resource="maps/tcfactmaps/IrsTCSecObjFact.xml"/>
     <sqlMap resource="maps/trfactmaps/IrsTRItemFact.xml"/>
+    <sqlMap resource="maps/llrpfactmaps/IrsLLRPCompositeFact.xml"/> 
+    <sqlMap resource="maps/llrpfactmaps/IrsLLRPContentAreaFact.xml"/> 
+    <sqlMap resource="maps/llrpfactmaps/IrsLLRPPrimObjFact.xml"/> 
+    <sqlMap resource="maps/llrpfactmaps/IrsLLRPSecObjFact.xml"/> 
+    <sqlMap resource="maps/llrpfactmaps/IrsLLRPItemFact.xml"/> 
 </sqlMapConfig>

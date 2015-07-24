@@ -107,7 +107,8 @@ public class CurriculumController {
         	contentAreas = getIrsContentAreaBeans(data);
         }
         
-        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType()))){
+        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType())
+        		|| "LLBMT".equalsIgnoreCase(adminData.getAssessmentType()))){
         	SqlMapClient insertSubjectClient = null;
         	SqlMapClient insertContentClient = null;
             SqlMapClient updateContentClient = null;
@@ -176,7 +177,8 @@ public class CurriculumController {
         // handle primary objectives
         IrsPrimObjDimData [] primaryObjectives = getIrsPrimObjBeans(data);
         
-        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType()))){ // Changes for iBatis Batch Process implementation
+        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType())
+        		|| "LLBMT".equalsIgnoreCase(adminData.getAssessmentType()))){ // Changes for iBatis Batch Process implementation
         	Long objectiveIndex = new Long(0);
         	SqlMapClient insertPrimClient = null;
             SqlMapClient updatePrimClient = null;
@@ -243,7 +245,8 @@ public class CurriculumController {
         	secondaryObjectives = getIrsSecObjBeans(data);
         }
         
-        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType()))){ // Changes for iBatis Batch Process implementation
+        if(null != adminData && ("TC".equalsIgnoreCase(adminData.getAssessmentType()) || "TR".equalsIgnoreCase(adminData.getAssessmentType())
+        		|| "LLBMT".equalsIgnoreCase(adminData.getAssessmentType()))){ // Changes for iBatis Batch Process implementation
         	SqlMapClient insertObjClient = null;
             SqlMapClient updateObjClient = null;
             Map<Long, IrsSecObjDimData> existSecObjMap = new HashMap<Long, IrsSecObjDimData>();
@@ -255,9 +258,15 @@ public class CurriculumController {
 	            	existSecObjMap.put(newSecObj.getSecObjid(), newSecObj);
 	            } else {
 	            	IrsSecObjDimData secObj = (IrsSecObjDimData)existSecObjMap.get(newSecObj.getSecObjid());
-	                if(!newSecObj.equals(secObj)) {
-	                    updateObjClient = soMapper.updateBatch(newSecObj, updateObjClient);
-	                }
+	                if (adminData.getProductId() == 7800) {
+						if (!newSecObj.equalsSec(secObj)) {
+							updateObjClient = soMapper.updateBatch(newSecObj, updateObjClient);
+						}
+					} else {
+						if (!newSecObj.equals(secObj)) {
+							updateObjClient = soMapper.updateBatch(newSecObj, updateObjClient);
+						}
+					}
 	            }
         	}
         	soMapper.executeObjectiveBatch(insertObjClient);
@@ -265,7 +274,7 @@ public class CurriculumController {
         }else{
 	        for(int i=0;i<secondaryObjectives.length;i++) {
 	            IrsSecObjDimData newSecObj = secondaryObjectives[i];
-	            if(adminData != null && adminData.getProductId()== 7500){
+	            if(adminData != null && (adminData.getProductId()== 7500 || adminData.getProductId()== 7800 )){
 		            // check for existing secondary objective record
 		            IrsSecObjDimData secObj = soMapper.findBySecObjId(newSecObj.getSecObjid());
 		            if(secObj == null) {
@@ -300,7 +309,8 @@ public class CurriculumController {
         if (null != adminData
 				&& ("TC".equalsIgnoreCase(adminData.getAssessmentType()) 
 						|| "TR".equalsIgnoreCase(adminData.getAssessmentType())
-						|| "TS".equalsIgnoreCase(adminData.getAssessmentType()))){
+						|| "TS".equalsIgnoreCase(adminData.getAssessmentType()))
+						|| ("LLBMT".equalsIgnoreCase(adminData.getAssessmentType()) && items.length>0)){
         	SqlMapClient insertItemClient = null;
             SqlMapClient updateItemClient = null;
             Map<String, IrsItemDimData> existItemMap = new HashMap<String, IrsItemDimData>();

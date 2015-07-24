@@ -34,6 +34,7 @@ import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.collector.TestResultDataCollector;
 import com.ctb.lexington.domain.score.controller.TestResultController;
 import com.ctb.lexington.domain.score.controller.llcontroller.LLTestResultController;
+import com.ctb.lexington.domain.score.controller.llrpcontroller.LLRPTestResultController;
 import com.ctb.lexington.domain.score.controller.tacontroller.TATestResultController;
 import com.ctb.lexington.domain.score.controller.tbcontroller.TBTestResultController;
 import com.ctb.lexington.domain.score.controller.tccontroller.TCTestResultController;
@@ -281,6 +282,11 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                     controller.run(getRosterValidationStatus(event.getTestRosterId()));
                 }
                 //END- For TASC Readiness
+                //START-  For Laslink Scoring
+                else if(this instanceof LLBMTScorer) {
+                    controller = new LLRPTestResultController(getIRSConnection(), resultHolder, getReportingLevels(event.getTestRosterId()));
+                    controller.run(getRosterValidationStatus(event.getTestRosterId()));
+                }
                 
                 System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: finished persistence");
                 forceCloseAllConnections(false);
@@ -390,7 +396,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         
         // Added for Laslink Product
         String productType = getResultHolder().getAdminData().getAssessmentType();
-        if(productType.equals("LL") || productType.equals("ll"))
+        if(productType.equals("LL") || productType.equals("ll") || productType.equals("LLBMT"))
         	details.calculatePercentObtainedForFirstDecimal();
         else
         	details.calculatePercentObtained();
@@ -422,7 +428,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         String productType = getResultHolder().getAdminData().getAssessmentType();
       //  System.out.println("productType ->" + productType);
         if(!productType.equals("TA")) {
-	        if(productType.equals("LL") || productType.equals("ll"))
+	        if(productType.equals("LL") || productType.equals("ll") || productType.equals("LLBMT"))
 	        	factDetails.calculatePercentObtainedForFirstDecimal();
 	        else
 	        	factDetails.calculatePercentObtained();

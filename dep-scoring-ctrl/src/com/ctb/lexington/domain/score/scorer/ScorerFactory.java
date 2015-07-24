@@ -261,7 +261,18 @@ public class ScorerFactory {
             	
                 return (Scorer) getScorerClass(assessment.getProductType())
                         .getConstructor(cls).newInstance(inte);
-        	} else {
+        	}else if("LLBMT".equalsIgnoreCase(assessment.getProductTypeValue()) && !(assessment.getProductId().intValue() == 7201 
+        			|| assessment.getProductId().intValue() == 7202 || assessment.getProductId().intValue() == 7203)) {
+        		// Added for laslink BMT second edition
+        		Class[] cls = new Class[1];
+            	cls[0] = assessment.getProductId().getClass();
+            	Integer[] inte = new Integer[1];
+            	inte[0] = assessment.getProductId();
+            	
+                return (Scorer) getScorerClass(assessment.getProductType())
+                        .getConstructor(cls).newInstance(inte);
+        	}
+        	else {
         		return (Scorer) getScorerClass(assessment.getProductType())
                 .getConstructor(null).newInstance(null);
         	}

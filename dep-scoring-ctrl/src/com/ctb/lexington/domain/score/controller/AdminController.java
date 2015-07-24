@@ -191,7 +191,8 @@ public class AdminController {
             "TA".equals(data.getAssessmentType())?5: // For Tabe Adaptive Scoring
     		"TS".equals(data.getAssessmentType())?6: // For TASC Scoring
     		"TC".equals(data.getAssessmentType())?1: // For TABE CCSS Scoring
-    		"TR".equals(data.getAssessmentType())?6:3)); // For TASC Readiness Scoring
+    		"TR".equals(data.getAssessmentType())?6: // For TASC Readiness Scoring
+            "LLBMT".equals(data.getAssessmentType())?4 : 3)); // For Laslink-BMT Scoring
         programData.setNormsGroup(
             "6".equals(data.getNormsGroup())?"Fall":
             "18".equals(data.getNormsGroup())?"Winter":
@@ -237,7 +238,8 @@ public class AdminController {
             "TA".equals(data.getAssessmentType())?5: // For Laslink Scoring
             "TS".equals(data.getAssessmentType())?6: // For TASC Scoring
             "TC".equals(data.getAssessmentType())?1: // For TABE CCSS Scoring
-            "TR".equals(data.getAssessmentType())?6:3)); // For TASC Readiness Scoring
+            "TR".equals(data.getAssessmentType())?6: // For TASC Readiness Scoring
+            "LLBMT".equals(data.getAssessmentType())?4 : 3)); // For Laslink-BMT Scoring
     	return productData;
     }
     
@@ -256,7 +258,8 @@ public class AdminController {
             "TA".equals(data.getAssessmentType())?5: // For Laslink Scoring
         	"TS".equals(data.getAssessmentType())?6: // For TASC Scoring
     		"TC".equals(data.getAssessmentType())?1: // For TABE CCSS Scoring
-        	"TR".equals(data.getAssessmentType())?6:3)); // For TASC Readiness Scoring
+        	"TR".equals(data.getAssessmentType())?6: // For TASC Readiness Scoring
+        	"LLBMT".equals(data.getAssessmentType())?4 : 3)); // For Laslink-BMT Scoring
         
         // this is WRONG!!! what if they didn't complete any content area?
         String form = "N/A";
@@ -297,7 +300,8 @@ public class AdminController {
                                             "20".equals(level)?14:15));
         } 
          // For Laslink Scoring
-       else if("LL".equals(data.getAssessmentType())) {
+       else if("LL".equals(data.getAssessmentType()) || 
+    		    "LLBMT".equals(data.getAssessmentType()) ){
             assessmentData.setLevelid(                                  
                                           new Long(
                                         	"K".equals(level)?16:
