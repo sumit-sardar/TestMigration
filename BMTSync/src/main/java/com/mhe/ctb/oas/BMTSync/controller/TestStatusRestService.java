@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -96,23 +95,24 @@ public class TestStatusRestService {
 				TestStatus testStatusRet = new TestStatus();
 			
 				// If the test status is CO or IN, and this is a LasLinks customer ID, load the customer data.
-				if (testStatus.getValidatedCustomerId() == null) {
+				final Integer customerId = testStatus.getValidatedCustomerId();
+				if (customerId == null) {
 					logger.info("[ItemResponses] Customer ID from BMT is null; skipping responses.");
 				} else {
 					// If the customer ID says to get the endpoint and we're in the right status, do the thing.
-					if (endpointSelector.getFetchResponses(testStatus.getValidatedCustomerId()) &&
+					if (endpointSelector.getFetchResponses(customerId) &&
 							(testStatus.getDeliveryStatus().equals("CO")) || testStatus.getDeliveryStatus().equals("IN")) {
-						logger.info("[ItemResponses] Customer ID from BMT requires requests and status is final; fetching responses. [customerId='"
-								+ testStatus.getValidatedCustomerId() + ",testStatus=" + testStatus.getDeliveryStatus() + "]");
-						final String endpoint = endpointSelector.getEndpoint(testStatus.getValidatedCustomerId());
+						logger.info("[ItemResponses] Customer ID from BMT requires requests and status is final; fetching responses. [customerId="
+								+ customerId + ",testStatus=" + testStatus.getDeliveryStatus() + "]");
+						final String endpoint = endpointSelector.getEndpoint(customerId);
 						CreateItemResponsesResponse itemResponses = null;
 						CreateItemResponsesRequest itemResponsesRequest = new CreateItemResponsesRequest();
 						itemResponsesRequest.setAssignmentId(testStatus.getAssignmentId());
+						logger.info("[ItemResponses] Request json to BMT :"+itemResponsesRequest.toJson());
 						try {
 							// Send the assignmentId to BMT for a list of itemResponses.
-					        itemResponses = restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
-					        		itemResponsesRequest, CreateItemResponsesResponse.class);
-					        // Persist the item responses in the database.
+					        itemResponses = restTemplate.postForObject(endpoint+RestURIConstants.POST_RESPONSES,
+					        		testStatus.getAssignmentId(), CreateItemResponsesResponse.class);
 						} catch (RestClientException rce) {
 							// If something goes wrong with the REST call, log the error.
 							logger.error("[ItemResponses] Http Client Error: " + rce.getMessage(), rce);			
@@ -193,11 +193,7 @@ public class TestStatusRestService {
 		
 		final Integer testRosterId = testStatus.getOasRosterId();
 		final String subTestId = testStatus.getOasTestId();
-		
 		final List<ItemResponse> itemResponseList = itemResponses.getItemResponses();
-		if (CollectionUtils.isEmpty(itemResponseList)) {
-			throw new RestClientException("Item response list should not be empty! [assignmentId=" + testStatus.getAssignmentId() + "]");
-		}
 
 		itemResponseDAO.addItemResponses(testRosterId, subTestId, itemResponseList);
 	}

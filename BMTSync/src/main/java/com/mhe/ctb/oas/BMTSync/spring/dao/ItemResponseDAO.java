@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-
+import org.springframework.util.CollectionUtils;
 import com.mhe.ctb.oas.BMTSync.model.ItemResponse;
 
 public class ItemResponseDAO {
@@ -93,16 +93,21 @@ public class ItemResponseDAO {
 			final List<ItemResponse> itemResponses) throws SQLException {
 
 		final Integer itemSetId = getItemSetIdForRosterAndSubtest(testRosterId, subTestId);
-		for (final ItemResponse itemResponse : itemResponses) {
-			if ("MC".equals(itemResponse.getItemType())) {
-				// Multiple choice answer; store result in ITEM_RESPONSE, multiple recordings of the same value is fine.
-				insertMultipleChoiceResponse(testRosterId, itemSetId, itemResponse);
-			} else {
-				// Constructed or audio answer. First, see if there's already an entry for this item.
-				if (constructedEntryExists(testRosterId, itemSetId, itemResponse.getItemCode())) {
-					insertConstructedResponse(testRosterId, itemSetId, itemResponse);
+		if (CollectionUtils.isEmpty(itemResponses)) {
+			LOGGER.warn("Item resposnes empty! No records will be recorded. [testRosterId=" + testRosterId
+					+ ",subTestId=" + subTestId + "]");
+		} else {
+			for (final ItemResponse itemResponse : itemResponses) {
+				if ("MC".equals(itemResponse.getItemType())) {
+					// Multiple choice answer; store result in ITEM_RESPONSE, multiple recordings of the same value is fine.
+					insertMultipleChoiceResponse(testRosterId, itemSetId, itemResponse);
 				} else {
-					updateConstructedResponse(testRosterId, itemSetId, itemResponse);
+					// Constructed or audio answer. First, see if there's already an entry for this item.
+					if (constructedEntryExists(testRosterId, itemSetId, itemResponse.getItemCode())) {
+						insertConstructedResponse(testRosterId, itemSetId, itemResponse);
+					} else {
+						updateConstructedResponse(testRosterId, itemSetId, itemResponse);
+					}
 				}
 			}
 		}
