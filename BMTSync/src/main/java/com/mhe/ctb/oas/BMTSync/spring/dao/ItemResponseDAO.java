@@ -14,15 +14,15 @@ import org.springframework.util.CollectionUtils;
 import com.mhe.ctb.oas.BMTSync.model.ItemResponse;
 
 public class ItemResponseDAO {
-	
+
 	private static final Logger LOGGER = Logger.getLogger(ItemResponseDAO.class);
-	
+
 	// The data source
 	private DataSource dataSource;
 
 	// The JDBC template
 	private JdbcTemplate template;
-	
+
 	/** The query to get an item_set_id from a subTestId. */
 	private static final String SELECT_ITEM_SET_ID = "SELECT IST.ITEM_SET_ID "
 			+ "FROM Student_Item_Set_Status SISS, Item_Set IST "
@@ -83,10 +83,18 @@ public class ItemResponseDAO {
 			+ "WHERE TEST_ROSTER_ID = ? "
 			+ "AND ITEM_SET_ID = ? "
 			+ "AND ITEM_ID = ?";
-	
+
 	public ItemResponseDAO(final DataSource ds) {
+		this(ds, null);
+	}
+
+	public ItemResponseDAO(final DataSource ds, final JdbcTemplate jdbcTemplate) {
 		this.dataSource = ds;
-		template = new JdbcTemplate(dataSource);
+		if (jdbcTemplate == null) {
+			template = new JdbcTemplate(ds);
+		} else {
+			template = jdbcTemplate;
+		}
 	}
 	
 	public boolean addItemResponses(final Integer testRosterId, final String subTestId,
@@ -94,7 +102,7 @@ public class ItemResponseDAO {
 
 		final Integer itemSetId = getItemSetIdForRosterAndSubtest(testRosterId, subTestId);
 		if (CollectionUtils.isEmpty(itemResponses)) {
-			LOGGER.warn("Item resposnes empty! No records will be recorded. [testRosterId=" + testRosterId
+			LOGGER.warn("Item responses empty! No records will be recorded. [testRosterId=" + testRosterId
 					+ ",subTestId=" + subTestId + "]");
 		} else {
 			for (final ItemResponse itemResponse : itemResponses) {
@@ -104,9 +112,9 @@ public class ItemResponseDAO {
 				} else {
 					// Constructed or audio answer. First, see if there's already an entry for this item.
 					if (constructedEntryExists(testRosterId, itemSetId, itemResponse.getItemCode())) {
-						insertConstructedResponse(testRosterId, itemSetId, itemResponse);
-					} else {
 						updateConstructedResponse(testRosterId, itemSetId, itemResponse);
+					} else {
+						insertConstructedResponse(testRosterId, itemSetId, itemResponse);
 					}
 				}
 			}
@@ -210,7 +218,16 @@ public class ItemResponseDAO {
 	private boolean constructedEntryExists(final Integer testRosterId, final Integer itemSetId, final Integer itemId)
 			throws SQLException {
 		try {
-			return template.queryForObject(SELECT_UNIQUE_CONSTRUCTED_RESPONSE, Integer.class, testRosterId, itemSetId, itemId) == 1;
+			final Integer extantRows = template.queryForObject(SELECT_UNIQUE_CONSTRUCTED_RESPONSE, Integer.class, testRosterId, itemSetId, itemId);
+			if (extantRows > 0) {
+				LOGGER.debug("No rows found in ITEM_RESPONSE_CR."
+						+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemId + "]");
+				return true;
+			} else {
+				LOGGER.debug("One or more rows found in ITEM_RESPONSE_CR."
+						+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemId + "]");
+				return false;
+			}
 		} catch (final DataAccessException sqle) {
 			LOGGER.error("[ItemResponseDAO] Error trying to validate uniqueness of constructed response: " + sqle.getMessage()
 					+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemId + "]", sqle);
