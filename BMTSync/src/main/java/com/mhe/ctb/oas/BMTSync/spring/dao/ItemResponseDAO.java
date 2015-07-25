@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.CollectionUtils;
+
 import com.mhe.ctb.oas.BMTSync.model.ItemResponse;
 
 public class ItemResponseDAO {
@@ -18,6 +19,7 @@ public class ItemResponseDAO {
 	private static final Logger LOGGER = Logger.getLogger(ItemResponseDAO.class);
 
 	// The data source
+	@SuppressWarnings("unused")
 	private DataSource dataSource;
 
 	// The JDBC template
