@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -79,29 +80,27 @@ public class TestStatusRestService {
 		// Setup the success/failure counters
 		SuccessFailCounter counter = new SuccessFailCounter(request.getTestStatus().size());
 		
-		if (request.getTestStatus().size() > 0) {
-			response.setSuccessful(true);
-		} else {
+		if (CollectionUtils.isEmpty(request.getTestStatus())) {
+			response.setFailures(request.getTestStatus());
 			response.setSuccessful(false);
 			response.setErrorCode("101");
 			response.setErrorMessage("Invalid request JSON");
+			return response;
 		}
 		
 		List<TestStatus> testStatusErrList = new ArrayList<TestStatus>();
 		
 		try {
-			
 			for (TestStatus testStatus : request.getTestStatus()) {
-				TestStatus testStatusRet = new TestStatus();
-			
+				boolean storeStatusUpdate = true;
+				
 				// If the test status is CO or IN, and this is a LasLinks customer ID, load the customer data.
 				final Integer customerId = testStatus.getValidatedCustomerId();
-				if (customerId == null) {
-					logger.info("[ItemResponses] Customer ID from BMT is null; skipping responses.");
+				if (customerId == null || ! endpointSelector.getFetchResponses(customerId)) {
+					logger.info("[ItemResponses] Customer ID doesn't need responses; skipping.");
 				} else {
 					// If the customer ID says to get the endpoint and we're in the right status, do the thing.
-					if (endpointSelector.getFetchResponses(customerId) &&
-							(testStatus.getDeliveryStatus().equals("CO")) || testStatus.getDeliveryStatus().equals("IN")) {
+					if (testStatus.getDeliveryStatus().equals("CO") || testStatus.getDeliveryStatus().equals("IN")) {
 						logger.info("[ItemResponses] Customer ID from BMT requires requests and status is final; fetching responses. [customerId="
 								+ customerId + ",testStatus=" + testStatus.getDeliveryStatus() + "]");
 						final String endpoint = endpointSelector.getEndpoint(customerId);
@@ -115,13 +114,15 @@ public class TestStatusRestService {
 					        		+ testStatus.getAssignmentId(), CreateItemResponsesResponse.class);
 						} catch (RestClientException rce) {
 							// If something goes wrong with the REST call, log the error.
-							logger.error("[ItemResponses] Http Client Error: " + rce.getMessage(), rce);			
+							logger.error("[ItemResponses] Http Client Error: " + rce.getMessage(), rce);
+							storeStatusUpdate = false;
 							testStatus.setErrorCode(412);
 							testStatus.setErrorMessage("[ItemResponses] Unable to get item responses: " + rce.getMessage()
 									+ " [assignmentId=" + testStatus.getAssignmentId() + "]");
 						} catch (final Exception e) {
 							// If something unexpected goes wrong, log it.
 							logger.error("[ItemResponses] Error in TestStatusRestService class : "+e.getMessage(), e);
+							storeStatusUpdate = false;
 							testStatus.setErrorCode(500);
 							testStatus.setErrorMessage("[ItemResponses] Error in TestStatusRestService class : "+e.getMessage()
 									+ " [assignmentId=" + testStatus.getAssignmentId() + "]");
@@ -134,19 +135,25 @@ public class TestStatusRestService {
 				        		processResponses(testStatus, itemResponses);
 				        	} catch (final Exception e) {
 					        	logger.error("[ItemResponses] Error storing responses in database: " + e.getMessage(), e);
+								storeStatusUpdate = false;
 								testStatus.setErrorCode(500);
 								testStatus.setErrorMessage("Error storing responses in database: " + e.getMessage());					        					        		
 				        	}
 				        } else {
 				        	logger.error("[ItemResponses] Response json from BMT is null; logging error!");
+							storeStatusUpdate = false;
 							testStatus.setErrorCode(400);
 							testStatus.setErrorMessage("[ItemResponses] Null response from BMT!");					        	
 				        }
+					} else {
+						logger.info("[ItemResponses] Customer ID from BMT and status don't require responses. [customerId="
+								+ customerId + ",testStatus=" + testStatus.getDeliveryStatus() + "]");
 					}
 				}
 				
 				// If the error code is set at this point, clone the object for return. Otherwise, save the data and build a new response object.
-				if (testStatus.getErrorCode() > 0) {
+				TestStatus testStatusRet;
+				if (! storeStatusUpdate) {
 					testStatusRet = new TestStatus();
 					testStatusRet.setAssignmentId(testStatus.getAssignmentId());
 					testStatusRet.setCompletedDate(testStatus.getCompletedDate());
