@@ -107,11 +107,12 @@ public class TestStatusRestService {
 						CreateItemResponsesResponse itemResponses = null;
 						CreateItemResponsesRequest itemResponsesRequest = new CreateItemResponsesRequest();
 						itemResponsesRequest.setAssignmentId(testStatus.getAssignmentId());
-						logger.info("[ItemResponses] Request json to BMT :"+itemResponsesRequest.toJson());
+						final String bmtResponseUrl = endpoint + RestURIConstants.POST_RESPONSES + "/" + testStatus.getAssignmentId();
+						logger.info("[ItemResponses] Calling BMT URL:" + bmtResponseUrl);
 						try {
 							// Send the assignmentId to BMT for a list of itemResponses.
-					        itemResponses = restTemplate.getForObject(endpoint+RestURIConstants.POST_RESPONSES + "/"
-					        		+ testStatus.getAssignmentId(), CreateItemResponsesResponse.class);
+					        itemResponses = restTemplate.getForObject(bmtResponseUrl, CreateItemResponsesResponse.class);
+					        logger.info("[ItemResponses] Response from BMT: " + itemResponses == null ? "null" : itemResponses.toJson());
 						} catch (RestClientException rce) {
 							// If something goes wrong with the REST call, log the error.
 							logger.error("[ItemResponses] Http Client Error: " + rce.getMessage(), rce);
