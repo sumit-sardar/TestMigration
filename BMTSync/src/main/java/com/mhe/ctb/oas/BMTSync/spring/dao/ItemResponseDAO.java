@@ -55,7 +55,7 @@ public class ItemResponseDAO {
 			+ "sysdate, "	// CREATED_DATE_TIME		DATE				sysdate
 			+ "null, "		// EXT_ANSWER_CHOICE_ID		VARCHAR2(32 BYTE)	null
 			+ "'T', "		// STUDENT_MARKED			VARCHAR2(2 BYTE)	'T', Unused per Tai
-			+ "99)";		// CREATED_BY				NUMBER(38,0)		Refers to USERS table, no entry listed.
+			+ "6)";			// CREATED_BY				NUMBER(38,0)		Foreign key to USERS table, 6 fixed as "test_client" per Sumit Sardar.
 	
 	/** The query to get the number of records in ITEM_RESPONSE_CR for a given testRosterId, itemSetId, and itemId. */
 	private static final String SELECT_UNIQUE_CONSTRUCTED_RESPONSE = "SELECT COUNT(1) FROM ITEM_RESPONSE_CR "

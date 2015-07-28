@@ -63,7 +63,7 @@ public class TestItemResponseDAO {
 			+ "sysdate, "	// CREATED_DATE_TIME		DATE				sysdate
 			+ "null, "		// EXT_ANSWER_CHOICE_ID		VARCHAR2(32 BYTE)	null
 			+ "'T', "		// STUDENT_MARKED			VARCHAR2(2 BYTE)	'T', Unused per Tai
-			+ "99)";		// CREATED_BY				NUMBER(38,0)		Refers to USERS table, no entry listed.
+			+ "6)";			// CREATED_BY				NUMBER(38,0)		Foreign key to USERS table, hardcoded to 6 per Sumit Sardar.
 
 	@Before
 	public void setUp() {
