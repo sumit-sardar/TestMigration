@@ -72,6 +72,9 @@ public class StudentObjectiveScoresController {
             PrimaryObjective prim = currData.getPrimObjById(prims[i].getPrimaryObjectiveId());
             StudentScoreSummaryDetails details = studentScoreSummaryData.get(prims[i].getPrimaryObjectiveId());
             if(adminData.getProductId() == 7800){
+            	if(prim.getPrimaryObjectiveName().contains("Overall")){
+            		continue;
+            	}
         		if(tempMap.containsKey(prims[i].getPrimaryObjectiveId()))
         				details = tempMap.get(prims[i].getPrimaryObjectiveId());
         	}

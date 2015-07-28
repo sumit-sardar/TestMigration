@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -72,6 +73,11 @@ public class CurriculumController {
     }
 
     public void run() throws SQLException, IOException, DataException {
+    	
+    	if(adminData.getProductId() == 7800){
+    		createDummyObjectives();
+    	}
+    	
         // handle composites
     	IrsCompositeDimData [] composites = getIrsCompositeBeans(data);
         for(int i=0;i<composites.length;i++) {
@@ -241,6 +247,8 @@ public class CurriculumController {
         IrsSecObjDimData [] secondaryObjectives = null;
         if("TC".equals(this.adminData.getAssessmentType())){
         	secondaryObjectives = getIrsSecObjBeansForTABECCSS(data);
+        }else if("LLBMT".equals(this.adminData.getAssessmentType())){
+        	secondaryObjectives = getIrsSecObjBeansLLBMT(data);
         }else {
         	secondaryObjectives = getIrsSecObjBeans(data);
         }
@@ -581,6 +589,27 @@ public class CurriculumController {
         return idd;
     }
     
+    
+    // Added for LLBMT Overall Academic Scoring
+    private IrsSecObjDimData [] getIrsSecObjBeansLLBMT(CurriculumData data) {
+        IrsSecObjDimData [] sod = new IrsSecObjDimData[data.getSecondaryObjectives().length];
+        for(int i=0;i<data.getSecondaryObjectives().length;i++) {
+            sod[i] = new IrsSecObjDimData();
+            SecondaryObjective so = data.getSecondaryObjectives()[i];
+            sod[i].setPrimObjid((so.getPrimaryObjectiveId()==null)
+            		?new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getSecondaryObjectiveId())))
+            		:new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getPrimaryObjectiveId()))));
+            sod[i].setName(so.getSecondaryObjectiveName());
+            sod[i].setNumItems(so.getSecondaryObjectiveNumItems());
+            sod[i].setPointsPossible(so.getSecondaryObjectivePointsPossible());
+            sod[i].setSecObjid(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getSecondaryObjectiveId()))));
+            sod[i].setSecObjType(so.getSecondaryObjectiveType());
+            sod[i].setAssessmentid(context.getAssessmentId());
+        }
+        
+        return sod;
+    }
+    
     private IrsPrimObjDimData [] getIrsVirtualPrimObjBeans(CurriculumData data, Long objectiveIndex) {
         Map<Long, VirtualPrimObjsForTABECCSS> primMap = new HashMap<Long, VirtualPrimObjsForTABECCSS>();
         for(VirtualPrimObjsForTABECCSS virtualPrim : data.getVirtualPrimObjs()){
@@ -662,4 +691,38 @@ public class CurriculumController {
             contentArea.setSubjectId(irsContentAreas[i].getSubjectid());
         }
     }
+     
+     private void createDummyObjectives() {
+    	List<ContentArea> contentAreaList = new ArrayList<ContentArea>();
+		List<PrimaryObjective> primObjList = new ArrayList<PrimaryObjective>();
+     	for(SecondaryObjective so: data.getSecondaryObjectives()){
+     		if(so.getSecondaryObjectiveName().contains("Overall")){
+ 				ContentArea contentArea = new ContentArea();
+ 				contentArea.setContentAreaId(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getSecondaryObjectiveId()))));
+ 				contentArea.setContentAreaName(so.getSecondaryObjectiveName());
+ 				contentArea.setContentAreaType(data.getContentAreas()[0].getContentAreaType());
+ 				contentArea.setSubject("--");
+ 				contentArea.setContentAreaNumItems(so.getSecondaryObjectiveNumItems());
+ 				contentArea.setContentAreaPointsPossible(so.getSecondaryObjectivePointsPossible());
+ 				contentAreaList.add(contentArea);
+ 				
+ 				PrimaryObjective primaryObjective = new PrimaryObjective();
+ 				primaryObjective.setPrimaryObjectiveId(new Long(String.valueOf(so.getSecondaryObjectiveId())));
+ 				primaryObjective.setContentAreaId(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getSecondaryObjectiveId()))));
+ 				primaryObjective.setPrimaryObjectiveName(so.getSecondaryObjectiveName());
+ 				primaryObjective.setPrimaryObjectiveType(data.getPrimaryObjectives()[0].getPrimaryObjectiveType());
+ 				primaryObjective.setPrimaryObjectiveNumItems(so.getSecondaryObjectiveNumItems());
+ 				primaryObjective.setPrimaryObjectivePointsPossible(so.getSecondaryObjectivePointsPossible());
+ 				primaryObjective.setProductId(new Long(Long.parseLong(String.valueOf(so.getProductId()))));
+ 				primaryObjective.setPrimaryObjectiveIndex(new Long(0));
+ 				primObjList.add(primaryObjective);
+ 				break;
+     		}
+     	}
+     	contentAreaList.addAll(Arrays.asList(data.getContentAreas()));
+     	primObjList.addAll(Arrays.asList(data.getPrimaryObjectives()));
+     	
+     	data.setContentAreas(contentAreaList.toArray(new ContentArea[contentAreaList.size()]));
+     	data.setPrimaryObjectives(primObjList.toArray(new PrimaryObjective[primObjList.size()]));
+ 	}
 }
