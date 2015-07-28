@@ -19,7 +19,7 @@ public class IrsTASCItemFactMapper extends AbstractDBMapper{
 	private static final String UPDATE_BY_FACTID = "TSupdateTABEItemFact";
 	private static final String DELETE_BY_FACTID = "TSdeleteByItemFactId";
     private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTASCItemFactCurrentResult";
-    private static final String INSERT_FT_INTO_TASCITEMFACT = "TSinsertFieldTestItemFact";
+    private static final String MERGE_FT_INTO_TASCITEMFACT = "TSmergeFieldTestItemFact";
     
     public IrsTASCItemFactMapper(Connection conn){
 		super(conn);
@@ -55,8 +55,8 @@ public class IrsTASCItemFactMapper extends AbstractDBMapper{
 		return sqlMap;
     }
 	
-	public SqlMapClient insertFTBatch(IrsTASCItemFactData record, SqlMapClient sqlMap)throws SQLException{
-		sqlMap = insertBatch(INSERT_FT_INTO_TASCITEMFACT, record, sqlMap);
+	public SqlMapClient updateFTBatch(IrsTASCItemFactData record, SqlMapClient sqlMap)throws SQLException{
+		sqlMap = updateBatch(MERGE_FT_INTO_TASCITEMFACT, record, sqlMap);
 		return sqlMap;
     }
 	

@@ -189,86 +189,93 @@ WHERE
 	        ITEMID = #itemid:NUMERIC#
 	</delete>
 	
-	<insert id="TRinsertFieldTestItemFact"
+	<update id="TRmergeFieldTestItemFact"
 		parameterClass="com.ctb.lexington.db.irsdata.irstrdata.IrsTRItemFactData">
 
-		INSERT INTO
-            TASC_ITEM_FACT
-                (
-                FACTID,
-        		STUDENTID,        
-		        FORMID,
-        		SESSIONID,
-        		GRADEID,
-		        LEVELID,
-		        ITEMID,
-        		ORG_NODEID,
-		        ASSESSMENTID,
-		        PROGRAMID,	
-        		CURRENT_RESULTID,
-		        POINTS_OBTAINED,
-		        ITEM_RESPONSE_TIMESTAMP,
-        		TEST_COMPLETION_TIMESTAMP,
-		        RESPONSEID,
-        		POINTS_POSSIBLE,
-        		FIELD_TEST
-                )
-        VALUES
-                (
-                #factid:NUMERIC#,
-                #studentid:NUMERIC#,
-                #formid:NUMERIC#,
-                #sessionid:NUMERIC#,
-                #gradeid:NUMERIC#,
-                #levelid:NUMERIC#,
-                #itemid:NUMERIC#,
-                #orgNodeid:NUMERIC#,
-                #assessmentid:NUMERIC#,
-                #programid:NUMERIC#,
-                decode(
-                    sign( 
-                        NVL(to_number(
-                            TO_CHAR(
-                                to_timestamp(
-                                    to_char((select max(test_completion_timestamp) from tasc_item_fact fact,
-                                        item_dim itemdim, sec_obj_dim secdim, prim_obj_dim primdim, content_area_dim condim
-                                        where fact.sessionid != #sessionid:NUMERIC#
-                                        and fact.studentid = #studentid:NUMERIC#
-                                        and fact.assessmentid = #assessmentid:NUMERIC#
-                                        and fact.current_Resultid = 1
-                                        and fact.itemid = itemdim.itemid
-                                        and itemdim.sec_objid = secdim.sec_objid
-                                        and secdim.prim_objid = primdim.prim_objid
-                                        and primdim.content_Areaid = condim.content_areaid
-                                        and (#subtestName:VARCHAR# = 'TABE ' || condim.name OR (#subtestName:VARCHAR# = 'TABE Mathematics Computation' and condim.name = 'Math Computation'))  
-                                    ), 'MM/DD/YYYY HH24:MI:SS'), 'MM/DD/YYYY HH24:MI:SS'
-                                ), 
-                                'YYYYMMDDHH24MISSFF3'
-                            )
-                        ), 0) -
-                        to_number(
-                            TO_CHAR(
-                                to_timestamp(
-                                    #testCompletionTimestamp:TIMESTAMP#
-                                ), 
-                                'YYYYMMDDHH24MISSFF3'
-                            )
-                        )
-                    ), 
-                    -1, 
-                    1,
-                    0,
-                    2,
-                    1,
-                    2,
-                    1
-                ),
-                #pointsObtained:NUMERIC#,
-                #itemResponseTimestamp:TIMESTAMP#,
-                #testCompletionTimestamp:TIMESTAMP#,
-                #responseid:NUMERIC#,
-                #pointsPossible:NUMERIC#,
-                'T'
-                ) 
-	</insert>
+		MERGE INTO TASC_ITEM_FACT FTFACT
+		USING DUAL
+		ON (FTFACT.ITEMID = #itemid:NUMERIC# AND FTFACT.STUDENTID = #studentid:NUMERIC# AND FTFACT.SESSIONID = #sessionid:NUMERIC#)
+		WHEN MATCHED THEN
+		  UPDATE
+		     SET FTFACT.POINTS_OBTAINED = #pointsObtained:NUMERIC#,
+		         FTFACT.POINTS_POSSIBLE = #pointsPossible:NUMERIC#,
+		         FTFACT.ITEM_RESPONSE_TIMESTAMP = #itemResponseTimestamp:TIMESTAMP#,
+		         FTFACT.TEST_COMPLETION_TIMESTAMP = #testCompletionTimestamp:TIMESTAMP#,
+		         FTFACT.RESPONSEID = #responseid:NUMERIC#
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (FACTID,
+		     STUDENTID,
+		     FORMID,
+		     SESSIONID,
+		     GRADEID,
+		     LEVELID,
+		     ITEMID,
+		     ORG_NODEID,
+		     ASSESSMENTID,
+		     PROGRAMID,
+		     CURRENT_RESULTID,
+		     POINTS_OBTAINED,
+		     ITEM_RESPONSE_TIMESTAMP,
+		     TEST_COMPLETION_TIMESTAMP,
+		     RESPONSEID,
+		     POINTS_POSSIBLE,
+		     FIELD_TEST)
+		  VALUES
+		    (#factid:NUMERIC#,
+		     #studentid:NUMERIC#,
+		     #formid:NUMERIC#,
+		     #sessionid:NUMERIC#,
+		     #gradeid:NUMERIC#,
+		     #levelid:NUMERIC#,
+		     #itemid:NUMERIC#,
+		     #orgNodeid:NUMERIC#,
+		     #assessmentid:NUMERIC#,
+		     #programid:NUMERIC#,
+             decode(
+                 sign( 
+                     NVL(to_number(
+                         TO_CHAR(
+                             to_timestamp(
+                                 to_char((select max(test_completion_timestamp) from tasc_item_fact fact,
+                                     item_dim itemdim, sec_obj_dim secdim, prim_obj_dim primdim, content_area_dim condim
+                                     where fact.sessionid != #sessionid:NUMERIC#
+                                     and fact.studentid = #studentid:NUMERIC#
+                                     and fact.assessmentid = #assessmentid:NUMERIC#
+                                     and fact.current_Resultid = 1
+                                     and fact.itemid = itemdim.itemid
+                                     and itemdim.sec_objid = secdim.sec_objid
+                                     and secdim.prim_objid = primdim.prim_objid
+                                     and primdim.content_Areaid = condim.content_areaid
+                                     and (#subtestName:VARCHAR# = 'TABE ' || condim.name OR (#subtestName:VARCHAR# = 'TABE Mathematics Computation' and condim.name = 'Math Computation'))  
+                                 ), 'MM/DD/YYYY HH24:MI:SS'), 'MM/DD/YYYY HH24:MI:SS'
+                             ), 
+                             'YYYYMMDDHH24MISSFF3'
+                         )
+                     ), 0) -
+                     to_number(
+                         TO_CHAR(
+                             to_timestamp(
+                                 #testCompletionTimestamp:TIMESTAMP#
+                             ), 
+                             'YYYYMMDDHH24MISSFF3'
+                         )
+                     )
+                 ), 
+                 -1, 
+                 1,
+                 0,
+                 2,
+                 1,
+                 2,
+                 1
+             ),
+             #pointsObtained:NUMERIC#,
+             #itemResponseTimestamp:TIMESTAMP#,
+             #testCompletionTimestamp:TIMESTAMP#,
+             #responseid:NUMERIC#,
+             #pointsPossible:NUMERIC#,
+             'T'
+             ) 
+	</update>
 </sqlMap>

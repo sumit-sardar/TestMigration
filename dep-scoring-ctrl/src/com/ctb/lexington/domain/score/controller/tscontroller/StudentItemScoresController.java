@@ -79,7 +79,7 @@ public class StudentItemScoresController {
 			deleteSqlMap = ifMapper.deleteBatch(newFact, deleteSqlMap);
 			if (new Long(1).equals(newFact.getCurrentResultid())
 					&& !itemList.contains(newFact.getItemid())) {
-				insertSqlMap = ifMapper.insertFTBatch(newFact, insertSqlMap);
+				insertSqlMap = ifMapper.updateFTBatch(newFact, insertSqlMap);
 				itemList.add(newFact.getItemid());
 			}
 		}

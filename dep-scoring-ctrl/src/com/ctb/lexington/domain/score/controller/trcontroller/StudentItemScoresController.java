@@ -85,7 +85,7 @@ public class StudentItemScoresController {
 			if (new Long(1).equals(contextData.getCurrentResultId())
 					&& !TEItemList.contains(newFact.getItemid())
 					&& new Long(1).equals(newFact.getCurrentResultid())) {
-				insertSqlMap = ifMapper.insertFTBatch(newFact, insertSqlMap);
+				insertSqlMap = ifMapper.upadateFTBatch(newFact, insertSqlMap);
 				TEItemList.add(newFact.getItemid());
 			}
 		}
