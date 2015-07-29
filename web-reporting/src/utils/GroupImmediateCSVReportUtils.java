@@ -82,7 +82,7 @@ public class GroupImmediateCSVReportUtils extends StudentImmediateReportUtils  i
 		headerRow.append(",");
 		headerRow.append(COMPREHENSION_PROFICIENCY_LEVEL_CSV);
 		headerRow.append(",");
-		if(productId == 7000){
+		if(productId == 7000 || productId == 7200){
 			headerRow.append(OVERALL_RAW_SCORE_CSV);
 			headerRow.append(",");
 			headerRow.append(OVERALL_SCALE_SCORE_CSV);

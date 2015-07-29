@@ -270,7 +270,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			for(int i=0; i<msData.getManageStudents().length; i++){
 				testRosterList[i] = msData.getManageStudents()[i].getRosterId();
 			}
-			if(productId == 7000)
+			if(productId == 7000 || productId == 7200)
 				this.testRosterListForLLEAB = testRosterList;
 			else 
 				this.testRosterListForLL2ND = testRosterList;
@@ -580,7 +580,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			String treeOrgName = this.getRequest().getParameter("treeOrgName");
 			String orgName =  (treeOrgName.replace("\u00A0","").trim()).replace("\u0020", "_");
 			Integer [] testRosterList = null;
-			if(productId == 7000)
+			if(productId == 7000 || productId == 7200)
 				testRosterList = this.testRosterListForLLEAB;
 			else
 				testRosterList = this.testRosterListForLL2ND;
@@ -629,7 +629,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			String treeOrgName = this.getRequest().getParameter("treeOrgName");
 			String orgName =  (treeOrgName.replace("\u00A0","").trim()).replace("\u0020", "_");
 			Integer [] testRosterList = null;
-			if(productId == 7000)
+			if(productId == 7000 || productId == 7200)
 				testRosterList = this.testRosterListForLLEAB;
 			else
 				testRosterList = this.testRosterListForLL2ND;
