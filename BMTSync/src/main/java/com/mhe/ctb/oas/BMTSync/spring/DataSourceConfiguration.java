@@ -93,7 +93,7 @@ public class DataSourceConfiguration {
             jdbcTemplate.queryForObject(query, Integer.class);
             logger.info("[ScoringQueue] Successfully used Weblogic context!");
         } catch (Exception e) {
-            logger.info("[ScoringQueue] Failed to use Weblogic context; creating dummy scoring object.");
+            logger.info("[ScoringQueue] Failed to use Weblogic context; creating dummy scoring object: " + e.getMessage(), e);
             sq = new LoggingOnlyScoringQueue();
             writeOnceScoringQueue = sq;
             return sq;
@@ -103,28 +103,24 @@ public class DataSourceConfiguration {
 		ResourceBundle rb = null;
 		try {
 			file = new FileInputStream("/local/apps/oas/irs/etc/security.properties");
-			file.close();
 		} catch (final FileNotFoundException fnfe) {
-			logger.error("[PropertyResourceBundle] Can't find security.properties file; creating dummy scoring object.", fnfe);
+			logger.error("[ScoringQueue] Can't find security.properties file; creating dummy scoring object.", fnfe);
             sq = new LoggingOnlyScoringQueue();
             writeOnceScoringQueue = sq;
             return sq;
-		} catch (final IOException ioe) {
-			logger.error("[PropertyResourceBundle] IOException on trying to close file; creating dummy scoring object.", ioe);
-			sq = new LoggingOnlyScoringQueue();
-			writeOnceScoringQueue = sq;
-			return sq;
 		}
 		
 		try {
-			rb = new PropertyResourceBundle(file);		
+			rb = new PropertyResourceBundle(file);
+			file.close();
 		} catch (final IOException ioe) {
-			logger.error("[PropertyResourceBundle] IOException on trying to read properties; creating dummy scoring object.", ioe);
+			logger.error("[ScoringQueue] IOException on trying to read properties; creating dummy scoring object.", ioe);
 		    sq = new LoggingOnlyScoringQueue();
 		    writeOnceScoringQueue = sq;
 		    return sq;
 		}
-        logger.info("[ScoringQueue] Using IRS security properties file to load scoring queue information.");
+
+		logger.info("[ScoringQueue] Using IRS security properties file to load scoring queue information.");
         try {
     		Hashtable<String,String> env = new Hashtable<String,String>();
     		env.put(Context.INITIAL_CONTEXT_FACTORY, rb.getString("jndiFactory"));
