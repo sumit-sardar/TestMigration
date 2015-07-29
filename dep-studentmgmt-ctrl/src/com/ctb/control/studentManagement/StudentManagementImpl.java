@@ -3352,11 +3352,11 @@ public class StudentManagementImpl implements StudentManagement
 			contentAreas = stuScrReport.getContentAreaNameString();
 			stuScoreData = immediateReportingIrs.getScoreDataForReport(stuScrReport.getStudentId(), testAdminId);
 			stuScoreDataComp = immediateReportingIrs.getScoreDataForReportComposite(stuScrReport.getStudentId(), testAdminId);
-			if(parentProductId == 7000){
+			if(parentProductId == 7000 || parentProductId == 7200){
 				stuFinalScoreData = new StudentReportIrsScore[7];
 				setContentAreaValues(stuFinalScoreData, productId);
 			}
-			else if (parentProductId == 7500){
+			else if (parentProductId == 7500 || parentProductId == 7800){
 				stuFinalScoreData = new StudentReportIrsScore[9];
 				setContentAreaValuesForLL2ND(stuFinalScoreData, productId);			
 			}
@@ -3383,9 +3383,9 @@ public class StudentManagementImpl implements StudentManagement
 				}
 			}
 			if(stuScoreDataComp != null){
-				if(parentProductId == 7000)
+				if(parentProductId == 7000 || parentProductId == 7200)
 					setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, contentAreas);
-				else if (parentProductId == 7500)
+				else if (parentProductId == 7500 || parentProductId == 7800)
 					setFinalScoreValuesForLL2ND(stuFinalScoreData, stuScoreDataComp, 8, contentAreas);
 			}				
 
@@ -3515,11 +3515,11 @@ public class StudentManagementImpl implements StudentManagement
 			
 			
 			// Setting content area
-			if(parentProductId==7000){
+			if(parentProductId==7000 || parentProductId == 7200){
 				stuFinalScoreData = new StudentReportIrsScore[7];
 				setContentAreaValues(stuFinalScoreData,new Integer(reportData.getProductId()));
 			}
-			else if(parentProductId==7500){
+			else if(parentProductId==7500 || parentProductId == 7800){
 				stuFinalScoreData = new StudentReportIrsScore[9];
 				setContentAreaValuesForLL2ND(stuFinalScoreData,new Integer(reportData.getProductId()));
 			}	
@@ -3548,9 +3548,9 @@ public class StudentManagementImpl implements StudentManagement
 				}
 			}
 			if(stuScoreDataComp != null){
-				if(parentProductId == 7000)
+				if(parentProductId == 7000 || parentProductId == 7200)
 					setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, reportData.getContentAreaNameString());
-				else if (parentProductId == 7500)
+				else if (parentProductId == 7500 || parentProductId == 7800)
 					setFinalScoreValuesForLL2ND(stuFinalScoreData, stuScoreDataComp, 8, reportData.getContentAreaNameString());
 			}
 			reportData.setStudentReportIrsScore(stuFinalScoreData);
@@ -3592,7 +3592,7 @@ public class StudentManagementImpl implements StudentManagement
 		for (int i = 0; i < 7; i++) {
 			stuFinalScoreData[i] = new StudentReportIrsScore();
 		}
-		if (productId == 7003) {
+		if (productId == 7003 || productId == 7203) {
 			stuFinalScoreData[0].setContentAreaName("Escuchando");
 			stuFinalScoreData[1].setContentAreaName("Hablando");
 			stuFinalScoreData[2].setContentAreaName("Oral");
@@ -3616,7 +3616,7 @@ public class StudentManagementImpl implements StudentManagement
 		for (int i = 0; i < 9; i++) {
 			stuFinalScoreData[i] = new StudentReportIrsScore();
 		}
-		if (productId == 7502) {
+		if (productId == 7502 || productId == 7802) {
 			stuFinalScoreData[0].setContentAreaName("Escuchando");
 			stuFinalScoreData[1].setContentAreaName("Hablando");
 			stuFinalScoreData[2].setContentAreaName("Oral");
