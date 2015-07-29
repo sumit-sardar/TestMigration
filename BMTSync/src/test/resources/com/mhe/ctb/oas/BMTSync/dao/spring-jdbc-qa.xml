@@ -50,6 +50,10 @@
 		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
 	</bean>
 	
+	<bean id="itemResponseDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.ItemResponseDAO">
+		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
+	</bean>
+	
 	<bean id="endpointDAO" class="com.mhe.ctb.oas.BMTSync.spring.dao.EndpointDAO">
 		<constructor-arg index="0" ref="oasBmtSyncDataSource" />
 	</bean>

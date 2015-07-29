@@ -19,6 +19,7 @@ import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusRequest;
 import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusResponse;
 import com.mhe.ctb.oas.BMTSync.spring.dao.ItemResponseDAO;
 import com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO;
+import com.mhe.ctb.oas.BMTSync.spring.jms.WeblogicScoringQueue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:com/mhe/ctb/oas/BMTSync/dao/spring-jdbc-qa.xml")
@@ -28,13 +29,15 @@ public class TestTestStatusRestService {
 	private TestStatusDAO testStatusDAO;
 	private ItemResponseDAO itemResponseDAO;
 	private EndpointSelector selector;
+	private WeblogicScoringQueue scoringQueue;
 	
 	@Before
 	public void setUp() {
 		testStatusDAO = mock(TestStatusDAO.class);
 		selector = mock(EndpointSelector.class);
 		itemResponseDAO = mock(ItemResponseDAO.class);
-		client = new TestStatusRestService(testStatusDAO, itemResponseDAO, selector);
+		scoringQueue = mock(WeblogicScoringQueue.class);
+		client = new TestStatusRestService(testStatusDAO, itemResponseDAO, selector, scoringQueue);
 	}
 	
 	@Test

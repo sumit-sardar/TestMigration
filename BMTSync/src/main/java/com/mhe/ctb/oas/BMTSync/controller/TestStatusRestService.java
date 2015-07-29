@@ -23,6 +23,7 @@ import com.mhe.ctb.oas.BMTSync.rest.CreateTestStatusResponse;
 import com.mhe.ctb.oas.BMTSync.rest.SuccessFailCounter;
 import com.mhe.ctb.oas.BMTSync.spring.dao.ItemResponseDAO;
 import com.mhe.ctb.oas.BMTSync.spring.dao.TestStatusDAO;
+import com.mhe.ctb.oas.BMTSync.spring.jms.ScoringQueue;
 
 
 @RestController
@@ -38,6 +39,9 @@ public class TestStatusRestService {
 	
 	/** The endpoint selector (technically a DAO but loaded once at runtime). */
 	private EndpointSelector endpointSelector;
+	
+	/** The scoring queue. */
+	private ScoringQueue scoringQueue;
 	
 	/** Rest Template. New by default, can be overridden for testing. */
 	private RestTemplate restTemplate;
@@ -57,10 +61,11 @@ public class TestStatusRestService {
 	 * @param testStatusDAO
 	 */
 	public TestStatusRestService(final TestStatusDAO testStatusDAO, final ItemResponseDAO itemResponseDAO,
-			final EndpointSelector endpointSelector) {
+			final EndpointSelector endpointSelector, final ScoringQueue scoringQueue) {
 		this.testStatusDAO = testStatusDAO;
 		this.endpointSelector = endpointSelector;
 		this.itemResponseDAO = itemResponseDAO;
+		this.scoringQueue = scoringQueue;
 		this.restTemplate = new RestTemplate();
 	}	
 	
@@ -140,6 +145,11 @@ public class TestStatusRestService {
 								testStatus.setErrorCode(500);
 								testStatus.setErrorMessage("Error storing responses in database: " + e.getMessage());					        					        		
 				        	}
+				        	
+				        	// Having stored responses, now call the Scoring queue.
+			        		logger.info("Sending testRosterId to scoring queue: [testRosterId = " + testStatus.getOasRosterId() + "]");
+			        		scoringQueue.send(testStatus.getOasRosterId());
+				        	
 				        } else {
 				        	logger.error("[ItemResponses] Response json from BMT is null; logging error!");
 							storeStatusUpdate = false;

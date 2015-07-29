@@ -94,6 +94,7 @@
 		<constructor-arg index="0" ref="testStatusDAO" />
 	    <constructor-arg index="1" ref="itemResponseDAO" />
 		<constructor-arg index="2" ref="endpointDAO" />
+		<constructor-arg index="3" ref="scoringQueue" />
 	</bean>
 
 	
