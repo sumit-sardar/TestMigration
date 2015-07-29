@@ -1,0 +1,370 @@
+/*main.css*/
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif;
+}
+
+.main-container {
+    padding: 10px;
+}
+
+.main-container .page-title {
+    margin: 8px;
+}
+.main-container .page-title .mhe-logo {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.main-container .page-title .mhe-title {
+    vertical-align: middle;
+    display: inline-block;
+    font-size: 1.9em;
+    font-weight: 600;
+    color: #1c7415;
+    margin-left:4px;
+}
+
+.main-container .page-intro {
+    margin: 16px;
+    font-size: 0.8em;
+    color: grey;
+}
+
+.main-container .section-container h2 {
+    opacity: 0.8;
+    text-transform: uppercase;
+    font-size: 1.0em;
+    color: #00000;
+}
+
+.main-container .section-container p {
+    font-size: 0.8em;
+    color: grey;
+}
+
+.main-container .section-container {
+        padding: 10px 20px 20px 20px;
+    margin: 20px 10px 30px;
+    border-left: 18px solid #4297d7;
+    border-top: 10px solid rgba(66, 151, 215, 0.53);
+    border-right: 8px solid rgba(66, 151, 215, 0.27);
+    border-bottom: 1px solid rgba(66, 151, 215, 0.63);
+    max-width: 480px;
+    border-radius: 8px 8px 18px 18px;
+}
+
+.main-container .section-container label {
+    display: inline-block;
+    font-size: 0.65em;
+    color: grey;
+    width: 72px;
+}
+
+.main-container .section-container select {
+    padding-top: 10px;
+    width: 67px;
+    margin-right: 8px;
+}
+
+.main-container .section-container input[type=range] {
+    display: inline-block;
+    width: 60px;
+    vertical-align: middle;
+}
+
+.main-container .section-container input[type=text] {
+    display: inline-block;
+    min-width: 220px;
+    vertical-align: middle;
+}
+
+.main-container .section-container .recorder-target {
+    margin-top: 30px;
+}
+
+.main-container .section-container .settings-target {
+    margin-top: 30px;
+}
+
+.main-container .section-container .player-target {
+    margin-top: 30px;
+}
+
+
+
+.audio-player {
+    border: 2px solid grey;
+    padding: 15px;
+    border-radius: 4px;
+    min-width: 250px;
+}
+
+
+/* Title section */
+.audio-player .ap-title {
+    font-size: 0.8em;
+}
+
+.audio-player .ap-title .ap-title-text {
+
+}
+
+.audio-player .ap-title .ap-title-retries {
+
+}
+
+
+/* Microphone level section */
+.audio-player .ap-mic-level {
+
+}
+
+
+/* Progress section */
+.audio-player .ap-progress-div {
+
+}
+
+.audio-player .ap-progress-div .ap-progress-label {
+
+}
+.audio-player .ap-progress-div .ap-progress-bar {
+
+}
+
+/* Toolbar section */
+.audio-player .ap-toolbar-div {
+
+}
+
+.audio-player .ap-toolbar-div .ap-play {
+
+}
+
+.audio-player .ap-toolbar-div .ap-stop {
+
+}
+
+.audio-player .ap-toolbar-div .ap-restart {
+
+}
+
+
+
+
+.audio-recorder {
+    border: 2px solid grey;
+    padding: 15px;
+    border-radius: 4px;
+    min-width: 250px;
+}
+
+
+/* Title section */
+.audio-recorder .ar-title {
+    font-size: 0.8em;
+}
+
+.audio-recorder .ar-title .ar-title-text {
+
+}
+
+.audio-recorder .ar-title .ar-title-retries {
+
+}
+
+
+/* Microphone level section */
+.audio-recorder .ar-mic-level {
+
+}
+
+
+/* Progress section */
+.audio-recorder .ar-progress-div {
+
+}
+
+.audio-recorder .ar-progress-div .ar-progress-label {
+
+}
+.audio-recorder .ar-progress-div .ar-progress-bar {
+
+}
+
+/* Toolbar section */
+.audio-recorder .ar-toolbar-div {
+
+}
+
+.audio-recorder .ar-toolbar-div .ar-play {
+
+}
+
+.audio-recorder .ar-toolbar-div .ar-quit {
+
+}
+
+.audio-recorder .ar-toolbar-div .ar-stop {
+
+}
+
+.audio-recorder .ar-toolbar-div .ar-restart {
+
+}
+
+
+
+
+.audio-settings {
+    border: 2px solid grey;
+    padding: 15px;
+    border-radius: 4px;
+    min-width: 250px;
+}
+
+
+/* Title section */
+.audio-settings .as-title {
+    font-size: 0.8em;
+}
+
+.audio-settings .as-title .as-title-text {
+
+}
+
+/* Toolbar section */
+.audio-settings .as-toolbar-div {
+
+}
+
+.audio-settings .as-toolbar-div .as-play {
+
+}
+
+.audio-settings .as-toolbar-div .as-stop {
+
+}
+
+.audio-settings .as-toolbar-div .as-restart {
+
+}
+
+.audio-settings  label {
+    display: inline-block;
+    font-size: 0.7em;
+    color: grey;
+    width: 60px;
+}
+
+.audio-settings  select {
+    padding-top: 10px;
+    width: 67px;
+    margin-right: 8px;
+}
+
+audio { width: 480px; }
+
+
+.section-container{
+width:60%;	
+	
+	}
+
+.ui-widget-header {
+  border: 1px solid #4297d7;
+  background: #5c9ccc url(../../../ScoringWeb/resources/css/images/ui-bg_gloss-wave_55_5c9ccc_500x100.png) 50% 50% repeat-x;
+  color: #ffffff;
+  font-weight: bold;
+}
+button{
+	outline: 0;
+	}
+button:focus{
+	outline: 0;
+	}
+.playIcon{
+    background-image: url("volume_icon.jpg");
+  width: 34px;
+  height: 35px;
+  background-position: 724px -70px;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+}
+.playIcon:hover{
+	 background-position: 598px -70px;
+  	}
+.playIconDisable{
+		 background-image: url("volume_icon.jpg");
+  		  width: 34px;
+  			height: 35px;
+  		 padding: 15px;
+  		border: none;
+  		background-position:535px -70px;
+		 cursor: default;
+	}
+.pauseIcon{
+	 background-image: url("volume_icon.jpg");
+  width: 34px;
+  height: 35px;
+  background-position: 663px -22px;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+}	
+.pauseIconDisable{
+  background-image: url("volume_icon.jpg");
+  width: 34px;
+  height: 35px;
+  background-position: 725px -22px;
+  padding: 15px;
+  border: none;
+  cursor: default;
+  	}
+.pauseIcon:hover{
+  	background-position: 537px -22px;
+}
+.stopIcon{
+	background-image: url("volume_icon.jpg");
+  width: 34px;
+  height: 35px;
+  background-position: 908px -126px;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+}
+.stopIconDisable{
+		 background-image: url("volume_icon.jpg");
+  width: 34px;
+  height: 35px;
+  background-position: 971px -126px;
+  padding: 15px;
+  border: none;
+  cursor: default;
+ }
+.stopIcon:hover{
+		background-position: 782px -126px;
+ }
+ 
+ .errorMsg {
+        color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    width: 72%;
+    margin: 0 auto;
+   }
+   
+  #displayMessageForQues{
+  padding: 15px;
+  margin-bottom: 20px;
+  width: 85%;
+  margin: 0 auto;
+  }

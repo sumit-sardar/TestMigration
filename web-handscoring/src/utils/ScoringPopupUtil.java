@@ -55,9 +55,9 @@ public class ScoringPopupUtil {
 			Integer deliverableItemSetId, String itemId, String itemType) {
 		ScorableCRAnswerContent answerArea = new ScorableCRAnswerContent();
 		try {
-
+			String deliveryId = null;
 			answerArea = testScoring.getCRItemResponseForScoring(userName,
-					testRosterId, deliverableItemSetId, itemId, itemType);
+					testRosterId, deliverableItemSetId, itemId, itemType, deliveryId);
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}

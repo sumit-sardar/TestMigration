@@ -74,7 +74,7 @@ public class RosterElement extends CTBBean
   private String assignedForm;
   private ArrayList<Node> orgList;
   private String hasColorFontAccommodations;
-
+  private String extItemSetId;		//Added for LLO RP Item Rendering story
 	public String getDnsStatus() {
 		return dnsStatus;
 	}
@@ -697,5 +697,11 @@ public class RosterElement extends CTBBean
 	public void setHasColorFontAccommodations(String hasColorFontAccommodations) {
         this.hasColorFontAccommodations = hasColorFontAccommodations;
     }
+	public String getExtItemSetId() {
+		return extItemSetId;
+	}
+	public void setExtItemSetId(String extItemSetId) {
+		this.extItemSetId = extItemSetId;
+	}
 	  
 } 

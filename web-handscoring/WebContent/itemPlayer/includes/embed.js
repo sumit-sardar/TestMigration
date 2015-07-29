@@ -50,6 +50,8 @@ function lzUpdate(a, b) {
  * override the attributes and <param> children of the <object> tag, and
  * the attributes of the <embed> tag.
  */
+ var swfLoadInterval='';
+ var swfObj='';
 function lzEmbed(properties, ieupgradeversion, escapeme) {
     // don't upgrade IE activex control unless asked
     if (ieupgradeversion == null) ieupgradeversion = 6;
@@ -154,9 +156,22 @@ function lzEmbed(properties, ieupgradeversion, escapeme) {
         }
         o += lt + '/object>\n';
     } 
-    //alert(o);
+   swfObj=o;
     document.write(o);
+   
+    if(jQuery('object').length==0 && swfObj!=''){
+      swfLoadInterval=setInterval(checkSWFloaded(), 3000);
+    }
     return o;
+}
+
+function checkSWFloaded(){
+	if(jQuery('object').length==0){
+	 document.write(swfObj);
+	}else{
+	 clearInterval(swfLoadInterval);
+	}
+
 }
 
 // Based on moock fpi, cleaned up and simplified by Max Carlson

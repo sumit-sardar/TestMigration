@@ -16,6 +16,7 @@ public class ScorableCRAnswerContent extends CTBBean {
 	private Integer itemSetId;
 	private String itemId;
 	private Integer testRosterId;
+	private String s3AudioUrl;	//Added for LLO RP Audio Player story
 
 	/**
 	 * @return Boolean - item is Audio Item or not
@@ -102,6 +103,16 @@ public class ScorableCRAnswerContent extends CTBBean {
 	public void setTestRosterId(Integer testRosterId) {
 		this.testRosterId = testRosterId;
 	}
+
+	public String getS3AudioUrl() {
+		return s3AudioUrl;
+	}
+
+	public void setS3AudioUrl(String audioUrl) {
+		s3AudioUrl = audioUrl;
+	}
+
+
 
 	
 }

@@ -127,7 +127,7 @@ public interface TestScoring {
 	 */
 	public ScorableCRAnswerContent getCRItemResponseForScoring(String userName,
 			Integer testRosterId, Integer deliverableItemId, String itemId,
-			String itemType) throws CTBBusinessException;
+			String itemType, String deliveryClientId) throws CTBBusinessException;
 
 	/**
 	 * This method save or update a students points

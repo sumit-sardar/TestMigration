@@ -582,16 +582,18 @@ public class StudentScoringOperationController extends PageFlowController {
 		Integer testRosterId = new Integer(getRequest().getParameter("testRosterId"));
 		Integer itemSetId = new Integer(getRequest().getParameter("itemSetId"));
 		String itemType = getRequest().getParameter("itemType");
+		String deliveryClientId = getRequest().getParameter("deliveryClientId");
 
 		System.out.println("item id" + itemId);
 		System.out.println("testRosterId id" + testRosterId);
 		System.out.println("itemSetId id" + itemSetId);
 		System.out.println("itemType id" + itemType);
-
+		System.out.println("deliveryClient id" + deliveryClientId);
+		
 	//	itemId = "0155662";//Had to make it static, since only 2 items are present in database now
 		RubricViewData[] scr =  getRubricDetails(itemId);
 		ScorableCRAnswerContent scrArea = getIndividualCRResponse(testScoring,
-				userName, testRosterId, itemSetId, itemId, itemType);
+				userName, testRosterId, itemSetId, itemId, itemType, deliveryClientId);
 		QuestionAnswerData qad = new QuestionAnswerData();
 		qad.setRubricData(scr);
 		qad.setScrContent(scrArea);
@@ -604,7 +606,7 @@ public class StudentScoringOperationController extends PageFlowController {
 		   resp.setContentType("application/json");
            resp.flushBuffer();
 	        OutputStream stream = resp.getOutputStream();
-	        stream.write(jsonResponse.getBytes());
+	        stream.write(jsonResponse.getBytes("UTF-8")); // Added to set proper character set in header.
 	        stream.close();
 	        
 		} catch (Exception e) {
@@ -775,11 +777,11 @@ public Forward rescoreStudent(StudentSessionScoringForm form) throws IOException
        
 	private static ScorableCRAnswerContent getIndividualCRResponse(
 			TestScoring testScoring, String userName, Integer testRosterId,
-			Integer deliverableItemSetId, String itemId, String itemType) {
+			Integer deliverableItemSetId, String itemId, String itemType,  String deliveryClientId) {
 		ScorableCRAnswerContent answerArea = new ScorableCRAnswerContent();
 		try {
 			answerArea = testScoring.getCRItemResponseForScoring(userName,
-						testRosterId, deliverableItemSetId, itemId, itemType);	
+						testRosterId, deliverableItemSetId, itemId, itemType, deliveryClientId);	
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}

@@ -59,6 +59,9 @@ var testRosterIdRub = 0;
 var itemSetIdRub = 0;
 var parentDivId = '';
 var parentProductId;
+var deliveryClientId = 0;
+var testAdminId = 0;
+var extItemSetId = 0;
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -372,7 +375,7 @@ function closePopUp(dailogId){
 			element.removeChild(element.lastChild);
 		}
 		
-		if(document.getElementById("itemType").value == "AI"){
+		if(document.getElementById("itemType").value == "AI" && deliveryClientId!=2 ){
 			document.getElementById("iframeAudio").contentWindow.clearApplet();
 		}
 		isRubricPopulated = false;
@@ -530,7 +533,7 @@ function setPopupPosition(popupId){
 		$("#"+popupId).parent().css("left",leftpos);	
 	}
 
-function scoreByItem(itemNo, itemType, itemSetId, testAdminId, itemSetOrder, itemSetName, maxPoints, itemId){
+function scoreByItem(itemNo, itemType, itemSetId, testAdminId, itemSetOrder, itemSetName, maxPoints, itemId, deliveryClientId){
 	
 	selectedRData.itemNo = itemSetOrder;
 	selectedRData.maxPoints = maxPoints;
@@ -540,6 +543,7 @@ function scoreByItem(itemNo, itemType, itemSetId, testAdminId, itemSetOrder, ite
 	selectedRData.itemSetId = itemSetId;
  	selectedRData.itemId = itemId;
  	selectedRData.itemType = itemType;
+ 	selectedRData.deliveryClientId = deliveryClientId;
  	selectedItemSetTCVal = getItemSetIdTC(itemId);
 	UIBlock();
 	fillTestItemFieldsSBI();
@@ -598,11 +602,12 @@ function itemNumberFormatter(cellvalue, options, rowObject){
 	var val = cellvalue;
 	var studentCount = parseInt(rowObject.studentCount);
 	parentProductId = rowObject.parentProductId;
+	deliveryClientId = rowObject.deliveryClientId;
 	if(studentCount > 0){
 		val = "<a href='#' style='color:blue; text-decoration:underline;' onClick = 'javascript:scoreByItem(\""+rowObject.itemId+"\",\""+
 					rowObject.itemType+"\",\""+rowObject.itemSetId+
 					"\",\""+rowObject.testAdminId+"\",\""+rowObject.itemSetOrder+"\",\""+rowObject.itemSetName+"\",\""+rowObject.maxPoints
-					+"\",\""+rowObject.itemId+"\"); return false;'>"+cellvalue+"</a>";
+					+"\",\""+rowObject.itemId +"\",\""+ rowObject.deliveryClientId+"\"); return false;'>"+cellvalue+"</a>";
 	}else{
 	    val = "<span style='color:#999999; text-decoration:underline;'>"+cellvalue+"</span>";
 	}
@@ -618,7 +623,7 @@ function itemStuLoginIdFormatter(cellvalue, options, rowObject) {
 		}else{
 			testRosterId = rowObject.testRosterId;
 		}
-
+		extItemSetId = rowObject.extItemSetId;
 		var type;
 		if(selectedRData.itemType=="Audio Item") {
         	type = "AI";
@@ -627,7 +632,7 @@ function itemStuLoginIdFormatter(cellvalue, options, rowObject) {
         }
        	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesAnsPopup(\"" + selectedRData.itemId +"\",\""+
         	 selectedRData.itemNo + "\",\"" + type + "\",\"" + testRosterId + "\", \"" +
-        	  selectedRData.itemSetId + "\",\"" + selectedRData.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoringStatus+ "\",\"" + parentProductId +"\"); return false;'>"+cellvalue+"</a>";
+        	  selectedRData.itemSetId + "\",\"" + selectedRData.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoringStatus+ "\",\"" + parentProductId +"\",\"" + deliveryClientId +"\",\"" + selectedTestAdminId +"\",\"" + rowObject.extItemSetId +"\"); return false;'>"+cellvalue+"</a>";
        
 	
 	
@@ -645,6 +650,9 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			itemId = rowObject.itemId;
 		}
 		parentProductId = rowObject.parentProductId;
+		deliveryClientId  = rowObject.deliveryClientId;
+		testAdminId = rowObject.testAdminId;
+		extItemSetId = rowObject.extItemSetId;
 		var type;
 		if(cellvalue=="AI") {
         	type = "Audio Response";
@@ -654,7 +662,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
         if(answered != undefined && answered == "Answered") {
         	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesAnsPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
-        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+"\",\"" + parentProductId + "\"); return false;'>"+type+"</a>";
+        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+"\",\"" + parentProductId + "\",\"" + rowObject.deliveryClientId + "\",\"" + rowObject.testAdminId + "\",\"" + rowObject.extItemSetId + "\"); return false;'>"+type+"</a>";
         } else {
         	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
         }
@@ -782,12 +790,15 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			itemId = rowObject.itemId;
 		}
 		parentProductId = rowObject.parentProductId;
+		deliveryClientId = rowObject.deliveryClientId;
+		testAdminId = rowObject.testAdminId;
+		extItemSetId = rowObject.extItemSetId;
 		var type = "View Question";
 		
         	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
         	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + 
-        	  rowObject.scoreStatus+ "\",\"" + rowObject.parentProductId + "\"); return false;'>"+type+"</a>";
+        	  rowObject.scoreStatus+ "\",\"" + parentProductId + "\",\"" + rowObject.deliveryClientId + "\",\"" + rowObject.testAdminId + "\",\"" + rowObject.extItemSetId + "\"); return false;'>"+type+"</a>";
       
 		return val;
 	}
@@ -1129,7 +1140,7 @@ function populateScoreByItemGrid(){
      mtype: 'POST',
 	 postData: postDataObject,
 	 datatype: "json",         
-     colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#sbiGridItemType").val(), $("#itemGripMaxScr").val(), '', '', '','' , "parentProductId"],
+     colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#sbiGridItemType").val(), $("#itemGripMaxScr").val(), '', '', '','' , "parentProductId" , "deliveryClientId"],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:130, editable: true, align:"left",sorttype:'int',formatter:itemNumberFormatter,search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:160, editable: true, align:"left",sorttype:'text',search: true,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1139,7 +1150,8 @@ function populateScoreByItemGrid(){
 				{name:'itemId',index:'itemId',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
 				{name:'itemSetId',index:'itemSetId',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 				{name:'itemSetIdTC',index:'itemSetIdTC',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-				{name:'parentProductId',index:'parentProductId',editable: true, hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+				{name:'parentProductId',index:'parentProductId',editable: true, hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+				{name:'deliveryClientId',index:'deliveryClientId',editable: true, hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
  		   	],
 		   	jsonReader: { repeatitems : false, root:"itemList", id:"itemId",
 		   	records: function(obj) {} },
@@ -1308,7 +1320,7 @@ function studentScoring() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId" , "parentProductId"],
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId" , "parentProductId", "deliveryClientId", "testAdminId", "extItemSetId"],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'int', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1320,7 +1332,10 @@ function studentScoring() {
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left",sorttype:scoreObtainedUnformatter, sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'parentProductId',index:'parentProductId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'parentProductId',index:'parentProductId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'deliveryClientId',index:'deliveryClientId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testAdminId',index:'testAdminId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'extItemSetId',index:'extItemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
 		    records: function(obj) {
@@ -1419,7 +1434,7 @@ function populateSBIStudentGrid(itemSetId, itemId) {
 		mtype:'POST',
 		postData: postDataObject,
 		datatype: "json",
-		colNames:[$("#stuGrdLoginId").val(),$("#sbsGridLastName").val(),$("#sbsGridFirstName").val(),$("#studentIdLabelName").val(),$("#stuGrdGrade").val(),$("#itemGripManual").val(),$("#sbsGridOnStatus").val(),"scorePoint"],
+		colNames:[$("#stuGrdLoginId").val(),$("#sbsGridLastName").val(),$("#sbsGridFirstName").val(),$("#studentIdLabelName").val(),$("#stuGrdGrade").val(),$("#itemGripManual").val(),$("#sbsGridOnStatus").val(),"scorePoint","extItemSetId"],
 		colModel:[
 		   		{name:'userName',index:'userName', width:160, editable: true, align:"left", sorttype:'text', sortable:true, formatter:itemStuLoginIdFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1428,7 +1443,8 @@ function populateSBIStudentGrid(itemSetId, itemId) {
 		   		{name:'grade',index:'grade', width:80, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scoringStatus',index:'scoringStatus', width:160, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testCompletionStatusDesc',index:'testCompletionStatusDesc', width:160, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scorePoint',index:'scorePoint', width:0,hidden: true, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'scorePoint',index:'scorePoint', width:0,hidden: true, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'extItemSetId',index:'extItemSetId', width:0,hidden: true, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		],
 		   	jsonReader: { repeatitems : false, root:"scoreByStudentList", id:"testRosterId",
 		   	records: function(obj) {} },
@@ -1509,7 +1525,7 @@ function populateSBSItemListGrid() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId" , "parentProductId" ],
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId" , "parentProductId" , "deliveryClientId" , "testAdminId" , "extItemSetId"],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'int', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1521,7 +1537,10 @@ function populateSBSItemListGrid() {
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sorttype:'text', sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'parentProductId',index:'parentProductId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'parentProductId',index:'parentProductId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'deliveryClientId',index:'deliveryClientId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testAdminId',index:'testAdminId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'extItemSetId',index:'extItemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
 		   	records: function(obj) {
@@ -1611,7 +1630,7 @@ function gridStudentItemReloadSBS(){
 *
 **/
 
-function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus , parentProductId){
+function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus , parentProductId, deliveryClientId, testAdminId, extItemSetId){
 			var score= null;
 			var status = null;			
 			selectedRowObjectScoring.id = id;
@@ -1620,21 +1639,35 @@ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPo
 			selectedRowObjectScoring.testRosterId = testRosterId;
 			selectedRowObjectScoring.itemSetId = itemSetId;
 			selectedRowObjectScoring.maxPoints = maxPoints;
-			selectedRowObjectScoring.parentProductId = parentProductId;				
+			selectedRowObjectScoring.parentProductId = parentProductId;	
+			selectedRowObjectScoring.deliveryClientId = deliveryClientId;		
+			selectedRowObjectScoring.testAdminId = testAdminId;
+			selectedRowObjectScoring.extItemSetId = extItemSetId;
 			$("#crText").hide();
 			$("#audioPlayer").hide();
 				
 			document.getElementById('displayMessageForQues').style.display = "none";
 		 	var element = document.getElementById('questionInformation');
 		 	var iframe = document.createElement('iframe');
-		 	if (parentProductId == 7500){
-				iframe.name = "jsFrame";
-			}else {
-				iframe.name = "swfFrame";
-			}
-			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
-			iframe.width = "900";
-			iframe.height = "530";
+		 	if(deliveryClientId == 2){
+		 	 		iframe.name = "bmtFrame";
+					iframe.id = "bmtFrame";
+					iframe.src="placeholderBMTItem.html";
+					iframe.width = "100%";
+					iframe.height = "100%";
+		 	 }else{
+		 	 	// If not BMT. OAS Item will load.
+			 		if (parentProductId == 7500){
+						iframe.name = "jsFrame"; //For Laslinks A/B/Espanol A
+					}else {
+						iframe.name = "swfFrame"; //For Laslinks C/D/Espanol B
+					}
+					iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
+					iframe.width = "900";
+					iframe.height = "530";
+		 	 }
+		 	/*iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";*/
+			
 			element.appendChild(iframe);
 			updateMaxPoints(maxPoints);		
 			var scoreAndPoints =  getScorePoints();
@@ -1672,7 +1705,7 @@ function activateAccordion() {
 
 function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
 	UIBlock();
-	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId;
+	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId+"&deliveryClientId="+deliveryClientId;
 	var itemId = itemIdRubric; 
 	var itemNumber = itemNumber;
 	
@@ -1696,39 +1729,55 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								var crTextResponse = "";
 								var isAudioItem = data1.scrContent.isAudioItem;
 								var linebreak ="\n\n";
-								
+								window.s3AudioURl='';
 								if(isAudioItem){
-								$("#crText").hide();
-								document.getElementById("itemType").value = "AI";
-								var audioResponseString = data1.scrContent.audioItemContent;
-								audioResponseString = audioResponseString.substr(13);
-								audioResponseString = audioResponseString.split("%3C%2F");
-								document.getElementById("audioResponseString").value = audioResponseString[0];
-								document.getElementById("pointsDropDown").setAttribute("disabled",true);								
-								$('#Question').addClass('ui-state-disabled');
-								$("#audioPlayer").hide();
-								$("#iframeDiv").show();
-								var iframe = $("#iframeAudio");
-								$(iframe).attr('src', "audioPlayer.jsp");
-							
-								
-								}else{
-								document.getElementById("itemType").value = "CR";								
-								var crResponses =data1.scrContent.cRItemContent.string.length;
-								for(var i = 0; i < crResponses; i++){
-									if( i == (crResponses-1)){
-										linebreak ="";
-										document.getElementById("pointsDropDown").removeAttribute("disabled");
-										document.getElementById("Question").removeAttribute("disabled");
-										$('#Question').removeClass('ui-state-disabled'); 
+									$("#crText").hide();
+									document.getElementById("itemType").value = "AI";
+									/*added for BMT audio player*/
+									var audioResponseString;
+									if(deliveryClientId==2){
+										audioResponseString=data1.scrContent.s3AudioUrl;
+										window.s3AudioURl=audioResponseString;
+									}else{
+									/*For OAS player*/
+										audioResponseString=data1.scrContent.audioItemContent;
+										audioResponseString = audioResponseString.substr(13);
+										audioResponseString = audioResponseString.split("%3C%2F");
+										document.getElementById("audioResponseString").value = audioResponseString[0];
+									}	
+									
+									document.getElementById("deliveryClientIdQA").value = deliveryClientId ;
+									document.getElementById("pointsDropDown").setAttribute("disabled",true);								
+									$('#Question').addClass('ui-state-disabled');
+									$("#audioPlayer").hide();
+									$("#iframeDiv").show();
+									var iframe = $("#iframeAudio");
+									/*added for BMT audio player*/
+									if(deliveryClientId==2){
+									   	$(iframe).attr('src', "audioPlayerBmt.jsp");
+										$(iframe).css({'margin-left':'-43px','width':'422px','height':'300px'});
+									 }else{
+									 /*For OAS player*/
+										$(iframe).removeAttr('style'); 
+										$(iframe).attr('src', "audioPlayer.jsp");
 									}
-									var crResponseToShow = data1.scrContent.cRItemContent.string[i];
-									if(isObject(crResponseToShow))
-										crResponseToShow = "";
-									crTextResponse = crTextResponse + crResponseToShow + linebreak;
-								  }
-								$("#crText").show();
-								$("#crText").val(crTextResponse);
+								}else{
+									document.getElementById("itemType").value = "CR";								
+									var crResponses =data1.scrContent.cRItemContent.string.length;
+									for(var i = 0; i < crResponses; i++){
+										if( i == (crResponses-1)){
+											linebreak ="";
+											document.getElementById("pointsDropDown").removeAttribute("disabled");
+											document.getElementById("Question").removeAttribute("disabled");
+											$('#Question').removeClass('ui-state-disabled'); 
+										}
+										var crResponseToShow = data1.scrContent.cRItemContent.string[i];
+										if(isObject(crResponseToShow))
+											crResponseToShow = "";
+										crTextResponse = crTextResponse + crResponseToShow + linebreak;
+									  }
+									$("#crText").show();
+									$("#crText").val(crTextResponse);
 								}
 								
 
@@ -1974,8 +2023,8 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 				var pointStatus = [];
 				if(rowElement){				
 					
-					var score = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
-					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML;
+					var score = rowElement.lastChild.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML;
+					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML;
 					if ( isNaN(status)){
 						score = trim(score);
 						status = trim(status);
@@ -2016,7 +2065,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 			rowElement = rowElement[0];
 			
 			if(rowElement){
-			var itemSetIdTC = rowElement.lastChild.previousSibling.innerHTML;
+			var itemSetIdTC = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
 			return itemSetIdTC;
 			}
 
@@ -2107,18 +2156,31 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 			selectedRowObjectScoring.itemSetId = itemSetId;
 			selectedRowObjectScoring.maxPoints = maxPoints;
 			selectedRowObjectScoring.parentProductId = parentProductId;
+			selectedRowObjectScoring.deliveryClientId = deliveryClientId;
+			selectedRowObjectScoring.testAdminId = testAdminId;
+			selectedRowObjectScoring.extItemSetId = extItemSetId;
 			document.getElementById('displayMessageForQues').style.display = "none";
 		 	var element = document.getElementById('questionInfo');
-		 	var iframe = document.createElement('iframe');		 	
-		 	if (parentProductId == 7500){
-				iframe.name = "jsFrame";
-			}else {
-				iframe.name = "swfFrame";
-			}
+		 	var iframe = document.createElement('iframe');		
+		 	if(deliveryClientId == 2){
+		 	 		iframe.name = "bmtFrame";
+					iframe.id = "bmtFrame";
+					iframe.src="placeholderBMTItem.html";
+					iframe.width = "100%";
+					iframe.height = "100%";
+		 	 }else{
+		 	 	// If not BMT. OAS Item will load.
+			 		if (parentProductId == 7500){
+						iframe.name = "jsFrame"; //For Laslinks A/B/Espanol A
+					}else {
+						iframe.name = "swfFrame"; //For Laslinks C/D/Espanol B
+					}
+					iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
+					iframe.width = "900";
+					iframe.height = "530";
+		 	 }
+			/*iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";*/
 			
-			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
-			iframe.width = "900";
-			iframe.height = "530";
 			element.appendChild(iframe);
 			updateMaxPoints(maxPoints);		
 			var scoreAndPoints =  getScorePoints();

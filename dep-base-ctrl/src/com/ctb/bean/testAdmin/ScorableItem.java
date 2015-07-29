@@ -30,6 +30,9 @@ public class ScorableItem extends CTBBean {
 	private Integer studentCount; // Added for making items disabled if no students are present
 	private Integer itemSetIdTC;     // Change for  #66660 enhancement
 	private Integer parentProductId ; // Added on 9 Sep :For Laslink FormA/B/Espanol  and Form C/Form D/Espanol-B Item view bifurcation logic
+	private Integer deliveryClientId ; // Added to bifurcate between OAS and BMT.
+	private Integer testAdminId;		//Added for LLO RP Item Rendering story
+	private String extItemSetId;		//Added for LLO RP Item Rendering story
 	
 	
 
@@ -282,7 +285,35 @@ public class ScorableItem extends CTBBean {
 		this.parentProductId = parentProductId;
 	}
 
+	/**
+	 * @return the deliveryClientId
+	 */
+	
+	public Integer getDeliveryClientId() {
+		return deliveryClientId;
+	}
+	
+	/**
+	 * @param parentProductId the deliveryClientId to set
+	 */
+	public void setDeliveryClientId(Integer deliveryClientId) {
+		this.deliveryClientId = deliveryClientId;
+	}
 
+	public Integer getTestAdminId() {
+		return testAdminId;
+	}
 
+	public void setTestAdminId(Integer testAdminId) {
+		this.testAdminId = testAdminId;
+	}
+	
+	public String getExtItemSetId() {
+		return extItemSetId;
+	}
+
+	public void setExtItemSetId(String extItemSetId) {
+		this.extItemSetId = extItemSetId;
+	}
 	
 }

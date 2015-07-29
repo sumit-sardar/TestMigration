@@ -56,19 +56,35 @@ function stopAudio(){
 	}
 	
 	function checkPlay(element){
-		//alert("playCompleted in checkplay : "+playCompleted);
-	if(element.className.indexOf('disabled') > 0){
-		return true;
-	}
-		if(document.getElementById("itemType").value == "AI"){			
-				if(playCompleted == true){	
+	// Changes made to enable save button or show proper message.
+		var deliveryClientId = document.getElementById("deliveryClientIdQA").value;
+		if(deliveryClientId == "2"){	
+		var playingStatus = document.getElementById("playingStatus").value;
+		  if(document.getElementById("itemType").value == "AI"){			
+					if(playingStatus == "ended"){	
+						formSave();
+					}else{
+						openConfirmationPopupQues();
+					}
+			}else{
 					formSave();
-				}else{
-					openConfirmationPopupQues();
-				}
-		}else{
-				formSave();
+			}
 		}
+		else 
+		{
+		 if(element.className.indexOf('disabled') > 0){
+			return true;
+		}
+			if(document.getElementById("itemType").value == "AI"){			
+					if(playCompleted == true){	
+						formSave();
+					}else{
+						openConfirmationPopupQues();
+					}
+			}else{
+					formSave();
+			}
+		}	
 	}
 	
 	
@@ -131,6 +147,8 @@ function stopAudio(){
 <input type="hidden" id="audioResponseString" />
 <input type="hidden" id="rowNo" />
 <input type="hidden" id="itemSetIdTC" />
+<input type="hidden" id="deliveryClientIdQA" />
+<input type="hidden" id="playingStatus" />
 <div id="questionAnswerDetail"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 
