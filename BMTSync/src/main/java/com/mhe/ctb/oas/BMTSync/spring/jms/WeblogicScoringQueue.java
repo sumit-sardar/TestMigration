@@ -12,7 +12,6 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 
 public class WeblogicScoringQueue implements ScoringQueue, DisposableBean {
 	private QueueConnectionFactory qconFactory;

@@ -103,23 +103,19 @@ public class DataSourceConfiguration {
 		ResourceBundle rb = null;
 		try {
 			file = new FileInputStream("/local/apps/oas/irs/etc/security.properties");
+			file.close();
 		} catch (final FileNotFoundException fnfe) {
 			logger.error("[PropertyResourceBundle] Can't find security.properties file; creating dummy scoring object.", fnfe);
             sq = new LoggingOnlyScoringQueue();
             writeOnceScoringQueue = sq;
             return sq;
-		} finally {
-			try {
-				if (file != null) {
-					file.close();
-				}
-			} catch (final IOException ioe) {
-				logger.error("[PropertyResourceBundle] IOException on trying to close file; creating dummy scoring object.", ioe);
-	            sq = new LoggingOnlyScoringQueue();
-	            writeOnceScoringQueue = sq;
-	            return sq;
-			}
+		} catch (final IOException ioe) {
+			logger.error("[PropertyResourceBundle] IOException on trying to close file; creating dummy scoring object.", ioe);
+			sq = new LoggingOnlyScoringQueue();
+			writeOnceScoringQueue = sq;
+			return sq;
 		}
+		
 		try {
 			rb = new PropertyResourceBundle(file);		
 		} catch (final IOException ioe) {
