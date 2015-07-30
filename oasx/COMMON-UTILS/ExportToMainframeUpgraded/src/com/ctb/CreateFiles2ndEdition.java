@@ -1581,7 +1581,7 @@ public class CreateFiles2ndEdition {
 		for (StudentDemographic studentDemo : sd) {
 			if(studentDemo.getCustomerDemographicId()==customerDemographicId) {
 				if (studentDemo.getValueName().startsWith("AEL") 
-						&& ((productId == 7501) || (productId == 7505))) {
+						&& ((productId == 7501) || (productId == 7505) || (productId == 7801) || (productId == 7805))) {
 					tfil.setAcademicEngLearner("1");
 				} else if (studentDemo.getValueName().startsWith("ESEA")) {
 					tfil.setEseaTitle1("1");
@@ -1594,7 +1594,7 @@ public class CreateFiles2ndEdition {
 				} else if (studentDemo.getValueName().startsWith("Migrant")) {
 					tfil.setMigrantEducation("1");
 				} else if (studentDemo.getValueName().startsWith("Other")
-						&& ((productId == 7501) || (productId == 7505))) {
+						&& ((productId == 7501) || (productId == 7505) || (productId == 7801) || (productId == 7805))) {
 					tfil.setOtherDemograph("1");
 				}
 			}

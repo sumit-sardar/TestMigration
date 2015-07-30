@@ -135,11 +135,11 @@ public class ExportData {
 				logger.error("Framework Product Id field is madatory. \nExecution forcefully stopped.");
 				System.exit(1);
 			} else {
-				if (Integer.parseInt(frameworkProductId) == 7500) {
+				if (Integer.parseInt(frameworkProductId) == 7500 || Integer.parseInt(frameworkProductId) == 7800) {
 					new CreateFiles2ndEdition(isValidStartDate, isValidEndDate,
 							extractSpanStartDate, extractSpanEndDate,
 							customerId, new Integer(frameworkProductId), MFid, classLevelElementNumber).writeToText();
-				} else if (Integer.parseInt(frameworkProductId) == 7000) {
+				} else if (Integer.parseInt(frameworkProductId) == 7000 || Integer.parseInt(frameworkProductId) == 7200) {
 					new CreateFile(isValidStartDate, isValidEndDate,
 							extractSpanStartDate, extractSpanEndDate,
 							customerId, new Integer(frameworkProductId), MFid, classLevelElementNumber).writeToText();
