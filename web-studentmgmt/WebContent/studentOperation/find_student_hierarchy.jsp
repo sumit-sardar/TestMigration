@@ -200,7 +200,7 @@
 	</div>		
 	<div style="padding:10px;">
 		<center>	
-			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="submitDeleteStudentPopup(); showDeleteStudentStatus();" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="submitDeleteStudentPopup();" class="ui-widget-header">&nbsp;
 			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteStudentPopup');" class="ui-widget-header">				
 		</center>
 	</div>		

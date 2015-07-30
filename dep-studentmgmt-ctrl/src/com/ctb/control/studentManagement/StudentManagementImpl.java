@@ -11,32 +11,32 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
-import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.FilterParams.FilterParam;
+import com.ctb.bean.studentManagement.BMTStudentDeleteResponseJSON;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.CustomerDemographic;
 import com.ctb.bean.studentManagement.CustomerDemographicValue;
+import com.ctb.bean.studentManagement.ItemResponseData;
 import com.ctb.bean.studentManagement.ManageBulkStudentData;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
+import com.ctb.bean.studentManagement.MusicFiles;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
-import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
 import com.ctb.bean.studentManagement.StudentScoreReport;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerReport;
@@ -65,23 +65,22 @@ import com.ctb.exception.studentManagement.CustomerDemographicDataNotFoundExcept
 import com.ctb.exception.studentManagement.CustomerProductDataNotFoundException;
 import com.ctb.exception.studentManagement.CustomerReportDataNotFoundException;
 import com.ctb.exception.studentManagement.OrgNodeDataNotFoundException;
+import com.ctb.exception.studentManagement.ScoringException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.exception.studentManagement.StudentDataDeletionException;
 import com.ctb.exception.studentManagement.StudentDataNotFoundException;
 import com.ctb.exception.studentManagement.StudentDataUpdateException;
 import com.ctb.exception.studentManagement.TestSessionAssignedToStudentNotFoundException;
 import com.ctb.exception.studentManagement.UserDataNotFoundException;
-import com.ctb.exception.studentManagement.ScoringException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.DESUtils;
 import com.ctb.util.MathUtils;
-import com.ctb.util.OASLogger;
 import com.ctb.util.SQLutils;
 import com.ctb.util.SimpleCache;
 import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.studentManagement.DynamicSQLUtils;
 import com.ctb.util.studentManagement.StudentUtils;
-import com.ctb.bean.studentManagement.ItemResponseData;
+import com.google.gson.Gson;
 
 /**
  * @author John_Wang
@@ -1815,17 +1814,17 @@ public class StudentManagementImpl implements StudentManagement
 			if(isLLORPCustomer && deleteStatus!=0){
 				
 				//Invoke BMT Api for the associated rosters
-				validationFailed = validateBMTForStudentDelete(customerId ,rosters , studentId );
+				validationFailed = validateBMTForStudentDelete(customerId , studentId);
 				
 				if(validationFailed == null){
 					//BMT API is down or not configured in DB
 					CTBBusinessException be = new CTBBusinessException( 
-							"You cannot delete this student.BMT System is offline.");
+							"Unable to contact the server at this time. Please try again later or call Customer Support if you continue to receive this message.");
 					throw be;
 				}else if(validationFailed.booleanValue()){
 					//BMT validation failed.Can't delete the student.
 					CTBBusinessException be = new CTBBusinessException( 
-							"You cannot delete this student.Student is associated with BMT test administrations.");
+							"You cannot delete this student. Student is associated with one or more test administrations");
 					throw be;
 				}
 			}
@@ -4135,17 +4134,12 @@ public class StudentManagementImpl implements StudentManagement
 	 * @throws SQLException
 	 */
 	private Boolean validateBMTForStudentDelete(Integer customerId,
-			RosterElement[] rosters, Integer studentId) throws SQLException {
+			Integer studentId) throws SQLException {
 
 		ManageStudent studentProfile = null;
-		String bmtApiResourceType = "BMTAPIURL";
+		String bmtApiResourceType = "BMTSTDAPI";
 		String bmtApiURL = null;
 		Boolean bmtValidationFailed = false;
-		
-		// If student is associated with no test-session,then fetch student profile information again
-		if (rosters == null || rosters.length == 0) {
-			studentProfile = this.studentManagement.getManageStudent(studentId);
-		}
 		
 		// Get the BMT url for database
 		bmtApiURL = this.product.getBMTApiUrl(customerId,bmtApiResourceType);
@@ -4154,34 +4148,17 @@ public class StudentManagementImpl implements StudentManagement
 		  //bmt url is not configured.Return null.
 		  return null;	
 		}		
-		if (rosters.length > 0) {
-			for (RosterElement rosterElement : rosters) {
-				//call bmt api url for each roster
-				bmtValidationFailed = invokeBMTRestApi(bmtApiURL, rosterElement
-						.getTestRosterId(), rosterElement.getExtPin1(),
-						rosterElement.getTestAdminId());
-				
-				if(bmtValidationFailed == null){
-					//BMT URL is down.
-					return null;
-				}else if(!bmtValidationFailed.booleanValue()){
-					//validation failed for one of the roster.Break the loop.Can't delete the student
-					return new Boolean(true);
-				}
-			}
-		}else{
-			//invoke bmt api with student ext-pin1 and dummy test_admin_id & dummy test_roster_id
-			bmtValidationFailed = invokeBMTRestApi(bmtApiURL, new Integer(1234), studentProfile
-					.getStudentIdNumber(), new Integer(1234));
-			
-			if(bmtValidationFailed == null){
-				//BMT URL is down.
-				return null;
-			}else if(!bmtValidationFailed.booleanValue()){
-				//Can't delete the student
-				return new Boolean(true);
-			}
+		//invoke bmt api with student ext-pin1 and dummy test_admin_id & dummy test_roster_id
+		bmtValidationFailed = invokeBMTRestApiStudentDelete(bmtApiURL, studentId);
+		
+		if(bmtValidationFailed == null){
+			//BMT URL is down.
+			return null;
+		}else if(!bmtValidationFailed.booleanValue()){
+			//Can't delete the student
+			return new Boolean(true);
 		}
+		
 		//validation passed.Return false.Delete the student.
 		return new Boolean(false);
 	}
@@ -4194,32 +4171,22 @@ public class StudentManagementImpl implements StudentManagement
 	 * 
 	 * @param url -
 	 *            BMT Url
-	 * @param testRosterId -
-	 *            Test Roster id for the student
-	 * @param extPin1 -
-	 *            ExtPin1 of the student
-	 * @param testAdminId -
-	 *            TestAdminId of the student associated with the session
-	 * @return Boolean
+	 * @param studentId -
+	 *            Student id for the student
 	 */
 	@SuppressWarnings("deprecation")
-	private Boolean invokeBMTRestApi(String url, Integer testRosterId,
-			String extPin1, Integer testAdminId) {
+	private Boolean invokeBMTRestApiStudentDelete(String url, Integer studentId) {
 		try {
 			HttpClient client = new DefaultHttpClient();
 			StringBuilder urlBuilder = new StringBuilder(url);
-			urlBuilder.append("/sessionId=").append(testAdminId).append(
-					"&studentId=").append(extPin1).append("&rosterId=")
-					.append(testRosterId);
-			HttpPost post = new HttpPost(urlBuilder.toString());
+			urlBuilder.append(studentId);
+			HttpDelete delReq = new HttpDelete(urlBuilder.toString());
 
-			HttpResponse response = client.execute(post);
-
-			System.out.println("\nSending 'POST' request to URL : " + urlBuilder.toString());
-			System.out.println("Post parameters : " + post.getEntity());
-			System.out.println("Response Code : "
-					+ response.getStatusLine().getStatusCode());
-
+			System.out.println("\nSending 'DELETE' request to URL : " + urlBuilder.toString());
+			System.out.println("Delete parameters : " + studentId);
+			HttpResponse response = client.execute(delReq);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					response.getEntity().getContent()));
 
@@ -4228,11 +4195,17 @@ public class StudentManagementImpl implements StudentManagement
 			while ((line = rd.readLine()) != null) {
 				result.append(line);
 			}
-			System.out.println(result.toString());
-			if("false".equals(result.toString()))
-				return false;
-			else if("true".equals(result.toString()))				
+			
+			System.out.println("Response Code : " + statusCode);
+			System.out.println("Response JSON : " + result);
+			
+			Gson gson=new Gson();
+			BMTStudentDeleteResponseJSON respJSON = gson.fromJson(result.toString(), BMTStudentDeleteResponseJSON.class);
+
+			if(statusCode == 200)
 				return true;
+			else if(respJSON!=null && respJSON.getErrorCode()!=null)
+				return false;
 			else
 				return null;
 

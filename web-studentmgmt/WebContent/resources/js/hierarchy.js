@@ -3083,7 +3083,7 @@ function setSelectedValue(selectObj, valueToSet) {
 		param.studentID = studentId;
 		$.ajax(
 		{
-				async:		false,
+				async:		true,
 				beforeSend:	function(){
 								UIBlock();
 							},
@@ -3101,6 +3101,7 @@ function setSelectedValue(selectObj, valueToSet) {
 								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
+				 				showDeleteStudentStatus();
 							}
 				}
 			);
