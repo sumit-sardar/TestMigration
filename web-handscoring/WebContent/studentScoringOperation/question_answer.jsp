@@ -58,7 +58,10 @@ function stopAudio(){
 	function checkPlay(element){
 	// Changes made to enable save button or show proper message.
 		var deliveryClientId = document.getElementById("deliveryClientIdQA").value;
-		if(deliveryClientId == "2"){	
+		if(deliveryClientId == "2"){
+			if(element.className.indexOf('disabled') > 0){
+					return true;
+			}	
 		var playingStatus = document.getElementById("playingStatus").value;
 		  if(document.getElementById("itemType").value == "AI"){			
 					if(playingStatus == "ended"){	

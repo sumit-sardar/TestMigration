@@ -356,6 +356,10 @@ function fetchDataOnConfirmation() {
 		populateGrid();
 }
 
+function stopBMTAudio(){
+$("#iframeAudio").contents().find('#stopIcon').trigger('click');
+}
+
 function closePopUp(dailogId){
 	$('.ui-widget-overlay').css('height', '100%');
 	if(dailogId == 'sessionScoringId') {
@@ -369,6 +373,11 @@ function closePopUp(dailogId){
 				stopAudio();
 			}
 		}
+		/*added to stop the bmt audio on close of popup*/
+		if(deliveryClientId==2){
+			stopBMTAudio();
+		}
+		
 		$('#quesAnsAccordion').accordion('activate', 0 );
 		var element = document.getElementById('questionInformation');
 		while(element.hasChildNodes()){

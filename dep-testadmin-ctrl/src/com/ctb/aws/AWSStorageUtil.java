@@ -59,19 +59,19 @@ public class AWSStorageUtil {
 		{
 			String errorCode = e.getMessage();
 			System.out.println("ErrorCode-->"+errorCode);
-			errorCode = "Sorry, unable to fetch audio response from server";
+			errorCode = "Unable to retrieve test question response from server.";
 			s3AudioUrlString = errorCode;
 		}
 		catch (AmazonServiceException e) {
 		    String errorCode = e.getMessage();
 		    System.out.println("ErrorCode-->"+errorCode);
-		    errorCode = "Sorry, unable to fetch audio response from server";
+		    errorCode = "Unable to retrieve test question response from server.";
 		    s3AudioUrlString = errorCode;
 		}
 		catch (Exception e) {
 		    String errorCode = e.getMessage();
 		    System.out.println("ErrorCode-->"+errorCode);
-		    errorCode = "Sorry, Data issue ";
+		    errorCode = "Unable to retrieve test question response from server.";
 		    s3AudioUrlString = errorCode;
 		}
 		finally{ 
