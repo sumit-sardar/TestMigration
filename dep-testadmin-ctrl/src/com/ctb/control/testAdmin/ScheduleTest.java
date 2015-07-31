@@ -14,6 +14,7 @@ import com.ctb.bean.testAdmin.LiteracyProExportData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.Program;
+import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudentData;
 import com.ctb.bean.testAdmin.StudentManifest;
@@ -729,7 +730,7 @@ public interface ScheduleTest
 	 * @throws CTBBusinessException
 	 */
 	public Boolean validateBMTDeleteSessionStudent (Integer testAdminId, String[] studentIds,
-			Integer customerId) throws CTBBusinessException;
+			Integer customerId, List<RosterElement> valFailRosters) throws CTBBusinessException;
 	
 
 	/**

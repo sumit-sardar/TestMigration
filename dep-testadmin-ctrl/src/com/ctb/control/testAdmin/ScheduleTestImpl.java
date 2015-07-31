@@ -20,7 +20,8 @@ import java.util.Set;
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.ctb.bean.request.FilterParams;
@@ -32,6 +33,8 @@ import com.ctb.bean.request.SortParams.SortParam;
 import com.ctb.bean.request.SortParams.SortType;
 import com.ctb.bean.request.testAdmin.FormAssignmentCount;
 import com.ctb.bean.testAdmin.AncestorOrgDetails;
+import com.ctb.bean.testAdmin.BMTRosterDeleteResponseJSON;
+import com.ctb.bean.testAdmin.BMTSessionDeleteResponseJSON;
 import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
@@ -100,6 +103,7 @@ import com.ctb.util.testAdmin.AccessCodeGenerator;
 import com.ctb.util.testAdmin.PasswordGenerator;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
 import com.ctb.util.testAdmin.TestFormSelector;
+import com.google.gson.Gson;
 
 /**
  * Platform control provides functions related to test session
@@ -222,7 +226,8 @@ public class ScheduleTestImpl implements ScheduleTest
     static final long serialVersionUID = 1L;
     
     private static final int CTB_CUSTOMER_ID =2;
-    private static final String BMT_API_URL = "BMTAPIURL";
+    private static final String BMT_SESSION_API_URL = "BMTSESNAPI";
+    private static final String BMT_ROSTER_API_URL = "BMTROSTAPI";
     
     static final ResourceBundle rb = ResourceBundle.getBundle("security");
     
@@ -5628,10 +5633,11 @@ public class ScheduleTestImpl implements ScheduleTest
 	
 	@Override
 	public Boolean validateBMTDeleteSessionStudent(Integer testAdminId, String[] studentIds,
-			Integer customerId) throws CTBBusinessException {
+			Integer customerId, List<RosterElement> valFailRosters) throws CTBBusinessException {
 		String bmtApiURL = null;
-		String bmtApiResourceType = BMT_API_URL;
+		String bmtApiResourceType = BMT_ROSTER_API_URL;
 		RosterElement[] rosterElement = null;
+		valFailRosters.clear();
 		Boolean validationPassed = null;
 		try {
 			bmtApiURL = this.product.getBMTApiUrl(customerId,
@@ -5663,18 +5669,15 @@ public class ScheduleTestImpl implements ScheduleTest
 				// Loop for each roster data present in the session.
 				for (RosterElement roster : rosterElement) {
 					// call bmt api for each roster present in session
-					validationPassed = invokeBMTRestApi(bmtApiURL, roster
-							.getTestRosterId(), roster.getExtPin1(), roster
-							.getTestAdminId());
+					validationPassed = invokeBMTRestApiRosterDelete(bmtApiURL, roster
+							.getTestRosterId());
 					/**
 					 * Check if for any of the roster, the validation has
 					 * failed.Then break the loop and return true as validation
 					 * falied.
 					 */
-					if(validationPassed == null) {
-						return null;
-					} else if (!validationPassed) {
-						return true;
+					if(validationPassed == null || !validationPassed) {
+						valFailRosters.add(roster);
 					}
 				}
 			}
@@ -5685,7 +5688,8 @@ public class ScheduleTestImpl implements ScheduleTest
 			rd.setStackTrace(rd.getStackTrace());
 			throw rd;
 		}
-		return false;
+		
+		return (valFailRosters.size()!=0)?true:false;
 	}
 	
 	/**
@@ -5694,28 +5698,20 @@ public class ScheduleTestImpl implements ScheduleTest
 	 * 		  false - If session is not to be deleted
 	 * 		  true - If session is to be deleted
 	 * @param url - BMT Url
-	 * @param testRosterId - Test Roster id for the student
-	 * @param extPin1 - ExtPin1 of the student
 	 * @param testAdminId - TestAdminId of the student associated with the session
-	 * @return Boolean
 	 */
-	private Boolean invokeBMTRestApi(String url, Integer testRosterId,
-			String extPin1, Integer testAdminId) {
+	private Boolean invokeBMTRestApiSessionDelete(String url, Integer testAdminId) {
 		try {
 			HttpClient client = new DefaultHttpClient();
 			StringBuilder urlBuilder = new StringBuilder(url);
-			urlBuilder.append("/sessionId=").append(testAdminId).append(
-					"&studentId=").append(extPin1).append("&rosterId=")
-					.append(testRosterId);
-			HttpPost post = new HttpPost(urlBuilder.toString());
+			urlBuilder.append(testAdminId);
+			HttpDelete delReq = new HttpDelete(urlBuilder.toString());
 
-			HttpResponse response = client.execute(post);
-
-			System.out.println("\nSending 'POST' request to URL : " + urlBuilder.toString());
-			System.out.println("Post parameters : " + post.getEntity());
-			System.out.println("Response Code : "
-					+ response.getStatusLine().getStatusCode());
-
+			System.out.println("\nSending 'DELETE' request to URL : " + urlBuilder.toString());
+			System.out.println("DELETE parameters : " + testAdminId);
+			HttpResponse response = client.execute(delReq);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					response.getEntity().getContent()));
 
@@ -5724,11 +5720,17 @@ public class ScheduleTestImpl implements ScheduleTest
 			while ((line = rd.readLine()) != null) {
 				result.append(line);
 			}
-			System.out.println(result.toString());
-			if("false".equals(result.toString()))
-				return false;
-			else if("true".equals(result.toString()))				
+			
+			System.out.println("Response Code : " + statusCode);
+			System.out.println("Response JSON : " + result);
+			
+			Gson gson=new Gson();
+			BMTSessionDeleteResponseJSON respJSON = gson.fromJson(result.toString(), BMTSessionDeleteResponseJSON.class);
+
+			if(statusCode == 200)
 				return true;
+			else if(respJSON!=null && respJSON.getErrorCode()!=null)
+				return false;
 			else
 				return null;
 
@@ -5736,6 +5738,57 @@ public class ScheduleTestImpl implements ScheduleTest
 			System.out.println("Exception in BMT API access"+ e.getMessage() );
 			e.printStackTrace();
 			return null;
+			
+		}
+	}
+	
+	/**
+	 * Invokes BMT Api with the required parameters.Returns below values upon validation 
+	 * 		  null - If BMT Api url is down
+	 * 		  false - If session is not to be deleted
+	 * 		  true - If session is to be deleted
+	 * @param url - BMT Url
+	 * @param testAdminId - RosterId of the student associated with the session
+	 */
+	private Boolean invokeBMTRestApiRosterDelete(String url, Integer testRosterId) {
+		try {
+			HttpClient client = new DefaultHttpClient();
+			StringBuilder urlBuilder = new StringBuilder(url);
+			urlBuilder.append(testRosterId);
+			HttpDelete getReq = new HttpDelete(urlBuilder.toString());
+
+			System.out.println("\nSending 'DELETE' request to URL : " + urlBuilder.toString());
+			System.out.println("Delete parameters : " + testRosterId);
+			HttpResponse response = client.execute(getReq);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+
+			StringBuffer result = new StringBuffer();
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result.append(line);
+			}
+			
+			System.out.println("Response Code : " + statusCode);
+			System.out.println("Response JSON : " + result);
+			
+			Gson gson=new Gson();
+			BMTRosterDeleteResponseJSON respJSON = gson.fromJson(result.toString(), BMTRosterDeleteResponseJSON.class);
+
+			if(statusCode == 200)
+				return true;
+			else if(respJSON!=null && respJSON.getErrorCode()!=null)
+				return false;
+			else
+				return null;
+
+		} catch (Exception e) {
+			System.out.println("Exception in BMT API access"+ e.getMessage() );
+			e.printStackTrace();
+			return null;
+			
 		}
 	}
 	
@@ -5753,42 +5806,34 @@ public class ScheduleTestImpl implements ScheduleTest
 	public Boolean validateBMTForDeleteTest(Integer testAdminId,
 			Integer customerId) throws CTBBusinessException {
 		String bmtApiURL = null;
-		String bmtApiResourceType = BMT_API_URL;
-		RosterElement[] rosterElement = null;
+		String bmtApiResourceType = BMT_SESSION_API_URL;
 		Boolean validationPassed = null;
 		try {
 			bmtApiURL = this.product.getBMTApiUrl(customerId,
 					bmtApiResourceType);
-			rosterElement = this.rosters.getRosterDataForSession(testAdminId);
-
-			// Loop for each roster data present in the session.
-			for (RosterElement roster : rosterElement) {
-				// call bmt api for each roster present in session
-				validationPassed = invokeBMTRestApi(bmtApiURL, roster
-						.getTestRosterId(), roster.getExtPin1(), roster
-						.getTestAdminId());
-				
-				//Bmt Url is down.Return null
-				if(validationPassed == null){
-					return null;
-				}
-				
-				/**
-				 * Check if for any of the roster, the validation has
-				 * failed.Then break the loop and return true as validation
-				 * failed.
-				 */
-				if (!validationPassed.booleanValue()) {
-					return new Boolean(true);
-				}
-			}
-		} catch (SQLException se) {
-			RosterDataNotFoundException rd = new RosterDataNotFoundException(
-					"StudentManagementImpl: validateBMTForDeleteTest : "
-							+ se.getMessage());
-			rd.setStackTrace(rd.getStackTrace());
-			throw rd;
+		} catch(SQLException e) {
+			System.out.println("Unable to fetch BMT Session Url from DB"+ e.getMessage() );
+			e.printStackTrace();
+			return null;
 		}
+
+		// Loop for each roster data present in the session.
+		validationPassed = invokeBMTRestApiSessionDelete(bmtApiURL, testAdminId);
+		
+		//Bmt Url is down.Return null
+		if(validationPassed == null){
+			return null;
+		}
+		
+		/**
+		 * Check if the validation has
+		 * failed.Then return true as validation
+		 * failed.
+		 */
+		if (!validationPassed.booleanValue()) {
+			return new Boolean(true);
+		}
+			
 		return new Boolean(false);
 	}
     

@@ -656,7 +656,7 @@ public interface TestRoster extends JdbcControl
     @JdbcControl.SQL(statement = "DELETE FROM TABE_CCSS_ROSTER_LEVEL WHERE TEST_ROSTER_ID IN (SELECT TEST_ROSTER_ID FROM TEST_ROSTER WHERE TEST_COMPLETION_STATUS IN ('SC', 'NT') AND TEST_ADMIN_ID = {testAdminId}) ")
     void deleteTABELevelInfoForAdmin(Integer testAdminId) throws SQLException;
     
-    @JdbcControl.SQL(statement = "select ros.TEST_ROSTER_ID as testRosterId, ros.TEST_ADMIN_ID  as testAdminId, ros.STUDENT_ID  as studentId, st.ext_pin1  as extPin1 from test_roster ros , student st where ros.test_admin_id = {testAdminId} and ros.student_id = st.student_id and ros.activation_status = 'AC' and st.activation_status = 'AC' and {sql: studentIds}",
+    @JdbcControl.SQL(statement = "select ros.TEST_ROSTER_ID as testRosterId, ros.TEST_ADMIN_ID  as testAdminId, ros.STUDENT_ID  as studentId, st.ext_pin1  as extPin1, st.user_name as studentUserName from test_roster ros , student st where ros.test_admin_id = {testAdminId} and ros.student_id = st.student_id and ros.activation_status = 'AC' and st.activation_status = 'AC' and {sql: studentIds}",
             arrayMaxLength = 0,fetchSize = 100)
     RosterElement [] getRosterDataForSessionStudDelete(Integer testAdminId, String studentIds) throws SQLException;
     

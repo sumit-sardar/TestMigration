@@ -179,6 +179,7 @@ public class StudentManagementImpl implements StudentManagement
 	private static final String FOUNDATIONAL = "Foundational";
 	private static final String LANGUAGEARTS = "Language Arts";
 	private static final String MATHEMATICS	="Technical Subjects";
+	private String bmtValMsgStdDel = "Unable to contact the server at this time. Please try again later or call Customer Support if you continue to receive this message.";
 
 	/**
 	 * Get student profile for the specified student.
@@ -1818,13 +1819,11 @@ public class StudentManagementImpl implements StudentManagement
 				
 				if(validationFailed == null){
 					//BMT API is down or not configured in DB
-					CTBBusinessException be = new CTBBusinessException( 
-							"Unable to contact the server at this time. Please try again later or call Customer Support if you continue to receive this message.");
+					CTBBusinessException be = new CTBBusinessException(bmtValMsgStdDel);
 					throw be;
 				}else if(validationFailed.booleanValue()){
 					//BMT validation failed.Can't delete the student.
-					CTBBusinessException be = new CTBBusinessException( 
-							"You cannot delete this student. Student is associated with one or more test administrations");
+					CTBBusinessException be = new CTBBusinessException(bmtValMsgStdDel);
 					throw be;
 				}
 			}
@@ -4146,6 +4145,7 @@ public class StudentManagementImpl implements StudentManagement
 		
 		if(bmtApiURL == null){
 		  //bmt url is not configured.Return null.
+		  bmtValMsgStdDel = "Unable to contact the server at this time. Please try again later or call Customer Support if you continue to receive this message.";
 		  return null;	
 		}		
 		//invoke bmt api with student ext-pin1 and dummy test_admin_id & dummy test_roster_id
@@ -4202,12 +4202,18 @@ public class StudentManagementImpl implements StudentManagement
 			Gson gson=new Gson();
 			BMTStudentDeleteResponseJSON respJSON = gson.fromJson(result.toString(), BMTStudentDeleteResponseJSON.class);
 
-			if(statusCode == 200)
+			if(statusCode == 200) {
 				return true;
-			else if(respJSON!=null && respJSON.getErrorCode()!=null)
+			} else if(respJSON!=null && respJSON.getErrorCode()!=null && respJSON.getErrorCode().equals("2")) {
+				bmtValMsgStdDel = "The student cannot be deleted due to system validation error. Please contact Customer Support for assistance";
 				return false;
-			else
+			} else if(respJSON!=null && respJSON.getErrorCode()!=null) {
+				bmtValMsgStdDel = "You cannot delete this student. Student is associated with one or more test administrations";
+				return false;
+			} else {
+				bmtValMsgStdDel = "Unable to contact the server at this time. Please try again later or call Customer Support if you continue to receive this message.";
 				return null;
+			}
 
 		} catch (Exception e) {
 			System.out.println("Exception in BMT API access"+ e.getMessage() );
