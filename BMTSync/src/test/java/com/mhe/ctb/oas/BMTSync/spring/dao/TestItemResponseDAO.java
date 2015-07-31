@@ -45,8 +45,7 @@ public class TestItemResponseDAO {
 	
 	/** The query to get the next sequence number for a given item response. */
 	private static final String SELECT_MAX_RESPONSE_SEQUENCE_NUMBER = "SELECT MAX(RESPONSE_SEQ_NUM) FROM ITEM_RESPONSE "
-			+ "WHERE TEST_ROSTER_ID = ? "
-			+ "AND ITEM_SET_ID = ?";
+			+ "WHERE TEST_ROSTER_ID = ?";
 	
 	/** The query to insert a record into ITEM_RESPONSE. */
 	private static final String INSERT_ITEM_RESPONSE = "INSERT INTO ITEM_RESPONSE "

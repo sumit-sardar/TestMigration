@@ -37,8 +37,7 @@ public class ItemResponseDAO {
 	
 	/** The query to get the next sequence number for a given item response. */
 	private static final String SELECT_MAX_RESPONSE_SEQUENCE_NUMBER = "SELECT MAX(RESPONSE_SEQ_NUM) FROM ITEM_RESPONSE "
-			+ "WHERE TEST_ROSTER_ID = ? "
-			+ "AND ITEM_SET_ID = ?";
+			+ "WHERE TEST_ROSTER_ID = ?"; // Per Arif, this should only be per roster, not per roster and item ID.
 			
 	/** The query to insert a record into ITEM_RESPONSE. */
 	private static final String INSERT_ITEM_RESPONSE = "INSERT INTO ITEM_RESPONSE "
@@ -54,7 +53,7 @@ public class ItemResponseDAO {
 			+ "?, "			// RESPONSE_SEQ_NUM			NUMBER(8,0)			Lookup Sequence number.
 			+ "sysdate, "	// CREATED_DATE_TIME		DATE				sysdate
 			+ "null, "		// EXT_ANSWER_CHOICE_ID		VARCHAR2(32 BYTE)	null
-			+ "'T', "		// STUDENT_MARKED			VARCHAR2(2 BYTE)	'T', Unused per Tai
+			+ "null, "		// STUDENT_MARKED			VARCHAR2(2 BYTE)	null per Sumit
 			+ "6)";			// CREATED_BY				NUMBER(38,0)		Foreign key to USERS table, 6 fixed as "test_client" per Sumit Sardar.
 	
 	/** The query to get the number of records in ITEM_RESPONSE_CR for a given testRosterId, itemSetId, and itemId. */
@@ -66,20 +65,20 @@ public class ItemResponseDAO {
 	/** The query to insert a constructed response. */
 	private static final String INSERT_CONSTRUCTED_RESPONSE = "INSERT INTO ITEM_RESPONSE_CR "
 			+ "(TEST_ROSTER_ID, ITEM_SET_ID, ITEM_ID, CONSTRUCTED_RESPONSE, AUDIO_URL) VALUES ("
-			+ "?, "		// TEST_ROSTER_ID	NUMBER			testRosterId
-			+ "?, "		// ITEM_SET_ID	NUMBER				itemSetId
-			+ "?, "		// ITEM_ID	VARCHAR2(32 BYTE)		itemResponse.getItemCode()
-			+ "?, "		// CONSTRUCTED_RESPONSE	CLOB		URLEncode.encode(itemResponse.getItemResponse(), "UTF-8")
-			+ "null)";	// AUDIO_URL	VARCHAR2(1024 BYTE)
+			+ "?, "		// TEST_ROSTER_ID		NUMBER				testRosterId
+			+ "?, "		// ITEM_SET_ID			NUMBER				itemSetId
+			+ "?, "		// ITEM_ID				VARCHAR2(32 BYTE)	itemResponse.getItemCode()
+			+ "?, "		// CONSTRUCTED_RESPONSE	CLOB				URLEncode.encode(itemResponse.getItemResponse(), "UTF-8")
+			+ "null)";	// AUDIO_URL			VARCHAR2(1024 BYTE)	audioURL, unused during CR entries.
 
 	/** The query to insert an audio response. */
 	private static final String INSERT_AUDIO_RESPONSE = "INSERT INTO ITEM_RESPONSE_CR "
 			+ "(TEST_ROSTER_ID, ITEM_SET_ID, ITEM_ID, CONSTRUCTED_RESPONSE, AUDIO_URL) VALUES ("
-			+ "?, "		// TEST_ROSTER_ID	NUMBER			testRosterId
-			+ "?, "		// ITEM_SET_ID	NUMBER				itemSetId
-			+ "?, "		// ITEM_ID	VARCHAR2(32 BYTE)		itemResponse.getItemCode()
-			+ "null, "	// CONSTRUCTED_RESPONSE	CLOB		
-			+ "?)";		// AUDIO_URL	VARCHAR2(1024 BYTE)	itemResponse.getItemResponse()		
+			+ "?, "		// TEST_ROSTER_ID		NUMBER				testRosterId
+			+ "?, "		// ITEM_SET_ID			NUMBER				itemSetId
+			+ "?, "		// ITEM_ID				VARCHAR2(32 BYTE)	itemResponse.getItemCode()
+			+ "null, "	// CONSTRUCTED_RESPONSE	CLOB				unused during AU entries.		
+			+ "?)";		// AUDIO_URL			VARCHAR2(1024 BYTE)	itemResponse.getItemResponse()		
 
 	/** The query to update a constructed response. */
 	private static final String UPDATE_CONSTRUCTED_RESPONSE = "UPDATE ITEM_RESPONSE_CR SET "

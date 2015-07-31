@@ -135,20 +135,21 @@ public class TestStatusRestService {
 						}
 
 				        if (itemResponses != null) {
-				        	// If BMT responds, log the response.
-				        	logger.info("[ItemResponses] Response json from BMT: " + itemResponses.toJson());
+				        	// If BMT responds, log the response and call the scoring queue.
 				        	try {
+					        	logger.info("[ItemResponses] Response json from BMT: " + itemResponses.toJson());
 				        		processResponses(testStatus, itemResponses);
+				        		logger.info("[ItemResponses] Sending testRosterId to scoring queue: [testRosterId = "
+				        				+ testStatus.getOasRosterId() + "]");
+				        		scoringQueue.send(testStatus.getOasRosterId());
+
 				        	} catch (final Exception e) {
 					        	logger.error("[ItemResponses] Error storing responses in database: " + e.getMessage(), e);
 								storeStatusUpdate = false;
 								testStatus.setErrorCode(500);
 								testStatus.setErrorMessage("Error storing responses in database: " + e.getMessage());					        					        		
 				        	}
-				        	
-				        	// Having stored responses, now call the Scoring queue.
-			        		logger.info("Sending testRosterId to scoring queue: [testRosterId = " + testStatus.getOasRosterId() + "]");
-			        		scoringQueue.send(testStatus.getOasRosterId());
+
 				        	
 				        } else {
 				        	logger.error("[ItemResponses] Response json from BMT is null; logging error!");
