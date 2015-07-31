@@ -91,6 +91,22 @@
 	</div>	
 </div>
 
+<div id="bmtValidationErrorPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<p><lb:label key="bmtValidationError.message" /></p>
+			<p>&nbsp;</p>
+			<span id = 'bmtValFailStdUsrName'></span>
+		</div>
+	</div>
+	<div style="padding:10px;">			
+		<center>
+			<input type="button" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('bmtValidationErrorPopup');" class="ui-widget-header">&nbsp;
+		</center>
+	</div>	
+</div>
+
 <div id="expiryDatePOConfirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div style="padding:10px;text-align:center;">

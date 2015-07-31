@@ -1290,6 +1290,22 @@ function registerDelegate(tree){
 		 	$("#scheduleRemove").show();
 		 	$("#editRemove").hide();
 		 }
+	}
+	
+	function bmtValidationErrorPopup(){
+	$("#bmtValidationErrorPopup").dialog({  
+		title:"Validation Error",  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#bmtValidationErrorPopup").css('height','150px');
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#bmtValidationErrorPopup").parent().css("top",toppos);
+		 $("#bmtValidationErrorPopup").parent().css("left",leftpos);	
 	}	
 	
 	
@@ -1763,102 +1779,127 @@ function registerDelegate(tree){
 		return present;
 	}
 	
+	function callDeleteMethod(validateBMTObj) {
+		var lloRPCust= $('#lloRPCustomer').val();
+		if(lloRPCust != null && (lloRPCust == 'true' || lloRPCust == true)) {
+			$('#studentAddDeleteErr').hide();
+		}
+			
+	    studentDeleted = true;
+		for(var i = 0; i < delStuIdObjArray.length; i++) {
+			if(validateBMTObj.undeletedStdIds!= null && validateBMTObj.undeletedStdIds!= undefined && validateBMTObj.undeletedStdIds.length>0) {
+				if(jQuery.inArray(delStuIdObjArray[i].toString(),validateBMTObj.undeletedStdIds)!=-1) {
+					selectAllForDelete=false;
+					continue;
+				}
+			}
+		
+			if(studentTempMap != undefined && studentTempMap.get(delStuIdObjArray[i]) != null && studentTempMap.get(delStuIdObjArray[i]) != undefined) {				
+				if(allSelectOrg != undefined && allSelectOrg.length > 0) {
+					for(var k = 0; k < allSelectOrg.length; k++) {
+					    if(allSelectOrg[k] == null || allSelectOrg[k] == undefined){
+					    	continue;
+					    }
+						if(allSelectOrg[k] == (studentTempMap.get(delStuIdObjArray[i])).orgNodeId || allSelectOrg[k] ==(studentTempMap.get(delStuIdObjArray[i])).orgNodeId+"_f") {
+							allSelectOrg.splice(k,1);
+							countAllSelect--;
+						}
+					}
+				}
+				delete accomodationMap[delStuIdObjArray[i]];
+				studentTempMap.remove(delStuIdObjArray[i]);
+				savedStudentMap.remove(delStuIdObjArray[i]);
+				var stdFound = false;
+				for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
+					if (deletedStudentsFromSessionArray[d]==delStuIdObjArray[i]) {
+						stdFound = true;
+						break;
+					}
+				}
+				if (!stdFound)
+				deletedStudentsFromSessionArray[deletedStudentsFromSessionArray.length]=delStuIdObjArray[i];
+			}
+		}
+		closePopUp('removeStuConfirmationPopup');
+		returnSelectedStudent();
+				
+		delStuIdObjArray = [];
+		if(selectAllForDelete) {
+			resetStudentSelection();
+		} else {
+			cloneStudentMapToTemp();
+		}
+		$('#totalStudent').text(AddStudentLocaldata.length);
+		if($("#supportAccommodations").val() != 'false')
+	 		 $('#stuWithAcc').text(studentWithaccommodation);
+		$('#list6').GridUnload();
+		populateSelectedStudent();
+		
+		if(validateBMTObj.undeletedStdIds!= null && validateBMTObj.undeletedStdIds!= undefined && validateBMTObj.undeletedStdIds.length>0) {
+			//show_roster_error_popup
+			$("#bmtValFailStdUsrName").html(validateBMTObj.undeletedStdUsrName);
+			bmtValidationErrorPopup();
+			$('#bmtValidationErrorPopup').show();
+			
+		}
+	}
+	
+	function validateBMTAPI(validateBMTObj, delBMTStdArray, deletionmethod) {
+		postDataObject={};
+		delStuIdArr="";
+		commaFlag=false;
+		for(var i=0;i<delBMTStdArray.length;i++) {
+			if(delBMTStdArray[i]==undefined || delBMTStdArray[i]=='undefined') {
+				continue;
+			}
+			if(commaFlag)
+				delStuIdArr+=",";
+			delStuIdArr+=delBMTStdArray[i];
+			commaFlag=true;
+		}
+		postDataObject.delStuIdArr = delStuIdArr;
+		postDataObject.testAdminId = selectedTestAdminId;
+		
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'validateStudDelete.do',
+			type:		'POST',
+			dataType:	'json',
+			data:		postDataObject,
+			success:	function(data, textStatus, XMLHttpRequest){
+							validateBMTObj.isDeletionValid = data.isDeletionValid;
+							validateBMTObj.validationMsg = data.validationMsg;
+							validateBMTObj.undeletedStdUsrName = data.undeletedStdUsrName;
+							validateBMTObj.undeletedStdIds=data.undeletedStdIds
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+							window.location.href="/SessionWeb/logout.do";
+						},
+			complete :  function(){
+							if(deletionmethod=='uncheck') {
+								delSavedStdForUncheck(delBMTStdArray, validateBMTObj);
+							} else if(deletionmethod=='trashicon') {
+								callDeleteMethod(validateBMTObj);
+							}
+							$.unblockUI();
+						}
+		});
+	}
+	
 	function removeSelectedStudent() {
-		var isDeletionValid=false;
-		var validationMsg="";
+		var validateBMTObj={};
+		validateBMTObj.isDeletionValid=false;
+		validateBMTObj.validationMsg="";
 		var lloRPCust= $('#lloRPCustomer').val();
 		
 		if(state == "EDIT" && (isCopySession == 'false' || isCopySession == false) && lloRPCust != null && (lloRPCust == 'true' || lloRPCust == true)) {
-			postDataObject={};
-			delStuIdArr="";
-			commaFlag=false;
-			for(var i=0;i<delStuIdObjArray.length;i++) {
-				if(delStuIdObjArray[i]==undefined || delStuIdObjArray[i]=='undefined') {
-					continue;
-				}
-				if(commaFlag)
-					delStuIdArr+=",";
-				delStuIdArr+=delStuIdObjArray[i];
-				commaFlag=true;
-			}
-			postDataObject.delStuIdArr = delStuIdArr;
-			postDataObject.testAdminId = selectedTestAdminId;
-			
-			$.ajax({
-				async:		false,
-				beforeSend:	function(){
-								UIBlock();
-							},
-				url:		'validateStudDelete.do',
-				type:		'POST',
-				dataType:	'json',
-				data:		postDataObject,
-				success:	function(data, textStatus, XMLHttpRequest){
-								isDeletionValid = data.isDeletionValid;
-								validationMsg = data.validationMsg;
-								$.unblockUI(); 						
-							},
-				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								$.unblockUI();
-								window.location.href="/SessionWeb/logout.do";
-								
-							},
-				complete :  function(){
-								 $.unblockUI(); 
-							}
-			});
-		}
-		
-		if((state == "SCHEDULE" || (isCopySession == 'true' || isCopySession == true)) || (lloRPCust == null || (lloRPCust == 'false' || lloRPCust == false)) || (isDeletionValid != null && isDeletionValid != undefined && (isDeletionValid == 'true' || isDeletionValid == true))) {
-			if(lloRPCust != null && (lloRPCust == 'true' || lloRPCust == true)) {
-				$('#studentAddDeleteErr').hide();
-			}
-		    studentDeleted = true;
-			for(var i = 0; i < delStuIdObjArray.length; i++) {
-				if(studentTempMap != undefined && studentTempMap.get(delStuIdObjArray[i]) != null && studentTempMap.get(delStuIdObjArray[i]) != undefined) {				
-					if(allSelectOrg != undefined && allSelectOrg.length > 0) {
-						for(var k = 0; k < allSelectOrg.length; k++) {
-						    if(allSelectOrg[k] == null || allSelectOrg[k] == undefined){
-						    	continue;
-						    }
-							if(allSelectOrg[k] == (studentTempMap.get(delStuIdObjArray[i])).orgNodeId || allSelectOrg[k] ==(studentTempMap.get(delStuIdObjArray[i])).orgNodeId+"_f") {
-								allSelectOrg.splice(k,1);
-								countAllSelect--;
-							}
-						}
-					}
-					delete accomodationMap[delStuIdObjArray[i]];
-					studentTempMap.remove(delStuIdObjArray[i]);
-					savedStudentMap.remove(delStuIdObjArray[i]);
-					var stdFound = false;
-					for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {
-						if (deletedStudentsFromSessionArray[d]==delStuIdObjArray[i]) {
-							stdFound = true;
-							break;
-						}
-					}
-					if (!stdFound)
-					deletedStudentsFromSessionArray[deletedStudentsFromSessionArray.length]=delStuIdObjArray[i];
-				}
-			}
-			closePopUp('removeStuConfirmationPopup');
-			returnSelectedStudent();
-					
-			delStuIdObjArray = [];
-			if(selectAllForDelete) {
-				resetStudentSelection();
-			} else {
-				cloneStudentMapToTemp();
-			}
-			$('#totalStudent').text(AddStudentLocaldata.length);
-			if($("#supportAccommodations").val() != 'false')
-		 		 $('#stuWithAcc').text(studentWithaccommodation);
-			$('#list6').GridUnload();
-			populateSelectedStudent();
-		} else if(state == "EDIT" && (isCopySession == 'false' || isCopySession == false)) {
-			$("#deleteStudErr").text(validationMsg);
-			$('#studentAddDeleteErr').show();
-			closePopUp('removeStuConfirmationPopup');
+			validateBMTAPI(validateBMTObj, delStuIdObjArray, 'trashicon');
+		} else {
+			callDeleteMethod(validateBMTObj);
 		}
 	}
 	

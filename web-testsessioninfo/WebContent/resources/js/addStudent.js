@@ -5,7 +5,7 @@ var unCheckedSession = [];
 var categoriesStr = ":All;JV:JV;AD:AD"; 
 var AccommOption = ":Any;T:Yes;F:No";
 var addedOrg={status:"true"};
-
+var stdUncheckListBMT=new Map();
 var AddStudentLocaldata ={};
 var isOnBack = false;
 var stuForSelectedOrg;
@@ -115,6 +115,7 @@ function hideSelectStudent(){
 	allSelectOrg = allSelectOrgTmp.slice(0);
 	$("#stuOrgNodeHierarchy").undelegate();
 	isSelectingStudent = false;	
+	stdUncheckListBMT=new Map();
 }
 
 function hideSelectStudentPopup() {
@@ -1127,11 +1128,66 @@ function returnSelectedStudent() {
  	$('#dupStudentlist').GridUnload();	
  	openDuplicateStudentPopup(duplicateStuArraydata, orgForDupStu);
  } else {
- 	$("#studentAddDeleteInfo").show();
-	 var previous = AddStudentLocaldata.length; 
+ 	updateAddStudentLocaldata();
+ }
+ 
+}
+
+function updateAddStudentLocaldata() {
+	keys = savedStudentMap.getKeys();
+	var counter = 0;
+	var delStudentTempMap = new Array();
+	for(var i =0 ; i<keys.length; i++ ) {
+		var finalObject = studentTempMap.get(keys[i]);
+		if(finalObject ==null || finalObject == undefined || String((savedStudentMap.get(keys[i])).orgNodeId) != String(finalObject.orgNodeId) ){
+			delStudentTempMap[counter++] = keys[i];
+		}
+	}
+	
+	//BMT validation Start
+	var validateBMTObj={};
+	validateBMTObj.isDeletionValid=false;
+	validateBMTObj.validationMsg="";
+	var lloRPCust= $('#lloRPCustomer').val();
+	
+	if(state == "EDIT" && (isCopySession == 'false' || isCopySession == false) && lloRPCust != null && (lloRPCust == 'true' || lloRPCust == true) && delStudentTempMap.length>0) {
+		validateBMTAPI(validateBMTObj, delStudentTempMap, 'uncheck');
+	} else {
+		delSavedStdForUncheck(delStudentTempMap, validateBMTObj);
+	}
+	//BMT validation End
+}
+
+function delSavedStdForUncheck(delStudentTempMap, validateBMTObj) {
+	for(var i =0 ; i<delStudentTempMap.length; i++ ) {
+		if(validateBMTObj.undeletedStdIds!= null && validateBMTObj.undeletedStdIds!= undefined && validateBMTObj.undeletedStdIds.length>0) {
+			if(jQuery.inArray(delStudentTempMap[i].toString(),validateBMTObj.undeletedStdIds)!=-1) {
+				studentTempMap.put(delStudentTempMap[i].toString(),stdUncheckListBMT.get(delStudentTempMap[i].toString()));
+				delStdIndex=jQuery.inArray(delStudentTempMap[i].toString(),deletedStudentsFromSessionArray);
+				deletedStudentsFromSessionArray.splice(delStdIndex,1);
+				continue;
+			}
+		}
+		savedStudentMap.remove(delStudentTempMap[i]);
+	}
+	
+	stdUncheckListBMT=new Map();
+	var previous = AddStudentLocaldata.length; 
 	if(previous == undefined)
 	 	previous = 0;
-	 updateAddStudentLocaldata();
+	 	
+	AddStudentLocaldata = [];
+	var keys = studentTempMap.getKeys();
+
+	for(var i =0 ; i<keys.length; i++ ) {
+		if(studentTempMap.get(keys[i]) != null && studentTempMap.get(keys[i]) != undefined) {
+		    AddStudentLocaldata[i] = studentTempMap.get(keys[i]);
+			AddStudentLocaldata[i].studentId = keys[i];
+		}
+	}
+	
+	var message = "";
+	$("#studentAddDeleteInfo").show();
 	 var newValue = AddStudentLocaldata.length;
 	 if(newValue == undefined)
 	 	newValue = 0; 
@@ -1153,32 +1209,13 @@ function returnSelectedStudent() {
 	 gridReloadStu(false);
 	 $("#duplicateStudent").dialog("close");
 	 $("#stuOrgNodeHierarchy").undelegate();
- }
- 
-}
-
-function updateAddStudentLocaldata() {
-	AddStudentLocaldata = [];
-	var keys = studentTempMap.getKeys();
-
-	for(var i =0 ; i<keys.length; i++ ) {
-		if(studentTempMap.get(keys[i]) != null && studentTempMap.get(keys[i]) != undefined) {
-		    AddStudentLocaldata[i] = studentTempMap.get(keys[i]);
-			AddStudentLocaldata[i].studentId = keys[i];
-		}
-	}
-	
-	keys = savedStudentMap.getKeys();
-	var counter = 0;
-	var delStudentTempMap = new Array();
-	for(var i =0 ; i<keys.length; i++ ) {
-		var finalObject = studentTempMap.get(keys[i]);
-		if(finalObject ==null || finalObject == undefined || String((savedStudentMap.get(keys[i])).orgNodeId) != String(finalObject.orgNodeId) ){
-			delStudentTempMap[counter++] = keys[i];
-		}
-	}
-	for(var i =0 ; i<delStudentTempMap.length; i++ ) {
-		savedStudentMap.remove(delStudentTempMap[i]);
+	 
+	 if(validateBMTObj.undeletedStdIds!= null && validateBMTObj.undeletedStdIds!= undefined && validateBMTObj.undeletedStdIds.length>0) {
+		//show_roster_error_popup
+		$("#bmtValFailStdUsrName").html(validateBMTObj.undeletedStdUsrName);
+		bmtValidationErrorPopup();
+		$('#bmtValidationErrorPopup').show();
+		
 	}
 }
 
@@ -1404,6 +1441,7 @@ function getStudentListArray(studentArray) {
 		} else if(tmpOrgIdList.length == 1) {
 		   if(stuForSelectedOrg == tmpOrgIdList[0])
 		   {
+		   	 stdUncheckListBMT.put(selectedRowId,studentTempMap.get(selectedRowId));
 			 studentTempMap.remove(selectedRowId);
 			 var stdFound = false;
 			 for(var d = 0; d < deletedStudentsFromSessionArray.length; d++) {

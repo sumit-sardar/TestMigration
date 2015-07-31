@@ -1011,12 +1011,12 @@ public class SessionOperationController extends PageFlowController {
 		String[] studentIdsArr=delStuIdObjArray.split(",");
 		
 		boolean isDeletionValid=false;
-		String validationMsg="The system was not able to verify that the student was removed from the test session. Please contact Customer Support for assistance.";
+		String validationMsg="The system was not able to remove below student(s) from the test session. Please contact Customer Support for assistance.";
+		List<RosterElement> valFailRosters=new ArrayList<RosterElement>();
 		
 		try {
-			Boolean validationPassed=this.scheduleTest.validateBMTDeleteSessionStudent(new Integer(Integer.parseInt(testAdminIdString)), studentIdsArr, this.customerId);
+			Boolean validationPassed=this.scheduleTest.validateBMTDeleteSessionStudent(new Integer(Integer.parseInt(testAdminIdString)), studentIdsArr, this.customerId, valFailRosters);
 			if(validationPassed==null) {
-				validationMsg="The system is currently offline. Please try again later or call Customer Support if you continue to receive this message.";
 				isDeletionValid=false;
 			} else {
 				isDeletionValid=!validationPassed;
@@ -1026,10 +1026,23 @@ public class SessionOperationController extends PageFlowController {
 			e.printStackTrace();
 		}
 		
+		StringBuilder undeletedStdUsrName=new StringBuilder("");
+		List<String> undeletedStdIds=new ArrayList<String>();
+		
+		for(RosterElement re : valFailRosters) {
+			undeletedStdUsrName.append(re.getStudentUserName());
+			undeletedStdUsrName.append("<br/>");
+			
+			undeletedStdIds.add(String.valueOf(re.getStudentId()));
+		}
+		
 		StudentDeleteValidationVO stuDeleteValVO = new StudentDeleteValidationVO();
 		stuDeleteValVO
 				.setDeletionValid(isDeletionValid);
 		stuDeleteValVO.setValidationMsg(validationMsg);
+		stuDeleteValVO.setUndeletedStdUsrName(undeletedStdUsrName.toString());
+		stuDeleteValVO.setUndeletedStdIds(undeletedStdIds);
+		
 		try {
 			Gson gson = new Gson();
 			jsonData = gson.toJson(stuDeleteValVO);
