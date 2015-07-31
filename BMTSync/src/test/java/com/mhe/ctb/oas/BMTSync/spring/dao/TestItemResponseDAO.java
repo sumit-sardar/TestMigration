@@ -61,7 +61,7 @@ public class TestItemResponseDAO {
 			+ "?, "			// RESPONSE_SEQ_NUM			NUMBER(8,0)			Lookup Sequence number.
 			+ "sysdate, "	// CREATED_DATE_TIME		DATE				sysdate
 			+ "null, "		// EXT_ANSWER_CHOICE_ID		VARCHAR2(32 BYTE)	null
-			+ "'T', "		// STUDENT_MARKED			VARCHAR2(2 BYTE)	'T', Unused per Tai
+			+ "null, "		// STUDENT_MARKED			VARCHAR2(2 BYTE)	'T', Unused per Tai
 			+ "6)";			// CREATED_BY				NUMBER(38,0)		Foreign key to USERS table, hardcoded to 6 per Sumit Sardar.
 
 	@Before
