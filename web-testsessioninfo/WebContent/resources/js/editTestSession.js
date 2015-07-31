@@ -36,7 +36,8 @@
 	var isEdit = false; 
 	var isInformaticaExported;
 	var oldProductLicenseEnabled;
-	
+	var selectedDeliveryClientId = 0;
+	var hasDisableTestSessionEdit = false;
   function disableTabeAdultMsg(){
   		$('#testGroupList').attr("disabled",true);
 		$('#level').attr("disabled",true);		 
@@ -95,7 +96,8 @@
 						if (data.status.isSuccess){						
 							oldestNonZeroPO = data.nonZeroActivePO;
 							isTestSessionHasStudents = data.isTestSessionHasStudents;
-						
+							selectedDeliveryClientId = data.savedTestDetails.testSession.deliveryClientId;		// Added for user story : OAS-3768
+							hasDisableTestSessionEdit = data.hasDisableTestSessionEdit;							// Added for user story : OAS-3768
 							//added for copy test session
 							if(data.isCopySession){
 								isCopySession = true;
@@ -161,8 +163,8 @@
 							}
 							if(data.savedTestDetails.studentsLoggedIn > 0){
 								stdsLogIn = true;
-								if(!isTestExpired && !isProctor){
-								$("#endTest").show();
+								if(!isTestExpired && !isProctor && !((hasDisableTestSessionEdit && selectedDeliveryClientId == 2) && !(isCopySession))){
+									$("#endTest").show();
 								}	
 							}
 							if (!isCopySession && parseInt(data.savedTestDetails.testSession.productId) == 4201){
@@ -173,6 +175,8 @@
 							if (stdsLogIn || isTestExpired || isProctor){
 								isSortable = false;								
 								disableInEdit();							
+							} else if(((hasDisableTestSessionEdit && selectedDeliveryClientId == 2) && !(isCopySession))){
+								isSortable = false;	
 							} else {
 								removeDisableInEdit();
 							}
@@ -266,7 +270,13 @@
 										$("#titleEditInfo").html("");
 										$("#contentEditInfo").show();
 										$("#contentEditInfo").html(data.status.successInfo.messageHeader);
-									}else{
+									}else if((hasDisableTestSessionEdit && selectedDeliveryClientId == 2) && !(isCopySession)){
+										$("#displayEditInfo").show();
+										$("#titleEditInfo").html("");
+										$("#contentEditInfo").show();
+										$("#contentEditInfo").html($("#disableEditTestSession").val());
+										$("#messageEditInfo").html($("#disableEditTestSession2").val());
+									} else {
 										$("#displayEditInfo").show();
 										$("#titleEditInfo").html("");
 										$("#contentEditInfo").show();
@@ -396,7 +406,7 @@
     	var pId  = $("#testGroupList").val();
     	isPopUp = false;
     if(editDataCache.get(index)!= null && editDataCache.get(index)!= undefined){   
-    	  if(stdsLogIn || isTestExpired || isProctor){
+    	  if(stdsLogIn || isTestExpired || isProctor || ((hasDisableTestSessionEdit && selectedDeliveryClientId == 2) && !(isCopySession))){
     	  	disableSelectTest(); 
     	  }else{
     	  	removeDisableInEdit();
@@ -448,7 +458,7 @@
 								cacheObjVal.indexValue = "selectTestGrid";
 								editDataCache.put(index,cacheObjVal);
 								ProductData = data.productsDetails;
-								
+								hasDisableTestSessionEdit = data.hasDisableTestSessionEdit; 	// Added for user story : OAS-3768
 								 var selectedProdIndex = fillProductGradeLevelDropDown('testGroupList', data.productsDetails.product,selectedTestSession.testSession.productId);
 								oldProductLicenseEnabled = ProductData.product[selectedProdIndex].productLicenseEnabled;					 
 								//$('#testList').GridUnload();				
@@ -512,7 +522,7 @@
 									$("#testBreak").attr('disabled', true);	
 								}
 														
-								if(stdsLogIn || isTestExpired || isProctor){					
+								if(stdsLogIn || isTestExpired || isProctor || ((hasDisableTestSessionEdit && selectedDeliveryClientId == 2) && !(isCopySession))){					
 									disableSelectTest();
 								}else{
 									removeDisableInEdit();

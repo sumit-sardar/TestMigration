@@ -4692,6 +4692,7 @@ public class ScheduleTestImpl implements ScheduleTest
             TestProduct testProduct = product.getProduct(productId);
             testSession.setProductType(testProduct.getProductType());
             testSession.setOffGradeBlocked(testProduct.getOffGradeTestingDisabled());
+            testSession.setDeliveryClientId(testProduct.getDeliveryClientId());
             
             String [] forms = itemSet.getFormsForTest(testSession.getItemSetId());
             for(int i=0;i<testUnits.length && testUnits[i] != null;i++) {

@@ -297,6 +297,7 @@ public class SessionOperationController extends PageFlowController {
 	private boolean hasViewResponseResultConf = false; //Added for user story : 
 	private boolean hasAllowHideTooltipsConf = false;
 	private boolean lloRPCustomer = false;
+	private boolean hasDisableTestSessionEdit = false;	// Added for user story : OAS-3768
 	private boolean hasShowRosterAccomAndHierarchy = false;
 	private List<ScoreDetails> sdForAllSubtests = null;
 	public LinkedHashMap getTimeZoneOptions() {
@@ -1367,6 +1368,12 @@ public class SessionOperationController extends PageFlowController {
                 }
                 
                 vo.setUserProductsDetails(this.vo);
+                
+                if(this.hasDisableTestSessionEdit){
+                	vo.setHasDisableTestSessionEdit(true);
+                }else{
+                	vo.setHasDisableTestSessionEdit(false);
+                }
 
     	    } catch(CTBBusinessException e){
     	    	 e.printStackTrace(); 
@@ -1625,6 +1632,12 @@ public class SessionOperationController extends PageFlowController {
 	           	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.TestForm.Disabled"));
 	           			 status.setValidationFailedInfo(validationFailedInfo); 
 	           	     }		
+                }
+                
+                if(this.hasDisableTestSessionEdit){
+                	vo.setHasDisableTestSessionEdit(true);
+                }else{
+                	vo.setHasDisableTestSessionEdit(false);
                 }
                 
     	    } catch(CTBBusinessException e){
@@ -5478,6 +5491,11 @@ public class SessionOperationController extends PageFlowController {
 						null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
 					this.lloRPCustomer = true;
 					this.getSession().setAttribute("lloRPCustomer", this.lloRPCustomer);
+				}
+				if(cc.getCustomerConfigurationName().equalsIgnoreCase("Disable_Test_Session_Edit") && 
+						null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
+					this.hasDisableTestSessionEdit = true;
+					this.getSession().setAttribute("hasDisableTestSessionEdit", this.hasDisableTestSessionEdit);
 				}
 			}
 			this.isTASCCustomer = isTASCCustomer(customerConfigurations);		

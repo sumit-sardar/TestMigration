@@ -46,6 +46,7 @@ public class TestProduct extends CTBBean
     private String offGradeTestingDisabled;
     private Integer catalogId;
     private String  testCatalogName;
+    private Integer deliveryClientId;
     
 	//License
     private String productLicenseEnabled;
@@ -484,6 +485,12 @@ public class TestProduct extends CTBBean
 	 */
 	public void setTestCatalogName(String testCatalogName) {
 		this.testCatalogName = testCatalogName;
+	}
+	public Integer getDeliveryClientId() {
+		return deliveryClientId;
+	}
+	public void setDeliveryClientId(Integer deliveryClientId) {
+		this.deliveryClientId = deliveryClientId;
 	}
     
     

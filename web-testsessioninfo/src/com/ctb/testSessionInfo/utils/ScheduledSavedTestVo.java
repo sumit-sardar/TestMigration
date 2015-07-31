@@ -50,7 +50,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private Integer testingWindowDefaultDays = null;
 	private Boolean showToolTips = false;
 	
-	
+	private boolean hasDisableTestSessionEdit = false; // Added for user story : OAS-3768
 	private static final long serialVersionUID = 1L;
 	
 	
@@ -376,5 +376,14 @@ public class ScheduledSavedTestVo implements Serializable {
 
 	public void setTASCCustomer(boolean isTASCCustomer) {
 		this.isTASCCustomer = isTASCCustomer;
+	}
+	
+	// Added for user story : OAS-3768
+	public boolean isHasDisableTestSessionEdit() {
+		return hasDisableTestSessionEdit;
+	}
+	
+	public void setHasDisableTestSessionEdit(boolean hasDisableTestSessionEdit) {
+		this.hasDisableTestSessionEdit = hasDisableTestSessionEdit;
 	}
 }
