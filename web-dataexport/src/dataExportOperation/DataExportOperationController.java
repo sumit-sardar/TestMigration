@@ -1076,9 +1076,9 @@ public Forward rescoreStudent() {
 			Integer deliverableItemSetId, String itemId, String itemType) {
 		ScorableCRAnswerContent answerArea = new ScorableCRAnswerContent();
 		try {
-
+			// Hard Coding to match getCRItemResponseForScoring() method signature.
 			answerArea = testScoring.getCRItemResponseForScoring(userName,
-					testRosterId, deliverableItemSetId, itemId, itemType);
+					testRosterId, deliverableItemSetId, itemId, itemType , "1");
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}
