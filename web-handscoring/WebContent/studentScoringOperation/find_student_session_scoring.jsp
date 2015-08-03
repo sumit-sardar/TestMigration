@@ -58,6 +58,9 @@
 <input type="hidden" id="ScoringStatusTitleId" value=<lb:label key="scoring.stuGrid.scoringStatusTitle" prefix="'" suffix="'"/>/>
 
 
+<input type="hidden" id="bmtNetworkFailure" value=<lb:label key="bmt.networkFailure.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="bmtItemUnavailable" value=<lb:label key="bmt.itemUnavailable.message" prefix="'" suffix="'"/>/>
+
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
 		<td>

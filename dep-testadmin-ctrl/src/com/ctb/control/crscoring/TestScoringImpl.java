@@ -938,5 +938,20 @@ public class TestScoringImpl implements TestScoring {
 		}
 		return productId;
 	}
+	
+	@Override
+	public String fetchBMTAPIUrl(Integer testAdminId, String bmtItemApiKey)
+			throws CTBBusinessException {
+		try {
+			String bmtURL = scoring.getBMTURLForItem(testAdminId, bmtItemApiKey);
+			return bmtURL;
+		} catch (SQLException se) {
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl: fetchBMTAPIUrl: " + se.getMessage());
+			rde.setStackTrace(se.getStackTrace());
+			throw rde;
+		}
+
+	}
 
 }

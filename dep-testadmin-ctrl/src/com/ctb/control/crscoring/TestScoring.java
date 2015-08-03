@@ -170,6 +170,14 @@ public interface TestScoring {
 	public String getParentProductId(String itemId) throws CTBBusinessException;
 	
 	public TestSession getTestAdminDetails(Integer testAdminId) throws CTBBusinessException;
+
+	/**
+	 * This method fetches BMT Url from Customer resource table. Key is bmtItemApiKey.
+	 * @param testAdminId
+	 * @return
+	 * @throws CTBBusinessException
+	 */
+	public String fetchBMTAPIUrl(Integer testAdminId , String bmtItemApiKey) throws CTBBusinessException;
 	
 
 }

@@ -388,6 +388,42 @@ public class StudentScoringOperationController extends PageFlowController {
 
 	}
 	
+	
+	@Jpf.Action(forwards={
+    		@Jpf.Forward(name = "success", 
+					path ="")
+	})
+	protected Forward getBMTApiUrl(StudentSessionScoringForm form)
+			throws IOException, ClassNotFoundException {
+
+		try {
+			explicitlyInitializeAllControls();
+			HttpServletResponse resp = getResponse();
+			OutputStream stream = null;
+			String json = "";
+			resp.setCharacterEncoding("UTF-8");
+			Base base = new Base();
+			Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
+
+			String bmtApiKey = "BMTITEMAPI";
+			String bmtApiUrl = this.testScoring.fetchBMTAPIUrl(testAdminId,
+					bmtApiKey);
+			base.setBmtAPIUrl(bmtApiUrl);
+			Gson gson = new Gson();
+			json = gson.toJson(base);
+			resp.setContentType(CONTENT_TYPE_JSON);
+			stream = resp.getOutputStream();
+			stream.write(json.getBytes("UTF-8"));
+			resp.flushBuffer();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	 
+	
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
 					path ="")

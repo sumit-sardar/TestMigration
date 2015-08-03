@@ -57,37 +57,38 @@ function stopAudio(){
 	
 	function checkPlay(element){
 	// Changes made to enable save button or show proper message.
-		var deliveryClientId = document.getElementById("deliveryClientIdQA").value;
-		if(deliveryClientId == "2"){
+	var deliveryClientId = document.getElementById("deliveryClientIdQA").value;
+	if(deliveryClientId == "2"){	
 			if(element.className.indexOf('disabled') > 0){
 					return true;
 			}	
-		var playingStatus = document.getElementById("playingStatus").value;
-		  if(document.getElementById("itemType").value == "AI"){			
-					if(playingStatus == "ended"){	
-						formSave();
-					}else{
-						openConfirmationPopupQues();
-					}
-			}else{
+	var playingStatus = document.getElementById("playingStatus").value;
+	  if(document.getElementById("itemType").value == "AI"){			
+				if(playingStatus == "ended"){	
 					formSave();
-			}
+				}else{
+					openConfirmationPopupQues();
+				}
+		}else{
+				formSave();
 		}
-		else 
-		{
-		 if(element.className.indexOf('disabled') > 0){
-			return true;
-		}
-			if(document.getElementById("itemType").value == "AI"){			
-					if(playCompleted == true){	
-						formSave();
-					}else{
-						openConfirmationPopupQues();
-					}
-			}else{
+	}
+	else 
+	{
+	   
+	   if(element.className.indexOf('disabled') > 0){
+		return true;
+	}
+		if(document.getElementById("itemType").value == "AI"){			
+				if(playCompleted == true){	
 					formSave();
-			}
-		}	
+				}else{
+					openConfirmationPopupQues();
+				}
+		}else{
+				formSave();
+		}
+	}	
 	}
 	
 	
@@ -118,11 +119,16 @@ function stopAudio(){
   var iframeQuestion;
   function unlinkQuestionIframe() {
 		var element = document.getElementById('questionInformation');
+		
 		while(element.hasChildNodes()){
 			if (element.lastChild.src != undefined) {
 				if (element.lastChild.src.indexOf("itemPlayer") > 0) {
 					iframeQuestion = element.lastChild;
+				}else if(element.lastChild.name == "bmtFrame"){
+					iframeQuestion = element.lastChild;
 				}
+			}else if(element.lastChild.id == "bmtMessages"){
+				iframeQuestion = element.lastChild;
 			}
 			element.removeChild(element.lastChild);
 		}
@@ -130,11 +136,16 @@ function stopAudio(){
 
   function linkQuestionIframe() {
 	 	var element = document.getElementById('questionInformation');
+		
 		while(element.hasChildNodes()){
 			if (element.lastChild.src != undefined) {
 				if (element.lastChild.src.indexOf("itemPlayer") > 0) {
 					return;
+				}else if(element.lastChild.name == "bmtFrame"){
+					return;
 				}
+			}else if(element.lastChild.id == "bmtMessages"){
+				return;
 			}
 			element.removeChild(element.lastChild);
 		}

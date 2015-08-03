@@ -104,4 +104,8 @@ public interface CRScoring extends JdbcControl {
 	 @JdbcControl.SQL(statement = "select OAS_UTILS.GET_STD_CAREA_SCORING_STATUS({rosterId}, {itemSetIdTD}) from dual")
 	 String getStatusForRosterAndTD(Integer rosterId, Integer itemSetIdTD);
 	 
+	 //Get BMT ITEM API URL for test admin
+	 @JdbcControl.SQL(statement = "select resource_uri from customer_resource cr , test_admin ta where cr.resource_type_code = {bmtItemApiKey} and cr.customer_id = ta.customer_id and ta.test_admin_id = {testAdminId}")
+	 String getBMTURLForItem(Integer testAdminId , String bmtItemApiKey) throws SQLException;
+	 
 }

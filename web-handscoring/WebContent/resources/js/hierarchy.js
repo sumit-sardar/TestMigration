@@ -62,6 +62,8 @@ var parentProductId;
 var deliveryClientId = 0;
 var testAdminId = 0;
 var extItemSetId = 0;
+var tryCount = 0;
+var retryLimit = 3;
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -1661,7 +1663,7 @@ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPo
 		 	if(deliveryClientId == 2){
 		 	 		iframe.name = "bmtFrame";
 					iframe.id = "bmtFrame";
-					iframe.src="placeholderBMTItem.html";
+					getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 					iframe.width = "100%";
 					iframe.height = "100%";
 		 	 }else{
@@ -1674,10 +1676,9 @@ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPo
 					iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
 					iframe.width = "900";
 					iframe.height = "530";
+					element.appendChild(iframe);
 		 	 }
-		 	/*iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";*/
 			
-			element.appendChild(iframe);
 			updateMaxPoints(maxPoints);		
 			var scoreAndPoints =  getScorePoints();
 			score = scoreAndPoints[0];
@@ -1740,9 +1741,9 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								var linebreak ="\n\n";
 								window.s3AudioURl='';
 								if(isAudioItem){
-									$("#crText").hide();
-									document.getElementById("itemType").value = "AI";
-									/*added for BMT audio player*/
+								$("#crText").hide();
+								document.getElementById("itemType").value = "AI";
+								/*added for BMT audio player*/
 									var audioResponseString;
 									if(deliveryClientId==2){
 										audioResponseString=data1.scrContent.s3AudioUrl;
@@ -1750,17 +1751,17 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 									}else{
 									/*For OAS player*/
 										audioResponseString=data1.scrContent.audioItemContent;
-										audioResponseString = audioResponseString.substr(13);
-										audioResponseString = audioResponseString.split("%3C%2F");
-										document.getElementById("audioResponseString").value = audioResponseString[0];
-									}	
-									
-									document.getElementById("deliveryClientIdQA").value = deliveryClientId ;
-									document.getElementById("pointsDropDown").setAttribute("disabled",true);								
-									$('#Question').addClass('ui-state-disabled');
-									$("#audioPlayer").hide();
-									$("#iframeDiv").show();
-									var iframe = $("#iframeAudio");
+									audioResponseString = audioResponseString.substr(13);
+									audioResponseString = audioResponseString.split("%3C%2F");
+									document.getElementById("audioResponseString").value = audioResponseString[0];
+								}	
+								
+								document.getElementById("deliveryClientIdQA").value = deliveryClientId ;
+								document.getElementById("pointsDropDown").setAttribute("disabled",true);								
+								$('#Question').addClass('ui-state-disabled');
+								$("#audioPlayer").hide();
+								$("#iframeDiv").show();
+								var iframe = $("#iframeAudio");
 									/*added for BMT audio player*/
 									if(deliveryClientId==2){
 									   	$(iframe).attr('src', "audioPlayerBmt.jsp");
@@ -1771,22 +1772,22 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 										$(iframe).attr('src', "audioPlayer.jsp");
 									}
 								}else{
-									document.getElementById("itemType").value = "CR";								
-									var crResponses =data1.scrContent.cRItemContent.string.length;
-									for(var i = 0; i < crResponses; i++){
-										if( i == (crResponses-1)){
-											linebreak ="";
-											document.getElementById("pointsDropDown").removeAttribute("disabled");
-											document.getElementById("Question").removeAttribute("disabled");
-											$('#Question').removeClass('ui-state-disabled'); 
-										}
-										var crResponseToShow = data1.scrContent.cRItemContent.string[i];
-										if(isObject(crResponseToShow))
-											crResponseToShow = "";
-										crTextResponse = crTextResponse + crResponseToShow + linebreak;
-									  }
-									$("#crText").show();
-									$("#crText").val(crTextResponse);
+								document.getElementById("itemType").value = "CR";								
+								var crResponses =data1.scrContent.cRItemContent.string.length;
+								for(var i = 0; i < crResponses; i++){
+									if( i == (crResponses-1)){
+										linebreak ="";
+										document.getElementById("pointsDropDown").removeAttribute("disabled");
+										document.getElementById("Question").removeAttribute("disabled");
+										$('#Question').removeClass('ui-state-disabled'); 
+									}
+									var crResponseToShow = data1.scrContent.cRItemContent.string[i];
+									if(isObject(crResponseToShow))
+										crResponseToShow = "";
+									crTextResponse = crTextResponse + crResponseToShow + linebreak;
+								  }
+								$("#crText").show();
+								$("#crText").val(crTextResponse);
 								}
 								
 
@@ -2155,7 +2156,93 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	$("#"+argObject.contentElement).text(textMessage);
  }
  
- function showQuesPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus , parentProductId){
+ function getBMTItemURL (rosterIid, testAdminId, itemId, extTstItemSetId, elementDiv, iframe) {
+ 	var param = {};
+ 	param.oasRosterId = rosterIid;
+	param.oasTestAdministrationID = testAdminId;
+	param.itemid = itemId;
+	param.oasTestId = extTstItemSetId;
+ 	
+ 	var initparam = {};
+ 	initparam.testAdminId = testAdminId;
+ 	
+ 	var bmtURL = '';
+ 	var bmtResponseURL = '';
+ 	var isSuccess = false;
+ 	
+ 	var dynTable = document.createElement('table');
+ 	dynTable.id = "bmtMessages";
+ 	dynTable.setAttribute("style","margin: auto;position: relative;top: 50%;");
+ 	
+ 	
+		$.ajax({
+				async:		false,
+				url:		'getBMTApiUrl.do',
+				type:		'POST',
+				data:		initparam,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){	
+								if(data.bmtAPIUrl){
+									bmtURL = data.bmtAPIUrl;
+									isSuccess = true;
+								}else{
+									dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+				        			elementDiv.appendChild(dynTable);
+								}	
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								
+								dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+				        		elementDiv.appendChild(dynTable);						
+							}
+			});
+ 	
+ 	
+ 	if(isSuccess){
+	
+		$.ajax({
+					async:		true,
+					url:		bmtURL,
+					type:		'POST',
+					data:		JSON.stringify(param),
+					dataType:	'json',
+					contentType: 'application/json',
+					success:	function(data, status, jqXHR){
+									bmtResponseURL = data.url;
+									iframe.src = bmtResponseURL;
+									elementDiv.appendChild(iframe);
+								},
+					error  :    function(jqXHR, textStatus, errorThrown){
+																		
+									if (textStatus == 'timeout') {
+							            if (tryCount < retryLimit) {
+							            	 tryCount++;
+							            	 setTimeout(getBMTItemURL(rosterIid, testAdminId, itemId, extTstItemSetId, elementDiv),15000);
+							            }else{
+							            	dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+							        		elementDiv.appendChild(dynTable);
+							            }
+							        }else if(textStatus == 'error'){
+							        	if(jqXHR.status == 404){
+							        		dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtItemUnavailable").val()+"</div></td></tr>";
+							        		elementDiv.appendChild(dynTable);
+							        	}else if(jqXHR.status == 500){
+							        		dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+							        		elementDiv.appendChild(dynTable);
+							        	}else{
+											dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+							        		elementDiv.appendChild(dynTable);					        	
+							        	}
+							        }else{ 
+							        	return;
+							        }
+								}
+			});
+		}	
+	}
+ 
+ function showQuesPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus , parentProductId, deliveryClientId, testAdminId, extItemSetId){
+			console.log("showQuesPopup===");
 			var score= null;
 			var status = null;
 			selectedRowObjectScoring.id = id;
@@ -2171,10 +2258,10 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 			document.getElementById('displayMessageForQues').style.display = "none";
 		 	var element = document.getElementById('questionInfo');
 		 	var iframe = document.createElement('iframe');		
-		 	if(deliveryClientId == 2){
+		 	 if(deliveryClientId == 2){
 		 	 		iframe.name = "bmtFrame";
 					iframe.id = "bmtFrame";
-					iframe.src="placeholderBMTItem.html";
+					getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 					iframe.width = "100%";
 					iframe.height = "100%";
 		 	 }else{
@@ -2187,10 +2274,8 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 					iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
 					iframe.width = "900";
 					iframe.height = "530";
+					element.appendChild(iframe);
 		 	 }
-			/*iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";*/
-			
-			element.appendChild(iframe);
 			updateMaxPoints(maxPoints);		
 			var scoreAndPoints =  getScorePoints();
 			score = scoreAndPoints[0];
