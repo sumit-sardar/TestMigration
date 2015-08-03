@@ -261,7 +261,7 @@ public class ItemResponseDAO {
 					itemCode,
 					itemResponse,
 					itemResponseTime,
-					getNextItemSequenceResponseNumber(testRosterId, itemSetId));
+					getNextItemSequenceResponseNumber(testRosterId));
 			if (rowsUpdated != 1) {
 				throw new SQLException("[ItemResponseDAO] INSERT error! Expected updatedRows = 1, Actual updatedRows = "
 						+ rowsUpdated + "! [testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -304,7 +304,7 @@ public class ItemResponseDAO {
 		return itemResponseId;
 	}
 	
-	private Integer getNextItemSequenceResponseNumber(final Integer rosterId, final Integer itemSetId) throws SQLException {
+	private Integer getNextItemSequenceResponseNumber(final Integer rosterId) throws SQLException {
 		Integer seqResponseNumber;
 		try {
 			seqResponseNumber = template.queryForObject(SELECT_MAX_RESPONSE_SEQUENCE_NUMBER, Integer.class,
