@@ -90,7 +90,7 @@ public class TestItemResponseDAO {
 		// Set up the updates result:
 		when(mockTemplate.queryForObject(SELECT_ITEM_RESPONSE_ID, Integer.class)).thenReturn(itemResponseId);
 		when(mockTemplate.queryForObject(SELECT_ITEM_SET_ID, Integer.class, rosterId, subTestId)).thenReturn(itemSetId);
-		when(mockTemplate.queryForObject(SELECT_MAX_RESPONSE_SEQUENCE_NUMBER, Integer.class, rosterId, itemSetId))
+		when(mockTemplate.queryForObject(SELECT_MAX_RESPONSE_SEQUENCE_NUMBER, Integer.class, rosterId))
 				.thenReturn(null);
 		when(mockTemplate.update(
 				INSERT_ITEM_RESPONSE,
@@ -139,7 +139,7 @@ public class TestItemResponseDAO {
 		// Set up the updates result:
 		when(mockTemplate.queryForObject(SELECT_ITEM_RESPONSE_ID, Integer.class)).thenReturn(itemResponseId);
 		when(mockTemplate.queryForObject(SELECT_ITEM_SET_ID, Integer.class, rosterId, subTestId)).thenReturn(itemSetId);
-		when(mockTemplate.queryForObject(SELECT_MAX_RESPONSE_SEQUENCE_NUMBER, Integer.class, rosterId, itemSetId))
+		when(mockTemplate.queryForObject(SELECT_MAX_RESPONSE_SEQUENCE_NUMBER, Integer.class, rosterId))
 				.thenReturn(null);
 		when(mockTemplate.update(
 				INSERT_ITEM_RESPONSE,
