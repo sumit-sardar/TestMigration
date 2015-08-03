@@ -2242,7 +2242,6 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	}
  
  function showQuesPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus , parentProductId, deliveryClientId, testAdminId, extItemSetId){
-			console.log("showQuesPopup===");
 			var score= null;
 			var status = null;
 			selectedRowObjectScoring.id = id;
