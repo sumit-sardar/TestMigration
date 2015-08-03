@@ -47,7 +47,10 @@ public class AWSStorageUtil {
 		
 		URL s3AudioUrl = null;
 		String s3AudioUrlString = null;
-		try{
+		String tempKey = null;
+		try{			 
+			 tempKey = key.substring(key.indexOf(this.bucketName));
+			 key = tempKey.substring(this.bucketName.length()+1, tempKey.lastIndexOf('.'))+ ".mp3";
 			 System.out.println("Key-->"+key);
 			 System.out.println("Bucket Name-->"+this.bucketName);
 		     S3Object object = s3.getObject(this.bucketName, key);
