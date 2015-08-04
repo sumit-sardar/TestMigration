@@ -1,10 +1,8 @@
 package com.mhe.ctb.oas.BMTSync.spring.dao;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Random;
 
 import javax.sql.DataSource;
 
@@ -25,6 +23,9 @@ public class ItemResponseDAO {
 
 	// The JDBC template
 	private JdbcTemplate template;
+	
+	// The Constructed Response encoder
+	private ConstructedResponseEncoder encoder;
 
 	/** The query to get an item_set_id from a subTestId. */
 	private static final String SELECT_ITEM_SET_ID = "SELECT IST.ITEM_SET_ID "
@@ -96,15 +97,17 @@ public class ItemResponseDAO {
 			+ "AND ITEM_ID = ?";
 
 	public ItemResponseDAO(final DataSource ds) {
-		this(ds, null);
+		this(ds, null, null);
 	}
 
-	public ItemResponseDAO(final DataSource ds, final JdbcTemplate jdbcTemplate) {
+	public ItemResponseDAO(final DataSource ds, final JdbcTemplate jdbcTemplate, final ConstructedResponseEncoder crEncoder) {
 		this.dataSource = ds;
 		if (jdbcTemplate == null) {
 			template = new JdbcTemplate(ds);
+			encoder = new ConstructedResponseEncoder();
 		} else {
 			template = jdbcTemplate;
+			encoder = crEncoder;
 		}
 	}
 	
@@ -139,7 +142,7 @@ public class ItemResponseDAO {
 		try {
 			if ("CR".equals(itemResponse.getItemType())) {
 				int rowsUpdated = template.update(UPDATE_CONSTRUCTED_RESPONSE,
-						formatConstructedResponse(itemResponse.getItemResponse()), testRosterId, itemSetId, itemResponse.getItemCode());
+						encoder.formatConstructedResponse(itemResponse.getItemResponse()), testRosterId, itemSetId, itemResponse.getItemCode());
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error updating constructed response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -172,6 +175,11 @@ public class ItemResponseDAO {
 					+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemResponse.getItemCode() + "]", sqle);
 			throw new SQLException("[ItemResponseDAO] Error trying to find item_set_id: " + sqle.getMessage()
 					+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemResponse.getItemCode() + "]", sqle);
+		} catch (final UnsupportedEncodingException uue) {
+			LOGGER.error("[ConstructedResponseEncoder] Error trying to URLEncode constructed response: " + uue.getMessage()
+					+ "[response=" + itemResponse.getItemResponse() + "]", uue);
+			throw new SQLException("[ItemResponseDAO] Error trying to URLEncode constructed response: " + uue.getMessage()
+					+ "[response=" + itemResponse.getItemResponse() + "]", uue);
 		}
 	}
 
@@ -182,7 +190,8 @@ public class ItemResponseDAO {
 		try {
 			if ("CR".equals(itemResponse.getItemType())) {
 				int rowsUpdated = template.update(INSERT_CONSTRUCTED_RESPONSE, 
-						testRosterId, itemSetId, itemResponse.getItemCode(), formatConstructedResponse(itemResponse.getItemResponse()));
+						testRosterId, itemSetId, itemResponse.getItemCode(),
+						encoder.formatConstructedResponse(itemResponse.getItemResponse()));
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error inserting constructed response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -215,6 +224,11 @@ public class ItemResponseDAO {
 					+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemResponse.getItemCode() + "]", sqle);
 			throw new SQLException("[ItemResponseDAO] Error trying to find item_set_id: " + sqle.getMessage()
 					+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemResponse.getItemCode() + "]", sqle);
+		} catch (final UnsupportedEncodingException uue) {
+			LOGGER.error("[ConstructedResponseEncoder] Error trying to URLEncode constructed response: " + uue.getMessage()
+					+ "[response=" + itemResponse.getItemResponse() + "]", uue);
+			throw new SQLException("[ItemResponseDAO] Error trying to URLEncode constructed response: " + uue.getMessage()
+					+ "[response=" + itemResponse.getItemResponse() + "]", uue);
 		}
 	}
 
@@ -319,42 +333,7 @@ public class ItemResponseDAO {
 		
 		return seqResponseNumber + 1;
 	}
-	
-	/**
-	 * Per Sumit Sardar, OAS requires constructed responses to be in the following format:
-	 * <answers><answer id="widget6486081002"><![CDATA[dummy response for single line CR.]]></answer></answers>
-	 * 
-	 * The whole thing must then be URL-Encoded.
-	 * 
-	 * This is the function that does that formatting.
-	 * @param response
-	 * @return
-	 */
-		private String formatConstructedResponse(final String response) throws SQLException {
-			final String xmlStart = "<answers><answer id=\"widget";
-			final String xmlMiddle = "\"><![CDATA[";
-			final String xmlEnd = "]]></answer></answers>";
-			final Random rng = new Random();
-			
-			final StringBuilder builder = new StringBuilder();
-			builder.append(xmlStart);
-			builder.append(String.format("%05d%05d", rng.nextInt(99999), rng.nextInt(99999)));
-			builder.append(xmlMiddle);
-			builder.append(response);
-			builder.append(xmlEnd);
-			LOGGER.debug("[ItemResponseDAO] Encoding string for storage: " + builder.toString());
-			try {
-				return URLEncoder.encode(builder.toString(), "UTF-8");
-			} catch (final UnsupportedEncodingException uue) {
-				LOGGER.error("[ItemResponseDAO] Error trying to URLEncode constructed response: " + uue.getMessage()
-						+ "[response=" + builder.toString() + "]", uue);
-				throw new SQLException("[ItemResponseDAO] Error trying to URLEncode constructed response: " + uue.getMessage()
-						+ "[response=" + builder.toString() + "]", uue);
-			}
-		}
 }
-
-
 
 /*
 ITEM_RESPONSE_ID	NUMBER(38,0)           itemResponseId

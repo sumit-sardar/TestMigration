@@ -33,6 +33,8 @@ public class TestItemResponseDAO {
 	
 	private JdbcTemplate mockTemplate;
 	
+	private ConstructedResponseEncoder mockEncoder;
+	
 	/** The query to get the next item response id. */
 	private static final String SELECT_ITEM_RESPONSE_ID = "SELECT SEQ_ITEM_RESPONSE_ID.NEXTVAL FROM DUAL";
 	
@@ -68,8 +70,9 @@ public class TestItemResponseDAO {
 	public void setUp() {
 		mockTemplate = mock(JdbcTemplate.class);
 		DataSource mockDs = mock(DataSource.class);
+		mockEncoder = mock(ConstructedResponseEncoder.class);
 
-		itemResponseDao = new ItemResponseDAO(mockDs, mockTemplate);
+		itemResponseDao = new ItemResponseDAO(mockDs, mockTemplate, mockEncoder);
 	}
 	
 	@Test
