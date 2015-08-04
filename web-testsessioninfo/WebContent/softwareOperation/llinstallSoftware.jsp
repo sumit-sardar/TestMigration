@@ -94,7 +94,7 @@
         <td class="transparent-top">
 			<%-- Change for story OAS-3748--%>
             <h2><b>(1) </b><netui:content value="${bundle.web['installClient.java.title.Las']}"/></h2>
-            <p style="margin-left: 2%;"><netui:content value="${bundle.web['installClient.java.message.Las']}"/></p>
+            <p style="margin-left: 25px;"><netui:content value="${bundle.web['installClient.java.message.Las']}"/></p>
         </td>
     </tr>
     <tr class="transparent">
@@ -128,7 +128,7 @@
         <td class="transparent-top">
 
             <h2><b>(2) </b><netui:content value="${bundle.web['installClient.addtionalSoftware.title.Las']}"/></h2>
-            <p style="margin-left: 2%;"><netui:content value="${bundle.web['installClient.addtionalSoftware.message.Las']}"/></p>
+            <p style="margin-left: 25px;"><netui:content value="${bundle.web['installClient.addtionalSoftware.message.Las']}"/></p>
         </td>
     </tr>
     <tr class="transparent">
@@ -166,7 +166,7 @@
 			<%-- Change for story OAS-3748--%>
             <h2><b>(3) </b><netui:content value="${bundle.web['installClient.Flash.checkversion.title.Las']}"/></h2>
 
-            <p style="margin-left: 2%;"><netui:content value="${bundle.web['installClient.Flash.checkversion.message.Las']}"/></p>
+            <p style="margin-left: 25px;"><netui:content value="${bundle.web['installClient.Flash.checkversion.message.Las']}"/></p>
 
         </td>
 
@@ -186,7 +186,7 @@
 
                 <tr id="installFlashPlayer" class="transparent">
 
-                   <td class="transparent-top" style="margin-left: 1%;">
+                   <td class="transparent-top" style="margin-left: 20px;">
 
                    		<netui:content value=" - &nbsp;&nbsp;&nbsp;Go to this Adobe website to download the Flash Player archive file for free:"/>
 
@@ -196,7 +196,7 @@
 
                         <br>  -->
 
-                        <a href="#" onclick="newWindow('<%=FLASH_PL %>');" style="margin-left: 2%;"><netui:content value="Click here to download Flash Player Archive"/></a>
+                        <a href="#" onclick="newWindow('<%=FLASH_PL %>');" style="margin-left: 25px;"><netui:content value="Click here to download Flash Player Archive"/></a>
 
                         <br><br>                       
 						
@@ -208,13 +208,13 @@
 							<ul style="list-style-type: circle; margin-left: 50px;">
   								<li><b>For Windows (both files)</b>
   									<ul style="list-style-type: square; margin-left: 40px;">
-  										<li>flashplayerXX_XXX_XXX_win.exe</li>
-  										<li>flashplayerXX_XXX_XXX_winax.exe</li>
+  										<li><netui:content value="${bundle.web['flash.player.win.Las']}"/></li>
+  										<li><netui:content value="${bundle.web['flash.player.winax.Las']}"/></li>
   									</ul>
   								</li>
   								<li><b>For MAC</b>
 	  								<ul style="list-style-type: square; margin-left: 40px;">
-	  									<li>flashplayerXX_XXX_XXX_mac.dmg</li>
+	  									<li><netui:content value="${bundle.web['flash.player.mac.Las']}"/></li>
 	  								</ul>
   								</li>
  								 
@@ -279,7 +279,7 @@
         <td class="transparent-top"></td>    
         <td class="transparent-top">
             <h2><b>(4) </b><netui:content value="${bundle.web['installClient.installClient.title.Las']}"/></h2>
-            <p style="margin-left: 2%;"><netui:content value="${bundle.web['installClient.title.message.Las']}"/></p>
+            <p style="margin-left: 25px;"><netui:content value="${bundle.web['installClient.title.message.Las']}"/></p>
         </td>
     </tr>
     	<%} %>	
