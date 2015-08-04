@@ -54,7 +54,7 @@ public class ConstructedResponseEncoder {
 		builder.append(XML_END);
 		LOGGER.debug("[ConstructedResponseEncoder] Encoding string for storage: " + builder.toString());
 		final String builtResponse = URLEncoder.encode(builder.toString(), "UTF-8");
-		final String encodedResponse = builtResponse.replace("+", "%20");
+		final String encodedResponse = builtResponse.replaceAll("\\+", "%20");
 		
 		return encodedResponse.toString();
 	}
