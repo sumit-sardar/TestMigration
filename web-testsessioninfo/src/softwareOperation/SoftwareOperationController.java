@@ -195,9 +195,14 @@ public class SoftwareOperationController extends PageFlowController {
     private void populateThirdPartySoftwareLinks() {
 
 		// Default Links for 3rd party software
-		String jre_url = "http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jre-7u45-oth-JPR";
-		String adobe_air = "http://helpx.adobe.com/air/kb/archived-air-sdk-version.html";
-		String flash_pl = "http://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html#Flash%20Player%20archives";
+		//String jre_url = "http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jre-7u45-oth-JPR";
+    	//String adobe_air = "http://helpx.adobe.com/air/kb/archived-air-sdk-version.html";
+    	//String flash_pl = "http://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html#Flash%20Player%20archives";
+    	
+    	// Default URL updated for story OAS-3748
+    	String jre_url = "https://java.com/en/download/";
+    	String adobe_air = "https://helpx.adobe.com/air/kb/archived-air-sdk-version.html#main_Archived_Adobe_AIR_downloads";
+    	String flash_pl = "https://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html#Flash%20Player%20archives";
 		String flash_pgpc = "https://www.adobe.com/support/flashplayer/downloads.html";
 		String flash_pgmc = "https://www.adobe.com/support/flashplayer/";
 		

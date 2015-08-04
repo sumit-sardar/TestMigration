@@ -41,7 +41,8 @@
 <table width="97%" style="margin:15px auto;" border="0"> 
 	<tr>
 		<td style="padding-left:5px;" colspan="2">
-    		<h1><lb:label key="services.installSoftware.title" /></h1>
+		<%-- Change for story OAS-3748--%>
+    		<h1><lb:label key="services.installSoftware.title.Las" /></h1>
 		</td>
 	</tr>
 	<tr>
@@ -67,17 +68,18 @@
 	</tr>
 	<tr> 
 		<td style="padding-left:6px;" colspan="2">
-			<p style="color:#000"><netui:content value="${bundle.web['installClient.message']}"/></p>
+		<%-- Change for story OAS-3748--%>
+			<p style="color:#000"><netui:content value="${bundle.web['installClient.message.Las']}"/></p>
 			<br/>
-			<p style="color:#000"><netui:content value="${bundle.web['installClient.viewSystemRequirements.message']}"/></p>
-			<p align="right" style="padding-top:5px;">
-               <% if (isLasLinkCustomer.booleanValue()) { %>
+			<p style="color:#000"><netui:content value="${bundle.web['installClient.viewSystemRequirements.message.Las']}"/></p>
+			<!-- <p align="right" style="padding-top:5px;">
+               <% //if (isLasLinkCustomer.booleanValue()) { %>
 			    	<a href="#" onClick="newWindow('/help/pdfs/min_sys_req_client_pc_LAS.pdf');return false;"><netui:content value="${bundle.web['installClient.viewSystemRequirements']}"/></a>
-               <% } else { %>
+               <% //} else { %>
 			    	<a href="#" onClick="newWindow('/help/pdfs/min_sys_req_client_pc.pdf');return false;"><netui:content value="${bundle.web['installClient.viewSystemRequirements']}"/></a>
-               <% } %>
+               <% //} %>
 			
-			</p> 
+			</p>  -->
 		</td>
 	</tr>
 	<tr class="transparent">
@@ -87,22 +89,24 @@
 
    	<%-- Check Java Version --%>
     <tr class="transparent">
-        <td class="transparent-top" width="20"><font size="6" color="#999999">1</font></td>    
+    <%-- Change for story OAS-3748--%>
+        <td class="transparent-top"></td>    
         <td class="transparent-top">
-
-            <h2><netui:content value="${bundle.web['installClient.java.title.Las']}"/></h2>
-            <p><netui:content value="${bundle.web['installClient.java.message.Las']}"/></p>
+			<%-- Change for story OAS-3748--%>
+            <h2><b>(1) </b><netui:content value="${bundle.web['installClient.java.title.Las']}"/></h2>
+            <p style="margin-left: 2%;"><netui:content value="${bundle.web['installClient.java.message.Las']}"/></p>
         </td>
     </tr>
     <tr class="transparent">
         <td class="transparent-top"></td>
-        <td class="transparent-top">
+        <%-- Change for story OAS-3748--%>
+        <td class="transparent-top" style="padding-left: 2%;">
             <table class="transparent">
                 <tr id="installJavaRow" class="transparent">
                    <td class="transparent-top">
-                        <netui:content value="<b>For PC and MAC</b>: : Go to this Java website and download the supported Java SE Runtime Environment for free."/>
+                        <netui:content value="<b>For Windows and MAC :</b> Go to this Java website and download and install the latest Java SE Runtime for free: "/>
                         <br>
-                        <a href="#" onclick="newWindow('<%=JRE_URL%>');"><netui:content value="<%=JRE_URL%>"/></a>
+                        <a href="#" onclick="newWindow('<%=JRE_URL%>');"><netui:content value="Click here to download JAVA (JRE)"/></a>
                         <br>
                     </td>
                 </tr>            
@@ -119,24 +123,25 @@
 
    	<%-- Additional Software --%>
     <tr class="transparent">
-        <td class="transparent-top" width="20"><font size="6" color="#999999">2</font></td>    
+    	<%-- Change for story OAS-3748--%>
+        <td class="transparent-top"></td>    
         <td class="transparent-top">
 
-            <h2><netui:content value="${bundle.web['installClient.addtionalSoftware.title.Las']}"/></h2>
-            <p><netui:content value="${bundle.web['installClient.addtionalSoftware.message.Las']}"/></p>
+            <h2><b>(2) </b><netui:content value="${bundle.web['installClient.addtionalSoftware.title.Las']}"/></h2>
+            <p style="margin-left: 2%;"><netui:content value="${bundle.web['installClient.addtionalSoftware.message.Las']}"/></p>
         </td>
     </tr>
     <tr class="transparent">
         <td class="transparent-top"></td>
         
-        
-        <td class="transparent-top">
+        <%-- Change for story OAS-3748--%>
+        <td class="transparent-top" style="padding-left: 2%;">
             <table class="transparent">
                 <tr id="installJavaRow" class="transparent">
                     <td class="transparent-top">
-                        <netui:content value="<b>For PC and MAC</b>: Go to this Adobe website and download the supported Adobe AIR for free."/>
+                        <netui:content value="<b>For Windows and MAC :</b> Go to this Adobe website and download the supported Adobe AIR Runtime for free:"/>
                         <br>
-                        <a href="#" onclick="newWindow('<%=ADOBE_AIR %>');"><netui:content value="<%=ADOBE_AIR %>"/></a>
+                        <a href="#" onclick="newWindow('<%=ADOBE_AIR %>');"><netui:content value="Click here to download Adobe AIR Runtime"/></a>
                         <br>
                     </td> 
                 </tr>
@@ -154,14 +159,14 @@
 		<%-- Check Flash and Flash Plug-in Versions --%>
 
     <tr class="transparent">
-
-        <td class="transparent-top" width="20"><font size="6" color="#999999">3</font></td>    
+		<%-- Change for story OAS-3748--%>
+        <td class="transparent-top"></td>    
 
         <td class="transparent-top">
+			<%-- Change for story OAS-3748--%>
+            <h2><b>(3) </b><netui:content value="${bundle.web['installClient.Flash.checkversion.title.Las']}"/></h2>
 
-            <h2><netui:content value="${bundle.web['installClient.Flash.checkversion.title']}"/></h2>
-
-            <p><netui:content value="${bundle.web['installClient.Flash.checkversion.message']}"/></p>
+            <p style="margin-left: 2%;"><netui:content value="${bundle.web['installClient.Flash.checkversion.message.Las']}"/></p>
 
         </td>
 
@@ -176,40 +181,49 @@
                
 
         <td class="transparent-top">
-
-            <table class="transparent">
+			<%-- Change for story OAS-3748--%>
+            <table class="transparent" style="width : 100%;">
 
                 <tr id="installFlashPlayer" class="transparent">
 
-                   <td class="transparent-top">
+                   <td class="transparent-top" style="margin-left: 1%;">
 
-                   		<netui:content value="<b>For PC and MAC </b> - Go to this Adobe website and download the supported Flash player for free"/>
+                   		<netui:content value=" - &nbsp;&nbsp;&nbsp;Go to this Adobe website to download the Flash Player archive file for free:"/>
 
                         <br>
-
+						<!-- 
                         <netui:content value="<b>Flash Player: </b>"/>
 
-                        <br> 
+                        <br>  -->
 
-                        <a href="#" onclick="newWindow('<%=FLASH_PL %>');"><netui:content value="<%=FLASH_PL %>"/></a>
+                        <a href="#" onclick="newWindow('<%=FLASH_PL %>');" style="margin-left: 2%;"><netui:content value="Click here to download Flash Player Archive"/></a>
 
                         <br><br>                       
 						
-						<netui:content value="<b>For PC </b> - Go to this Adobe Website and download the supported “Flash Player Plugin content debugger (for Netscape-compatible browsers)” for free"/>
+						<netui:content value=" - &nbsp;&nbsp;&nbsp;Save the archive file on the hard drive"/>
 						
-						<br>
+						<br><br>
 							
-                         <netui:content value="<b>Flash _Player Plug-in:</b>"/>
-
-                        <br>
-
-                        <a href="#" onclick="newWindow('<%=FLASH_PGPC %>');"><netui:content value="<%=FLASH_PGPC %>"/></a>
-                      
-                        
+                         <netui:content value=" - &nbsp;&nbsp;&nbsp;Open the archive and extract the supported Flash version from the archive to your hard drive, where XXX = version #."/>
+							<ul style="list-style-type: circle; margin-left: 50px;">
+  								<li><b>For Windows (both files)</b>
+  									<ul style="list-style-type: square; margin-left: 40px;">
+  										<li>flashplayerXX_XXX_XXX_win.exe</li>
+  										<li>flashplayerXX_XXX_XXX_winax.exe</li>
+  									</ul>
+  								</li>
+  								<li><b>For MAC</b>
+	  								<ul style="list-style-type: square; margin-left: 40px;">
+	  									<li>flashplayerXX_XXX_XXX_mac.dmg</li>
+	  								</ul>
+  								</li>
+ 								 
+							</ul>
+                                             
                         <br><br>                       
 						
-						<netui:content value="<b>For MAC </b> -  Go to this Adobe Website and download the supported “Macintosh Flash Player Plugin content debugger” for free"/>
-						
+						<netui:content value=" - &nbsp;&nbsp;&nbsp;Install the flash player plug-in(s) appropriate for your workstation’s operating system"/>
+						<!-- 
 						<br>
 							
                          <netui:content value="<b>Flash Player Plug-in:</b>"/>
@@ -219,7 +233,7 @@
                         <a href="#" onclick="newWindow('<%=FLASH_PGMC %> ');"><netui:content value="<%=FLASH_PGMC %>"/></a>
 
                         <br>
-
+						 -->
                     </td>
 
                 </tr>
@@ -261,10 +275,11 @@
 	
    	<%-- Install Online Assessment Software --%>
     <tr class="transparent">
-        <td class="transparent-top" width="20"><font size="6" color="#999999">4</font></td>    
+    	<%-- Change for story OAS-3748--%>
+        <td class="transparent-top"></td>    
         <td class="transparent-top">
-            <h2><netui:content value="${bundle.web['installClient.installClient.title']}"/></h2>
-            <p><netui:content value="${bundle.web['installClient.title.message.Las']}"/></p>
+            <h2><b>(4) </b><netui:content value="${bundle.web['installClient.installClient.title.Las']}"/></h2>
+            <p style="margin-left: 2%;"><netui:content value="${bundle.web['installClient.title.message.Las']}"/></p>
         </td>
     </tr>
     	<%} %>	
@@ -302,7 +317,8 @@
                    </td>
                    <td class="transparent-top" width="40%">
                         <b><netui:content value="${bundle.web['installClient.windows.clientName']}"/></b><br>
-                        <i><netui:content value="${bundle.web['installClient.windows.OS.Las']}"/></i><br>
+                        <%-- Change for story OAS-3748--%>
+                        <i><netui:content value="${bundle.web['installClient.windows.OS.Las']}"/></i><br><br>
                         <a href="#" onclick="<%= href_PC %>" class="rounded {transparent} button" tabindex="1" >
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText']}"/>
 	                	</a>                	                                    
@@ -350,7 +366,8 @@
 		            </td>
 		            <td class="transparent-top" width="40%">
 		                <b><netui:content value="${bundle.web['installClient.mac.clientName']}"/></b><br>
-		                <i><netui:content value="${bundle.web['installClient.mac.OS.Las']}"/></i><br>
+		                <%-- Change for story OAS-3748--%>
+		                <i><netui:content value="${bundle.web['installClient.mac.OS.Las']}"/></i><br><br>
                         <a href="#" onclick="<%= href_MAC %>" class="rounded {transparent} button" tabindex="2" >
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText']}"/>
 	                	</a>                	                                    
@@ -395,7 +412,8 @@
 		            </td>
 		            <td class="transparent-top" width="40%">
 		                <b><netui:content value="${bundle.web['installClient.linux.clientName']}"/></b><br>
-		                <i><netui:content value="${bundle.web['installClient.linux.OS']}"/></i><br>
+		                <%-- Change for story OAS-3748--%>
+		                <i><netui:content value="${bundle.web['installClient.linux.OS']}"/></i><br><br>
 <div id="allowDownload" style="display:none">		            
                        <a href="#" onclick="<%= href_LINUX %>" class="rounded {transparent} button" tabindex="3" >
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText']}"/>
