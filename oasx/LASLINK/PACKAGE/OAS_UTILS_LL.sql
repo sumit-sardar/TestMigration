@@ -61,7 +61,12 @@ CREATE OR REPLACE PACKAGE BODY OAS_UTILS IS
                                    ITEM_ID
                               FROM ITEM_RESPONSE
                              WHERE TEST_ROSTER_ID = P_ROSTER_ID
-                             GROUP BY ITEM_SET_ID, TEST_ROSTER_ID, ITEM_ID) DERIVEDRS
+                             GROUP BY ITEM_SET_ID, TEST_ROSTER_ID, ITEM_ID) DERIVEDRS,
+                           (SELECT P.DELIVERY_CLIENT_ID
+                              FROM PRODUCT P, TEST_ADMIN TA, TEST_ROSTER TR
+                             WHERE TA.TEST_ADMIN_ID = TR.TEST_ADMIN_ID
+                               AND P.PRODUCT_ID = TA.PRODUCT_ID
+                               AND TR.TEST_ROSTER_ID = P_ROSTER_ID) PROD
                      WHERE SISS.TEST_ROSTER_ID = P_ROSTER_ID
                        AND ITA.ANCESTOR_ITEM_SET_ID = V_TC_ITEM_SET_ID
                        AND ITA.ITEM_SET_TYPE = 'TD'
@@ -77,14 +82,30 @@ CREATE OR REPLACE PACKAGE BODY OAS_UTILS IS
                            (IT.ANSWER_AREA IS NULL OR
                            UPPER(IT.ANSWER_AREA) = UPPER('AudioItem'))))
                        AND DP.ITEM_ID = IT.ITEM_ID
-                       AND (IRS.CONSTRUCTED_RESPONSE IS NOT NULL AND
-                           (DECODE(IT.ANSWER_AREA,
-                                    NULL,
-                                    DECODE(INSTR(CONSTRUCTED_RESPONSE, 'CDATA'),
-                                           0,
-                                           0,
-                                           1),
-                                    1)) = 1)
+                       AND (DECODE(PROD.DELIVERY_CLIENT_ID,
+                                   2,
+                                   DECODE(IT.ANSWER_AREA,
+                                          NULL,
+                                          DECODE(DBMS_LOB.GETLENGTH(IRS.CONSTRUCTED_RESPONSE),
+                                                 NULL,
+                                                 0,
+                                                 DECODE(INSTR(IRS.CONSTRUCTED_RESPONSE,
+                                                              'CDATA'),
+                                                        0,
+                                                        0,
+                                                        1)),
+                                          DECODE(IRS.AUDIO_URL, NULL, 0, 1)),
+                                   DECODE(DBMS_LOB.GETLENGTH(IRS.CONSTRUCTED_RESPONSE),
+                                          NULL,
+                                          0,
+                                          DECODE(IT.ANSWER_AREA,
+                                                 NULL,
+                                                 DECODE(INSTR(IRS.CONSTRUCTED_RESPONSE,
+                                                              'CDATA'),
+                                                        0,
+                                                        0,
+                                                        1),
+                                                 1)))) = 1
                        AND DERIVEDRS.ITEM_SET_ID = ITA.ITEM_SET_ID
                        AND DERIVEDRS.TEST_ROSTER_ID = SISS.TEST_ROSTER_ID
                        AND DERIVEDRS.ITEM_ID = IT.ITEM_ID
@@ -127,7 +148,12 @@ CREATE OR REPLACE PACKAGE BODY OAS_UTILS IS
                                    ITEM_ID
                               FROM ITEM_RESPONSE
                              WHERE TEST_ROSTER_ID = P_ROSTER_ID
-                             GROUP BY ITEM_SET_ID, TEST_ROSTER_ID, ITEM_ID) DERIVEDRS
+                             GROUP BY ITEM_SET_ID, TEST_ROSTER_ID, ITEM_ID) DERIVEDRS,
+                           (SELECT P.DELIVERY_CLIENT_ID
+                              FROM PRODUCT P, TEST_ADMIN TA, TEST_ROSTER TR
+                             WHERE TA.TEST_ADMIN_ID = TR.TEST_ADMIN_ID
+                               AND P.PRODUCT_ID = TA.PRODUCT_ID
+                               AND TR.TEST_ROSTER_ID = P_ROSTER_ID) PROD
                      WHERE SISS.TEST_ROSTER_ID = P_ROSTER_ID
                        AND SISS.TEST_ROSTER_ID = IRC.TEST_ROSTER_ID
                        AND IRC.ITEM_SET_ID = ISET.ITEM_SET_ID
@@ -150,17 +176,30 @@ CREATE OR REPLACE PACKAGE BODY OAS_UTILS IS
                        AND ((UPPER(IT.ITEM_TYPE) = 'CR' AND
                            (IT.ANSWER_AREA IS NULL OR
                            UPPER(IT.ANSWER_AREA) = UPPER('AudioItem'))))
-                          
-                       AND (IRC.CONSTRUCTED_RESPONSE IS NOT NULL AND
-                           (DECODE(IT.ANSWER_AREA,
-                                    NULL,
-                                    DECODE(INSTR(CONSTRUCTED_RESPONSE, 'CDATA'),
-                                           0,
-                                           0,
-                                           1),
-                                    1)) = 1)
-                    
-                    ) DERIVEDRESPOINT,
+                       AND (DECODE(PROD.DELIVERY_CLIENT_ID,
+                                   2,
+                                   DECODE(IT.ANSWER_AREA,
+                                          NULL,
+                                          DECODE(DBMS_LOB.GETLENGTH(IRC.CONSTRUCTED_RESPONSE),
+                                                 NULL,
+                                                 0,
+                                                 DECODE(INSTR(IRC.CONSTRUCTED_RESPONSE,
+                                                              'CDATA'),
+                                                        0,
+                                                        0,
+                                                        1)),
+                                          DECODE(IRC.AUDIO_URL, NULL, 0, 1)),
+                                   DECODE(DBMS_LOB.GETLENGTH(IRC.CONSTRUCTED_RESPONSE),
+                                          NULL,
+                                          0,
+                                          DECODE(IT.ANSWER_AREA,
+                                                 NULL,
+                                                 DECODE(INSTR(IRC.CONSTRUCTED_RESPONSE,
+                                                              'CDATA'),
+                                                        0,
+                                                        0,
+                                                        1),
+                                                 1)))) = 1) DERIVEDRESPOINT,
                    ITEM_RESPONSE_POINTS RESPOINT
              WHERE DERIVEDRESPOINT.DATAPOINT_ID = RESPOINT.DATAPOINT_ID(+)
                AND DERIVEDRESPOINT.ITEM_RESPONSE_ID =
@@ -172,51 +211,14 @@ CREATE OR REPLACE PACKAGE BODY OAS_UTILS IS
     RETURN V_SCORING_COMP_STAT;
   END;
 
-  /*FUNCTION GET_STDS_SCORING_STATUS(P_ROSTER_ID TEST_ROSTER.TEST_ROSTER_ID%TYPE)
-    return varchar2 is
-    V_SCORING_COMP_STAT varchar2(3) := 'IN';
-    V_ITEMSET_NAMES     varchar2(1000) := ''; 
-    cursor CUR_GET_TD_FROM_SIS(CP_ROSTER_ID TEST_ROSTER.TEST_ROSTER_ID%type) is
-      select distinct  SIS.ITEM_SET_ID ITEM_SET_ID,INITCAP(ISET.ITEM_SET_NAME) ITEM_SET_NAME
-        from STUDENT_ITEM_SET_STATUS SIS, ITEM_SET ISET
-       where SIS.COMPLETION_STATUS IN ('CO', 'IS', 'IC')
-         AND SIS.VALIDATION_STATUS = 'VA'
-         AND SIS.ABSENT <> 'Y'
-         AND SIS.EXEMPTIONS <> 'Y'
-         AND SIS.TEST_ROSTER_ID = CP_ROSTER_ID
-         AND SIS.ITEM_SET_ID = ISET.ITEM_SET_ID;
   
-  BEGIN
-  
-    FOR R1 IN CUR_GET_TD_FROM_SIS(P_ROSTER_ID)
-    LOOP
-      V_SCORING_COMP_STAT := GET_STD_CAREA_SCORING_STATUS(P_ROSTER_ID,
-                                                          R1.ITEM_SET_ID);
-      IF (V_SCORING_COMP_STAT = 'CO')
-      THEN
-        --/V_ITEMSET_NAMES := CONCAT(V_ITEMSET_NAMES, R1.ITEM_SET_NAME);
-        --V_ITEMSET_NAMES := CONCAT(V_ITEMSET_NAMES, ',');
-        IF (LENGTH(V_ITEMSET_NAMES) <> 0)
-        THEN
-          V_ITEMSET_NAMES := V_ITEMSET_NAMES || ', ' || R1.ITEM_SET_NAME;
-        ELSE
-          V_ITEMSET_NAMES := R1.ITEM_SET_NAME;
-        END IF;
-      END IF;
-    END LOOP;
-  
-    return V_ITEMSET_NAMES;
-    --RETURN ' ';
-  end;*/
   FUNCTION GET_STDS_SCORING_STATUS(P_ROSTER_ID TEST_ROSTER.TEST_ROSTER_ID%TYPE)
     RETURN VARCHAR2 IS
   
-    V_ITEMSET_NAMES varchar2(1000) := ''; 
+    V_ITEMSET_NAMES VARCHAR2(1000) := '';
   
   BEGIN
-    SELECT LISTAGG(INITCAP(ISET.ITEM_SET_NAME), ', ') WITHIN
-     GROUP(
-     ORDER BY ISET.ITEM_SET_NAME)
+    SELECT LISTAGG(INITCAP(ISET.ITEM_SET_NAME), ', ') WITHIN GROUP(ORDER BY ISET.ITEM_SET_NAME)
       INTO V_ITEMSET_NAMES
       FROM STUDENT_ITEM_SET_STATUS SIS, ITEM_SET ISET
      WHERE SIS.COMPLETION_STATUS IN ('CO', 'IS', 'IC')
@@ -244,7 +246,12 @@ CREATE OR REPLACE PACKAGE BODY OAS_UTILS IS
                                    ITEM_ID
                               FROM ITEM_RESPONSE
                              WHERE TEST_ROSTER_ID = P_ROSTER_ID
-                             GROUP BY ITEM_SET_ID, TEST_ROSTER_ID, ITEM_ID) DERIVEDRS
+                             GROUP BY ITEM_SET_ID, TEST_ROSTER_ID, ITEM_ID) DERIVEDRS,
+                           (SELECT P.DELIVERY_CLIENT_ID
+                              FROM PRODUCT P, TEST_ADMIN TA, TEST_ROSTER TR
+                             WHERE TA.TEST_ADMIN_ID = TR.TEST_ADMIN_ID
+                               AND P.PRODUCT_ID = TA.PRODUCT_ID
+                               AND TR.TEST_ROSTER_ID = P_ROSTER_ID) PROD
                      WHERE SISS.TEST_ROSTER_ID = P_ROSTER_ID
                        AND SISS.TEST_ROSTER_ID = IRC.TEST_ROSTER_ID
                        AND IRC.ITEM_SET_ID = ISET.ITEM_SET_ID
@@ -266,14 +273,30 @@ CREATE OR REPLACE PACKAGE BODY OAS_UTILS IS
                        AND ((UPPER(IT.ITEM_TYPE) = 'CR' AND
                            (IT.ANSWER_AREA IS NULL OR
                            UPPER(IT.ANSWER_AREA) = UPPER('AudioItem'))))
-                       AND (IRC.CONSTRUCTED_RESPONSE IS NOT NULL AND
-                           (DECODE(IT.ANSWER_AREA,
-                                    NULL,
-                                    DECODE(INSTR(CONSTRUCTED_RESPONSE, 'CDATA'),
-                                           0,
-                                           0,
-                                           1),
-                                    1)) = 1)) DERIVEDRESPOINT,
+                       AND (DECODE(PROD.DELIVERY_CLIENT_ID,
+                                   2,
+                                   DECODE(IT.ANSWER_AREA,
+                                          NULL,
+                                          DECODE(DBMS_LOB.GETLENGTH(IRC.CONSTRUCTED_RESPONSE),
+                                                 NULL,
+                                                 0,
+                                                 DECODE(INSTR(IRC.CONSTRUCTED_RESPONSE,
+                                                              'CDATA'),
+                                                        0,
+                                                        0,
+                                                        1)),
+                                          DECODE(IRC.AUDIO_URL, NULL, 0, 1)),
+                                   DECODE(DBMS_LOB.GETLENGTH(IRC.CONSTRUCTED_RESPONSE),
+                                          NULL,
+                                          0,
+                                          DECODE(IT.ANSWER_AREA,
+                                                 NULL,
+                                                 DECODE(INSTR(IRC.CONSTRUCTED_RESPONSE,
+                                                              'CDATA'),
+                                                        0,
+                                                        0,
+                                                        1),
+                                                 1)))) = 1) DERIVEDRESPOINT,
                    ITEM_RESPONSE_POINTS RESPOINT
              WHERE DERIVEDRESPOINT.DATAPOINT_ID = RESPOINT.DATAPOINT_ID(+)
                AND DERIVEDRESPOINT.ITEM_RESPONSE_ID =
@@ -284,7 +307,7 @@ CREATE OR REPLACE PACKAGE BODY OAS_UTILS IS
             HAVING COUNT(RESPOINT.DATAPOINT_ID) = 0)
      GROUP BY SIS.TEST_ROSTER_ID;
   
-    return V_ITEMSET_NAMES;
+    RETURN V_ITEMSET_NAMES;
   END;
 
   FUNCTION GET_STDS_ACADEMIC_SCORE(P_ROSTER_ID TEST_ROSTER.TEST_ROSTER_ID%TYPE)
