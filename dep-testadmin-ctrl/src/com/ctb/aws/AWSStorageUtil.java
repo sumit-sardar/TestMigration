@@ -1,5 +1,6 @@
 package com.ctb.aws;
 
+import java.io.IOException;
 import java.net.URL;
 
 
@@ -20,14 +21,12 @@ public class AWSStorageUtil {
 	private static String accessKey = "";
 	private static String secretKey = "";
 	/*
-	Method AWSStorageUtil creates the connection object to connect with amazon s3 using accessKey and secretKey
-	*/
+	 * Constructor AWSStorageUtil creates the connection object to connect with
+	 * amazon s3 using accessKey and secretKey
+	 */
 	private AWSStorageUtil() {
 		try {
 			AWSResourceUtil awsResourceUtil = new AWSResourceUtil();
-			System.out.println("accessKey-->"+awsResourceUtil.getAWSDetail("oas.test.accessKey"));
-			System.out.println("secretKey-->"+awsResourceUtil.getAWSDetail("oas.test.secretKey"));
-			System.out.println("bucketName-->"+awsResourceUtil.getAWSDetail("oas.test.bucketName"));
 			this.accessKey = awsResourceUtil.getAWSDetail("oas.test.accessKey");
 			this.secretKey = awsResourceUtil.getAWSDetail("oas.test.secretKey");
 			this.credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
@@ -41,47 +40,51 @@ public class AWSStorageUtil {
 	public static AWSStorageUtil getInstance() {
 		return awsstorageUtil;
 	}
-	
-	public String HttpsUrlfromS3(String key){
-		
-		
+
+	public String HttpsUrlfromS3(String key) {
+
 		URL s3AudioUrl = null;
 		String s3AudioUrlString = null;
 		String tempKey = null;
-		try{			 
-			 tempKey = key.substring(key.indexOf(this.bucketName));
-			 key = tempKey.substring(this.bucketName.length()+1, tempKey.lastIndexOf('.'))+ ".mp3";
-			 System.out.println("Key-->"+key);
-			 System.out.println("Bucket Name-->"+this.bucketName);
-		     S3Object object = s3.getObject(this.bucketName, key);
-		     GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(this.bucketName, key);
-		     s3AudioUrl = s3.generatePresignedUrl(request);
-		     System.out.println("generatePresignedUrl-->"+s3AudioUrl);
-		     s3AudioUrlString=s3AudioUrl.toString();  	     
-		}catch (AmazonS3Exception e)
-		{
+		S3Object object = null;
+		try {
+			tempKey = key.substring(key.indexOf(this.bucketName));
+			key = tempKey.substring(this.bucketName.length() + 1, tempKey.lastIndexOf('.')) + ".mp3";
+			System.out.println("Key-->" + key);
+			System.out.println("Bucket Name-->" + this.bucketName);
+			object = s3.getObject(this.bucketName, key);
+			GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(this.bucketName, key);
+			s3AudioUrl = s3.generatePresignedUrl(request);
+			System.out.println("generatePresignedUrl-->" + s3AudioUrl);
+			s3AudioUrlString = s3AudioUrl.toString();
+		} catch (AmazonS3Exception e) {
 			String errorCode = e.getMessage();
-			System.out.println("ErrorCode-->"+errorCode);
+			System.out.println("ErrorCode-->" + errorCode);
 			errorCode = "Unable to retrieve test question response from server.";
 			s3AudioUrlString = errorCode;
+		} catch (AmazonServiceException e) {
+			String errorCode = e.getMessage();
+			System.out.println("ErrorCode-->" + errorCode);
+			errorCode = "Unable to retrieve test question response from server.";
+			s3AudioUrlString = errorCode;
+		} catch (Exception e) {
+			String errorCode = e.getMessage();
+			System.out.println("ErrorCode-->" + errorCode);
+			errorCode = "Unable to retrieve test question response from server.";
+			s3AudioUrlString = errorCode;
+		} finally {
+				try {
+					if (object != null) {
+						object.close(); // Mandatory
+					}
+					//((AmazonS3Client) s3).shutdown(); // Optional
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					// e.printStackTrace();
+				}
+			return s3AudioUrlString;
 		}
-		catch (AmazonServiceException e) {
-		    String errorCode = e.getMessage();
-		    System.out.println("ErrorCode-->"+errorCode);
-		    errorCode = "Unable to retrieve test question response from server.";
-		    s3AudioUrlString = errorCode;
-		}
-		catch (Exception e) {
-		    String errorCode = e.getMessage();
-		    System.out.println("ErrorCode-->"+errorCode);
-		    errorCode = "Unable to retrieve test question response from server.";
-		    s3AudioUrlString = errorCode;
-		}
-		finally{ 
-			System.out.println("Inside Finally-->"+s3AudioUrlString);
-	        return s3AudioUrlString;
-		}
-		
+
 	}
 
 	

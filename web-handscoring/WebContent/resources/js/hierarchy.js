@@ -386,8 +386,12 @@ function closePopUp(dailogId){
 			element.removeChild(element.lastChild);
 		}
 		
-		if(document.getElementById("itemType").value == "AI" && deliveryClientId!=2 ){
-			document.getElementById("iframeAudio").contentWindow.clearApplet();
+		if(document.getElementById("itemType").value == "AI" ){
+			if(deliveryClientId==2){
+				$("#iframeAudio").removeAttr('style');
+			}else{
+				document.getElementById("iframeAudio").contentWindow.clearApplet();
+			}
 		}
 		isRubricPopulated = false;
 		data1 = null;

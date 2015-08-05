@@ -120,6 +120,13 @@ function stopAudio(){
   function unlinkQuestionIframe() {
 		var element = document.getElementById('questionInformation');
 		
+		//added for audio player reload
+		var element_AudioBmt = document.getElementById('iframeAudio');
+		if(element_AudioBmt){
+			frameDoc = element_AudioBmt.contentDocument || element_AudioBmt.contentWindow.document;
+			if(frameDoc.documentElement!=null)frameDoc.removeChild(frameDoc.documentElement);
+		}
+		
 		while(element.hasChildNodes()){
 			if (element.lastChild.src != undefined) {
 				if (element.lastChild.src.indexOf("itemPlayer") > 0) {
@@ -137,6 +144,13 @@ function stopAudio(){
   function linkQuestionIframe() {
 	 	var element = document.getElementById('questionInformation');
 		
+		//added for audio player reload
+		var element_AudioBmt = document.getElementById('iframeAudio');
+		if(element_AudioBmt){
+			frameDoc = element_AudioBmt.contentDocument || element_AudioBmt.contentWindow.document;
+			if(frameDoc.documentElement!=null)frameDoc.removeChild(frameDoc.documentElement);
+		}
+				
 		while(element.hasChildNodes()){
 			if (element.lastChild.src != undefined) {
 				if (element.lastChild.src.indexOf("itemPlayer") > 0) {

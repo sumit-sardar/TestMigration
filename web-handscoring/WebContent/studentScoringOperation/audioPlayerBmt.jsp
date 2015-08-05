@@ -132,10 +132,12 @@
 
     function stopAudio()
     {
-    	disableEnableIcon("stop");
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.currentTime = 0;
+    	var audio = document.getElementById("myaudio");
+    	 if(audio!=null){
+    	 	disableEnableIcon("stop");
+         	audio.pause();
+         	audio.currentTime = 0;
+         }
     }
 
     function volumeUp()
