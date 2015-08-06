@@ -359,7 +359,7 @@ function fetchDataOnConfirmation() {
 }
 
 function stopBMTAudio(){
-$("#iframeAudio").contents().find('#stopIcon').trigger('click');
+	$("#iframeAudio").contents().find('#stopIcon').trigger('click');
 }
 
 function closePopUp(dailogId){
@@ -383,6 +383,9 @@ function closePopUp(dailogId){
 		$('#quesAnsAccordion').accordion('activate', 0 );
 		var element = document.getElementById('questionInformation');
 		while(element.hasChildNodes()){
+			if(element.lastChild.name == "bmtFrame"){
+				element.lastChild.src = "";
+			}	
 			element.removeChild(element.lastChild);
 		}
 		
@@ -416,6 +419,9 @@ function closePopUp(dailogId){
 		$('#questionAccordion').accordion('activate', 0 );
 		var element = document.getElementById('questionInfo');
 		while(element.hasChildNodes()){
+			if(element.lastChild.name == "bmtFrame"){
+				element.lastChild.src = "";
+			}
 			element.removeChild(element.lastChild);
 		}
 		data1 = null;
