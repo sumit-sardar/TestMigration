@@ -1160,6 +1160,9 @@ function updateAddStudentLocaldata() {
 
 function delSavedStdForUncheck(delStudentTempMap, validateBMTObj) {
 	for(var i =0 ; i<delStudentTempMap.length; i++ ) {
+		if(delStudentTempMap[i]==undefined) {
+			continue;
+		}
 		if(validateBMTObj.undeletedStdIds!= null && validateBMTObj.undeletedStdIds!= undefined && validateBMTObj.undeletedStdIds.length>0) {
 			if(jQuery.inArray(delStudentTempMap[i].toString(),validateBMTObj.undeletedStdIds)!=-1) {
 				studentTempMap.put(delStudentTempMap[i].toString(),stdUncheckListBMT.get(delStudentTempMap[i].toString()));

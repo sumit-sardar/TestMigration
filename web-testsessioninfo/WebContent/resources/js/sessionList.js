@@ -1788,7 +1788,7 @@ function registerDelegate(tree){
 	    studentDeleted = true;
 		for(var i = 0; i < delStuIdObjArray.length; i++) {
 			if(validateBMTObj.undeletedStdIds!= null && validateBMTObj.undeletedStdIds!= undefined && validateBMTObj.undeletedStdIds.length>0) {
-				if(jQuery.inArray(delStuIdObjArray[i].toString(),validateBMTObj.undeletedStdIds)!=-1) {
+				if(delStuIdObjArray[i]==undefined || jQuery.inArray(delStuIdObjArray[i].toString(),validateBMTObj.undeletedStdIds)!=-1) {
 					selectAllForDelete=false;
 					continue;
 				}
