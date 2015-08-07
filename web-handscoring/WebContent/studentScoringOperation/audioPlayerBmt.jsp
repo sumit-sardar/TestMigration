@@ -40,8 +40,8 @@
         <h2>Audio player widget</h2>
          <!-- player icon -->
         <button id="playIcon" onclick="playAudio()" class="playIcon"></button>
-        <button id="pauseIcon" onclick="pauseAudio()" class="pauseIcon"></button>
-        <button id="stopIcon" onclick="stopAudio()" class="stopIcon"></button>
+        <button id="pauseIcon" onclick="pauseAudio()" class="pauseIconDisable"></button>
+        <button id="stopIcon" onclick="stopAudio()" class="stopIconDisable"></button>
         
         
         <audio controls="controls" id="myaudio" preload="none" style="display:none;">
@@ -205,8 +205,10 @@
 		if(document.getElementById("sourcefile")){
         	document.getElementById("sourcefile").innerHTML = source.src;
         }
-        toggleControls();
-        disableEnableIcon("reset");
+       toggleControls();
+        //disableEnableIcon("reset");
+        window.parent.$.unblockUI();
+        
     }
 
 </script>

@@ -64,6 +64,7 @@ var testAdminId = 0;
 var extItemSetId = 0;
 var tryCount = 0;
 var retryLimit = 3;
+var isAudioItemLoading= false;
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -359,7 +360,7 @@ function fetchDataOnConfirmation() {
 }
 
 function stopBMTAudio(){
-	$("#iframeAudio").contents().find('#stopIcon').trigger('click');
+$("#iframeAudio").contents().find('#stopIcon').trigger('click');
 }
 
 function closePopUp(dailogId){
@@ -1748,6 +1749,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								 
 								var crTextResponse = "";
 								var isAudioItem = data1.scrContent.isAudioItem;
+								isAudioItemLoading=isAudioItem;
 								var linebreak ="\n\n";
 								window.s3AudioURl='';
 								if(isAudioItem){
@@ -1916,9 +1918,11 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 		}
 		
 
-								
-		$.unblockUI();
+				
+	if(deliveryClientId!=2 || !isAudioItemLoading){
+				$.unblockUI();
 	}
+}
 	
 	function handleSpecialCharactersNewUI(s) {
 		s= s.replace(/&nbsp;/g,' ').split('');
