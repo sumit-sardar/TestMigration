@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jms.JMSException;
+
 import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -139,18 +141,40 @@ public class TestStatusRestService {
 				        	try {
 					        	logger.info("[ItemResponses] Response json from BMT: " + itemResponses.toJson());
 				        		processResponses(testStatus, itemResponses);
-				        		logger.info("[ItemResponses] Sending testRosterId to scoring queue: [testRosterId = "
+				        		logger.info("[ItemResponses] Sending testRosterId to scoring queue: [testRosterId="
 				        				+ testStatus.getOasRosterId() + "]");
-				        		scoringQueue.send(testStatus.getOasRosterId());
-
-				        	} catch (final Exception e) {
-					        	logger.error("[ItemResponses] Error storing responses in database: " + e.getMessage(), e);
+				        		// BMTOAS-1557 Must retry three times to send scoring messaage.				        					        		
+				        	} catch (final SQLException sqle) {
+					        	logger.error("[ItemResponses] Error storing responses in database: " + sqle.getMessage(), sqle);
 								storeStatusUpdate = false;
 								testStatus.setErrorCode(500);
-								testStatus.setErrorMessage("Error storing responses in database: " + e.getMessage());					        					        		
+								testStatus.setErrorMessage("Error storing responses in database: " + sqle.getMessage());	
+				        	} catch (final RestClientException rce) {
+					        	logger.error("[ItemResponses] Error with data from BMT: " + rce.getMessage(), rce);
+								storeStatusUpdate = false;
+								testStatus.setErrorCode(500);
+								testStatus.setErrorMessage("Error with data from BMT: " + rce.getMessage());	
 				        	}
+			        		int retryCount = 0;
+			        		boolean sendSuccessful = false;
+			        		while (! sendSuccessful && retryCount < 3) {
+			        			try {
+			        				scoringQueue.send(testStatus.getOasRosterId());
+			        				sendSuccessful = true;
+			        			} catch (final JMSException jmse) {
+						        	logger.error("[ItemResponses] Error sending roster ID to scoring queue: " + jmse.getMessage(), jmse);
+						        	retryCount++;
+			        			}
+			        		}
+			        		if (sendSuccessful) {
+			        			logger.info("[ItemResponses] Roster ID sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
+			        		} else {
+			        			logger.error("[ItemResponses] Roster ID could not be sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
+								storeStatusUpdate = false;
+								testStatus.setErrorCode(500);
+								testStatus.setErrorMessage("Roster ID could not be sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");	
 
-				        	
+			        		}
 				        } else {
 				        	logger.error("[ItemResponses] Response json from BMT is null; logging error!");
 							storeStatusUpdate = false;
