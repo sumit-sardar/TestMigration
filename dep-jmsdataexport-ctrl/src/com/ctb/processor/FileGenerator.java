@@ -84,7 +84,7 @@ public class FileGenerator {
 		+ " careafct.points_obtained as points_obtained,     careafct.percent_obtained as percent_obtained"
 		+ " from laslink_content_area_fact careafct, content_area_dim careadim "
 		+ " where careafct.content_areaid = careadim.content_areaid"
-		+ " and content_area_type = 'LL CONTENT AREA'"
+		+ " and content_area_type IN ('LL CONTENT AREA', 'LLBMT CONTENT AREA')"
 		+ " and careafct.studentid = :studentId "
 		+ " and careafct.sessionid = :sessionId";
 
@@ -325,7 +325,7 @@ public class FileGenerator {
 			rs = ps.executeQuery(); 
 			rs.next();
 			productId = rs.getInt(1);
-			if(productId != null && productId == 7500)
+			if(productId != null && (productId == 7500 || productId == 7800))
 				return true;
 			else
 				return false;

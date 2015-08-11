@@ -13,6 +13,7 @@ var itemSetIdRub = 0;
 var parentDivId = '';
 var data1 = null;
 var selectedRosterId;
+var selectedDeliveryClientId;
 var selectedRData = {};
 var selectedItemSetTCVal;
 var notCompletedStudentCountVal = 0;
@@ -25,7 +26,12 @@ var testSessionLocalData = {};
 var isDataExportBySession = 'false';
 var parentProductId;
 
-
+var deliveryClientId = 0;
+var testAdminId = 0;
+var extItemSetId = 0;
+var tryCount = 0;
+var retryLimit = 3;
+var isAudioItemLoading= false;
 
 function getStudentList() { 
 		var postDataObject = {};
@@ -609,8 +615,8 @@ function showHideMessage(show, messageTitle, message){
           url:'beginDisplayStudItemList.do', 
 		 mtype:   'POST',
 		 postData: postDataObject,
-		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId", "parentProductId"],
+		 datatype: "json",                   
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId" , "parentProductId", "deliveryClientId", "testAdminId", "extItemSetId"],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'int', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -622,7 +628,10 @@ function showHideMessage(show, messageTitle, message){
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left",sorttype:scoreObtainedUnformatter, sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'parentProductId',index:'parentProductId',editable: true, hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'parentProductId',index:'parentProductId',editable: true, hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'deliveryClientId',index:'deliveryClientId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testAdminId',index:'testAdminId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'extItemSetId',index:'extItemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
 		    records: function(obj) {
@@ -704,6 +713,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			itemId = rowObject.itemId;
 		}
 		parentProductId = rowObject.parentProductId;
+		deliveryClientId  = rowObject.deliveryClientId;
 		var type;
 		if(cellvalue=="AI") {
         	type = "Audio Response";
@@ -713,7 +723,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
         if(answered != undefined && answered == "Answered") {
         	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesAnsPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
-        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\",\"" + parentProductId + "\"); return false;'>"+type+"</a>";
+        	   itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+"\",\"" + parentProductId + "\",\"" + rowObject.deliveryClientId + "\",\"" + rowObject.testAdminId + "\",\"" + rowObject.extItemSetId + "\"); return false;'>"+type+"</a>";
         } else {
         	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
         }
@@ -731,11 +741,16 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			itemId = rowObject.itemId;
 		}
 		parentProductId = rowObject.parentProductId;
+		deliveryClientId = rowObject.deliveryClientId;
+		testAdminId = rowObject.testAdminId;
+		//console.log("testAdminId=="+testAdminId);
+		extItemSetId = rowObject.extItemSetId;
+		//console.log("extItemSetId=="+extItemSetId);
 		var type = "View Question";
 		
         	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
-        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\",\"" + rowObject.parentProductId + "\"); return false;'>"+type+"</a>";
+        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\",\"" + rowObject.parentProductId  + "\",\"" + rowObject.deliveryClientId + "\",\"" + rowObject.testAdminId + "\",\"" + rowObject.extItemSetId + "\"); return false;'>"+type+"</a>";
       
 		return val;
 	}
@@ -755,7 +770,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		
         	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showAnswerPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
-        	  itemSetIdTD + "\"); return false;'>"+type+"</a>";
+        	  itemSetIdTD + "\",\"" + rowObject.deliveryClientId + "\"); return false;'>"+type+"</a>";
        
 		return val;
 	}
@@ -853,7 +868,95 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		    addOption(select,i,i);
 		     } 
 	}
-	function showQuesPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus, parentProductId){
+	
+	
+	function getBMTItemURL (rosterIid, testAdminId, itemId, extTstItemSetId, elementDiv, iframe) {
+ 	var param = {};
+ 	param.oasRosterId = rosterIid;
+	param.oasTestAdministrationID = testAdminId;
+	param.itemid = itemId;
+	param.oasTestId = extTstItemSetId;
+ 	
+ 	var initparam = {};
+ 	initparam.testAdminId = testAdminId;
+ 	
+ 	var bmtURL = '';
+ 	var bmtResponseURL = '';
+ 	var isSuccess = false;
+ 	
+ 	var dynTable = document.createElement('table');
+ 	dynTable.id = "bmtMessages";
+ 	dynTable.setAttribute("style","margin: auto;position: relative;top: 50%;");
+ 	
+ 	
+		$.ajax({
+				async:		false,
+				url:		'getBMTApiUrl.do',
+				type:		'POST',
+				data:		initparam,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){	
+								if(data.bmtAPIUrl){
+									bmtURL = data.bmtAPIUrl;
+									isSuccess = true;
+								}else{
+									dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+				        			elementDiv.appendChild(dynTable);
+								}	
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								
+								dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+				        		elementDiv.appendChild(dynTable);						
+							}
+			});
+ 	
+ 	
+ 	if(isSuccess){
+	
+		$.ajax({
+					async:		true,
+					url:		bmtURL,
+					type:		'POST',
+					data:		JSON.stringify(param),
+					dataType:	'json',
+					contentType: 'application/json',
+					success:	function(data, status, jqXHR){
+									bmtResponseURL = data.url;
+									iframe.src = bmtResponseURL;
+									elementDiv.appendChild(iframe);
+								},
+					error  :    function(jqXHR, textStatus, errorThrown){
+																		
+									if (textStatus == 'timeout') {
+							            if (tryCount < retryLimit) {
+							            	 tryCount++;
+							            	 setTimeout(getBMTItemURL(rosterIid, testAdminId, itemId, extTstItemSetId, elementDiv),15000);
+							            }else{
+							            	dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+							        		elementDiv.appendChild(dynTable);
+							            }
+							        }else if(textStatus == 'error'){
+							        	if(jqXHR.status == 404){
+							        		dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtItemUnavailable").val()+"</div></td></tr>";
+							        		elementDiv.appendChild(dynTable);
+							        	}else if(jqXHR.status == 500){
+							        		dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+							        		elementDiv.appendChild(dynTable);
+							        	}else{
+											dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+							        		elementDiv.appendChild(dynTable);					        	
+							        	}
+							        }else{ 
+							        	return;
+							        }
+								}
+			});
+		}	
+	}
+	
+	
+	function showQuesPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus, parentProductId, deliveryClientId, testAdminId, extItemSetId){
 			var score= null;
 			var status = null;
 			selectedRowObjectScoring.id = id;
@@ -863,18 +966,36 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			selectedRowObjectScoring.itemSetId = itemSetId;
 			selectedRowObjectScoring.maxPoints = maxPoints;
 			selectedRowObjectScoring.parentProductId = parentProductId;
+			
+			selectedRowObjectScoring.deliveryClientId = deliveryClientId;
+			selectedRowObjectScoring.testAdminId = testAdminId;
+			selectedRowObjectScoring.extItemSetId = extItemSetId;
+			
 			document.getElementById('displayMessageForQues').style.display = "none";
 		 	var element = document.getElementById('questionInfo');
-		 	var iframe = document.createElement('iframe');
-			if (parentProductId == 7500){
-				iframe.name = "jsFrame";
-			}else {
-				iframe.name = "swfFrame";
-			}
-			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
-			iframe.width = "900";
-			iframe.height = "530";
-			element.appendChild(iframe);
+		 	
+		 	var iframe = document.createElement('iframe');		
+		 	console.log("deliveryClientId=="+deliveryClientId);
+		 	
+		 
+		 	
+		 	 if(deliveryClientId == 2){
+		 	 	iframe.name = "bmtFrame";
+				iframe.id = "bmtFrame";
+				getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
+				iframe.width = "100%";
+				iframe.height = "100%";
+		 	 }else{
+		 		if (parentProductId == 7500){
+					iframe.name = "jsFrame"; //For Laslinks A/B/Espanol A
+				}else {
+					iframe.name = "swfFrame"; //For Laslinks C/D/Espanol B
+				}
+				iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
+				iframe.width = "900";
+				iframe.height = "530";
+				element.appendChild(iframe);
+		 	 }
 			updateMaxPoints(maxPoints);		
 			var scoreAndPoints =  getScorePoints();
 			score = scoreAndPoints[0];
@@ -894,7 +1015,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			});	
 		 	
 }
- function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus , parentProductId){
+ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus , parentProductId, deliveryClientId, testAdminId, extItemSetId ){
 			var score= null;
 			var status = null;
 			selectedRowObjectScoring.id = id;
@@ -904,21 +1025,34 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			selectedRowObjectScoring.itemSetId = itemSetId;
 			selectedRowObjectScoring.maxPoints = maxPoints;
 			selectedRowObjectScoring.parentProductId = parentProductId;
+			selectedRowObjectScoring.deliveryClientId = deliveryClientId;
+			selectedRowObjectScoring.testAdminId = testAdminId;
+			selectedRowObjectScoring.extItemSetId = extItemSetId;				
 			$("#crText").hide();
 			$("#audioPlayer").hide();
 				
 			document.getElementById('displayMessageForQues').style.display = "none";
 		 	var element = document.getElementById('questionInformation');
 		 	var iframe = document.createElement('iframe');
-		 	if (parentProductId == 7500){
-				iframe.name = "jsFrame";
-			}else {
-				iframe.name = "swfFrame";
-			}
-			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
-			iframe.width = "900";
-			iframe.height = "530";
-			element.appendChild(iframe);
+		 	/*added for BMT audio player*/
+		 	if(deliveryClientId == 2){
+		 	 		iframe.name = "bmtFrame";
+					iframe.id = "bmtFrame";
+					getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
+					iframe.width = "100%";
+					iframe.height = "100%";
+		 	 }else{
+		 	 	// If not BMT. OAS Item will load.
+			 		if (parentProductId == 7500){
+						iframe.name = "jsFrame"; //For Laslinks A/B/Espanol A
+					}else {
+						iframe.name = "swfFrame"; //For Laslinks C/D/Espanol B
+					}
+					iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "&parentProductId=" + parentProductId + "";
+					iframe.width = "900";
+					iframe.height = "530";
+					element.appendChild(iframe);
+		 	 }	
 			updateMaxPoints(maxPoints);		
 			var scoreAndPoints =  getScorePoints();
 			score = scoreAndPoints[0];
@@ -954,8 +1088,8 @@ function getScorePoints(){
 				var pointStatus = [];
 				if(rowElement){				
 					
-					var score = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
-					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML;
+					var score = rowElement.lastChild.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML;
+					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML;
 					if ( isNaN(status)){
 						score = trim(score);
 						status = trim(status);
@@ -1163,6 +1297,9 @@ function processScore(element){
  document.getElementById('displayMessageForQues').style.display = "none";	
  document.getElementById('displayMessageStudent').style.display = "none";	 
  }
+ function stopBMTAudio(){
+	$("#iframeAudio").contents().find('#stopIcon').trigger('click');
+}
  
  function closePopUp(dailogId){
 	$('.ui-widget-overlay').css('height', '100%');
@@ -1176,14 +1313,25 @@ function processScore(element){
 				stopAudio();
 			}
 		}
+		/*added to stop the bmt audio on close of popup*/
+		if(deliveryClientId==2){
+			stopBMTAudio();
+		}
 		$('#quesAnsAccordion').accordion('activate', 0 );
 		var element = document.getElementById('questionInformation');
 		while(element.hasChildNodes()){
+			if(element.lastChild.name == "bmtFrame"){
+				element.lastChild.src = "";
+			}
 			element.removeChild(element.lastChild);
 		}
 		
-		if(document.getElementById("itemType").value == "AI"){
-			document.getElementById("iframeAudio").contentWindow.clearApplet();
+		if(document.getElementById("itemType").value == "AI" ){
+			if(deliveryClientId==2){
+				$("#iframeAudio").removeAttr('style');
+			}else{
+				document.getElementById("iframeAudio").contentWindow.clearApplet();
+			}
 		}
 		isRubricPopulated = false;
 		data1 = null;
@@ -1208,6 +1356,9 @@ function processScore(element){
 		$('#questionAccordion').accordion('activate', 0 );
 		var element = document.getElementById('questionInfo');
 		while(element.hasChildNodes()){
+			if(element.lastChild.name == "bmtFrame"){
+				element.lastChild.src = "";
+			}
 			element.removeChild(element.lastChild);
 		}
 		data1 = null;
@@ -1251,7 +1402,7 @@ function processScore(element){
 	$("#"+dailogId).dialog("close");
 }
 
-function showAnswerPopup(id,itemSetOrder,itemType,testRosterId,itemSetId){
+function showAnswerPopup(id,itemSetOrder,itemType,testRosterId,itemSetId,deliveryClientId){
 
 		 	clearMessage();
 			$("#answerDetail").dialog({  
@@ -1271,7 +1422,7 @@ function showAnswerPopup(id,itemSetOrder,itemType,testRosterId,itemSetId){
 
 function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
 	UIBlock();
-	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId;
+	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId+"&deliveryClientId="+deliveryClientId;
 	var itemId = itemIdRubric; 
 	var itemNumber = itemNumber;
 	
@@ -1396,16 +1547,17 @@ function populateTableNew() {
 			iFrameObj.find("#rubricTableId").hide();									
 		}
 								
-		$.unblockUI();
+		if(deliveryClientId!=2 || !isAudioItemLoading){
+				$.unblockUI();
+		}
 	}
 	
 	
 	function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
 	UIBlock();
-	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId;
+	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId+"&deliveryClientId="+deliveryClientId;
 	var itemId = itemIdRubric; 
 	var itemNumber = itemNumber;
-	
 
 	$.ajax(
 		{
@@ -1425,21 +1577,40 @@ function populateTableNew() {
 								 
 								var crTextResponse = "";
 								var isAudioItem = data1.scrContent.isAudioItem;
+								isAudioItemLoading=isAudioItem;
 								var linebreak ="\n\n";
 								
 								if(isAudioItem){
 								$("#crText").hide();
 								document.getElementById("itemType").value = "AI";
-								var audioResponseString = data1.scrContent.audioItemContent;
-								audioResponseString = audioResponseString.substr(13);
-								audioResponseString = audioResponseString.split("%3C%2F");
-								document.getElementById("audioResponseString").value = audioResponseString[0];
+								/*added for BMT audio player*/
+									var audioResponseString;
+									if(deliveryClientId==2){
+										audioResponseString=data1.scrContent.s3AudioUrl;
+										window.s3AudioURl=audioResponseString;
+									}else{
+									/*For OAS player*/
+										 audioResponseString = data1.scrContent.audioItemContent;
+										 audioResponseString = audioResponseString.substr(13);
+										 audioResponseString = audioResponseString.split("%3C%2F");
+										document.getElementById("audioResponseString").value = audioResponseString[0];
+									}	
+									
+								document.getElementById("deliveryClientIdQA").value = deliveryClientId ;
 								document.getElementById("pointsDropDown").setAttribute("disabled",true);								
 								$('#Question').addClass('ui-state-disabled');
 								$("#audioPlayer").hide();
 								$("#iframeDiv").show();
 								var iframe = $("#iframeAudio");
-								$(iframe).attr('src', "audioPlayer.jsp");
+								/*added for BMT audio player*/
+								if(deliveryClientId==2){
+									   	$(iframe).attr('src', "audioPlayerBmt.jsp");
+										$(iframe).css({'margin-left':'-43px','width':'422px','height':'300px'});
+								}else{
+									 /*For OAS player*/
+										$(iframe).removeAttr('style'); 
+										$(iframe).attr('src', "audioPlayer.jsp");
+								}
 							
 								
 								}else{

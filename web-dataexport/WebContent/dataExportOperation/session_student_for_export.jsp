@@ -46,6 +46,26 @@
 				<% if(isEspB) { %>
 					<option id="7502" value="7502">Form Espa&#xf1;ol B</option>
 				<% } %>
+			<% } else if(frameworkProductId==7200) { %>
+				<% if(isFormA) { %>
+					<option id="7201" value="7201">Form A</option>
+				<% } %>
+				<% if(isFormB) { %>
+					<option id="7202" value="7202">Form B</option>
+				<% } %>
+				<% if(isEspA) { %>
+					<option id="7203" value="7203">Form Espa&#xf1;ol A</option>
+				<% } %>
+			<% } else if(frameworkProductId==7800) { %>
+				<% if(isFormC) { %>
+					<option id="7801" value="7801">Form C</option>
+				<% } %>
+				<% if(isFormD) { %>
+					<option id="7805" value="7805">Form D</option>
+				<% } %>
+				<% if(isEspB) { %>
+					<option id="7802" value="7802">Form Espa&#xf1;ol B</option>
+				<% } %>
 			<% } %>
 </select>
 			<BR />

@@ -181,7 +181,7 @@ public class ReportingDataProcessor {
 	
 	private boolean isENGRADEcustomer(Integer customerId) throws CTBBusinessException {
 		AuditTrailDAO dao = new AuditTrailDAO();
-		return (dao.isENGRADEcustomer(customerId));
+		return (dao.isENGRADEcustomer(customerId)|| dao.isEngradeLocationEnabled(customerId));
 	}
 	
 }

@@ -17,6 +17,15 @@ public class Base {
 	private List<Row> rows;
 	//private ManageJobData manageJobData;
 	private List manageJobData;
+	private String bmtAPIUrl;
+	
+	
+	public String getBmtAPIUrl() {
+		return bmtAPIUrl;
+	}
+	public void setBmtAPIUrl(String bmtAPIUrl) {
+		this.bmtAPIUrl = bmtAPIUrl;
+	}
 	public String getPage() {
 		return page;
 	}

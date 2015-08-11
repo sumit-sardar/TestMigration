@@ -460,6 +460,22 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 		    		   } else if(productId==7505) {
 		    			   sqlQuery+="7505) ";
 		    		   }
+	    		   } else if(frameworkId==7200) {
+		    		   if(productId==7201) {
+		    			   sqlQuery+="7201) ";
+		    		   } else if(productId==7202) {
+		    			   sqlQuery+="7202) ";
+		    		   } else if(productId==7203) {
+		    			   sqlQuery+="7203) ";
+		    		   }
+	    		   } else if(frameworkId==7800) {
+	    			   if(productId==7801) {
+		    			   sqlQuery+="7801) ";
+		    		   } else if(productId==7802) {
+		    			   sqlQuery+="7802) ";
+		    		   } else if(productId==7805) {
+		    			   sqlQuery+="7805) ";
+		    		   }
 	    		   }
 	    		   
 	    		   testSessions = dataExportManagement.getTestSessionForExportWithStudentsForUserWithFrameworkId(customerId, userName, frameworkId, sqlQuery);

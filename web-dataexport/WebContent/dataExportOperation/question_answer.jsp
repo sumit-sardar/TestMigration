@@ -70,21 +70,43 @@ function stopAudio(){
 		//alert("inside getPlayCompleted");
 	}
 	
+	
 	function checkPlay(element){
-		//alert("playCompleted in checkplay : "+playCompleted);
-	if(element.className.indexOf('disabled') > 0){
-		return true;
-	}
-		if(document.getElementById("itemType").value == "AI"){			
-				if(playCompleted == true){	
+	// Changes made to enable save button or show proper message.
+		var deliveryClientId = document.getElementById("deliveryClientIdQA").value;
+		if(deliveryClientId == "2"){
+				if(element.className.indexOf('disabled') > 0){
+					return true;
+				}	
+				var playingStatus = document.getElementById("playingStatus").value;
+		    if(document.getElementById("itemType").value == "AI"){			
+					 if(playingStatus == "ended"){	
+						formSave();
+					 }else{
+						openConfirmationPopupQues();
+					}
+			}else{
+					formSave();
+			}
+		}
+		else 
+		{
+			 if(element.className.indexOf('disabled') > 0){
+					return true;
+		     }
+		     if(document.getElementById("itemType").value == "AI"){
+		     	if(playCompleted == true){	
 					formSave();
 				}else{
 					openConfirmationPopupQues();
 				}
-		}else{
+			}else{
 				formSave();
-		}
+			}
+		}	
 	}
+	
+	
 	
 	
 	function passAudioString(){
@@ -112,13 +134,28 @@ function stopAudio(){
 	
   
   var iframeQuestion;
+  var bmtIframeSrc;
   function unlinkQuestionIframe() {
 		var element = document.getElementById('questionInformation');
+		
+		//added for audio player reload
+		var element_AudioBmt = document.getElementById('iframeAudio');
+		if(element_AudioBmt){
+			frameDoc = element_AudioBmt.contentDocument || element_AudioBmt.contentWindow.document;
+			if(frameDoc.documentElement!=null)frameDoc.removeChild(frameDoc.documentElement);
+		}
+		
 		while(element.hasChildNodes()){
 			if (element.lastChild.src != undefined) {
 				if (element.lastChild.src.indexOf("itemPlayer") > 0) {
 					iframeQuestion = element.lastChild;
+				}else if(element.lastChild.name == "bmtFrame"){
+					iframeQuestion = element.lastChild;
+					bmtIframeSrc = element.lastChild.src;
+					element.lastChild.src = "";
 				}
+			}else if(element.lastChild.id == "bmtMessages"){
+				iframeQuestion = element.lastChild;
 			}
 			element.removeChild(element.lastChild);
 		}
@@ -126,16 +163,32 @@ function stopAudio(){
 
   function linkQuestionIframe() {
 	 	var element = document.getElementById('questionInformation');
+		
+		//added for audio player reload
+		var element_AudioBmt = document.getElementById('iframeAudio');
+		if(element_AudioBmt){
+			frameDoc = element_AudioBmt.contentDocument || element_AudioBmt.contentWindow.document;
+			if(frameDoc.documentElement!=null)frameDoc.removeChild(frameDoc.documentElement);
+		}
+				
 		while(element.hasChildNodes()){
 			if (element.lastChild.src != undefined) {
 				if (element.lastChild.src.indexOf("itemPlayer") > 0) {
 					return;
+				}else if(element.lastChild.name == "bmtFrame"){
+					return;
 				}
+			}else if(element.lastChild.id == "bmtMessages"){
+				return;
 			}
 			element.removeChild(element.lastChild);
 		}
+		if(iframeQuestion.name == "bmtFrame" && bmtIframeSrc != ""){
+			iframeQuestion.src = bmtIframeSrc;
+		}
 		element.appendChild(iframeQuestion);
   }
+  	
   	
 </script>
 <input type="hidden" id="itemSetId" />
@@ -145,7 +198,9 @@ function stopAudio(){
 <input type="hidden" id="itemType" />
 <input type="hidden" id="audioResponseString" />
 <input type="hidden" id="rowNo" />
-<input type="hidden" id="itemSetIdTC" />
+<!-- Added for BMT audio player -->
+<input type="hidden" id="deliveryClientIdQA" />
+<input type="hidden" id="playingStatus" />
 <div id="questionAnswerDetail"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 

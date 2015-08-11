@@ -72,6 +72,8 @@
 			<input type="hidden" id="confirmAlrt" value=<lb:label key="scoring.alert.confirm" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="incStudentCaption" value=<lb:label key="data.export.incomplete.scored.student" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="onSubmitConfirmID" name = "onSubmitConfirmID" value=<lb:label key="data.export.onsubmit.alert.confirm.message" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="bmtNetworkFailure" value=<lb:label key="bmt.networkFailure.message" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="bmtItemUnavailable" value=<lb:label key="bmt.itemUnavailable.message" prefix="'" suffix="'"/>/>
 			<table class="transparent" width="97%" style="margin: 15px auto;">
 				<tr class="transparent">
 					<td>

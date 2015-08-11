@@ -31,6 +31,7 @@ public class Configuration {
 	static String ftpOrderFileMovedDirectory = "";
 	
 	static String customerConfigurationName="";
+	static String enableEngradeLocationConfName="";
 
 	static {
 
@@ -62,6 +63,7 @@ public class Configuration {
 		clientPrivateKeyPath = ExtractUtil.getDetail("engrade.oas.private.keyPath");
 		ftpDataFileMovedDirectory = ExtractUtil.getDetail("engrade.exportdata.remote.ftp.datafile.finallocation");
 		ftpOrderFileMovedDirectory = ExtractUtil.getDetail("engrade.exportdata.remote.ftp.orderfile.finallocation");
+		enableEngradeLocationConfName = ExtractUtil.getDetail("enable.engrade.location.conf.name");
 	}
 
 	
@@ -244,6 +246,13 @@ public class Configuration {
 	 */
 	public static String getFtpOrderFileMovedDirectory() {
 		return ftpOrderFileMovedDirectory;
+	}
+
+	/**
+	 * @return the enableEngradeLocationConfName
+	 */
+	public static String getEnableEngradeLocationConfName() {
+		return enableEngradeLocationConfName;
 	}
 	
 }

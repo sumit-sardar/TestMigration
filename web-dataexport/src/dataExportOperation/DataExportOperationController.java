@@ -20,46 +20,33 @@ import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.Base;
+import utils.BroadcastUtils;
 import utils.DataExportSearchUtils;
-import utils.FilterSortPageUtils;
 import utils.JsonUtils;
 import utils.MessageResourceBundle;
 import utils.PermissionsUtils;
-import utils.BroadcastUtils;
 
+import com.ctb.bean.dataExportManagement.ManageJobData;
 import com.ctb.bean.dataExportManagement.ManageStudent;
 import com.ctb.bean.dataExportManagement.ManageStudentData;
-import com.ctb.bean.dataExportManagement.ManageJobData;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
-import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerExportStudentData;
 import com.ctb.bean.testAdmin.CustomerLicense;
-import com.ctb.bean.testAdmin.CustomerReport;
-import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.ManageTestSession;
 import com.ctb.bean.testAdmin.ManageTestSessionData;
-import com.ctb.bean.testAdmin.ProgramData;
 import com.ctb.bean.testAdmin.QuestionAnswerData;
 import com.ctb.bean.testAdmin.RubricViewData;
-import com.ctb.bean.testAdmin.ScheduleElementData;
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.ScorableItemData;
-import com.ctb.bean.testAdmin.Student;
-import com.ctb.bean.testAdmin.StudentData;
-import com.ctb.bean.testAdmin.StudentSessionStatusData;
-import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
-import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.control.crscoring.TestScoring;
 import com.ctb.exception.CTBBusinessException;
-import com.ctb.util.SuccessInfo;
 import com.ctb.util.jmsutils.ExportDataJMSUtil;
-import com.ctb.widgets.bean.PagerSummary;
 import com.google.gson.Gson;
 
 import dto.DataExportVO;
@@ -554,14 +541,14 @@ public class DataExportOperationController extends PageFlowController {
 		 if(frameProducts.length > 1){
 			 for(int ii = 0; ii < frameProducts.length; ii++){
 				 CustomerExportStudentData export = new CustomerExportStudentData();
-				 if(frameProducts[ii] == 7000){
+				 if(frameProducts[ii] == 7000 || frameProducts[ii] == 7200){
 					 String url = "/ExportWeb/dataExportOperation/dataExport.do?frameworkId="+frameProducts[ii];
 					 export.setProductId(frameProducts[ii]);
 					 export.setExportURL(url);
 					 export.setExportName(FORMATITLE);
 					 export.setExportDescription(FORMADESCRIPTION);
 					 exportList.add(export);
-				 }else if (frameProducts[ii] == 7500){
+				 }else if (frameProducts[ii] == 7500 || frameProducts[ii] == 7800){
 					 String url = "/ExportWeb/dataExportOperation/dataExport.do?frameworkId="+frameProducts[ii];
 					 export.setProductId(frameProducts[ii]);
 					 export.setExportURL(url);
@@ -636,6 +623,26 @@ public class DataExportOperationController extends PageFlowController {
 					isFormD = true;
 				}
 			}
+		} else if(frameworkProductId == 7200) {
+			for(Integer x:prodIds) {
+				if(x == 7201 ) {
+					isFormA = true;
+				} else if(x == 7202) {
+					isFormB = true;
+				}else if(x == 7203) {
+					isEspA = true;
+				}
+			}
+		} else if(frameworkProductId == 7800) {
+			for(Integer x:prodIds) {
+				if(x == 7801) {
+					isFormC = true;
+				} else if(x == 7802) {
+					isEspB = true;
+				} else if(x == 7805) {
+					isFormD = true;
+				}
+			}
 		}
 		
 		this.getRequest().setAttribute("frameworkProductId", frameworkProductId);
@@ -679,10 +686,10 @@ public class DataExportOperationController extends PageFlowController {
 			if ((mtsData != null)) {
 				if( (mtsData.getFilteredCount().intValue() > 0)) {
 					List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
-					if(frameworkProductId != -1 && frameworkProductId == 7000){
+					if(frameworkProductId != -1 && (frameworkProductId == 7000 || frameworkProductId == 7200)){
 						this.toBeExportedRosterListLLEAB = mtsData.getToBeExportedStudentRosterList();
 						this.totalExportedStudentCountLLEAB = mtsData.getTotalExportedStudentCount();
-					}else if(frameworkProductId != -1 && frameworkProductId == 7500){
+					}else if(frameworkProductId != -1 && (frameworkProductId == 7500 || frameworkProductId == 7800)){
 						this.toBeExportedRosterListLL2ND = mtsData.getToBeExportedStudentRosterList();
 						this.totalExportedStudentCountLL2ND = mtsData.getTotalExportedStudentCount();
 					}
@@ -767,9 +774,9 @@ public class DataExportOperationController extends PageFlowController {
 				if (mtsData != null) {
 					if( (mtsData.getFilteredCount().intValue() > 0)) {
 						rosterListForSelectedSessions = mtsData.getToBeExportedStudentRosterList();
-						if(frameworkId == 7000){
+						if(frameworkId == 7000 || frameworkId == 7200){
 							this.toBeExportedRosterListForSessionsLLEAB = rosterListForSelectedSessions;
-						}else if(frameworkId == 7500){
+						}else if(frameworkId == 7500 || frameworkId == 7800){
 							this.toBeExportedRosterListForSessionsLL2ND = rosterListForSelectedSessions;
 						}
 						totalExportedStudentCount = mtsData.getTotalExportedStudentCount();
@@ -780,10 +787,10 @@ public class DataExportOperationController extends PageFlowController {
 					vo.setStudentBeingExportCount(mtsData.getTotalExportedStudentCount());
 				}
 			}else{
-				if(frameworkId == 7000){
+				if(frameworkId == 7000 || frameworkId == 7200){
 					rosterListForSelectedSessions = this.toBeExportedRosterListLLEAB;
 					totalExportedStudentCount = this.totalExportedStudentCountLLEAB;
-				}else if (frameworkId == 7500){
+				}else if (frameworkId == 7500 || frameworkId == 7800){
 					rosterListForSelectedSessions = this.toBeExportedRosterListLL2ND;
 					totalExportedStudentCount = this.totalExportedStudentCountLL2ND;
 				}
@@ -918,7 +925,7 @@ public class DataExportOperationController extends PageFlowController {
 		Integer testRosterId = new Integer(getRequest().getParameter("testRosterId"));
 		Integer itemSetId = new Integer(getRequest().getParameter("itemSetId"));
 		String itemType = getRequest().getParameter("itemType");
-
+		String deliveryClientID = getRequest().getParameter("deliveryClientId");
 		System.out.println("item id" + itemId);
 		System.out.println("testRosterId id" + testRosterId);
 		System.out.println("itemSetId id" + itemSetId);
@@ -927,7 +934,7 @@ public class DataExportOperationController extends PageFlowController {
 	//	itemId = "0155662";//Had to make it static, since only 2 items are present in database now
 		RubricViewData[] scr =  getRubricDetails(itemId);
 		ScorableCRAnswerContent scrArea = getIndividualCRResponse(testScoring,
-				userName, testRosterId, itemSetId, itemId, itemType);
+				userName, testRosterId, itemSetId, itemId, itemType, deliveryClientID);
 		QuestionAnswerData qad = new QuestionAnswerData();
 		qad.setRubricData(scr);
 		qad.setScrContent(scrArea);
@@ -1073,12 +1080,12 @@ public Forward rescoreStudent() {
 	
 	private static ScorableCRAnswerContent getIndividualCRResponse(
 			TestScoring testScoring, String userName, Integer testRosterId,
-			Integer deliverableItemSetId, String itemId, String itemType) {
+			Integer deliverableItemSetId, String itemId, String itemType, String deliveryClientID) {
 		ScorableCRAnswerContent answerArea = new ScorableCRAnswerContent();
 		try {
-			// Hard Coding to match getCRItemResponseForScoring() method signature.
+
 			answerArea = testScoring.getCRItemResponseForScoring(userName,
-					testRosterId, deliverableItemSetId, itemId, itemType , "1");
+					testRosterId, deliverableItemSetId, itemId, itemType, deliveryClientID);
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}
@@ -1137,18 +1144,18 @@ public Forward rescoreStudent() {
 		
 		if(frameworkId != -1){
 			if(isDataExportBySession != null && !isDataExportBySession.equalsIgnoreCase("") && isDataExportBySession.equalsIgnoreCase("true")){
-				if(frameworkId == 7000){
+				if(frameworkId == 7000 || frameworkId == 7200){
 					studentCount = this.toBeExportedRosterListForSessionsLLEAB.size();
 					finalExportedRosterList = this.toBeExportedRosterListForSessionsLLEAB;
-				} else if (frameworkId == 7500){
+				} else if (frameworkId == 7500 || frameworkId == 7800){
 					studentCount = this.toBeExportedRosterListForSessionsLL2ND.size();
 					finalExportedRosterList = this.toBeExportedRosterListForSessionsLL2ND;
 				}
 			} else {
-				if(frameworkId == 7000){
+				if(frameworkId == 7000 || frameworkId == 7200){
 					studentCount = this.toBeExportedRosterListLLEAB.size();
 					finalExportedRosterList = this.toBeExportedRosterListLLEAB;
-				} else if (frameworkId == 7500){
+				} else if (frameworkId == 7500 || frameworkId == 7800){
 					studentCount = this.toBeExportedRosterListLL2ND.size();
 					finalExportedRosterList = this.toBeExportedRosterListLL2ND;
 				}
@@ -1906,5 +1913,37 @@ public Forward rescoreStudent() {
         
         return null;
     }
+	
+	@Jpf.Action(forwards={
+    		@Jpf.Forward(name = "success", 
+					path ="")
+	})
+	protected Forward getBMTApiUrl()
+			throws IOException, ClassNotFoundException {
+
+		try {
+			HttpServletResponse resp = getResponse();
+			OutputStream stream = null;
+			String json = "";
+			resp.setCharacterEncoding("UTF-8");
+			Base base = new Base();
+			Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
+
+			String bmtApiKey = "BMTITEMAPI";
+			String bmtApiUrl = this.testScoring.fetchBMTAPIUrl(testAdminId,
+					bmtApiKey);
+			base.setBmtAPIUrl(bmtApiUrl);
+			Gson gson = new Gson();
+			json = gson.toJson(base);
+			resp.setContentType(CONTENT_TYPE_JSON);
+			stream = resp.getOutputStream();
+			stream.write(json.getBytes("UTF-8"));
+			resp.flushBuffer();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
 }

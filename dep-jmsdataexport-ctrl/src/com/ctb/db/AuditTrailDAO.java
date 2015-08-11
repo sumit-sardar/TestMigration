@@ -123,5 +123,36 @@ public class AuditTrailDAO implements AuditTrailSQL {
 			SqlUtil.close(con,ps,rs);
 		}
 	}
+	
+	public boolean isEngradeLocationEnabled(Integer customerId) throws CTBBusinessException {
+		
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String customerConfig = Configuration.getEnableEngradeLocationConfName();
+		try {
+			con = SqlUtil.openOASDBcon();
+			String sql = HAS_ENGRADE_CUSTOMER_CONFIGURATION;
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, customerId);
+			ps.setString(2, customerConfig);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				String value = rs.getString(1);
+				if("T".equals(value)){
+					return true;
+				}else{
+					return false;
+				}
+			}
+			return false;
+		} catch (Exception e) {
+			System.out.println("Verify isEnableEngradeLocation failed:" + e.getMessage());
+			e.printStackTrace();
+			throw new CTBBusinessException("isEnableEngradeLocation:Verify isEnableEngradeLocation failed.");
+		} finally {
+			SqlUtil.close(con,ps,rs);
+		}
+	}
 
 }
