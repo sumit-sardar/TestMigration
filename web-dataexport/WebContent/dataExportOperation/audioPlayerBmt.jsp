@@ -170,7 +170,7 @@
     	if( document.getElementById("status")){
         document.getElementById("status").innerHTML = strStatus;
         }
-        console.log("updateStatus***********"+strStatus);
+        //console.log("updateStatus***********"+strStatus);
         parent.document.getElementById("playingStatus").value=strStatus;
     }
 
@@ -179,7 +179,7 @@
     	if(document.getElementById("timeelapsed")){
         document.getElementById("timeelapsed").innerHTML = elapsedTime;
         }
-       console.log("updateTimeElapsed***********"+elapsedTime);
+       //console.log("updateTimeElapsed***********"+elapsedTime);
     }
 
     function setAudioSource(audioSource)

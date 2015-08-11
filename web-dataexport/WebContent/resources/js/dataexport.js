@@ -975,7 +975,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		 	var element = document.getElementById('questionInfo');
 		 	
 		 	var iframe = document.createElement('iframe');		
-		 	console.log("deliveryClientId=="+deliveryClientId);
+		 	//console.log("deliveryClientId=="+deliveryClientId);
 		 	
 		 
 		 	
