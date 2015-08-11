@@ -1,4 +1,4 @@
-CREATE OR REPLACE TRIGGER TRG_BMTSYNC_TESTADMIN
+	CREATE OR REPLACE TRIGGER TRG_BMTSYNC_TESTADMIN
 AFTER INSERT OR UPDATE OF 
 Test_Admin_Id, 
 Customer_ID,
@@ -20,12 +20,10 @@ BEGIN
     WHERE 
     Cust.Customer_Id = :new.Customer_ID; 
 	
-    -- Add Student in the BMTSYNC_Assignment_Status table
-    PKG_BMTSYNC_ONCHANGE.TESTADMIN(
-	    :new.CUSTOMER_ID,
-		:new.TEST_ADMIN_ID,
-		'New'
-    );
+
+    -- INSERT/UPDATE THE RECORD IN BMTSYNC_TESTADMIN_STATUS TABLE 
+    PKG_BMTSYNC_TESTADMIN.AddTestAdminAPIStatus(:new.CUSTOMER_ID, :new.TEST_ADMIN_ID, 'BMT', 'New');
+
 EXCEPTION		
 WHEN NO_DATA_FOUND THEN
    NULL;
@@ -49,14 +47,13 @@ BEGIN
     WHERE 
     Cust.Customer_Id = :new.Customer_ID; 
 	
-    -- Add Student in the BMTSYNC_Assignment_Status table
-    PKG_BMTSYNC_ONCHANGE.TESTROSTER(
-	    :new.CUSTOMER_ID,
-		:new.TEST_ADMIN_ID,
-		:new.STUDENT_ID,
-		:new.TEST_ROSTER_ID,
-		'New'
-    );
+
+    -- INSERT/UPDATE THE RECORD IN BMTSYNC_STUDENT_STATUS TABLE
+    PKG_BMTSYNC_ASSIGNMENT.AddUpdateTestRoaster(:new.CUSTOMER_ID, 
+                                                :new.TEST_ADMIN_ID, 
+                                                :new.STUDENT_ID, :new.TEST_ROSTER_ID, 
+                                                'New');
+
 	
 	
 EXCEPTION		
@@ -75,8 +72,6 @@ DECLARE
    vCustomer_ID    Customer.Customer_ID%TYPE;
 BEGIN
     
-    -- Add Student in the BMTSYNC_Assignment_Status table
-	--SELECT Customer_ID INTO vCustomer_ID FROM Test_Admin WHERE Test_Admin_ID = :new.TEST_ADMIN_ID;
 	SELECT Cust.Customer_ID 
 	INTO vCustomer_ID
     FROM Test_Admin TA, BMTSYNC_Customer Cust
@@ -85,13 +80,8 @@ BEGIN
 	Test_Admin_ID = :new.TEST_ADMIN_ID;
      
 	
-	--IF vCustomer_ID = 15357 OR vCustomer_ID = 16701 THEN
-		PKG_BMTSYNC_ONCHANGE.TestAdminItemSet(
-                        vCustomer_ID,
-			:new.TEST_ADMIN_ID,
-			'New'
-		);
-	--END IF;
+    --INSERT/UPDATE THE RECORD IN BMTSYNC_ASSIGNMENT_STATUS TABLE
+    PKG_BMTSYNC_ASSIGNMENT.AddUpdateTestAdminStudent(:new.TEST_ADMIN_ID, 'New');
 
 EXCEPTION		
 WHEN NO_DATA_FOUND THEN
@@ -121,13 +111,9 @@ BEGIN
 	WHERE TR.Customer_ID = Cust.Customer_ID AND 
 	Test_Roster_ID = :new.TEST_ROSTER_ID;
 
-	PKG_BMTSYNC_ONCHANGE.TESTROSTER(
-	    vCustomer_ID,
-	    vTestAdminID,
-	    vStudentID,
-            vTestRosterID,
-	    'New'
-	);
+	-- INSERT/UPDATE THE RECORD IN BMTSYNC_STUDENT_STATUS TABLE
+	PKG_BMTSYNC_ASSIGNMENT.AddUpdateTestRoaster(vCustomer_ID, vTestAdminID, vStudentID, vTestRosterID, 'New');
+
 
 EXCEPTION
 WHEN NO_DATA_FOUND THEN

@@ -12,12 +12,13 @@ BEGIN
     Std.Customer_Id = Cust.Customer_Id AND 
     Std.Student_ID = :new.STUDENT_ID;
 
-	-- Add Student in the BMTSYNC_Student_Status table
-	PKG_BMTSYNC_ONCHANGE.Student(
-		:new.STUDENT_ID,
-		vCustomer_ID,
-		'New'
-	);
+
+    PKG_BMTSYNC_Students.AddUpdateStudentAPIStatus(
+        :new.STUDENT_ID,
+	vCustomer_ID,
+	'BMT',
+	'New');
+
 EXCEPTION		
 WHEN NO_DATA_FOUND THEN
    NULL;
