@@ -116,7 +116,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_ASSIGNMENT AS
 			IST2.Item_Set_Id = TAIS.ITEM_SET_ID AND
 			TR.TEST_ADMIN_ID = TAIS.TEST_ADMIN_ID AND
 			TR.Test_Admin_Id = pTestAdminID AND 
-			TR.Student_Id = pStudentId;
+			TR.Student_Id = pStudentId
+			ORDER BY SISS.ITEM_SET_ORDER;
 
 		UPDATE BMTSYNC_Assignment_Status
 		SET Export_Status = 'Inprogress'
@@ -321,5 +322,3 @@ END PKG_BMTSYNC_ASSIGNMENT;
 /
 
 
-set TERMOUT on
-PROMPT PKG_BMTSYNC_ASSIGNMENT compiled
