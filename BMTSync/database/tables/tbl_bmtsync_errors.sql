@@ -1,25 +1,9 @@
-set termout off
-
-declare
-	vExists number := 0;
-
-begin
-	Select count(*) into vExists from user_tables where table_name = 'BMTSYNC_ERRORS';
-
-	if (vExists = 0) then
-
-		execute immediate 'CREATE TABLE BMTSYNC_ERRORS (
+CREATE TABLE BMTSYNC_ERRORS (
                         Error_Code      Number NOT NULL,
                         Error_Desc      VARCHAR2(200) NOT NULL,
                         Retry_Error     CHAR(1) NOT NULL
-		)';
+		);
 
-	end if;
-end;
-/
-
-SET TERMOUT ON
-PROMPT BMTSYNC_ERRORS table script complete;
 
 DELETE FROM BMTSYNC_ERRORS;
 

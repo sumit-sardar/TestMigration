@@ -1,22 +1,17 @@
-set termout off
+CREATE TABLE BMTSYNC_CUSTOMER
+(
+  CUSTOMER_ID     INTEGER not null,
+  CUSTOMER_NAME   VARCHAR2(50) not null,
+  URL_ENDPOINT    VARCHAR2(2000),
+  SYNC_PRIORITY   VARCHAR2(50),
+  FETCH_RESPONSES CHAR(1) default 'N'
+);
 
-declare
-	vExists number := 0;
 
-begin
-	Select count(*) into vExists from user_tables where table_name = 'BMTSYNC_CUSTOMER';
-dbms_output.put_line('vExists: '||vExists );
-	if (vExists = 0) then
 
-		execute immediate 'CREATE TABLE BMTSYNC_CUSTOMER (
-			Customer_Id           INTEGER NOT NULL,
-			Customer_Name        VARCHAR2(50) not null,
-                        URL_ENDPOINT         VARCHAR2(2000)
-		)';
-
-	end if;
-end;
-/
+ALTER TABLE BMTSYNC_CUSTOMER ADD (SYNC_PRIORITY VARCHAR2(50));
+ALTER TABLE BMTSYNC_CUSTOMER ADD CONSTRAINT CHECK_SYNC_PRIORITY CHECK ( SYNC_PRIORITY IN ('HIGH', 'MEDIUM','LOW'));
+ALTER TABLE BMTSYNC_CUSTOMER ADD (FETCH_RESPONSES CHAR(1) DEFAULT 'N');
 
 DELETE FROM BMTSYNC_CUSTOMER;
 
@@ -35,6 +30,3 @@ INSERT INTO BMTSYNC_CUSTOMER(Customer_Id, Customer_Name, URL_ENDPOINT) VALUES
 
 COMMIT;
 
-
-SET TERMOUT ON
-PROMPT BMTSYNC_CUSTOMER table script complete;
