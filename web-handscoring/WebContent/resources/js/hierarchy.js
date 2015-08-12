@@ -1674,9 +1674,10 @@ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPo
 		 	if(deliveryClientId == 2){
 		 	 		iframe.name = "bmtFrame";
 					iframe.id = "bmtFrame";
-					getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 					iframe.width = "100%";
 					iframe.height = "100%";
+					element.appendChild(iframe);
+					getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 		 	 }else{
 		 	 	// If not BMT. OAS Item will load.
 			 		if (parentProductId == 7500){
@@ -2200,14 +2201,15 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 									bmtURL = data.bmtAPIUrl;
 									isSuccess = true;
 								}else{
-									dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
-				        			elementDiv.appendChild(dynTable);
+									window.isSuccess = isSuccess;
+									iframe.src = "error.jsp";
 								}	
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								
-								dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
-				        		elementDiv.appendChild(dynTable);						
+										window.textStatus = textStatus;
+										iframe.src = "error.jsp";
+										$.unblockUI();  
+										document.getElementById("bmtFrame").contentWindow.location.href="/SessionWeb/logout.do"
 							}
 			});
  	
@@ -2274,9 +2276,10 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 		 	 if(deliveryClientId == 2){
 		 	 		iframe.name = "bmtFrame";
 					iframe.id = "bmtFrame";
-					getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 					iframe.width = "100%";
 					iframe.height = "100%";
+					element.appendChild(iframe);
+					getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 		 	 }else{
 		 	 	// If not BMT. OAS Item will load.
 			 		if (parentProductId == 7500){
