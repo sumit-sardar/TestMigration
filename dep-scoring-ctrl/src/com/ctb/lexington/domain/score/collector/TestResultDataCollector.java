@@ -151,6 +151,7 @@ public class TestResultDataCollector {
         for(int i=0;i<contentAreas.length;i++) {
             StudentItemSetStatusRecord subtest = (StudentItemSetStatusRecord) subtestMap.get(contentAreas[i].getSubtestId());
             String contentAreaName = contentAreas[i].getContentAreaName();
+            System.out.println("****subtest.getCompletionStatus()*** -> " + subtest.getCompletionStatus() + " *for content**-> "+contentAreaName);
             if(subtest != null && !"SC".equals(subtest.getCompletionStatus()) 
                                && !"NT".equals(subtest.getCompletionStatus())
                                && !"IP".equals(subtest.getCompletionStatus())
