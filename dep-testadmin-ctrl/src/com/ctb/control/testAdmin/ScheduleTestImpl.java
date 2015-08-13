@@ -5729,6 +5729,8 @@ public class ScheduleTestImpl implements ScheduleTest
 
 			if(statusCode == 200)
 				return true;
+			else if(respJSON!=null && respJSON.getErrorCode()!=null && (respJSON.getErrorCode().equals("28") || respJSON.getErrorCode().equals("29")))
+				return true;
 			else if(respJSON!=null && respJSON.getErrorCode()!=null)
 				return false;
 			else
