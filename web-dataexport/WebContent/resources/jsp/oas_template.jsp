@@ -36,6 +36,7 @@
   <head>
     <title><netui-template:attribute name="title"/></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
 	<link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />
 	<link href="<%=request.getContextPath()%>/resources/css/jquery-ui-1.8.16.custom.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/ui.jqgrid.css" type="text/css" rel="stylesheet" />
