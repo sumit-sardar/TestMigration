@@ -68,6 +68,7 @@
 <script>
     var audio = document.getElementById("myaudio");
     var responseString=window.parent.s3AudioURl;
+    var isInternalStop=false;//to fix close pop up on cancel button in safari
     if(responseString.indexOf(".mp3") > -1)
 	{
 		audio.src=responseString;
@@ -114,7 +115,7 @@
 		 }
 	}
     function playAudio()
-    {	
+    {	isInternalStop=true;
     	disableEnableIcon("play");
     	var audio = document.getElementById("myaudio");
     	audio.play();
@@ -125,6 +126,7 @@
 
     function pauseAudio()
     {
+    	isInternalStop=true;
     	disableEnableIcon("pause");
         var audio = document.getElementById("myaudio");
         audio.pause();
@@ -136,7 +138,9 @@
     	 if(audio!=null){
     	 	disableEnableIcon("stop");
          	audio.pause();
-         	audio.currentTime = 0;
+         	if(isInternalStop){
+         		audio.currentTime = 0;
+         	}
          }
     }
 
@@ -170,7 +174,7 @@
     	if( document.getElementById("status")){
         document.getElementById("status").innerHTML = strStatus;
         }
-        console.log("updateStatus***********"+strStatus);
+        //console.log("updateStatus***********"+strStatus);
         parent.document.getElementById("playingStatus").value=strStatus;
     }
 
@@ -179,7 +183,7 @@
     	if(document.getElementById("timeelapsed")){
         document.getElementById("timeelapsed").innerHTML = elapsedTime;
         }
-       console.log("updateTimeElapsed***********"+elapsedTime);
+       //console.log("updateTimeElapsed***********"+elapsedTime);
     }
 
     function setAudioSource(audioSource)

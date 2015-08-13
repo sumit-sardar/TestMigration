@@ -68,6 +68,7 @@
 <script>
     var audio = document.getElementById("myaudio");
     var responseString=window.parent.s3AudioURl;
+    var isInternalStop=false;//to fix close pop up on cancel button in safari
     if(responseString.indexOf(".mp3") > -1)
 	{
 		audio.src=responseString;
@@ -92,6 +93,7 @@
 		switch(val) {
 		
 		case "play": 
+			
 			play.className ="playIconDisable";
 			pause.className ="pauseIcon";
 			stop.className ="stopIcon";
@@ -114,7 +116,7 @@
 		 }
 	}
     function playAudio()
-    {	
+    {	isInternalStop=true;
     	disableEnableIcon("play");
     	var audio = document.getElementById("myaudio");
     	audio.play();
@@ -125,18 +127,21 @@
 
     function pauseAudio()
     {
+    	isInternalStop=true;
     	disableEnableIcon("pause");
         var audio = document.getElementById("myaudio");
         audio.pause();
     }
-
+	
     function stopAudio()
     {	
     	 var audio = document.getElementById("myaudio");
-    	 if(audio!=null){
+    	 if(audio!=null ){
     	 	disableEnableIcon("stop");
          	audio.pause();
-         	audio.currentTime = 0;
+         	if(isInternalStop){
+         		audio.currentTime = 0;
+         	}
          }
     }
 
