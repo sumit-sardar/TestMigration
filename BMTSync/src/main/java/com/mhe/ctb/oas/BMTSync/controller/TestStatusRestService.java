@@ -100,7 +100,7 @@ public class TestStatusRestService {
 		try {
 			for (TestStatus testStatus : request.getTestStatus()) {
 				boolean storeStatusUpdate = true;
-				
+				List<ItemResponse> itemResponses = null;
 				// If the test status is CO or IN, and this is a LasLinks customer ID, load the customer data.
 				final Integer customerId = testStatus.getValidatedCustomerId();
 				if (customerId == null || ! endpointSelector.getFetchResponses(customerId)) {
@@ -108,18 +108,8 @@ public class TestStatusRestService {
 				} else {
 					// If the customer ID says to get the endpoint and we're in the right status, do the thing.
 					if (testStatus.getDeliveryStatus().equals("CO") || testStatus.getDeliveryStatus().equals("IN")) {
-						logger.info("[ItemResponses] Customer ID from BMT requires requests and status is final; fetching responses. [customerId="
-								+ customerId + ",testStatus=" + testStatus.getDeliveryStatus() + "]");
-						final String endpoint = endpointSelector.getEndpoint(customerId);
-						CreateItemResponsesResponse itemResponses = null;
-						CreateItemResponsesRequest itemResponsesRequest = new CreateItemResponsesRequest();
-						itemResponsesRequest.setAssignmentId(testStatus.getAssignmentId());
-						final String bmtResponseUrl = endpoint + RestURIConstants.POST_RESPONSES + "/" + testStatus.getAssignmentId();
-						logger.info("[ItemResponses] Calling BMT URL:" + bmtResponseUrl);
 						try {
-							// Send the assignmentId to BMT for a list of itemResponses.
-					        itemResponses = restTemplate.getForObject(bmtResponseUrl, CreateItemResponsesResponse.class);
-					        logger.info("[ItemResponses] Response from BMT: " + itemResponses == null ? "null" : itemResponses.toJson());
+							itemResponses = getItemResponsesFromBMT(customerId, testStatus);
 						} catch (RestClientException rce) {
 							// If something goes wrong with the REST call, log the error.
 							logger.error("[ItemResponses] Http Client Error: " + rce.getMessage(), rce);
@@ -139,7 +129,6 @@ public class TestStatusRestService {
 				        if (itemResponses != null) {
 				        	// If BMT responds, log the response and call the scoring queue.
 				        	try {
-					        	logger.info("[ItemResponses] Response json from BMT: " + itemResponses.toJson());
 				        		processResponses(testStatus, itemResponses);
 				        		logger.info("[ItemResponses] Sending testRosterId to scoring queue: [testRosterId="
 				        				+ testStatus.getOasRosterId() + "]");
@@ -155,26 +144,6 @@ public class TestStatusRestService {
 								testStatus.setErrorCode(500);
 								testStatus.setErrorMessage("Error with data from BMT: " + rce.getMessage());	
 				        	}
-			        		int retryCount = 0;
-			        		boolean sendSuccessful = false;
-			        		while (! sendSuccessful && retryCount < 3) {
-			        			try {
-			        				scoringQueue.send(testStatus.getOasRosterId());
-			        				sendSuccessful = true;
-			        			} catch (final JMSException jmse) {
-						        	logger.error("[ItemResponses] Error sending roster ID to scoring queue: " + jmse.getMessage(), jmse);
-						        	retryCount++;
-			        			}
-			        		}
-			        		if (sendSuccessful) {
-			        			logger.info("[ItemResponses] Roster ID sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
-			        		} else {
-			        			logger.error("[ItemResponses] Roster ID could not be sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
-								storeStatusUpdate = false;
-								testStatus.setErrorCode(500);
-								testStatus.setErrorMessage("Roster ID could not be sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");	
-
-			        		}
 				        } else {
 				        	logger.error("[ItemResponses] Response json from BMT is null; logging error!");
 							storeStatusUpdate = false;
@@ -206,6 +175,33 @@ public class TestStatusRestService {
 							testStatus.getDeliveryStatus(), 
 							testStatus.getStartedDate(), 
 							testStatus.getCompletedDate());
+					if (testStatus.getDeliveryStatus().equals("CO")) {
+		        		int retryCount = 0;
+		        		boolean sendSuccessful = false;
+		        		while (! sendSuccessful && retryCount < 3) {
+		        			try {
+		        				scoringQueue.send(testStatus.getOasRosterId());
+		        				sendSuccessful = true;
+		        			} catch (final JMSException jmse) {
+					        	logger.error("[ItemResponses] Error sending roster ID to scoring queue: " + jmse.getMessage(), jmse);
+					        	retryCount++;
+					        	try {
+					        		Thread.sleep(5000);
+					        	} catch (final InterruptedException ie) {
+					        		logger.error("[ItemResponses] Thread interrupted waiting for scoring retry.", ie);
+					        	}
+		        			}
+		        		}
+		        		if (sendSuccessful) {
+		        			logger.info("[ItemResponses] Roster ID sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
+		        		} else {
+		        			logger.error("[ItemResponses] Roster ID could not be sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
+							storeStatusUpdate = false;
+							testStatus.setErrorCode(500);
+							testStatus.setErrorMessage("Roster ID could not be sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");	
+
+		        		}
+					}
 				}
 				
 				// If Failure add failure to response
@@ -231,15 +227,29 @@ public class TestStatusRestService {
 		return response;
 	}
 
-	private void processResponses(TestStatus testStatus, CreateItemResponsesResponse itemResponses) throws RestClientException, SQLException {
+	private void processResponses(TestStatus testStatus, List<ItemResponse> itemResponses) throws RestClientException, SQLException {
 		// Calling function has validated that testStatus and itemResponses are not null.
 		
 		final Integer testRosterId = testStatus.getOasRosterId();
 		final String subTestId = testStatus.getOasTestId();
-		final List<ItemResponse> itemResponseList = itemResponses.getItemResponses();
 
-		itemResponseDAO.addItemResponses(testRosterId, subTestId, itemResponseList);
+		itemResponseDAO.addItemResponses(testRosterId, subTestId, itemResponses);
 	}
 	
-	
+	private List<ItemResponse> getItemResponsesFromBMT(final int customerId, final TestStatus testStatus) {
+		logger.info("[ItemResponses] Customer ID from BMT requires requests and status is final; fetching responses. [customerId="
+				+ customerId + ",testStatus=" + testStatus.getDeliveryStatus() + "]");
+		final String endpoint = endpointSelector.getEndpoint(customerId);
+		CreateItemResponsesResponse itemResponses = null;
+		CreateItemResponsesRequest itemResponsesRequest = new CreateItemResponsesRequest();
+		itemResponsesRequest.setAssignmentId(testStatus.getAssignmentId());
+		final String bmtResponseUrl = endpoint + RestURIConstants.POST_RESPONSES + "/" + testStatus.getAssignmentId();
+		logger.info("[ItemResponses] Calling BMT URL:" + bmtResponseUrl);
+
+		// Send the assignmentId to BMT for a list of itemResponses.
+        itemResponses = restTemplate.getForObject(bmtResponseUrl, CreateItemResponsesResponse.class);
+        logger.info("[ItemResponses] Response from BMT: " + itemResponses == null ? "null" : itemResponses.toJson());
+
+	    return itemResponses.getItemResponses();    
+	}
 }
