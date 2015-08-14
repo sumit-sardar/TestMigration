@@ -179,24 +179,23 @@ public class TestStatusRestService {
 							testStatus.getStartedDate(), 
 							testStatus.getCompletedDate());
 					if (testStatus.getDeliveryStatus().equals("CO")) {
-		        		int retryCount = 0;
+		        		int retryCount = 1;
 		        		boolean sendSuccessful = false;
 		        		// BMTOAS-1557 Must retry three times to send scoring messaage.				        					        		
-		        		while (! sendSuccessful && retryCount < SCORING_RETRY_MAX_COUNT) {
+		        		while (! sendSuccessful && retryCount <= SCORING_RETRY_MAX_COUNT) {
+			            	try {
+				        		Thread.sleep(SCORING_RETRY_DELAY * retryCount);
+				        	} catch (final InterruptedException ie) {
+				        		logger.error("[ItemResponses] Thread interrupted waiting for scoring retry.", ie);
+				        	}
 		        			try {
 				        		logger.info("[ItemResponses] Sending testRosterId to scoring queue: [testRosterId="
-				        				+ testStatus.getOasRosterId() + "]");		        				scoringQueue.send(testStatus.getOasRosterId());
+				        				+ testStatus.getOasRosterId() + "]");
+				        		scoringQueue.send(testStatus.getOasRosterId());
 		        				sendSuccessful = true;
 		        			} catch (final JMSException jmse) {
 					        	logger.error("[ItemResponses] Error sending roster ID to scoring queue: " + jmse.getMessage(), jmse);
 					        	retryCount++;
-					        	if (retryCount < SCORING_RETRY_MAX_COUNT) {
-						        	try {
-						        		Thread.sleep(SCORING_RETRY_DELAY * retryCount);
-						        	} catch (final InterruptedException ie) {
-						        		logger.error("[ItemResponses] Thread interrupted waiting for scoring retry.", ie);
-						        	}
-					        	}
 		        			}
 		        		}
 		        		if (sendSuccessful) {
