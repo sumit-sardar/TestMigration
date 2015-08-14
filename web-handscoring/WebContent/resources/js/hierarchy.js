@@ -2201,15 +2201,13 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 									bmtURL = data.bmtAPIUrl;
 									isSuccess = true;
 								}else{
-									window.isSuccess = isSuccess;
-									iframe.src = "error.jsp";
+									iframe.remove();
+									dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+				        			elementDiv.appendChild(dynTable);
 								}	
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-										window.textStatus = textStatus;
-										iframe.src = "error.jsp";
-										$.unblockUI();  
-										document.getElementById("bmtFrame").contentWindow.location.href="/SessionWeb/logout.do"
+								setTimeout(function(){ iframe.contentWindow.location.href="/SessionWeb/logout.do"; }, 100); //added a timeout as at times the login screen does not show in the popup.
 							}
 			});
  	
@@ -2235,10 +2233,12 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 							            	 tryCount++;
 							            	 setTimeout(getBMTItemURL(rosterIid, testAdminId, itemId, extTstItemSetId, elementDiv),15000);
 							            }else{
+							            	iframe.remove();
 							            	dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
 							        		elementDiv.appendChild(dynTable);
 							            }
 							        }else if(textStatus == 'error'){
+							        	iframe.remove();
 							        	if(jqXHR.status == 404){
 							        		dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtItemUnavailable").val()+"</div></td></tr>";
 							        		elementDiv.appendChild(dynTable);
