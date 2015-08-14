@@ -900,14 +900,13 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 									bmtURL = data.bmtAPIUrl;
 									isSuccess = true;
 								}else{
+									iframe.remove();
 									dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
 				        			elementDiv.appendChild(dynTable);
 								}	
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								
-								dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
-				        		elementDiv.appendChild(dynTable);						
+								setTimeout(function(){ iframe.contentWindow.location.href="/SessionWeb/logout.do"; }, 100); //added a timeout as at times the login screen does not show in the popup.					
 							}
 			});
  	
@@ -933,10 +932,12 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 							            	 tryCount++;
 							            	 setTimeout(getBMTItemURL(rosterIid, testAdminId, itemId, extTstItemSetId, elementDiv),15000);
 							            }else{
+							            	iframe.remove();
 							            	dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
 							        		elementDiv.appendChild(dynTable);
 							            }
 							        }else if(textStatus == 'error'){
+							        	iframe.remove();
 							        	if(jqXHR.status == 404){
 							        		dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtItemUnavailable").val()+"</div></td></tr>";
 							        		elementDiv.appendChild(dynTable);
@@ -982,9 +983,10 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		 	 if(deliveryClientId == 2){
 		 	 	iframe.name = "bmtFrame";
 				iframe.id = "bmtFrame";
-				getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 				iframe.width = "100%";
 				iframe.height = "100%";
+				element.appendChild(iframe);
+				getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 		 	 }else{
 		 		if (parentProductId == 7500){
 					iframe.name = "jsFrame"; //For Laslinks A/B/Espanol A
@@ -1038,9 +1040,10 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		 	if(deliveryClientId == 2){
 		 	 		iframe.name = "bmtFrame";
 					iframe.id = "bmtFrame";
-					getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 					iframe.width = "100%";
 					iframe.height = "100%";
+					element.appendChild(iframe);
+					getBMTItemURL(selectedRowObjectScoring.testRosterId, selectedRowObjectScoring.testAdminId, selectedRowObjectScoring.id, selectedRowObjectScoring.extItemSetId, element, iframe);
 		 	 }else{
 		 	 	// If not BMT. OAS Item will load.
 			 		if (parentProductId == 7500){
