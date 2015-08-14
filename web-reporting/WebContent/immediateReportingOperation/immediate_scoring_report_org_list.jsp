@@ -39,9 +39,9 @@
     		<table class="transparent">
 				<tr class="transparent">
 					<td>
-					<% if(productId == 7000){ %>
+					<% if(productId == 7000 || productId == 7200){ %>
 			    		<h1><lb:label key="immediate.report.page.title.LLEAB" /></h1>
-			    	<%} else if (productId == 7500) {%>
+			    	<%} else if (productId == 7500 || productId == 7800) {%>
 			    		<h1><lb:label key="immediate.report.page.title.LL2ND" /></h1>
 			    	<%} %>	
 					</td>
