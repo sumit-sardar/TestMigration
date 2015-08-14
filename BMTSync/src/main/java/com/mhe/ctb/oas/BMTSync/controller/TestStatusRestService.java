@@ -33,6 +33,12 @@ public class TestStatusRestService {
 	/** The logger. */
 	static private Logger logger = Logger.getLogger(TestStatusRestService.class);
 	
+	/** Max number of retry attempts for sending to scoring queue. */
+	private static final int SCORING_RETRY_MAX_COUNT = 3;
+	
+	/** Base duration of retry delay for scoring queue. */
+	private static final int SCORING_RETRY_DELAY = 5000; // 5 seconds for the scoring queue to reset.
+	
 	/** The test status DAO. */
 	private TestStatusDAO testStatusDAO;
 	
@@ -178,17 +184,19 @@ public class TestStatusRestService {
 					if (testStatus.getDeliveryStatus().equals("CO")) {
 		        		int retryCount = 0;
 		        		boolean sendSuccessful = false;
-		        		while (! sendSuccessful && retryCount < 3) {
+		        		while (! sendSuccessful && retryCount < SCORING_RETRY_MAX_COUNT) {
 		        			try {
 		        				scoringQueue.send(testStatus.getOasRosterId());
 		        				sendSuccessful = true;
 		        			} catch (final JMSException jmse) {
 					        	logger.error("[ItemResponses] Error sending roster ID to scoring queue: " + jmse.getMessage(), jmse);
 					        	retryCount++;
-					        	try {
-					        		Thread.sleep(5000);
-					        	} catch (final InterruptedException ie) {
-					        		logger.error("[ItemResponses] Thread interrupted waiting for scoring retry.", ie);
+					        	if (retryCount < SCORING_RETRY_MAX_COUNT) {
+						        	try {
+						        		Thread.sleep(SCORING_RETRY_DELAY * retryCount);
+						        	} catch (final InterruptedException ie) {
+						        		logger.error("[ItemResponses] Thread interrupted waiting for scoring retry.", ie);
+						        	}
 					        	}
 		        			}
 		        		}
