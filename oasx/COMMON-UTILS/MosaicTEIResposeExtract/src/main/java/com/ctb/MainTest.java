@@ -11,7 +11,7 @@ import com.ctb.utils.ExtractUtils;
 public class MainTest {
 
 	/**
-	 * Need to pass tow arguments
+	 * Need to pass two arguments
 	 * args[0] : Properties file path [e.g. /local/apps/oas/properties/]
 	 * args[1] : Properties file name [e.g. conf]
 	 * @param args

@@ -7,10 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,7 +15,6 @@ import com.ctb.utils.DBUtils;
 import com.ctb.utils.ExtractUtils;
 import com.ctb.utils.MSSConstantUtils;
 import com.ctb.utils.MSSRequestProcessor;
-import com.ctb.utils.MosaicRequestExcelPojo;
 import com.ctb.utils.SQLUtils;
 import com.ctb.utils.SimpleCache;
 import com.ctb.utils.StudentResponseExcelUtils;
@@ -34,7 +30,6 @@ public class MSSRequestScore {
 
 	public void run(){
 		
-		List<MosaicRequestExcelPojo> mosaicRequestCSVList = Collections.synchronizedList(new ArrayList<MosaicRequestExcelPojo>());
 		Connection conn = DBUtils.getOASConnection();
 		SimpleCache cache = null;
 		try {
@@ -53,7 +48,7 @@ public class MSSRequestScore {
 					for (String id: cache.getKeys()) {
 						StudentResponses resp = cache.getResponse(id);
 						if(resp.getClobResponse()!=null && !resp.getClobResponse().isEmpty()){
-							MSSRequestProcessor process = new MSSRequestProcessor(resp);
+							MSSRequestProcessor process = new MSSRequestProcessor(resp, cache);
 							executor.execute(new Thread(process));
 						}
 					}
@@ -63,11 +58,10 @@ public class MSSRequestScore {
 					}
 					
 					//: Collect all processed response to be written
-					mosaicRequestCSVList = MSSRequestProcessor.getfinalCollection();
-					System.out.println("\n*** MSSRequestScore : run : Total coverted responses size "+mosaicRequestCSVList.size()+" out of "+cache.size()+".");
+					System.out.println("\n*** MSSRequestScore : run : Total coverted responses size "+cache.extractSize()+" out of "+cache.size()+".");
 
 					//: create .xls file from final collection
-					processExcelFileGeneration(mosaicRequestCSVList, location);
+					processExcelFileGeneration(cache, location);
 			}
 			
 		} catch (Exception e) {
@@ -115,8 +109,8 @@ public class MSSRequestScore {
 	 * @param location
 	 * @throws Exception
 	 */
-	private void processExcelFileGeneration(
-			List<MosaicRequestExcelPojo> mosaicRequestCSVList, String location)
+	private void processExcelFileGeneration(SimpleCache cache, String location)
+//			List<MosaicRequestExcelPojo> mosaicRequestCSVList, String location)
 			throws Exception {
 
 		StringBuilder fileName = new StringBuilder(ExtractUtils.get("oas.export.file.name"));
@@ -139,7 +133,7 @@ public class MSSRequestScore {
 			fileOut = new FileOutputStream(ff);
 			
 			StudentResponseExcelUtils excelUtils = new StudentResponseExcelUtils();
-			excelUtils.generateExcelReport(new Object[]{fileName.toString(), mosaicRequestCSVList, fileOut});
+			excelUtils.generateExcelReport(new Object[]{fileName.toString(), cache, fileOut});
 			
 			
 			System.out.println("*** MSSRequestScore : processExcelFileGeneration : Excel file has been successfully created at location "+ff.getAbsolutePath());

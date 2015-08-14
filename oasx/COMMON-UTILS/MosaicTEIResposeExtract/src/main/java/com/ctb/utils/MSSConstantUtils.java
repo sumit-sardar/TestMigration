@@ -92,19 +92,25 @@ public class MSSConstantUtils {
 				.put("The driving snow and the wind rushed to meet her and struggled with her over the door. But she enjoyed the struggle.",
 						"5");
 		textRestrictedMap
-				.put("I have come after them and made repair Where they have left not one stone on a stone,",
+				.put("I have come after them and made repairWhere they have left not one stone on a stone,",
 						"1");
 		textRestrictedMap
-				.put("We have to use a spell to make them balance: \"Stay where you are until our backs are turned!\"",
+				.put("We have to use a spell to make them balance:\"Stay where you are until our backs are turned!\"",
 						"2");
 		textRestrictedMap
-				.put("My apple trees will never get across And eat the cones under his pines, I tell him.",
+				.put("My apple trees will never get acrossAnd eat the cones under his pines, I tell him.",
 						"3");
 		textRestrictedMap
-				.put("And on a day we meet to walk the line And set the wall between us once again.",
+				.put("And on a day we meet to walk the lineAnd set the wall between us once again.",
 						"4");
 		textRestrictedMap
-				.put("Not long after, a concerned friend told her, \"You need a new dog.\"",
+				.put("Before I built a wall I'd ask to knowWhat I was walling in or walling out,",
+						"5");
+		textRestrictedMap
+				.put("And he likes having thought of it so well45He says again, \"Good fences make good neighbors.\"",
+						"6");
+		textRestrictedMap
+				.put("Not long after, a concerned friend told her, \"You need a newdog.\"",
 						"1");
 		textRestrictedMap
 				.put("Jean \"was having some difficulty getting around and ... was having trouble getting the dog enough exercise,\" explained Illmensee, 66, a retired teacher from Huntington, N.Y.",
@@ -116,13 +122,13 @@ public class MSSConstantUtils {
 				.put("\"If I stop working, I couldn't afford to have him,\" Rogers explained.",
 						"4");
 		textRestrictedMap
-				.put("Jennifer Devine, SWAP chariwoman and a geriatric social worker, said many seniors find that having a pet is soothing and reassuring, even with the extra work.",
+				.put("Jennifer Devine, SWAP chairwoman and a geriatric social worker, said many seniors find that having a pet is soothing and reassuring, even with the extra work.",
 						"5");
 		textRestrictedMap
 				.put("At Little Shelter in Huntington, there is a food pantry for those who can no longer afford pet food.",
 						"6");
 		textRestrictedMap
-				.put("One study found that employees—both mentors and mentees—who participated in a mentoring program were 20% more likely to get a raise than those who were not in such a program.",
+				.put("One study found that employees /u2014 both mentors and mentees /u2014 who participated in a mentoring program were 20% more likely to get a raise than those who were not in such a program.",
 						"1");
 		textRestrictedMap
 				.put("Mentors also gain the satisfaction of knowing that they are helping to change lives for the better.",

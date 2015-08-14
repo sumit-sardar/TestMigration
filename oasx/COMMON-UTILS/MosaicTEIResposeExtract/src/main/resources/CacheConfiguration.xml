@@ -4,5 +4,8 @@
 	<cache name="responses" maxElementsInMemory="10" eternal="true"
 		overflowToDisk="true">
 	</cache>
+	<cache name="extractresponses" maxElementsInMemory="10" eternal="true"
+		overflowToDisk="true">
+	</cache>
 	<diskStore path="user.home"/>
 </ehcache>

@@ -9,13 +9,14 @@ public class CandidateItemResponse implements Serializable{
 	private String order;
 	private String value;
 	
+	private String val; //for DND
+	
 	private String id;
 	private String mathml_value;
 	
 	private String target; //for DND
 	private String html; //for DND
 	
-	private String val;
 	
 	private String ItemOrder; //for parent DAS Item
 	private String ItemScore; //for parent DAS Item

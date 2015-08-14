@@ -2,7 +2,6 @@ package com.ctb.utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -12,45 +11,47 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 
 public class StudentResponseExcelUtils {
-	
-	
-	List<MosaicRequestExcelPojo> mosaicRequestCSVList = null;
+
+	// List<MosaicRequestExcelPojo> mosaicRequestCSVList = null;
+	SimpleCache cache = null;
 	FileOutputStream fileOut = null;
-	
+
 	/**
-	 * Generate the excel report with a single sheet
-	 * Here 65k limit restriction is not present
+	 * Generate the excel report with a single sheet Here 65k limit restriction
+	 * is not present
+	 * 
 	 * @param args
 	 * @throws Exception
 	 */
 	public void generateExcelReport(Object[] args) throws Exception {
-    	setupForExcel(args);
-    	HSSFWorkbook wb = new HSSFWorkbook();
-    	if(this.mosaicRequestCSVList!= null && !this.mosaicRequestCSVList.isEmpty()){
-    		HSSFSheet reportSheet = wb.createSheet();
-    		wb.setSheetName(0, MSSConstantUtils.excelSheetName);
+		setupForExcel(args);
+		HSSFWorkbook wb = new HSSFWorkbook();
+		if (cache != null && cache.getExtractKeys().size() > 0) {
+			HSSFSheet reportSheet = wb.createSheet();
+			wb.setSheetName(0, MSSConstantUtils.excelSheetName);
 
-    		prepareReportSheet(reportSheet);
+			prepareReportSheet(reportSheet);
 
-    		HSSFPalette palette =  wb.getCustomPalette();
+			HSSFPalette palette = wb.getCustomPalette();
 
-    	    palette.setColorAtIndex(HSSFColor.TEAL.index,
-    	            (byte) 70,  //RGB red (0-255)
-    	            (byte) 130,    //RGB green
-    	            (byte) 180     //RGB blue
-    	    );
-    	    wb.write(fileOut);
-    	}
-    }
-	
+			palette.setColorAtIndex(HSSFColor.TEAL.index, (byte) 70, // RGB red
+																		// (0-255)
+					(byte) 130, // RGB green
+					(byte) 180 // RGB blue
+			);
+			wb.write(fileOut);
+		}
+	}
+
 	/**
-	 * initialize populated student response collection 
+	 * initialize populated student response collection
+	 * 
 	 * @param args
 	 */
-	@SuppressWarnings("unchecked")
 	private void setupForExcel(Object[] args) {
-		this.mosaicRequestCSVList = (List<MosaicRequestExcelPojo>)args[1];
-		this.fileOut = (FileOutputStream)args[2];
+		// this.mosaicRequestCSVList = (List<MosaicRequestExcelPojo>)args[1];
+		this.cache = (SimpleCache) args[1];
+		this.fileOut = (FileOutputStream) args[2];
 	}
 	
 	/**
@@ -67,21 +68,32 @@ public class StudentResponseExcelUtils {
 		row = reportSheet.createRow(rowno++);
 		int cellCount = 0;
 		for (int i = 0; i < headings.length; i++) {
-			addCell(row, (short)cellCount++ , headings[i]);
+			addCell(row, (short) cellCount++, headings[i]);
 		}
-		
-		for (MosaicRequestExcelPojo msReq : mosaicRequestCSVList) {
-			row = reportSheet.createRow(rowno++);
-			int cellno = 0;
-			addCell(row, (short)cellno++ , msReq.getItemid());
-			addCell(row, (short)cellno++ , msReq.getItemsource());
-			addCell(row, (short)cellno++ , msReq.getItemBankid());
-			addCell(row, (short)cellno++ , msReq.getsResponse());
-			addCell(row, (short)cellno++ , msReq.getStudentrosterid());
-			addCell(row, (short)cellno++ , msReq.getOasItemId());
-			addCell(row, (short)cellno++ , msReq.getPEId());
-			addCell(row, (short)cellno++ , MSSConstantUtils.wrap(msReq.getJson()));
+
+		for (String id : cache.getExtractKeys()) {
+			MosaicRequestExcelPojo msReq = cache.getExtractResponse(id);
+			if (msReq != null) {
+				row = reportSheet.createRow(rowno++);
+				int cellno = 0;
+				addCell(row, (short) cellno++, msReq.getItemid());
+				addCell(row, (short) cellno++, msReq.getItemsource());
+				addCell(row, (short) cellno++, msReq.getItemBankid());
+				addCell(row, (short) cellno++, msReq.getsResponse());
+				addCell(row, (short) cellno++, msReq.getStudentrosterid());
+				addCell(row, (short) cellno++, msReq.getOasItemId());
+				addCell(row, (short) cellno++, msReq.getPEId());
+				addCell(row, (short) cellno++, msReq.getJson());
+				/*
+				 * System.out.println(msReq.getItemid() + "\t||\t " +
+				 * msReq.getItemsource() + "\t||\t" + msReq.getItemBankid() +
+				 * "\t||\t" + msReq.getsResponse() + "\t||\t" +
+				 * msReq.getStudentrosterid() + "\t||\t" + msReq.getOasItemId()
+				 * + "\t||\t" + msReq.getPEId() + "\t||\t" + msReq.getJson());
+				 */
+			}
 		}
+
 	}
 	
 	/**

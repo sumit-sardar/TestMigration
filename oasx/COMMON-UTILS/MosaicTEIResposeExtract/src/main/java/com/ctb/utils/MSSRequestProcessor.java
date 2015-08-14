@@ -1,7 +1,6 @@
 package com.ctb.utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.ctb.utils.datamodel.Answer;
@@ -17,12 +16,12 @@ public class MSSRequestProcessor implements Runnable {
 
 	
 	private StudentResponses response;
+	private SimpleCache cache;
 
-	final private static List<MosaicRequestExcelPojo> mosaicRequestCSVList = Collections
-			.synchronizedList(new ArrayList<MosaicRequestExcelPojo>());
 
-	public MSSRequestProcessor(StudentResponses response) {
+	public MSSRequestProcessor(StudentResponses response, SimpleCache cache) {
 		this.response = response;
+		this.cache = cache;
 	}
 
 	public void run() {
@@ -50,7 +49,7 @@ public class MSSRequestProcessor implements Runnable {
 						studentResponse, mssRequestResponse);
 				
 				if(processedRequest != null && !processedRequest.isEmpty()){
-					prepareCollection(new MosaicRequestExcelPojo(
+					prepareCollection(this.response.getRosterid().concat(this.response.getOasItemId()).concat(this.response.getDasItemid()), new MosaicRequestExcelPojo(
 							mssRequest.getItemResponseSource(),
 							mssRequest.getItemSource(), this.response.getDasItemid(),
 							mssRequest.getItemBankId(), processedRequest,
@@ -127,11 +126,13 @@ public class MSSRequestProcessor implements Runnable {
 		    				}
 		    			}
 		    			
-		    			mssRequestResponse.getMosaicScoringRequest().setCandidateItemResponseObj(candidateResponseList);
-		    			
-		    			//: Prepare the Candidate response JSON only from object
-		    			String finalMssRequestJson = convetObjectToJson(mssRequestResponse, scoreJson.getInteractionType());
-		    			return finalMssRequestJson;// return final MSS request JSON string
+		    			if(!candidateResponseList.isEmpty()){
+		    				
+			    			mssRequestResponse.getMosaicScoringRequest().setCandidateItemResponseObj(candidateResponseList);
+			    			//: Prepare the Candidate response JSON only from object
+			    			String finalMssRequestJson = convetObjectToJson(mssRequestResponse, scoreJson.getInteractionType());
+			    			return finalMssRequestJson;// return final MSS request JSON string
+		    			}
 	    			}
 	    		}
 	    	}
@@ -157,11 +158,8 @@ public class MSSRequestProcessor implements Runnable {
 		return json;
 	}
 	
-	private void prepareCollection(MosaicRequestExcelPojo obj) {
-		mosaicRequestCSVList.add(obj);
+	private void prepareCollection(String id, MosaicRequestExcelPojo obj) {
+		cache.addExtractResponse(id, obj);
 	}
 
-	public static List<MosaicRequestExcelPojo> getfinalCollection() {
-		return mosaicRequestCSVList;
-	}
 }
