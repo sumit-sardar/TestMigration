@@ -272,6 +272,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 				   Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status
 					   WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)
 				WHERE Test_Roster_Id = pRosterId;
+			ELSIF vFinalStatus = 'IS' THEN
+				UPDATE Test_Roster SET
+				   Test_Completion_Status = vFinalStatus,
+				   Start_Date_Time = NVL(Start_Date_Time, pStartDate),
+				   Completion_Date_Time = SYSDATE,
+				   Updated_Date_Time = SYSDATE
+				WHERE Test_Roster_ID = pRosterId;
 
 			ELSE
 				UPDATE Test_Roster SET
