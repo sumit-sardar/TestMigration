@@ -276,7 +276,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 				UPDATE Test_Roster SET
 				   Test_Completion_Status = vFinalStatus,
 				   Start_Date_Time = NVL(Start_Date_Time, pStartDate),
-				   Completion_Date_Time = SYSDATE,
+				   -- Fix BMTOAS-1835
+				   Completion_Date_Time = pCompletionDate,
 				   Updated_Date_Time = SYSDATE
 				WHERE Test_Roster_ID = pRosterId;
 
