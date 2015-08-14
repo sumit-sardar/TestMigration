@@ -133,12 +133,9 @@ public class TestStatusRestService {
 						}
 
 				        if (itemResponses != null) {
-				        	// If BMT responds, log the response and call the scoring queue.
+				        	// If BMT responds, log the responses.
 				        	try {
 				        		processResponses(testStatus, itemResponses);
-				        		logger.info("[ItemResponses] Sending testRosterId to scoring queue: [testRosterId="
-				        				+ testStatus.getOasRosterId() + "]");
-				        		// BMTOAS-1557 Must retry three times to send scoring messaage.				        					        		
 				        	} catch (final SQLException sqle) {
 					        	logger.error("[ItemResponses] Error storing responses in database: " + sqle.getMessage(), sqle);
 								storeStatusUpdate = false;
@@ -184,9 +181,11 @@ public class TestStatusRestService {
 					if (testStatus.getDeliveryStatus().equals("CO")) {
 		        		int retryCount = 0;
 		        		boolean sendSuccessful = false;
+		        		// BMTOAS-1557 Must retry three times to send scoring messaage.				        					        		
 		        		while (! sendSuccessful && retryCount < SCORING_RETRY_MAX_COUNT) {
 		        			try {
-		        				scoringQueue.send(testStatus.getOasRosterId());
+				        		logger.info("[ItemResponses] Sending testRosterId to scoring queue: [testRosterId="
+				        				+ testStatus.getOasRosterId() + "]");		        				scoringQueue.send(testStatus.getOasRosterId());
 		        				sendSuccessful = true;
 		        			} catch (final JMSException jmse) {
 					        	logger.error("[ItemResponses] Error sending roster ID to scoring queue: " + jmse.getMessage(), jmse);
