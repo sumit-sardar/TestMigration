@@ -1,0 +1,33 @@
+@page { 
+size: a4 landscape;
+  @bottom-right {
+    content: element(footer);
+  }
+}
+@font-face {  
+    -fs-pdf-font-embed: embed;
+    -fs-pdf-font-encoding: Identity-H;
+}
+
+body {
+    font-family: verdana, arial, sans-serif;
+    font-size: 12pt;
+}
+.split { border: 2px solid black; page-break-after:always;}
+
+#table {
+  border-collapse: separate;
+  border-spacing: 10px;
+  *border-collapse: expression('separate', cellSpacing = '10px');
+}
+.ridge {
+	padding: 5px;
+	width: 300px;
+	background-color: #EFEECB;
+}
+
+.body-style {
+	font-family: Georgia;
+	font-size: 10pt;
+	font-style: italic;
+}

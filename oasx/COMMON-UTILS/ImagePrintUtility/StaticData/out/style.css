@@ -1,0 +1,80 @@
+@page { 
+size: 29.7cm 21cm;
+margin: 0.15in; 
+-fs-flow-top: "header";
+-fs-flow-bottom: "footer";
+-fs-flow-left: "left";
+-fs-flow-right: "right";
+border: thin solid black;
+padding: 1em;
+}
+div.footer
+          { 
+          display: none;
+          text-align: center;  
+          position: running(footer);
+          } 
+@page { @bottom-center { content: element(footer) }} 
+#header {
+font: bold serif;
+position: absolute; top: 0; left: 0; 
+-fs-move-to-flow: "header";
+}
+
+#footer {
+font-size: 90%; font-style: italic; 
+position: absolute; top: 0; left: 0;
+-fs-move-to-flow: "footer";
+}
+
+
+#pagenumber:before {
+content: counter(page); 
+}
+
+#pagecount:before {
+content: counter(pages);  
+}
+#table {
+  border-collapse: separate;
+  border-spacing: 10px;
+  *border-collapse: expression('separate', cellSpacing = '10px');
+}
+.ridge {
+	border: 1px solid #4C3C1B;
+	padding: 5px;
+	width: 300px;
+	background-color: #EFEECB;
+}
+
+.body-style {
+	font-family: Georgia;
+	font-size: 10pt;
+	font-style: italic;
+}
+
+=================================== Current
+@page { 
+size: a4 landscape;
+  @bottom-right {
+    content: element(footer);
+  }
+}
+
+
+#table {
+  border-collapse: separate;
+  border-spacing: 10px;
+  *border-collapse: expression('separate', cellSpacing = '10px');
+}
+.ridge {
+	padding: 5px;
+	width: 300px;
+	background-color: #EFEECB;
+}
+
+.body-style {
+	font-family: Georgia;
+	font-size: 10pt;
+	font-style: italic;
+}

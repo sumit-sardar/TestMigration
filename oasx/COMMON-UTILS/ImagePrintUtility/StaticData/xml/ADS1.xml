@@ -1,0 +1,208 @@
+<publish_item>
+	<item_delivery_package iid="CR000F2BB1"
+		security_classification_id="alg112" allow_revisit="true"
+		allow_revisit_on_restart="true">
+		<item_canvas id="IC">
+			<panel stereotype="directions" id="sd1" left_padding="12"
+				width="790" layout="vertical" spacing="12" height="24" x="0" y="79">
+				<text_widget halign="left" width="761" id="widget2739021002">
+					<b>Read the writing prompt below and complete the writing activity.
+					</b>
+				</text_widget>
+			</panel>
+			<stimulus_tabs_panel selectedTabNumber="1"
+				stereotype="stimulus" id="BigTask" width="403" x="12" y="110"
+				height="422">
+				<stimulus_tab title="Writing Activity" id="widget2739021003">
+					<scrolling_text_widget id="BigTask" halign="left"
+						width="403" height="389">
+						<text_widget halign="left" width="386" id="widget2739021004"> 
+						</text_widget>
+						<image_widget halign="left" isaudio="false" autoplay="true"
+							playorder="1" playonce="false" src="Big_Task_t" enlargeable="no"
+							autoenlargeable="no" height="40" width="380" alt_text="A Big Task" />
+						<table halign="center" title="" border="yes" showvlines="no"
+							showhlines="no" enlargeable="accommodated" autoenlargeable="no"
+							height="210" width="400" id="widget2739021005">
+							<row height="150" id="widget2739021006">
+								<cell halign="center" valign="middle" width="10"
+									id="widget2739021007" />
+								<cell halign="left" valign="middle" width="350"
+									id="widget2739021008">
+									<text_widget halign="left" width="350" height="21"
+										id="widget2739021009">Think of a time when you completed a large project. What
+										was the project? Was it a lot of hard work? How did you
+										prepare for the project, and what materials or supplies did
+										you need to complete it? How did you feel when it was
+										finished?</text_widget>
+									<text_widget halign="left" width="350" height="21"
+										id="widget2739021010">Write an essay in which you describe what you did and how
+										it felt to complete the task.</text_widget>
+								</cell>
+								<cell halign="center" valign="middle" width="10"
+									id="widget2739021011" />
+							</row>
+						</table>
+						<text_widget halign="left" width="386" id="widget2739021012"> 
+						</text_widget>
+						<text_widget halign="left"
+							alt_text="Be sure to include. a detailed description of the project. specific feelings you had during the project. details on how you felt when it was done. an introduction, a body, and a conclusion to your essay"
+							width="386" id="widget2739021013">
+							     Be sure to include
+							<br />
+							     • a detailed description of the project
+							<br />
+							     • specific feelings you had during the project
+							<br />
+							     • details on how you felt when it was done
+							<br />
+							     • an introduction, a body, and a conclusion to your essay
+						</text_widget>
+						<text_widget halign="left" width="386" id="widget2739021014"> 
+						</text_widget>
+					</scrolling_text_widget>
+				</stimulus_tab>
+				<stimulus_tab title="Prewriting/Planning" id="widget2739021015">
+					<scrolling_text_widget id="PrewritingPlanning"
+						halign="left" width="403" height="389">
+						<text_widget halign="left" width="386" id="widget2739021016"> 
+						</text_widget>
+						<text_widget halign="left" alt_text="Pre writing Planning"
+							width="386" id="widget2739021017">
+							<b>Prewriting/Planning</b>
+						</text_widget>
+						<text_widget halign="left"
+							alt_text="Use the blank, Pre writing/Planning space below for notes, lists, webs, outlines, or anything else that might help you plan your writing. If you need additional space for planning, raise your hand and your teacher will give you a sheet of scratch paper. You must write your final draft in the yellow box on the right."
+							width="386" id="widget2739021018">
+							Use the blank Prewriting/Planning space below for notes, lists,
+							webs, outlines, or anything else that might help you plan your
+							writing. If you need additional space for planning, raise your
+							hand and your teacher will give you a sheet of scratch paper.
+							<b>You must write your final draft in the yellow box on the
+								right.</b>
+						</text_widget>
+						<text_widget halign="left" width="386" id="widget2739021019"> 
+						</text_widget>
+						<table halign="center" title="" border="no" showvlines="no"
+							showhlines="no" enlargeable="no" autoenlargeable="no" height="296"
+							width="365" id="widget2739021020">
+							<row height="236" id="widget2739021021">
+								<cell halign="center" valign="middle" width="23"
+									id="widget2739021022">
+									<text_widget halign="left" width="11" height="18"
+										id="widget2739021023"> </text_widget>
+								</cell>
+								<cell halign="center" valign="middle" width="312"
+									id="widget2739021024">
+									<multi_line_answer id="Prewriting$widget2739021000"
+										width="300" height="230">
+										<text_widget>Not attempted this question.</text_widget>
+									</multi_line_answer>
+								</cell>
+							</row>
+						</table>
+						<text_widget halign="left" width="386" id="widget2739021025"> 
+						</text_widget>
+						<text_widget halign="left" width="386" id="widget2739021026">
+							Use the Editing Checklist tab. Check your essay for correct
+							grammar, spelling, punctuation, and capitalization.
+							<b>Remember, your essay should be well organized.</b>
+						</text_widget>
+						<text_widget halign="left" width="386" id="widget2739021027"> 
+						</text_widget>
+					</scrolling_text_widget>
+				</stimulus_tab>
+				<stimulus_tab title="Editing Checklist" id="widget2739021028">
+					<scrolling_text_widget id="EditingChecklist"
+						halign="left" width="403" height="389">
+						<text_widget halign="left" width="386" id="widget2739021029"> 
+						</text_widget>
+						<text_widget halign="left" width="386" id="widget2739021030">Now check
+							your writing using this Editing Checklist.</text_widget>
+						<text_widget halign="left" width="386" id="widget2739021031"> 
+						</text_widget>
+						<table halign="center" title="" titlewidth="367" border="yes"
+							showvlines="no" showhlines="no" enlargeable="accommodated"
+							autoenlargeable="no" height="220" width="375" id="widget2739021032">
+							<row height="25" id="widget2739021033">
+								<cell halign="center" valign="middle" width="345"
+									id="widget2739021034">
+									<text_widget halign="left" width="103" height="21"
+										id="widget2739021035">
+										<b>Editing Checklist</b>
+									</text_widget>
+								</cell>
+							</row>
+							<row height="135" id="widget2739021036">
+								<cell halign="left" valign="middle" width="345"
+									id="widget2739021037">
+									<text_widget halign="left"
+										alt_text="1. Check your capitalization and punctuation. . 2. Spell all words correctly. . 3. Check for sentence fragments, or run-on sentences. . 4. Keep verb tense consistent. . 5. Make sure, sub ject and verb agree. . 6. Use words according to the rules of Standard English. . Seven. Remember to paragraph correctly."
+										width="345" height="21" id="widget2739021038">
+										  ?
+										<b>1</b>
+										   ?Check your capitalization and punctuation.
+										<br />
+										  
+										<b>2</b>
+										   Spell all words correctly.
+										<br />
+										  
+										<b>3</b>
+										   Check for sentence fragments or run-on sentences.
+										<br />
+										  
+										<b>4</b>
+										   Keep verb tense consistent.
+										<br />
+										  
+										<b>5</b>
+										   Make sure subject and verb agree.
+										<br />
+										  
+										<b>6</b>
+										   Use words according to the rules of Standard English.
+										<br />
+										  
+										<b>7</b>
+										   Remember to paragraph correctly.
+									</text_widget>
+								</cell>
+							</row>
+						</table>
+						<text_widget halign="left" width="386" id="widget2739021039"> 
+						</text_widget>
+					</scrolling_text_widget>
+				</stimulus_tab>
+			</stimulus_tabs_panel>
+			<panel left_padding="12" stereotype="stem" id="stem1" height="429"
+				layout="vertical" spacing="12" width="365" x="415" y="103">
+				<text_widget halign="left" width="336" id="widget2739021040">
+					<b>Final Draft</b>
+				</text_widget>
+				<multi_line_answer id="SRA_1$widget2739021001"
+					width="290" height="390" acc_width="270" acc_height="370"
+					char_limit="6000">
+					<text_widget>Not attempted this question.</text_widget>
+				</multi_line_answer>
+			</panel>
+		</item_canvas>
+		<item_model scratchpad="not provisioned" eraser="required"
+			cm_ruler="not provisioned" standard_calculator="not provisioned"
+			ti_scientific_calculator="not provisioned" FCAT_formula_card="not provisioned"
+			option_eliminator="required" protractor="not provisioned"
+			masking_ruler="required" mm_ruler="not provisioned" TN_formula_card="not provisioned"
+			straight_edge="not provisioned" ti_scientific_graphic_calculator="not provisioned"
+			oneeighth_inch_ruler="not provisioned" highlighter="required"
+			half_inch_ruler="not provisioned" scientific_calculator="not provisioned">
+			<responseDeclaration identifier="RESPONSE"
+				cardinality="single" baseType="identifier">
+				<correctResponse>
+					<value />
+				</correctResponse>
+			</responseDeclaration>
+			<textEntryInteraction responseIdentifier="RESPONSE"
+				obj_id_ref="obj_con_response" />
+		</item_model>
+	</item_delivery_package>
+</publish_item>

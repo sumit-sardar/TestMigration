@@ -1,0 +1,166 @@
+<publish_item>
+	<item_delivery_package iid="CR000C22C1"
+		security_classification_id="alg112" allow_revisit="true"
+		allow_revisit_on_restart="true">
+		<item_canvas id="IC">
+			<panel stereotype="directions" id="sd1" left_padding="12"
+				width="790" layout="vertical" spacing="12" height="45" x="0" y="79">
+				<text_widget halign="left" width="761" id="widget2909331001">
+					<b>Read this article called “Home Sweet Bridge” and complete
+						Questions %start% through %end%. You may look back at the article
+						as often as you like. Then you will complete a writing activity.
+					</b>
+				</text_widget>
+			</panel>
+			<scrolling_text_panel stereotype="stimulus" id="SS000D7641"
+				x="12" width="447" y="131" height="401">
+				<image_widget halign="left" isaudio="false" autoplay="true"
+					playorder="1" playonce="false" src="HomeSweetBridge_T" enlargeable="no"
+					autoenlargeable="no" height="107" width="433"
+					alt_text="This is A reading comprehension question. It will not be read aloud." />
+				<text_widget halign="left"
+					alt_text="This is A reading comprehension question. It will not be read aloud."
+					width="430" id="widget2909331002">
+					     Early in May 1996, I was informed that a colony of bats
+					roosting within an old wooden bridge in eastern New South Wales was
+					about to lose its home. Demolition was due to commence within days
+					to make room for a new concrete structure. Guessing that these
+					particular bats were large?footed bats (
+					<i>Myotis adversus</i>
+					), a threatened species, I quickly alerted environmental staff at
+					the local city council in Lake Macquarie.
+				</text_widget>
+				<text_widget halign="left" alt_text=" " width="430"
+					id="widget2909331003">
+					     Sure enough, an initial inspection revealed that this
+					represented the first known
+					<footnote header="?? roost:"
+						detail="a place where birds and other flying creatures sleep"
+						readable="false">
+						<a
+							href="javascript:showFootnote('%26%239329%3B%26%239338%3B+roost%3A');">roost??</a>
+					</footnote>
+					of large?footed bats in the Lake Macquarie area. From my point of
+					view, the discovery was very exciting, but for the city council and
+					their bridge construction company, it presented unforeseen
+					obstacles. I developed a plan allowing the bridge to be replaced
+					with minimal disturbance to the bat colony, and it was approved by
+					both the city council and the National Parks and Wildlife Service.
+					My
+					<footnote header="?? subsequent:" detail="later" readable="false">
+						<a
+							href="javascript:showFootnote('%26%239330%3B%26%239338%3B+subsequent%3A');">subsequent??</a>
+					</footnote>
+					role was to ensure the bats were safely excluded from the bridge
+					and to attempt to re-establish their roosts within the new
+					structure.
+				</text_widget>
+				<text_widget halign="left" alt_text=" " width="430"
+					id="widget2909331004">
+					     As demolition began, we progressively excluded the entire
+					colony of bats from the cracks in the timbers where they roosted.
+					Plastic flaps were placed over roost entrances so that the bats
+					exiting at dusk were unable to re-enter after feeding. Using
+					<footnote header="?? scaffolding:"
+						detail="a temporary framework of poles and planks" readable="false">
+						<a
+							href="javascript:showFootnote('%26%239331%3B%26%239338%3B+scaffolding%3A');">scaffolding??</a>
+					</footnote>
+					beneath the bridge, I crawled around on the narrow timber planks,
+					<footnote header="?? precariously:" detail="unsafely"
+						readable="false">
+						<a
+							href="javascript:showFootnote('%26%239332%3B%26%239338%3B+precariously%3A');">precariously??</a>
+					</footnote>
+					suspended over a murky creek, placing traps at the roost entrances.
+					The bats I caught were
+					<footnote header="?? banded:"
+						detail="a strip or circle of material attached to the legs of creatures being studied"
+						readable="false">
+						<a
+							href="javascript:showFootnote('%26%239333%3B%26%239338%3B+banded%3A');">banded,??</a>
+					</footnote>
+					and some individuals were fitted with radio transmitters. By
+					tracking the transmitter signals, we discovered an alternative
+					roosting site among the concrete beams of a canal supplying water
+					to a power station about 2 1/2 miles (4 km) away.
+				</text_widget>
+				<text_widget halign="left" alt_text=" " width="430"
+					id="widget2909331005">     When the new bridge was partially completed, the
+					construction crew moved roost timbers from the old wooden bridge
+					into equivalent positions in the new concrete one. This method of
+					incorporating pieces of the original roost into a new structure may
+					actually be the first of its kind attempted.</text_widget>
+				<text_widget halign="left" alt_text=" " width="430"
+					id="widget2909331006">     We had determined that, prior to the bridge replacement, a
+					population of at least 170 large?footed bats had roosted there.
+					Also, the presence of many juveniles and the discovery that females
+					outnumbered males approximately four to one suggested the bridge
+					had been a maternity roost. Following completion of the new bridge,
+					the Lake Macquarie City Council funded a monitoring program, and we
+					have verified that large?footed bats have re?established roosts
+					within the old timbers and are breeding successfully. Apparently
+					the bats recognized their home!</text_widget>
+				<text_widget alt_text="" halign="left" width="430"
+					id="widget2909331007"> </text_widget>
+				<text_widget alt_text=" " text_magnification="0.83"
+					halign="left" width="430" id="widget2909331008">
+					<b>?? roost:</b>
+					  a place where birds and other flying creatures sleep
+				</text_widget>
+				<text_widget alt_text=" " text_magnification="0.83"
+					halign="left" width="430" id="widget2909331009">
+					<b>?? subsequent:</b>
+					  later
+				</text_widget>
+				<text_widget alt_text=" " text_magnification="0.83"
+					halign="left" width="430" id="widget2909331010">
+					<b>?? scaffolding:</b>
+					  a temporary framework of poles and planks
+				</text_widget>
+				<text_widget alt_text=" " text_magnification="0.83"
+					halign="left" width="430" id="widget2909331011">
+					<b>?? precariously:</b>
+					  unsafely
+				</text_widget>
+				<text_widget alt_text=" " text_magnification="0.83"
+					halign="left" width="430" id="widget2909331012">
+					<b>?? banded:</b>
+					  a strip or circle of material attached to the legs of creatures
+					being studied
+				</text_widget>
+			</scrolling_text_panel>
+			<panel left_padding="12" stereotype="stem" id="stem1" layout="vertical"
+				spacing="12" width="321" x="459" y="124" height="408">
+				<text_widget halign="left"
+					alt_text="This is A reading comprehension question. It will not be read aloud."
+					width="292" id="widget2909331013">Why is it important to move the large-footed bats?
+					What is unique about this particular colony that makes it even more
+					important than the narrator first thought? Support your answer with
+					details from the article.</text_widget>
+				<multi_line_answer id="SRA_1$widget2909331000"
+					width="260" height="310" acc_width="240" acc_height="185"
+					char_limit="1100">
+					<text_widget>Not attempted this question.</text_widget>
+				</multi_line_answer>
+			</panel>
+		</item_canvas>
+		<item_model scratchpad="not provisioned" eraser="required"
+			cm_ruler="not provisioned" standard_calculator="not provisioned"
+			ti_scientific_calculator="not provisioned" FCAT_formula_card="not provisioned"
+			option_eliminator="required" protractor="not provisioned"
+			masking_ruler="required" mm_ruler="not provisioned" TN_formula_card="not provisioned"
+			straight_edge="not provisioned" ti_scientific_graphic_calculator="not provisioned"
+			oneeighth_inch_ruler="not provisioned" highlighter="required"
+			half_inch_ruler="not provisioned" scientific_calculator="not provisioned">
+			<responseDeclaration identifier="RESPONSE"
+				cardinality="single" baseType="identifier">
+				<correctResponse>
+					<value />
+				</correctResponse>
+			</responseDeclaration>
+			<textEntryInteraction responseIdentifier="RESPONSE"
+				obj_id_ref="obj_con_response" />
+		</item_model>
+	</item_delivery_package>
+</publish_item>

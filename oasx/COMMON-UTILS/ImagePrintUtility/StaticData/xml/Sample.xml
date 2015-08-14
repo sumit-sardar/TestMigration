@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<element_package allow_revisit="" allow_revisit_on_restart=""
+	eid="39828202" iid="CR000F2BB1" xslt_ver="145">
+	<item_canvas id="IC">
+		<panel height="24" id="sd1" layout="vertical" left_padding="12"
+			spacing="12" stereotype="directions" width="790" x="0" y="79">
+			<text_widget halign="left" id="widget2739021002"
+				width="761"><![CDATA[<b>Read the writing prompt below and complete the writing activity.</b>]]></text_widget>
+		</panel>
+		<stimulus_tabs_panel height="422" id="BigTask"
+			selectedTabNumber="1" stereotype="stimulus" width="403" x="12"
+			y="110">
+			<stimulus_tab id="widget2739021003"
+				title="Writing Activity">
+				<scrolling_text_widget halign="left" height="389"
+					id="BigTask" width="403">
+					<text_widget halign="left" id="widget2739021004"
+						width="386"><![CDATA[?]]></text_widget>
+					<image_widget alt_text="A Big Task"
+						autoenlargeable="no" autoplay="true" enlargeable="no"
+						halign="left" height="40" image_ref="Big_Task_t" isaudio="false"
+						playonce="false" playorder="1" width="380" />
+					<table autoenlargeable="no" border="yes"
+						enlargeable="accommodated" halign="center" height="210"
+						id="widget2739021005" showhlines="no" showvlines="no" title=""
+						width="400">
+						<row height="150" id="widget2739021006">
+							<cell halign="center" id="widget2739021007"
+								valign="middle" width="10" />
+							<cell halign="left" id="widget2739021008"
+								valign="middle" width="350">
+								<text_widget halign="left" height="21"
+									id="widget2739021009" width="350"><![CDATA[Think of a time when you completed a large project. What was the project? Was it a lot of hard work? How did you prepare for the project, and what materials or supplies did you need to complete it? How did you feel when it was finished?]]></text_widget>
+								<text_widget halign="left" height="21"
+									id="widget2739021010" width="350"><![CDATA[Write an essay in which you describe what you did and how it felt to complete the task.]]></text_widget>
+							</cell>
+							<cell halign="center" id="widget2739021011"
+								valign="middle" width="10" />
+						</row>
+					</table>
+					<text_widget halign="left" id="widget2739021012"
+						width="386"><![CDATA[?]]></text_widget>
+					<text_widget
+						alt_text="Be sure to include. a detailed description of the project. specific feelings you had during the project. details on how you felt when it was done. an introduction, a body, and a conclusion to your essay"
+						halign="left" id="widget2739021013" width="386"><![CDATA[?????Be sure to include<br/>?????? a detailed description of the project<br/>?????? specific feelings you had during the project<br/>?????? details on how you felt when it was done<br/>?????? an introduction, a body, and a conclusion to your essay]]></text_widget>
+					<text_widget halign="left" id="widget2739021014"
+						width="386"><![CDATA[?]]></text_widget>
+				</scrolling_text_widget>
+			</stimulus_tab>
+			<stimulus_tab id="widget2739021015"
+				title="Prewriting/Planning">
+				<scrolling_text_widget halign="left" height="389"
+					id="PrewritingPlanning" width="403">
+					<text_widget halign="left" id="widget2739021016"
+						width="386"><![CDATA[?]]></text_widget>
+					<text_widget alt_text="Pre writing Planning"
+						halign="left" id="widget2739021017" width="386"><![CDATA[<b>Prewriting/Planning</b>]]></text_widget>
+					<text_widget
+						alt_text="Use the blank, Pre writing/Planning space below for notes, lists, webs, outlines, or anything else that might help you plan your writing. If you need additional space for planning, raise your hand and your teacher will give you a sheet of scratch paper. You must write your final draft in the yellow box on the right."
+						halign="left" id="widget2739021018" width="386"><![CDATA[Use the blank Prewriting/Planning space below for notes, lists, webs, outlines, or anything else that might help you plan your writing. If you need additional space for planning, raise your hand and your teacher will give you a sheet of scratch paper. <b>You must write your final draft in the yellow box on the right.</b>]]></text_widget>
+					<text_widget halign="left" id="widget2739021019"
+						width="386"><![CDATA[?]]></text_widget>
+					<table autoenlargeable="no" border="no"
+						enlargeable="no" halign="center" height="296"
+						id="widget2739021020" showhlines="no" showvlines="no" title=""
+						width="365">
+						<row height="236" id="widget2739021021">
+							<cell halign="center" id="widget2739021022"
+								valign="middle" width="23">
+								<text_widget halign="left" height="18"
+									id="widget2739021023" width="11"><![CDATA[?]]></text_widget>
+							</cell>
+							<cell halign="center" id="widget2739021024"
+								valign="middle" width="312">
+								<multi_line_answer height="230"
+									id="Prewriting$widget2739021000" width="300" />
+							</cell>
+						</row>
+					</table>
+					<text_widget halign="left" id="widget2739021025"
+						width="386"><![CDATA[?]]></text_widget>
+					<text_widget halign="left" id="widget2739021026"
+						width="386"><![CDATA[Use the Editing Checklist tab. Check your essay for correct grammar, spelling, punctuation, and capitalization. <b>Remember, your essay should be well organized.</b>]]></text_widget>
+					<text_widget halign="left" id="widget2739021027"
+						width="386"><![CDATA[?]]></text_widget>
+				</scrolling_text_widget>
+			</stimulus_tab>
+			<stimulus_tab id="widget2739021028"
+				title="Editing Checklist">
+				<scrolling_text_widget halign="left" height="389"
+					id="EditingChecklist" width="403">
+					<text_widget halign="left" id="widget2739021029"
+						width="386"><![CDATA[?]]></text_widget>
+					<text_widget halign="left" id="widget2739021030"
+						width="386"><![CDATA[Now check your writing using this Editing Checklist.]]></text_widget>
+					<text_widget halign="left" id="widget2739021031"
+						width="386"><![CDATA[?]]></text_widget>
+					<table autoenlargeable="no" border="yes"
+						enlargeable="accommodated" halign="center" height="220"
+						id="widget2739021032" showhlines="no" showvlines="no" title=""
+						titlewidth="367" width="375">
+						<row height="25" id="widget2739021033">
+							<cell halign="center" id="widget2739021034"
+								valign="middle" width="345">
+								<text_widget halign="left" height="21"
+									id="widget2739021035" width="103"><![CDATA[<b>Editing Checklist</b>]]></text_widget>
+							</cell>
+						</row>
+						<row height="135" id="widget2739021036">
+							<cell halign="left" id="widget2739021037"
+								valign="middle" width="345">
+								<text_widget
+									alt_text="1. Check your capitalization and punctuation. . 2. Spell all words correctly. . 3. Check for sentence fragments, or run-on sentences. . 4. Keep verb tense consistent. . 5. Make sure, sub ject and verb agree. . 6. Use words according to the rules of Standard English. . Seven. Remember to paragraph correctly."
+									halign="left" height="21" id="widget2739021038" width="345"><![CDATA[???<b>1</b>????Check your capitalization and punctuation.<br/>??<b>2</b>???Spell all words correctly.<br/>??<b>3</b>???Check for sentence fragments or run-on sentences.<br/>??<b>4</b>???Keep verb tense consistent.<br/>??<b>5</b>???Make sure subject and verb agree.<br/>??<b>6</b>???Use words according to the rules of Standard English.<br/>??<b>7</b>???Remember to paragraph correctly.]]></text_widget>
+							</cell>
+						</row>
+					</table>
+					<text_widget halign="left" id="widget2739021039"
+						width="386"><![CDATA[?]]></text_widget>
+				</scrolling_text_widget>
+			</stimulus_tab>
+		</stimulus_tabs_panel>
+		<panel height="429" id="stem1" layout="vertical"
+			left_padding="12" spacing="12" stereotype="stem" width="365" x="415"
+			y="103">
+			<text_widget halign="left" id="widget2739021040"
+				width="336"><![CDATA[<b>Final Draft</b>]]></text_widget>
+			<multi_line_answer acc_height="370" acc_width="270"
+				char_limit="6000" height="390" id="SRA_1$widget2739021001"
+				width="290" />
+		</panel>
+	</item_canvas>
+	<item_model answer_text="" answered="0" correct="" eid="39828202"
+		iid="CR000F2BB1" marked="0" number="0" score="" type="question">
+		<toolbar FCAT_formula_card="not provisioned"
+			TN_formula_card="not provisioned" cm_ruler="not provisioned"
+			eraser="required" half_inch_ruler="not provisioned"
+			highlighter="required" masking_ruler="required"
+			mm_ruler="not provisioned" oneeighth_inch_ruler="not provisioned"
+			option_eliminator="required" protractor="not provisioned"
+			scientific_calculator="not provisioned" scratchpad="not provisioned"
+			standard_calculator="not provisioned" straight_edge="not provisioned"
+			ti_scientific_calculator="not provisioned"
+			ti_scientific_graphic_calculator="not provisioned" />
+		<interaction type="text_entry">
+			<text_entry obj_id_ref="obj_con_response" />
+		</interaction>
+	</item_model>
+	<assets>
+		<image embedded="base64" id="Big_Task_t" type="image/swf"><![CDATA[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]]></image>
+	</assets>
+</element_package>
