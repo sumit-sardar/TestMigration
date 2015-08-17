@@ -138,7 +138,7 @@
     	 if(audio!=null){
     	 	disableEnableIcon("stop");
          	audio.pause();
-         	if(isInternalStop){
+         	if(isInternalStop && audio.currentTime!=0){
          		audio.currentTime = 0;
          	}
          }
