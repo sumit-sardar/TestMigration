@@ -2201,7 +2201,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 									bmtURL = data.bmtAPIUrl;
 									isSuccess = true;
 								}else{
-									iframe.remove();
+									$("#bmtFrame").remove();
 									dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
 				        			elementDiv.appendChild(dynTable);
 								}	
@@ -2233,12 +2233,12 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 							            	 tryCount++;
 							            	 setTimeout(getBMTItemURL(rosterIid, testAdminId, itemId, extTstItemSetId, elementDiv),15000);
 							            }else{
-							            	iframe.remove();
+							            	$("#bmtFrame").remove();
 							            	dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
 							        		elementDiv.appendChild(dynTable);
 							            }
 							        }else if(textStatus == 'error'){
-							        	iframe.remove();
+							        	$("#bmtFrame").remove();
 							        	if(jqXHR.status == 404){
 							        		dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtItemUnavailable").val()+"</div></td></tr>";
 							        		elementDiv.appendChild(dynTable);
