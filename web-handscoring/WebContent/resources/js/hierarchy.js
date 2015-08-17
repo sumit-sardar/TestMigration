@@ -2199,7 +2199,13 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 				success:	function(data, textStatus, XMLHttpRequest){	
 								if(data.bmtAPIUrl){
 									bmtURL = data.bmtAPIUrl;
-									isSuccess = true;
+									if(bmtURL.indexOf("https") > -1){
+										isSuccess = true;
+									}else{
+										$("#bmtFrame").remove();
+										dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
+					        			elementDiv.appendChild(dynTable);
+									}	
 								}else{
 									$("#bmtFrame").remove();
 									dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
