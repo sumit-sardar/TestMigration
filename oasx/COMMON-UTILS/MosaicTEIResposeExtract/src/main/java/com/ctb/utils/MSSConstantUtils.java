@@ -1,6 +1,8 @@
 package com.ctb.utils;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -76,75 +78,27 @@ public class MSSConstantUtils {
 	final public static Map<String, String> textRestrictedMap = new HashMap<String, String>();
 
 	static {
-
-		textRestrictedMap
-				.put("If she read that the heroine of the novel was nursing a sick man, she longed to move with noiseless steps about the room of a sick man;",
-						"1");
-		textRestrictedMap
-				.put("Anna read and understood, but it was distasteful to her to read, that is, to follow the reflection of other people /u2019 s lives.",
-						"2");
-		textRestrictedMap
-				.put("She remembered the ball, remembered Vronsky and his face of slavish adoration, remembered all her conduct with him:",
-						"3");
-		textRestrictedMap.put("For a moment she regained her self-possession,",
-				"4");
-		textRestrictedMap
-				.put("The driving snow and the wind rushed to meet her and struggled with her over the door. But she enjoyed the struggle.",
-						"5");
-		textRestrictedMap
-				.put("I have come after them and made repairWhere they have left not one stone on a stone,",
-						"1");
-		textRestrictedMap
-				.put("We have to use a spell to make them balance:\"Stay where you are until our backs are turned!\"",
-						"2");
-		textRestrictedMap
-				.put("My apple trees will never get acrossAnd eat the cones under his pines, I tell him.",
-						"3");
-		textRestrictedMap
-				.put("And on a day we meet to walk the lineAnd set the wall between us once again.",
-						"4");
-		textRestrictedMap
-				.put("Before I built a wall I'd ask to knowWhat I was walling in or walling out,",
-						"5");
-		textRestrictedMap
-				.put("And he likes having thought of it so well45He says again, \"Good fences make good neighbors.\"",
-						"6");
-		textRestrictedMap
-				.put("Not long after, a concerned friend told her, \"You need a newdog.\"",
-						"1");
-		textRestrictedMap
-				.put("Jean \"was having some difficulty getting around and ... was having trouble getting the dog enough exercise,\" explained Illmensee, 66, a retired teacher from Huntington, N.Y.",
-						"2");
-		textRestrictedMap.put(
-				"\"They don't get the importance of seniors having animals.",
-				"3");
-		textRestrictedMap
-				.put("\"If I stop working, I couldn't afford to have him,\" Rogers explained.",
-						"4");
-		textRestrictedMap
-				.put("Jennifer Devine, SWAP chairwoman and a geriatric social worker, said many seniors find that having a pet is soothing and reassuring, even with the extra work.",
-						"5");
-		textRestrictedMap
-				.put("At Little Shelter in Huntington, there is a food pantry for those who can no longer afford pet food.",
-						"6");
-		textRestrictedMap
-				.put("One study found that employees /u2014 both mentors and mentees /u2014 who participated in a mentoring program were 20% more likely to get a raise than those who were not in such a program.",
-						"1");
-		textRestrictedMap
-				.put("Mentors also gain the satisfaction of knowing that they are helping to change lives for the better.",
-						"2");
-		textRestrictedMap
-				.put("Mentors give kids a safe place to spend their free time, developing valuable social and communication skills in the process.",
-						"3");
-		textRestrictedMap
-				.put("By being positive role models to young people, they are not only helping them to develop but giving back to their communities as well.",
-						"4");
-		textRestrictedMap
-				.put("Remember that although mentors are not parents, they can have a great influence on a young person's life.",
-						"5");
-		textRestrictedMap
-				.put("Many mentors say that they gain as much from mentoring as do their mentees.",
-						"6");
+		BufferedReader br = null;
+		try {
+		    String line = null;
+		    br = new BufferedReader(new FileReader(ExtractUtils.get("oas.text.mapping.file.path")));
+		    while ((line = br.readLine()) != null) {
+		    	String key = line.substring(0, line.lastIndexOf("="));
+		    	String value = line.substring(line.lastIndexOf("=")+1);
+		    	textRestrictedMap.put(key, value);
+		    }
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		} finally {
+			if(br!=null)
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+		}
 	}
 
 	/**

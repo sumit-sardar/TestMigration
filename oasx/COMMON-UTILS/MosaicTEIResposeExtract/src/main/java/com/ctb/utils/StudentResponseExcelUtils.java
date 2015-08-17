@@ -9,12 +9,14 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 public class StudentResponseExcelUtils {
 
 	// List<MosaicRequestExcelPojo> mosaicRequestCSVList = null;
 	SimpleCache cache = null;
 	FileOutputStream fileOut = null;
+	private HSSFWorkbook wb;
 
 	/**
 	 * Generate the excel report with a single sheet Here 65k limit restriction
@@ -25,8 +27,8 @@ public class StudentResponseExcelUtils {
 	 */
 	public void generateExcelReport(Object[] args) throws Exception {
 		setupForExcel(args);
-		HSSFWorkbook wb = new HSSFWorkbook();
 		if (cache != null && cache.getExtractKeys().size() > 0) {
+			wb = new HSSFWorkbook();
 			HSSFSheet reportSheet = wb.createSheet();
 			wb.setSheetName(0, MSSConstantUtils.excelSheetName);
 
@@ -70,6 +72,7 @@ public class StudentResponseExcelUtils {
 		for (int i = 0; i < headings.length; i++) {
 			addCell(row, (short) cellCount++, headings[i]);
 		}
+		reportSheet.addMergedRegion(new CellRangeAddress(rowno-1, rowno-1, cellCount-1, cellCount+5));
 
 		for (String id : cache.getExtractKeys()) {
 			MosaicRequestExcelPojo msReq = cache.getExtractResponse(id);
@@ -84,6 +87,7 @@ public class StudentResponseExcelUtils {
 				addCell(row, (short) cellno++, msReq.getOasItemId());
 				addCell(row, (short) cellno++, msReq.getPEId());
 				addCell(row, (short) cellno++, msReq.getJson());
+				reportSheet.addMergedRegion(new CellRangeAddress(rowno-1, rowno-1, cellno-1, cellno+5));
 				/*
 				 * System.out.println(msReq.getItemid() + "\t||\t " +
 				 * msReq.getItemsource() + "\t||\t" + msReq.getItemBankid() +
@@ -122,6 +126,12 @@ public class StudentResponseExcelUtils {
 	 */
 	@SuppressWarnings("deprecation")
 	private static HSSFCell addCell(HSSFRow row, short cellNo, String cellValue) {
+		while(cellValue.length() > 32767){
+			HSSFCell cell0 = row.createCell(cellNo);
+			cellValue = cellValue.substring(0, 32767 - 3);
+			cell0.setCellValue(cellValue);
+			cellNo++;
+		}
 		HSSFCell cell0 = row.createCell(cellNo);
 		cell0.setCellValue(cellValue);
 		return cell0;
