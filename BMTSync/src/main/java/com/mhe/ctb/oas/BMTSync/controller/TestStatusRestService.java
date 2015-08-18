@@ -131,28 +131,19 @@ public class TestStatusRestService {
 							testStatus.setErrorMessage("[ItemResponses] Error in TestStatusRestService class : "+e.getMessage()
 									+ " [assignmentId=" + testStatus.getAssignmentId() + "]");
 						}
-
-				        if (itemResponses != null) {
-				        	// If BMT responds, log the responses.
-				        	try {
-				        		processResponses(testStatus, itemResponses);
-				        	} catch (final SQLException sqle) {
-					        	logger.error("[ItemResponses] Error storing responses in database: " + sqle.getMessage(), sqle);
-								storeStatusUpdate = false;
-								testStatus.setErrorCode(500);
-								testStatus.setErrorMessage("Error storing responses in database: " + sqle.getMessage());	
-				        	} catch (final RestClientException rce) {
-					        	logger.error("[ItemResponses] Error with data from BMT: " + rce.getMessage(), rce);
-								storeStatusUpdate = false;
-								testStatus.setErrorCode(500);
-								testStatus.setErrorMessage("Error with data from BMT: " + rce.getMessage());	
-				        	}
-				        } else {
-				        	logger.error("[ItemResponses] Response json from BMT is null; logging error!");
+			        	try {
+			        		processResponses(testStatus, itemResponses);
+			        	} catch (final SQLException sqle) {
+				        	logger.error("[ItemResponses] Error storing responses in database: " + sqle.getMessage(), sqle);
 							storeStatusUpdate = false;
-							testStatus.setErrorCode(400);
-							testStatus.setErrorMessage("[ItemResponses] Null response from BMT!");					        	
-				        }
+							testStatus.setErrorCode(500);
+							testStatus.setErrorMessage("Error storing responses in database: " + sqle.getMessage());	
+			        	} catch (final RestClientException rce) {
+				        	logger.error("[ItemResponses] Error with data from BMT: " + rce.getMessage(), rce);
+							storeStatusUpdate = false;
+							testStatus.setErrorCode(500);
+							testStatus.setErrorMessage("Error with data from BMT: " + rce.getMessage());	
+			        	}
 					} else {
 						logger.info("[ItemResponses] Customer ID from BMT and status don't require responses. [customerId="
 								+ customerId + ",testStatus=" + testStatus.getDeliveryStatus() + "]");
@@ -246,14 +237,13 @@ public class TestStatusRestService {
 		logger.info("[ItemResponses] Customer ID from BMT requires requests and status is final; fetching responses. [customerId="
 				+ customerId + ",testStatus=" + testStatus.getDeliveryStatus() + "]");
 		final String endpoint = endpointSelector.getEndpoint(customerId);
-		CreateItemResponsesResponse itemResponses = null;
 		CreateItemResponsesRequest itemResponsesRequest = new CreateItemResponsesRequest();
 		itemResponsesRequest.setAssignmentId(testStatus.getAssignmentId());
 		final String bmtResponseUrl = endpoint + RestURIConstants.POST_RESPONSES + "/" + testStatus.getAssignmentId();
-		logger.info("[ItemResponses] Calling BMT URL:" + bmtResponseUrl);
+		logger.info("[ItemResponses] Calling BMT URL " + bmtResponseUrl);
 
 		// Send the assignmentId to BMT for a list of itemResponses.
-        itemResponses = restTemplate.getForObject(bmtResponseUrl, CreateItemResponsesResponse.class);
+		CreateItemResponsesResponse itemResponses = restTemplate.getForObject(bmtResponseUrl, CreateItemResponsesResponse.class);
         logger.info("[ItemResponses] Response from BMT: " + itemResponses == null ? "null" : itemResponses.toJson());
 
 	    return itemResponses.getItemResponses();    
