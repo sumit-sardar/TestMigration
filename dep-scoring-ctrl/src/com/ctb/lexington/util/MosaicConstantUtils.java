@@ -32,7 +32,10 @@ import com.ctb.lexington.util.mosaicobject.CandidateItemResponse;
 
 public class MosaicConstantUtils {
 	
-	private static final ResourceBundle rb = ResourceBundle.getBundle("config");
+	/*
+	 * Comment Out TASC FT TE Items Scoring for Story OAS-3944
+	 */
+	/*private static final ResourceBundle rb = ResourceBundle.getBundle("config");
 	
 	final public static String HTTP_REQUEST_TYPE = rb.getString("http.request.type");
 	final public static String CONTENT_TYPE = rb.getString("content.type");
@@ -53,7 +56,28 @@ public class MosaicConstantUtils {
 	// : Constant value of MSS Request JSON parameter
 	final public static String ITEM_RESPONSE_SOURCE = rb.getString("mosaic.item.response.source");
 	final public static String ITEM_SOURCE = rb.getString("mosaic.item.source");
-	final public static String ITEM_BANK_IDS = rb.getString("mosaic.item.bank.id");
+	final public static String ITEM_BANK_IDS = rb.getString("mosaic.item.bank.id");*/
+	
+	final public static String HTTP_REQUEST_TYPE = "POST";
+	final public static String CONTENT_TYPE = "application/json";
+	final public static String MOSAIC_ENCRYPTION_METHOD_TITLE = "x-mosaic-content-md5";
+	final public static String MOSAIC_TIMESTAMP_TITLE = "x-mosaic-timestamp";
+	final public static String MOSAIC_VERSION_TITLE = "x-mosaic-version";
+	final public static String MOSAIC_AUTHORIZATION_TITLE = "x-mosaic-version";
+	final public static String MOSAIC_VERSION_VALUE = "1.0";
+	final public static String HEADER_KEY_SEPARATION = ":";
+	final public static String HEADER_SEPARATION = "\n";
+	final public static String API_ENDPOINT = "restapi/scoreitem";
+	final public static String MOSAIC_ACCESS_KEY = "f446b68b20e459881a0ddddb15fbdb43";
+	final public static String MOSAIC_API_TITLE = "Mosaic";
+	final public static String CHARACTER_ENCODE = "UTF-8";
+	final public static String ZERO_PADD = "00000000000000000000000000000000";
+	final public static String MOSAIC_URL = "https://mosaic-engine-int.ec2-ctb.com/mosaic-engine/restapi/scoreitem";
+
+	// : Constant value of MSS Request JSON parameter
+	final public static String ITEM_RESPONSE_SOURCE = "OAS";
+	final public static String ITEM_SOURCE = "DAS";
+	final public static String ITEM_BANK_IDS = "TS~TASC|TR~TASC";
 	
 	final public static String ANSWER_TAG = "answer";
 
@@ -82,13 +106,16 @@ public class MosaicConstantUtils {
 	
 	final public static Map<String, String> ITEM_BANK_COLLECTION = new HashMap<String, String>();
 	
-	static{
+	/*
+	 * Comment Out TASC FT TE Items Scoring for Story OAS-3944
+	 */
+	/*static{
 		String[] bankDetails = ITEM_BANK_IDS.split("\\|");
 		for(int indx=0; indx < bankDetails.length; indx++){
 			String[] mapper = bankDetails[indx].split("~");
 			ITEM_BANK_COLLECTION.put(mapper[0], mapper[1]);
 		}
-	}
+	}*/
 	
 	/**
 	 * Convert string object to Base64 String

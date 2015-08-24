@@ -68,7 +68,11 @@ public class StudentItemScoresController {
 			ifMapper.executeItemBatch(insertSqlMap);
 			itemList.clear();
     	}
-        //Added for TASC and TASC Readiness FT TE Items scoring
+    	
+        /**
+         * Below TASC TE items block is commented out.
+         */
+    	/*//Added for TASC and TASC Readiness FT TE Items scoring
     	SqlMapClient insertSqlMap = null;
 		SqlMapClient deleteSqlMap = null;
 		ArrayList<Long> itemList = new ArrayList<Long>();
@@ -85,7 +89,7 @@ public class StudentItemScoresController {
 		}
         ifMapper.executeItemBatch(deleteSqlMap);
 		ifMapper.executeItemBatch(insertSqlMap);
-		itemList.clear();
+		itemList.clear();*/
     }
     
     public IrsTASCItemFactData [] getItemFactBeans() {

@@ -74,7 +74,10 @@ public class StudentItemScoresController {
 			itemList.clear();
 		}
 		
-		//Added for FT TE Items scoring
+		/**
+		 * Commenting out TASC TE Items Scoring
+		 */
+		/*//Added for FT TE Items scoring
 		insertSqlMap = null;
 		deleteSqlMap = null;
 		ArrayList<Long> TEItemList = new ArrayList<Long>();
@@ -91,7 +94,7 @@ public class StudentItemScoresController {
 		}
 		if(deleteSqlMap != null)ifMapper.executeItemBatch(deleteSqlMap);
 		if(insertSqlMap != null)ifMapper.executeItemBatch(insertSqlMap);
-		TEItemList.clear();
+		TEItemList.clear();*/
 	}
 
 	private IrsTRItemFactData[] getItemFactBeans() {

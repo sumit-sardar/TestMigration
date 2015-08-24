@@ -48,14 +48,17 @@ public class CronTriggerRunner {
 	    // schedule a job with JobDetail and Trigger
 	    scheduler.scheduleJob(wsJobDetail, wsTrigger);
 	    
-	 // Initiate JobDetail with job name, job group, and executable job class
+	    /*
+	     * Commenting out MSS TE Retry Job of Mosaic Field Test TE Scoring
+	     */
+	/* // Initiate JobDetail with job name, job group, and executable job class
 	    JobDetail mssRetryJobDetail = newJob(FTTERescoreJob.class)
 	    							.withIdentity("MSSTEScoringRetryJob", "MSSTEScoringRetryGroup").build();
 	    CronTrigger mssRetryTrigger = newTrigger().withIdentity("trigger1", "MSSTEScoringRetryGroup")
 				.withSchedule(cronSchedule(new MSSTEScoringRetryHelper().getMSSRetryCronExpression()))
 				.build();
 	    // schedule a job with JobDetail and Trigger
-	    scheduler.scheduleJob(mssRetryJobDetail, mssRetryTrigger);
+	    scheduler.scheduleJob(mssRetryJobDetail, mssRetryTrigger);*/
 	    
 	    // start the scheduler
 	    scheduler.start();

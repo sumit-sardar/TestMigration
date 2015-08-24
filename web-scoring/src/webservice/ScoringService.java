@@ -32,9 +32,12 @@ public class ScoringService {
 		return scoringControl.scoreCompletedRostersForCustomer(customerId); 
     }
 
-	@WebMethod
+	/*
+	 * Commenting out TASC TE FT Items Scoring for story OAS-3944
+	 */
+	/*@WebMethod
 	public String rertyInvokeFTTEScoring(String testRosterId, String invokeKey) {
 		return scoringControl.rertyInvokeFTTEScoring(testRosterId, invokeKey);
-	}
+	}*/
 	
 }

@@ -386,7 +386,7 @@ public class CurriculumController {
         copyItemIdsToCurrData(items, data);
                
         // Handle FT TE Items only
-       	handleFieldTestTEItems();
+       //	handleFieldTestTEItems(); Comment Out TASC FT TE Items Scoring for Story OAS-3944
     }
     
     public void runFTTE() throws SQLException, IOException, DataException {

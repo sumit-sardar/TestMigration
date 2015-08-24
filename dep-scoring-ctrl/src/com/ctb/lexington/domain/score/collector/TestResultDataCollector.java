@@ -206,7 +206,10 @@ public class TestResultDataCollector {
                                         }
                                     }
                                 }
-                                if("TS".equalsIgnoreCase(productType) || "TR".equalsIgnoreCase(productType)){
+                                /*
+                                 * Comment Out TASC FT TE Items Scoring for Story OAS-3944
+                                 */
+                                /*if("TS".equalsIgnoreCase(productType) || "TR".equalsIgnoreCase(productType)){
                                 	Item [] TEItems = currData.getTEItems();
 	                                for(int l=0;l<TEItems.length;l++) {
 	                                    if(TEItems[l].getSecondaryObjectiveId().equals(secObjs[k].getSecondaryObjectiveId()) &&
@@ -214,7 +217,7 @@ public class TestResultDataCollector {
 	                                    	TEItemList.add(TEItems[l]);
 	                                    }
 	                                }
-                                }
+                                }*/
                             }
                         }
                     }

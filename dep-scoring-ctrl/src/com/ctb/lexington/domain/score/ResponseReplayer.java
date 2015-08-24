@@ -256,7 +256,9 @@ public class ResponseReplayer {
                     itemResponseMapper,
                     getSubtestStatus(subtest, subtestStatuses)));
         }
-        getMosaicErrorHandleEvent(events, testRosterId);
+        /*
+         * Commenting out TE Error handle event
+         * getMosaicErrorHandleEvent(events, testRosterId);*/
         return events;
     }
     /**
@@ -600,7 +602,8 @@ public class ResponseReplayer {
             final ItemResponseMapper itemResponseMapper) {
     	
     	if("TS".equals(productType) || "TR".equals(productType)) {
-	    	try {
+    		//Commenting out TASC TE events
+	    	/*try {
 	    		List ftresponse = itemResponseMapper.findFTItemResponsesBySubtest(
 		        			asLong(itemSet.getItemSetId()), testRosterId);
 	    		if(this.isFTRetryProcess){
@@ -612,7 +615,9 @@ public class ResponseReplayer {
 	    		}
 	    	} catch (CTBSystemException e) {
 				e.printStackTrace();
-			}
+			}*/
+    		events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASCOrg(
+	        		asLong(itemSet.getItemSetId()), testRosterId)));
     	}else if("TC".equals(productType)) {
     		try { // This block is written for simple JDBC
 				events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTabeCC(

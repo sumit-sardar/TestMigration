@@ -50,7 +50,7 @@ public class CurriculumCollector {
         if("TS".equalsIgnoreCase(productType) || "TR".equalsIgnoreCase(productType)) {
         	data.setSecondaryObjectives(getSecondaryObjectivesForTASC(oasRosterId));
             data.setItems(getItemsForTASC(oasRosterId));
-            data.setTEItems(getTEItemsForTASC(oasRosterId));
+            //data.setTEItems(getTEItemsForTASC(oasRosterId));
         }
         else if("TC".equalsIgnoreCase(productType)) {
         	data.setSecondaryObjectives(getSecondaryObjectivesForTABECCSS(oasRosterId));
