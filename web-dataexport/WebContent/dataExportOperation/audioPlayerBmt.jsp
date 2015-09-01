@@ -68,6 +68,9 @@
 <script>
     var audio = document.getElementById("myaudio");
     var responseString=window.parent.s3AudioURl;
+    //Fix for defect #82898
+    var maxVol=1.0;
+    var minVol=0.0;
     var isInternalStop=false;//to fix close pop up on cancel button in safari
     if(responseString.indexOf(".mp3") > -1)
 	{
@@ -148,13 +151,24 @@
     function volumeUp()
     {
         var audio = document.getElementById("myaudio");
-        audio.volume+=0.1;
+        //Fix for defect #82898
+        var audioVol=parseFloat(audio.volume).toFixed(2);
+         audio.volume=audioVol;
+        if(audioVol<maxVol){
+        	audio.volume+=0.1;
+        }
+        
     }
 
     function volumeDown()
     {
         var audio = document.getElementById("myaudio");
-        audio.volume-=0.1;
+        //Fix for defect #82898
+        var audioVol=parseFloat(audio.volume).toFixed(2);
+         audio.volume=audioVol;
+        if(audioVol>minVol){
+        	audio.volume-=0.1;
+        }
     }
 
     function toggleControls() {
