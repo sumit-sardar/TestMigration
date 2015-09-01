@@ -3,6 +3,7 @@ package com.mhe.ctb.oas.BMTSync.spring.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Map;
 
@@ -105,8 +106,12 @@ public class TestStatusDAO {
 		
 
 		// call the sproc
-		Map<String, Object> result = _valiDateSaveTestStatusCall.execute(rosterId, pOasTestID, 
+        final Calendar startDBTime = Calendar.getInstance();
+        Map<String, Object> result = _valiDateSaveTestStatusCall.execute(rosterId, pOasTestID, 
 				pDeliveryStatus, pStartedDate, pCompletedDate);
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_TESTSTATUS.ValidateSaveTestStatus");
 
 		// See if we got a response
 		if (result == null || !result.containsKey(OUTPUT_TESTSTATUS)) {

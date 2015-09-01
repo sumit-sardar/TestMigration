@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,11 @@ public class TestAssignmentDAO {
 		_getTestAssignmentCall.compile();
 		
 		// call the sproc
+		final Calendar startDBTime = Calendar.getInstance();
 		Map<String, Object> result = _getTestAssignmentCall.execute(testAdminId, studentId);
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_ASSIGNMENT.getTestAssignment");
 
 		// See if we got a response
 		if (result == null || !result.containsKey(OUTPUT_ASSIGNMENT)) {
@@ -183,13 +188,14 @@ public class TestAssignmentDAO {
 	public void updateAssignmentAPIStatus(final Integer testAdminId, Integer studentId,
 			final boolean success, final String errorCode, final String errorMessage)
 			throws SQLException {
-			
+
 		logger.debug(String.format("DB CALL: [testAdminID=%d][studentId=%d][updateSuccess=%b][updateStatus=%s][updateMessage=%s]",
 				testAdminId,
 				studentId,
 				Boolean.valueOf(success),
 				errorCode,
 				errorMessage));	
+		final Calendar startDBTime = Calendar.getInstance();
 		_updateAssignmentAPIStatusCall.execute(
 				testAdminId,
 				studentId.toString(),
@@ -197,6 +203,9 @@ public class TestAssignmentDAO {
 				success ? "Success" : "Failed",
 				success ? "" : errorCode,
 				success ? "" : errorMessage);
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_ASSIGNMENT.updateAssignmentAPIStatus");
 	}
 	
 }

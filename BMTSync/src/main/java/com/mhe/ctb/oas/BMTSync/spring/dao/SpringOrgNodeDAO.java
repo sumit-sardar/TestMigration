@@ -3,6 +3,7 @@ package com.mhe.ctb.oas.BMTSync.spring.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import javax.sql.DataSource;
 
 import oracle.jdbc.OracleTypes;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -26,6 +28,8 @@ import com.mhe.ctb.oas.BMTSync.model.HierarchyNode;
  */
 @Repository
 public class SpringOrgNodeDAO {
+	private static final Logger logger = Logger.getLogger(SpringOrgNodeDAO.class);
+	
 	// Return map names
 	private static final String OUTPUT_HEIRARCHY_LIST = "PRESULTCURSOR";
 
@@ -66,7 +70,11 @@ public class SpringOrgNodeDAO {
 	 */
 	public List<HierarchyNode> getStudentHeirarchy(long studentId)
 			throws UnknownStudentException {
+		final Calendar startDBTime = Calendar.getInstance();
 		Map<String, Object> result = _hierarchyReader.execute(studentId);
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_STUDENTS.Hierarchy");
 
 		if (result == null || !result.containsKey(OUTPUT_HEIRARCHY_LIST)) {
 			throw new UnknownStudentException(studentId);

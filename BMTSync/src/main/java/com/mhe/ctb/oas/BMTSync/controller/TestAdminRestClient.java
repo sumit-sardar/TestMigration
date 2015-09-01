@@ -1,6 +1,7 @@
 package com.mhe.ctb.oas.BMTSync.controller;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,10 +67,16 @@ public class TestAdminRestClient {
 				logger.info("[TestAdmin] Request json to BMT :"+testAdmin.toJson());
 				logger.info("[TestAdmin] Transmiting json to endpoint " + endpointSelector.getEndpoint(testAdmin.getOasCustomerId())
 						+RestURIConstants.POST_TESTADMIN);
+				final Calendar startTime = Calendar.getInstance();
 				testAdminResponse = restTemplate.postForObject(endpointSelector.getEndpoint(testAdmin.getOasCustomerId())
 						+RestURIConstants.POST_TESTADMIN,
 		        		testAdmin, CreateTestAdminResponse.class);
-		        logger.info("[TestAdmin] Response json from BMT: " + testAdminResponse.toJson());
+				final Calendar endTime = Calendar.getInstance();
+				final long callTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
+		        logger.info("[TestAdmin] Service Call Time: " + callTime
+		        		+ " [service=BMT.TestAdmin,testAdminId=" + testAdminId + "]");
+		        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+	        logger.info("[TestAdmin] Response json from BMT: " + testAdminResponse.toJson());
 		        //Updates the BMTSYNC_TestAdmin_Status table, with success or failure
 		        processResponses(testAdmin, testAdminResponse, true);
 			}
@@ -103,6 +110,7 @@ public class TestAdminRestClient {
 	 * @throws Exception Generic exception in case of parsing errors or DAO problems.
 	 */
 	private void processResponses(final TestAdmin req, final CreateTestAdminResponse resp, final boolean success) throws Exception {
+		final Calendar startDBTime = Calendar.getInstance();
 		if (resp == null) {
 			updateTestAdminStatus(req.getOasTestAdministrationID(), false, "999", "Error from BMT sync API.");
 			return;
@@ -114,6 +122,11 @@ public class TestAdminRestClient {
 		}
 		
 		updateTestAdminStatus(req.getOasTestAdministrationID(), success, "", "");
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("[Student] Service Database Update Call Time: " + callDBTime + " [service=BMT.TestAdmin,testAdminId="
+        		+ req.getOasTestAdministrationID() + "]");
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.BMTSYNC_TESTADMIN_STATUS");
 	}
 	
 	/**

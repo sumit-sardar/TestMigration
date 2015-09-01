@@ -3,6 +3,7 @@ package com.mhe.ctb.oas.BMTSync.spring.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Map;
 
@@ -86,7 +87,11 @@ public class TestAdminDAO {
 	public TestAdmin getTestAdmin(final long testAdminId) throws UnknownTestAdminException {
 
 		// call the sproc
+		final Calendar startDBTime = Calendar.getInstance();
 		Map<String, Object> result = _getTestAdminCall.execute(testAdminId);
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_TESTADMIN.getTestAdmin");
 
 		// See if we got a response
 		if (result == null || !result.containsKey(OUTPUT_ASSIGNMENT)) {
@@ -150,12 +155,16 @@ public class TestAdminDAO {
 				Boolean.valueOf(success),
 				errorCode,
 				errorMessage));	
+		final Calendar startDBTime = Calendar.getInstance();
 		_updateAdminStatusCall.execute(
 				testAdminId,
 				"BMT",
 				success ? "Success" : "Failed",
 				success ? "" : errorCode,
 				success ? "" : errorMessage);
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_TESTADMIN.updateTestAdminAPIStatus");
 	}
 	
 }

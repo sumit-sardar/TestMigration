@@ -2,6 +2,7 @@ package com.mhe.ctb.oas.BMTSync.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.jms.JMSException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhe.ctb.oas.BMTSync.model.ItemResponse;
 import com.mhe.ctb.oas.BMTSync.model.TestStatus;
 import com.mhe.ctb.oas.BMTSync.rest.CreateItemResponsesRequest;
@@ -85,7 +87,8 @@ public class TestStatusRestService {
 	@RequestMapping(value="/api/v1/oas/teststatus", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody CreateTestStatusResponse postTestStatus(
 		@RequestBody CreateTestStatusRequest request ) {
-		
+		final Calendar startTime = Calendar.getInstance();
+
 		logger.info("[TestStatus] Request From BMT: "+request.toJson());
 		CreateTestStatusResponse response = new CreateTestStatusResponse();
 		response.setSuccessful(false);
@@ -102,6 +105,7 @@ public class TestStatusRestService {
 		}
 		
 		List<TestStatus> testStatusErrList = new ArrayList<TestStatus>();
+		int responseSetsFetched = 0;
 		
 		try {
 			for (TestStatus testStatus : request.getTestStatus()) {
@@ -114,6 +118,7 @@ public class TestStatusRestService {
 				} else {
 					// If the customer ID says to get the endpoint and we're in the right status, do the thing.
 					if (testStatus.getDeliveryStatus().equals("CO") || testStatus.getDeliveryStatus().equals("IN")) {
+						responseSetsFetched++;
 						try {
 							itemResponses = getItemResponsesFromBMT(customerId, testStatus);
 						} catch (RestClientException rce) {
@@ -164,11 +169,18 @@ public class TestStatusRestService {
 					testStatusRet.setOasTestId(testStatus.getOasTestId());
 					testStatusRet.setStartedDate(testStatus.getStartedDate());
 				} else {
+					final Calendar startDBTime = Calendar.getInstance();
 					testStatusRet = testStatusDAO.validateSaveData(testStatus.getOasRosterId(), 
 							testStatus.getOasTestId(), 
 							testStatus.getDeliveryStatus(), 
 							testStatus.getStartedDate(), 
 							testStatus.getCompletedDate());
+					final Calendar endDBTime = Calendar.getInstance();
+					final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+			        logger.info("[TestStatus] Service Database Update Call Time: " + callDBTime
+			        		+ " [service=Sync.TestStatus,testRosterId=" + testStatus.getOasRosterId()
+			        		+ "subTestId=" + testStatus.getOasTestId() + "]");
+			        logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.STUDENT_ITEM_SET_STATUS");
 					if (testStatus.getDeliveryStatus().equals("CO")) {
 		        		int retryCount = 1;
 		        		boolean sendSuccessful = false;
@@ -220,7 +232,11 @@ public class TestStatusRestService {
 			// Generic logger message.
 			logger.info(e.getMessage());
 		}
-		
+		final Calendar endTime = Calendar.getInstance();
+		final long callTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
+        logger.info("[TestStatus] Service Call Time: " + callTime + ",responseSetsFetched=" + responseSetsFetched + "]");
+        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest OAS.TestStatus ResponseSetsFetched" + responseSetsFetched);
+
 		return response;
 	}
 
@@ -229,8 +245,12 @@ public class TestStatusRestService {
 		
 		final Integer testRosterId = testStatus.getOasRosterId();
 		final String subTestId = testStatus.getOasTestId();
-
+		final Calendar startDBTime = Calendar.getInstance();
 		itemResponseDAO.addItemResponses(testRosterId, subTestId, itemResponses);
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("[ItemResponses] Database Update Call Time: " + callDBTime);
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.ITEM_RESPONSE");
 	}
 	
 	private List<ItemResponse> getItemResponsesFromBMT(final int customerId, final TestStatus testStatus) {
@@ -240,12 +260,26 @@ public class TestStatusRestService {
 		CreateItemResponsesRequest itemResponsesRequest = new CreateItemResponsesRequest();
 		itemResponsesRequest.setAssignmentId(testStatus.getAssignmentId());
 		final String bmtResponseUrl = endpoint + RestURIConstants.POST_RESPONSES + "/" + testStatus.getAssignmentId();
-		logger.info("[ItemResponses] Calling BMT URL " + bmtResponseUrl);
+		logger.info("[ItemResponses] Calling BMT URL: " + bmtResponseUrl);
 
 		// Send the assignmentId to BMT for a list of itemResponses.
-		CreateItemResponsesResponse itemResponses = restTemplate.getForObject(bmtResponseUrl, CreateItemResponsesResponse.class);
-        logger.info("[ItemResponses] Response from BMT: " + itemResponses == null ? "null" : itemResponses.toJson());
+		final Calendar startTime = Calendar.getInstance();
+		final String apiResponse = restTemplate.getForObject(bmtResponseUrl, String.class);
+		final Calendar endTime = Calendar.getInstance();
+		final long callTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
+        logger.info("[ItemResponses] Response from BMT: " + apiResponse == null ? "null" : apiResponse);
+        logger.info("[ItemResponses] Service Call Time: " + callTime
+        		+ " [service=BMT.ItemResponses,testRosterId=" + testStatus.getOasRosterId()
+        		+ "subTestId=" + testStatus.getOasTestId() + "]");
+        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.ItemResponse");
 
-	    return itemResponses.getItemResponses();    
+        final ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.readValue(apiResponse, CreateItemResponsesResponse.class).getItemResponses();
+		} catch (Exception e) {
+			logger.error("[ItemResponses] Error unmarshalling BMT responses! [assignmentId=" + testStatus.getAssignmentId() + "]", e);
+			throw new RestClientException("[ItemResponses] Error unmarshalling BMT responses! [assignmentId="
+			+ testStatus.getAssignmentId() + "]", e);
+		}
 	}
 }

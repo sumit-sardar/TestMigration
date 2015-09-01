@@ -2,6 +2,7 @@ package com.mhe.ctb.oas.BMTSync.spring.dao;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -141,8 +142,12 @@ public class ItemResponseDAO {
 			final ItemResponse itemResponse) throws SQLException {
 		try {
 			if ("CR".equals(itemResponse.getItemType())) {
+				final Calendar startDBTime = Calendar.getInstance();
 				int rowsUpdated = template.update(UPDATE_CONSTRUCTED_RESPONSE,
 						encoder.formatConstructedResponse(itemResponse.getItemResponse()), testRosterId, itemSetId, itemResponse.getItemCode());
+				final Calendar endDBTime = Calendar.getInstance();
+				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.UPDATE_CONSTRUCTED_RESPONSE");
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error updating constructed response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -154,8 +159,12 @@ public class ItemResponseDAO {
 				return;
 			}
 			if ("AU".equals(itemResponse.getItemType())) {
+				final Calendar startDBTime = Calendar.getInstance();
 				int rowsUpdated = template.update(UPDATE_AUDIO_RESPONSE,
 						itemResponse.getItemResponse(), testRosterId, itemSetId, itemResponse.getItemCode());
+				final Calendar endDBTime = Calendar.getInstance();
+				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.UPDATE_AUDIO_RESPONSE");
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error inserting audio response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -189,9 +198,13 @@ public class ItemResponseDAO {
 		insertPlaceholderItemResponse(testRosterId, itemSetId, itemResponse);
 		try {
 			if ("CR".equals(itemResponse.getItemType())) {
+				final Calendar startDBTime = Calendar.getInstance();
 				int rowsUpdated = template.update(INSERT_CONSTRUCTED_RESPONSE, 
 						testRosterId, itemSetId, itemResponse.getItemCode(),
 						encoder.formatConstructedResponse(itemResponse.getItemResponse()));
+				final Calendar endDBTime = Calendar.getInstance();
+				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.INSERT_CONSTRUCTED_RESPONSE");
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error inserting constructed response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -203,8 +216,12 @@ public class ItemResponseDAO {
 				return;
 			}
 			if ("AU".equals(itemResponse.getItemType())) {
+				final Calendar startDBTime = Calendar.getInstance();
 				int rowsUpdated = template.update(INSERT_AUDIO_RESPONSE,
 						testRosterId, itemSetId, itemResponse.getItemCode(), itemResponse.getItemResponse());
+				final Calendar endDBTime = Calendar.getInstance();
+				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.INSERT_AUDIO_RESPONSE");
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error inserting audio response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -235,7 +252,11 @@ public class ItemResponseDAO {
 	private boolean constructedEntryExists(final Integer testRosterId, final Integer itemSetId, final Integer itemId)
 			throws SQLException {
 		try {
+			final Calendar startDBTime = Calendar.getInstance();
 			final Integer extantRows = template.queryForObject(SELECT_UNIQUE_CONSTRUCTED_RESPONSE, Integer.class, testRosterId, itemSetId, itemId);
+			final Calendar endDBTime = Calendar.getInstance();
+			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.SELECT_UNIQUE_CONSTRUCTED_RESPONSE");
 			if (extantRows > 0) {
 				LOGGER.debug("No rows found in ITEM_RESPONSE_CR."
 						+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemId + "]");
@@ -268,6 +289,7 @@ public class ItemResponseDAO {
 			final String itemResponse, final Integer itemResponseTime) throws SQLException {
 		final Integer itemResponseId = getNextItemResponseSequenceId();
 		try {
+			final Calendar startDBTime = Calendar.getInstance();
 			int rowsUpdated = template.update(INSERT_ITEM_RESPONSE,
 					itemResponseId,
 					testRosterId,
@@ -276,6 +298,9 @@ public class ItemResponseDAO {
 					itemResponse,
 					itemResponseTime,
 					getNextItemSequenceResponseNumber(testRosterId));
+			final Calendar endDBTime = Calendar.getInstance();
+			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE.INSERT_ITEM_RESPONSE");
 			if (rowsUpdated != 1) {
 				throw new SQLException("[ItemResponseDAO] INSERT error! Expected updatedRows = 1, Actual updatedRows = "
 						+ rowsUpdated + "! [testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -295,7 +320,11 @@ public class ItemResponseDAO {
 	private Integer getItemSetIdForRosterAndSubtest(final Integer testRosterId, final String subTestId) throws SQLException {
 		Integer itemSetId;
 		try {
+			final Calendar startDBTime = Calendar.getInstance();
 			itemSetId = template.queryForObject(SELECT_ITEM_SET_ID, Integer.class, testRosterId, subTestId);
+			final Calendar endDBTime = Calendar.getInstance();
+			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE.SELECT_ITEM_SET_ID");
 		} catch (final DataAccessException sqle) {
 			LOGGER.error("[ItemResponseDAO] Error trying to find item_set_id: " + sqle.getMessage()
 					+ "[testRosterId=" + testRosterId + ",extCmsItemSetId=" + subTestId + "]", sqle);
@@ -309,7 +338,11 @@ public class ItemResponseDAO {
 	private Integer getNextItemResponseSequenceId() throws SQLException {
 		Integer itemResponseId;
 		try {
+			final Calendar startDBTime = Calendar.getInstance();
 			itemResponseId = template.queryForObject(SELECT_ITEM_RESPONSE_ID, Integer.class);
+			final Calendar endDBTime = Calendar.getInstance();
+			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest OAS.SELECT_ITEM_RESPONSE_ID");
 		} catch (final DataAccessException sqle) {
 			LOGGER.error("[ItemResponseDAO] Error trying to select next item_response_id: " + sqle.getMessage() + "]", sqle);
 			throw new SQLException("[ItemResponseDAO] Error trying to select next item_response_id: " + sqle.getMessage() + "]", sqle);
@@ -321,8 +354,12 @@ public class ItemResponseDAO {
 	private Integer getNextItemSequenceResponseNumber(final Integer rosterId) throws SQLException {
 		Integer seqResponseNumber;
 		try {
+			final Calendar startDBTime = Calendar.getInstance();
 			seqResponseNumber = template.queryForObject(SELECT_MAX_RESPONSE_SEQUENCE_NUMBER, Integer.class,
 					rosterId);
+			final Calendar endDBTime = Calendar.getInstance();
+			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE.SELECT_MAX_RESPONSE_SEQ_NUM");
 		} catch (final DataAccessException sqle) {
 			LOGGER.error("[ItemResponseDAO] Error trying to select next sequence_response_num: " + sqle.getMessage() + "]", sqle);
 			throw new SQLException("[ItemResponseDAO] Error trying to select next sequence_response_num: " + sqle.getMessage() + "]", sqle);

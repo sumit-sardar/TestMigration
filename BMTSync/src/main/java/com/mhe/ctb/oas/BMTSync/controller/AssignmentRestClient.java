@@ -2,6 +2,7 @@ package com.mhe.ctb.oas.BMTSync.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,14 +118,22 @@ public class AssignmentRestClient {
 					logger.info("[TestAssignment] Transmiting json to endpoint " + endpoint+RestURIConstants.POST_ASSIGNMENTS);
 					try {
 						// Send the TestAssignment (testAdminId to list of studentId) to BMT.
+						final Calendar startTime = Calendar.getInstance();
 				        assignmentResponse = restTemplate.postForObject(endpoint+RestURIConstants.POST_ASSIGNMENTS,
 				        		assignment, CreateAssignmentResponse.class);
+						final Calendar endTime = Calendar.getInstance();
+						final long callTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
+				        logger.info("[TestAssignment] Service Call Time: " + callTime
+				        		+ " [service=BMT.TestAssignment,testAdminId=" + testAdminId + "]");
+				        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+
 				        if (assignmentResponse != null) {
 				        	// If BMT responds, log the response.
 				        	logger.info("[TestAssignment] Response json from BMT: " + assignmentResponse.toJson());
 				        } 
 				        //Updates the BMTSYN_Assignment_Status table, with success or failure
 			        	processResponses(assignment, assignmentResponse, true);
+
 					} catch (RestClientException rce) {
 						// If something goes wrong with the REST call, log the error.
 						logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);			
@@ -156,6 +165,7 @@ public class AssignmentRestClient {
 	 * @throws Exception Catchall for exceptions we might throw because of DAO or integer conversion errors.
 	 */
 	private void processResponses(final TestAssignment req, final CreateAssignmentResponse resp, final boolean success) throws Exception {
+		final Calendar startDBTime = Calendar.getInstance();
 		
 		// get the testAdminId.
 		final Integer testAdminId = req.getOasTestAdministrationID();
@@ -249,6 +259,11 @@ public class AssignmentRestClient {
 				processedStudentIds.put(studentIdKey, Boolean.TRUE);
 			}
 		}
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("[TestAssignment] Service Database Update Call Time: " + callDBTime
+        		+ " [service=BMT.TestAssignment,testAdminId=" + testAdminId + "]");
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.BMTSYNC_ASSIGNMENT_STATUS");
 	}
 	
 	/**
@@ -269,7 +284,7 @@ public class AssignmentRestClient {
 			errMsg = errorMessage;
 		}
 		
-		logger.info(String.format("Updating assignment API status in OAS. "
+		logger.debug(String.format("Updating assignment API status in OAS. "
 				+ "[testAdminID=%d][studentId=%d][updateSuccess=%b][updateStatus=%s][updateMessage=%s]",
 				testAdminId,
 		        studentId, 
@@ -277,12 +292,12 @@ public class AssignmentRestClient {
 		        errorCode, 
 		        errMsg));
 		try {
-		testAssignmentDAO.updateAssignmentAPIStatus(
-				testAdminId,
-		        studentId, 
-		        success, 
-		        errorCode, 
-		        errMsg);
+			testAssignmentDAO.updateAssignmentAPIStatus(
+					testAdminId,
+			        studentId, 
+			        success, 
+			        errorCode, 
+			        errMsg);
 		} catch (final SQLException sqle) {
 			logger.error("Unable to update data source. SQLException occurred: " + sqle.getMessage(), sqle);
 		}

@@ -1,6 +1,7 @@
 package com.mhe.ctb.oas.BMTSync.controller;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -91,9 +92,14 @@ public class StudentRestClient {
 						logger.info("[Student] Request json to BMT: " + studentListMap.get(customerId).toJson());
 						logger.info("[Student] Transmiting json to endpoint " + endpointSelector.getEndpoint(customerId)
 								+RestURIConstants.POST_STUDENTS);
+						final Calendar startTime = Calendar.getInstance();
 						studentListResponse = restTemplate.postForObject(endpointSelector.getEndpoint(customerId)
 								+RestURIConstants.POST_STUDENTS,
 								studentRequest, CreateStudentsResponse.class);
+						final Calendar endTime = Calendar.getInstance();
+						final long callTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
+				        logger.info("[Student] Service Call Time: " + callTime + " [service=BMT.Student]");
+				        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.Student");
 						logger.info("[Student] Response json from BMT: " + studentListResponse.toJson());
 						processResponses(studentRequest, studentListResponse, true);
 					} catch (RestClientException rce) {
@@ -120,6 +126,7 @@ public class StudentRestClient {
 	 * @param success Whether the call to BMT was successful or not.
 	 */
 	private void processResponses(final CreateStudentsRequest req, final CreateStudentsResponse resp, final boolean success) {
+		final Calendar startDBTime = Calendar.getInstance();
 
 		final Map<Integer, Boolean> updateStatuses = new HashMap<Integer, Boolean>(req.getStudents().size());
 		final Map<Integer, String> updateMessages = new HashMap<Integer, String>(req.getStudents().size());
@@ -205,6 +212,10 @@ public class StudentRestClient {
 						studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
 			}
 		}
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        logger.info("[Student] Service Database Update Call Time: " + callDBTime + " [service=BMT.Student]");
+        logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.BMTSYNC_STUDENT_STATUS");
 	}
 	
 	/**

@@ -3,6 +3,7 @@ package com.mhe.ctb.oas.BMTSync.spring.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Map;
 
@@ -91,8 +92,12 @@ public class StudentDAO {
 	 */
 	public Student getStudent(long studentId) throws UnknownStudentException {
 		LOGGER.debug(String.format("Retrieving Student %s", studentId));
-		
+
+		final Calendar startDBTime = Calendar.getInstance();
 		Map<String, Object> result = _getStudentDetailsCall.execute(studentId);
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_STUDENTS.StudentDetails");
 
 		// See if we got a response
 		if (result == null || !result.containsKey(OUTPUT_STUDENT)) {
@@ -128,10 +133,14 @@ public class StudentDAO {
 			final boolean success, final String errorCode, final String errorMessage)
 			throws SQLException {
 
+		final Calendar startDBTime = Calendar.getInstance();
 		_updateStudentAPIStatusCall.execute(studentId.toString(), "BMT", 
 				success ? "Success" : "Failed",
 				success ? "" : errorCode,
 				success ? "" : errorMessage);
+		final Calendar endDBTime = Calendar.getInstance();
+		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
+        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_STUDENTS.updateStudentAPIStatus");
 		
 		/* int numRowsUpdated = Integer.valueOf((Integer) results.get("#update-count-1"));
 		if (numRowsUpdated != 1) {
