@@ -1817,6 +1817,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
+								isAudioItemLoading = false;
 								//$.unblockUI(); 
 							}
 				}
@@ -2200,6 +2201,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								if(data.bmtAPIUrl){
 									bmtURL = data.bmtAPIUrl;
 									if(bmtURL.indexOf("https") > -1){
+										$("#bmtFrame").remove();
 										isSuccess = true;
 									}else{
 										$("#bmtFrame").remove();
