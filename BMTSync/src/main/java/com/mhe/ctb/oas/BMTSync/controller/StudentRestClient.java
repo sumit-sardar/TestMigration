@@ -103,7 +103,9 @@ public class StudentRestClient {
 						logger.info("[Student] Response json from BMT: " + studentListResponse.toJson());
 						processResponses(studentRequest, studentListResponse, true);
 					} catch (RestClientException rce) {
-						logger.error("Http Client Error: " + rce.getMessage(), rce);			
+						logger.error("Http Client Error: " + rce.getMessage(), rce);
+						logger.error("ErrorCode 999 ErrorType RestClientException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest BMT.Student");
+
 						try {
 							// On Error Mark the Student ID status as Failed
 							// in Student_API_Status table
@@ -210,6 +212,8 @@ public class StudentRestClient {
 				logger.error(String.format("SQL error attempting to update student status in OAS."
 						+ " [studentId=%d][updateSuccess=%b][updateMessage=%s]",
 						studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
+				logger.error("ErrorCode 999 ErrorType SQLException StudentId "+studentId+" SyncCallType ServiceAPI SyncCallDest BMT.Student");
+
 			}
 		}
 		final Calendar endDBTime = Calendar.getInstance();

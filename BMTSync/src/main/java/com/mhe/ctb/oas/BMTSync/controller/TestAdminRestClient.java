@@ -82,13 +82,18 @@ public class TestAdminRestClient {
 			}
 		} catch (RestClientException rce) {
 			logger.error("[TestAdmin] Http Client Error: " + rce.getMessage(), rce);
+			logger.error("ErrorCode 999 ErrorType RestClientException TestAdminId "+testAdminId+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+
 			try {
 				processResponses(testAdmin, testAdminResponse, false);
 			} catch (Exception e) {
 				logger.error("[TestAdmin] Error trying to process TestAdmin API responses.", e);
+				logger.error("ErrorCode 999 ErrorType Exception TestAdminId "+testAdminId+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+
 			}
 		} catch (Exception e) {
 			logger.error("[TestAdmin] Error in TestAdminRestClient class : "+e.getMessage(), e);
+			logger.error("ErrorCode 999 ErrorType Exception TestAdminId "+testAdminId+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
 			try {
 				processResponses(testAdmin, testAdminResponse, false);
 			} catch (Exception ee) {

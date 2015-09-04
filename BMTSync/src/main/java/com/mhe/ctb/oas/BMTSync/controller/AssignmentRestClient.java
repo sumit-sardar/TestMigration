@@ -96,6 +96,7 @@ public class AssignmentRestClient {
 				logger.error(String.format("[TestAssignment] Unknown test assignment. [testAdminId=%d,studentId=%d]",
 						message.getTestAdminId(), message.getStudentId()));
 				updateAssignmentStatus(message.getTestAdminId(), message.getStudentId(), false, "999", "Unknown test assignment.");
+				logger.error("ErrorCode 999 ErrorType UnknownTestAssignmentException CustomerId "+message.getCustomerId()+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
 			}
 		}
 
@@ -136,7 +137,9 @@ public class AssignmentRestClient {
 
 					} catch (RestClientException rce) {
 						// If something goes wrong with the REST call, log the error.
-						logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);			
+						logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);
+						logger.error("ErrorCode 999 ErrorType RestClientException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+
 			        	for (final StudentRoster roster : assignment.getRoster()) {
 			        		updateAssignmentStatus(assignment.getOasTestAdministrationID(), Integer.valueOf(roster.getOasStudentid()),
 			        				false, "999", rce.getMessage());
@@ -144,6 +147,8 @@ public class AssignmentRestClient {
 					} catch (final Exception e) {
 						// If something unexpected goes wrong, log it.
 						logger.error("[TestAssignment] Error in AssignmentRestClient class : "+e.getMessage(), e);
+						logger.error("ErrorCode 999 ErrorType Exception CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+
 			        	for (final StudentRoster roster : assignment.getRoster()) {
 			        		updateAssignmentStatus(assignment.getOasTestAdministrationID(), Integer.valueOf(roster.getOasStudentid()),
 			        				false, "999", e.getMessage());
@@ -300,6 +305,8 @@ public class AssignmentRestClient {
 			        errMsg);
 		} catch (final SQLException sqle) {
 			logger.error("Unable to update data source. SQLException occurred: " + sqle.getMessage(), sqle);
+			logger.error("ErrorCode 999 ErrorType SQLException StudentId "+studentId+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+
 		}
 	}
 	

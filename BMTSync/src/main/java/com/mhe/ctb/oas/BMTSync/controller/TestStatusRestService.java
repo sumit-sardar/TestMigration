@@ -124,6 +124,8 @@ public class TestStatusRestService {
 						} catch (RestClientException rce) {
 							// If something goes wrong with the REST call, log the error.
 							logger.error("[ItemResponses] Http Client Error: " + rce.getMessage(), rce);
+							logger.error("ErrorCode 999 ErrorType RestClientException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+
 							storeStatusUpdate = false;
 							testStatus.setErrorCode(412);
 							testStatus.setErrorMessage("[ItemResponses] Unable to get item responses: " + rce.getMessage()
@@ -131,6 +133,8 @@ public class TestStatusRestService {
 						} catch (final Exception e) {
 							// If something unexpected goes wrong, log it.
 							logger.error("[ItemResponses] Error in TestStatusRestService class : "+e.getMessage(), e);
+							logger.error("ErrorCode 999 ErrorType Exception CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+
 							storeStatusUpdate = false;
 							testStatus.setErrorCode(500);
 							testStatus.setErrorMessage("[ItemResponses] Error in TestStatusRestService class : "+e.getMessage()
@@ -140,11 +144,14 @@ public class TestStatusRestService {
 			        		processResponses(testStatus, itemResponses);
 			        	} catch (final SQLException sqle) {
 				        	logger.error("[ItemResponses] Error storing responses in database: " + sqle.getMessage(), sqle);
+							logger.error("ErrorCode 999 ErrorType SQLException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+
 							storeStatusUpdate = false;
 							testStatus.setErrorCode(500);
 							testStatus.setErrorMessage("Error storing responses in database: " + sqle.getMessage());	
 			        	} catch (final RestClientException rce) {
 				        	logger.error("[ItemResponses] Error with data from BMT: " + rce.getMessage(), rce);
+				        	logger.error("ErrorCode 999 ErrorType RestClientException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
 							storeStatusUpdate = false;
 							testStatus.setErrorCode(500);
 							testStatus.setErrorMessage("Error with data from BMT: " + rce.getMessage());	
@@ -278,6 +285,8 @@ public class TestStatusRestService {
 			return mapper.readValue(apiResponse, CreateItemResponsesResponse.class).getItemResponses();
 		} catch (Exception e) {
 			logger.error("[ItemResponses] Error unmarshalling BMT responses! [assignmentId=" + testStatus.getAssignmentId() + "]", e);
+			logger.error("ErrorCode 999 ErrorType Exception CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest BMT.ItemResponse");
+			
 			throw new RestClientException("[ItemResponses] Error unmarshalling BMT responses! [assignmentId="
 			+ testStatus.getAssignmentId() + "]", e);
 		}
