@@ -2201,7 +2201,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								if(data.bmtAPIUrl){
 									bmtURL = data.bmtAPIUrl;
 									if(bmtURL.indexOf("https") > -1){
-										$("#bmtFrame").remove();
+										elementDiv.innerHTML = "";
 										isSuccess = true;
 									}else{
 										$("#bmtFrame").remove();
