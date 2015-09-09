@@ -53,14 +53,7 @@
 					<% 
 						Boolean hasBlockUserManagement=(Boolean)session.getAttribute("hasBlockUserManagement");
 						Boolean hasSSOHideUserProfile=(Boolean)session.getAttribute("hasSSOHideUserProfile");
-						if((hasBlockUserManagement==null) || (hasBlockUserManagement!=null && hasBlockUserManagement==false) || ((session.getAttribute("is3to8Selected") != null) && !is3to8Selected)) {
-						if ((hasSSOHideUserProfile==null) || (hasSSOHideUserProfile!=null && hasSSOHideUserProfile==false)){
-					%>
-						<a href="#" onClick="viewMyProfile();"><b>My Profile</b></a>&nbsp;&nbsp;
-						<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
-					<% }} %>
-                	<a href="<netui-template:attribute name="helpLink"/>" onClick="return showHelpWindow(this.href);"><b>Help</b></a>&nbsp;&nbsp;
-					<% 
+						
 						Boolean isSSO_LTIUser=null;//(Boolean)session.getAttribute("isSSO_LTIUser");
 						Cookie[] cookies = request.getCookies();
 						for(Cookie cookie : cookies){
@@ -68,6 +61,14 @@
 						    	isSSO_LTIUser = cookie.getValue().compareToIgnoreCase("true")==0?true:false;
 						    }
 						}
+						if((hasBlockUserManagement==null) || (hasBlockUserManagement!=null && hasBlockUserManagement==false) || ((session.getAttribute("is3to8Selected") != null) && !is3to8Selected)) {
+						if (((hasSSOHideUserProfile==null) || (hasSSOHideUserProfile!=null && hasSSOHideUserProfile==false)) &&  ((isSSO_LTIUser==null) || (isSSO_LTIUser!=null && isSSO_LTIUser==false))){
+					%>
+						<a href="#" onClick="viewMyProfile();"><b>My Profile</b></a>&nbsp;&nbsp;
+						<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
+					<% }} %>
+                	<a href="<netui-template:attribute name="helpLink"/>" onClick="return showHelpWindow(this.href);"><b>Help</b></a>&nbsp;&nbsp;
+					<% 
 						if ((isSSO_LTIUser==null) || (isSSO_LTIUser!=null && isSSO_LTIUser==false)){
 					%>
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
