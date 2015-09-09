@@ -984,6 +984,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
     	boolean isWVCustomer = false;
+    	boolean isLLORPCustomer = false;    	
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -1115,6 +1116,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	        		this.isEngradeCustomer = true;
 	        		continue;
 	            }
+				if(cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer") && 
+						null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
+					isLLORPCustomer = true;
+					continue;
+				}
 			}
 			
 		}
@@ -1178,6 +1184,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
+		this.getSession().setAttribute("isLLORPCustomer", isLLORPCustomer);
     }
 
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

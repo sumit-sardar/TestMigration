@@ -1471,7 +1471,8 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
     	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
     	boolean isWVCustomer = false;
-        
+    	boolean lloRPCustomer = false;
+    	
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
@@ -1573,6 +1574,11 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 				isWVCustomer = true;
 				continue;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	lloRPCustomer = true;
+				continue;
+            }
 		}       
 		if (isWVCustomer)
 		{
@@ -1613,7 +1619,8 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
      	//Done for Engrade customer to block admin users from adding/editing/deleting users
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
-     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));     	
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));  
+     	this.getSession().setAttribute("isLLORPCustomer", new Boolean(lloRPCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

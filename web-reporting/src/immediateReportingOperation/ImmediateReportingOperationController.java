@@ -1354,6 +1354,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
     	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
     	Integer dataExportVisibilityLevel = 1;
+    	boolean lloRPCustomer = false; 
 
 		if (customerConfigurations != null) {
 			for (int i = 0; i < customerConfigurations.length; i++) {
@@ -1464,6 +1465,11 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	        		this.isEngradeCustomer = true;
 	        		continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+	            	lloRPCustomer = true;
+					continue;
+	            }
 			}
 
 		}
@@ -1509,6 +1515,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer)); 
+     	this.getSession().setAttribute("isLLORPCustomer", new Boolean(lloRPCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

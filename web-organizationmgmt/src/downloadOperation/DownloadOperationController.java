@@ -1095,6 +1095,7 @@ public class DownloadOperationController extends PageFlowController {
     	this.isLaslinkCustomerUploadDownlod =  laslinkCustomer ;
         this.islaslinkCustomer = laslinkCustomer;
         boolean isWVCustomerTopLevelAdminAndAdminCO = false;
+        boolean lloRPCustomer = false; 
         
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
@@ -1192,6 +1193,11 @@ public class DownloadOperationController extends PageFlowController {
 				isWVCustomer = true;
 				continue;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	lloRPCustomer = true;
+				continue;
+            }
 			
 		}   
 		
@@ -1232,7 +1238,8 @@ public class DownloadOperationController extends PageFlowController {
      	//Done for Engrade customer to block admin users from adding/editing/deleting users
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
-     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));     	
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer)); 
+     	this.getSession().setAttribute("isLLORPCustomer", new Boolean(lloRPCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

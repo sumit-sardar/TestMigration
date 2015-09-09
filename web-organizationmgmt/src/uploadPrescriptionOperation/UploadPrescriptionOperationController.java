@@ -1537,6 +1537,7 @@ public class UploadPrescriptionOperationController extends PageFlowController {
     	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
     	boolean isWVCustomer = false;
+    	boolean lloRPCustomer = false;
     	
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
@@ -1636,6 +1637,11 @@ public class UploadPrescriptionOperationController extends PageFlowController {
 				isWVCustomer = true;
 				continue;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	lloRPCustomer = true;
+				continue;
+            }
 		}        
 		if (isWVCustomer)
 		{
@@ -1674,6 +1680,7 @@ public class UploadPrescriptionOperationController extends PageFlowController {
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isLLORPCustomer", new Boolean(lloRPCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

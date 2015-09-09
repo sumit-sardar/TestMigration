@@ -1462,6 +1462,7 @@ public Forward rescoreStudent() {
     	boolean hasUploadDownloadConfig = false;
     	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
+    	boolean isLLORPCustomer = false;
     	
     	if( customerConfigs != null ) {
     	for (int i=0; i < customerConfigs.length; i++) {
@@ -1523,6 +1524,11 @@ public Forward rescoreStudent() {
         		this.isEngradeCustomer = true;
         		continue;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+				isLLORPCustomer = true;
+				continue;
+            }
 		}
     	getConfigStudentLabel(customerConfigs);
     	}
@@ -1576,7 +1582,8 @@ public Forward rescoreStudent() {
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer)); 
-		
+		//Done for LLO RP customer to hide Workstation Setup link
+     	this.getSession().setAttribute("isLLORPCustomer", new Boolean(isLLORPCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

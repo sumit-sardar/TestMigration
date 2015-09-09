@@ -1615,7 +1615,8 @@ public class UploadOperationController extends PageFlowController {
 		boolean hasSSOHideUserProfile = false;
 		boolean hasSSOBlockUserModifications = false;
 		boolean isWVCustomer = false;
-
+		boolean lloRPCustomer = false; 
+		
 		this.isLaslinkCustomerUploadDownlod = laslinkCustomer;
 
 		this.getSession()
@@ -1752,6 +1753,11 @@ public class UploadOperationController extends PageFlowController {
 				isWVCustomer = true;
 				continue;
 			}
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	lloRPCustomer = true;
+				continue;
+            }
 		}
 		if (isWVCustomer) {
 			if (!isWVCustomerTopLevelAdminAndAdminCO()) {
@@ -1811,6 +1817,7 @@ public class UploadOperationController extends PageFlowController {
 				new Boolean(hasSSOBlockUserModifications));
 		this.getSession().setAttribute("isEngradeCustomer",
 				new Boolean(this.isEngradeCustomer));
+		this.getSession().setAttribute("isLLORPCustomer", new Boolean(lloRPCustomer));
 	}
 
 	private boolean checkUserLevel(Integer defaultVisibilityLevel) {

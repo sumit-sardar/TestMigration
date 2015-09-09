@@ -66,13 +66,15 @@
         	</c:if>
         	<li id="services" class="simpleMenu"><a class="tab" href="#"><lb:label key="user.menu.services" /></a>
         		<ul class="sub_menu">
-        			 <li>
-        			 	<a href="#" style="float:left;"><lb:label key="user.menu.workstationSetup" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>
-        				<ul>
-        					<li><a href="#" id="installSoftwareLink" onClick="gotoMenuAction('services.do', 'installSoftwareLink');"><lb:label key="user.menu.installSoftware" /></a></li>
-        					<li><a href="#" id="downloadTestLink" onClick="gotoMenuAction('services.do', 'downloadTestLink');"><lb:label key="user.menu.downloadTest" /></a></li>
-        				</ul>
-        			 </li>
+        			<c:if test="${!sessionScope.isLLORPCustomer}">
+	        			 <li>
+	        			 	<a href="#" style="float:left;"><lb:label key="user.menu.workstationSetup" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>
+	        				<ul>
+	        					<li><a href="#" id="installSoftwareLink" onClick="gotoMenuAction('services.do', 'installSoftwareLink');"><lb:label key="user.menu.installSoftware" /></a></li>
+	        					<li><a href="#" id="downloadTestLink" onClick="gotoMenuAction('services.do', 'downloadTestLink');"><lb:label key="user.menu.downloadTest" /></a></li>
+	        				</ul>
+	        			 </li>
+	        		</c:if>
         			 <c:if test="${sessionScope.hasUploadConfigured}">	
 	        			 <li>
 	        			 	<a href="#" style="float:left;"><lb:label key="user.menu.studentLoad" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>        			 	

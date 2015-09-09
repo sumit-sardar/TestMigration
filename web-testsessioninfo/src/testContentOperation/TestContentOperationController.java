@@ -921,6 +921,8 @@ public class TestContentOperationController extends PageFlowController {
 		//**[IAA] Proctor users should not see PRISM reports
 		boolean TASCProctor = false;
 		boolean isWVCustomer = false;
+		boolean isLLORPCustomer = false;
+		
         if (TASCCustomer && isProctorUser())
         {
         	TASCProctor = true;
@@ -1021,6 +1023,11 @@ public class TestContentOperationController extends PageFlowController {
 				isTASCReadinessCustomer = true;
 				continue;
             }
+			if(cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer") && 
+					null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
+				isLLORPCustomer = true;
+				continue;
+			}
 		}
 		if (isWVCustomer)
 		{
@@ -1059,6 +1066,7 @@ public class TestContentOperationController extends PageFlowController {
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isLLORPCustomer", isLLORPCustomer);
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

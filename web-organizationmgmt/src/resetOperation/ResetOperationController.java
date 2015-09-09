@@ -1502,6 +1502,7 @@ public class ResetOperationController extends PageFlowController {
     	boolean hasSSOBlockUserModifications = false;
     	boolean isWVCustomer = false;
     	boolean hasLicenseConfig = false;
+    	boolean lloRPCustomer = false;
     	
     	this.isLasLinkCustomer = laslinkCustomer;        
         this.getSession().setAttribute("showReportTab", 
@@ -1609,6 +1610,11 @@ public class ResetOperationController extends PageFlowController {
 				isWVCustomer = true;
 				continue;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	lloRPCustomer = true;
+				continue;
+            }
 		}       
 		if (isWVCustomer)
 		{
@@ -1653,7 +1659,8 @@ public class ResetOperationController extends PageFlowController {
      	//Done for Engrade customer to block admin users from adding/editing/deleting users
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
-     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));     	
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isLLORPCustomer", new Boolean(lloRPCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

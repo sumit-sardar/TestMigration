@@ -303,6 +303,7 @@ public class UserAccountFileOperationController extends PageFlowController{
     	boolean hasSSOHideUserProfile = false;
     	boolean hasSSOBlockUserModifications = false;
     	boolean isWVCustomer = false;
+    	boolean isLLORPCustomer = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -429,6 +430,10 @@ public class UserAccountFileOperationController extends PageFlowController{
 	        		this.isEngradeCustomer = true;
 	        		continue;
 	            }
+				if(cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer") && 
+						null != cc.getDefaultValue() && "T".equals(cc.getDefaultValue())){
+					isLLORPCustomer = true;
+				}
 			}
 
 		}
@@ -491,6 +496,7 @@ public class UserAccountFileOperationController extends PageFlowController{
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isLLORPCustomer", isLLORPCustomer);
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

@@ -5580,6 +5580,7 @@ public class SessionOperationController extends PageFlowController {
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
      	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isLLORPCustomer", new Boolean(this.lloRPCustomer));
     }
    
     private boolean checkUserLevel(Integer defaultVisibilityLevel){

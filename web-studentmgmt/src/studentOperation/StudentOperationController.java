@@ -3309,6 +3309,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean isWVCustomer = false;
     	boolean hasBlockStudentCreation = false;
     	boolean hasBlockStudentDeletion = false;
+    	boolean lloRPCustomer = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -3454,6 +3455,12 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 					isTASCReadinessCustomer = true;
 					continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("LLO_RP_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+	            	lloRPCustomer = true;
+					continue;
+	            }
+				
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
 			this.isTASC = isTascCustomer;
@@ -3543,6 +3550,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
      	this.getSession().setAttribute("hasBlockStudentCreation", new Boolean(hasBlockStudentCreation));
      	this.getSession().setAttribute("hasBlockStudentDeletion", new Boolean(hasBlockStudentDeletion));
      	this.getSession().setAttribute("showUUIDMsg", (isTascCustomer || isTASCReadinessCustomer));
+     	this.getSession().setAttribute("isLLORPCustomer", new Boolean(lloRPCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){
