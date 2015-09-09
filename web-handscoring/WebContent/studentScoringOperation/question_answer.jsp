@@ -145,6 +145,7 @@ function stopAudio(){
   }  
 
   function linkQuestionIframe() {
+  		UIBlock();
 	 	var element = document.getElementById('questionInformation');
 		
 		//added for audio player reload
@@ -157,11 +158,14 @@ function stopAudio(){
 		while(element.hasChildNodes()){
 			if (element.lastChild.src != undefined) {
 				if (element.lastChild.src.indexOf("itemPlayer") > 0) {
+					$.unblockUI();
 					return;
 				}else if(element.lastChild.name == "bmtFrame"){
+					$.unblockUI();
 					return;
 				}
 			}else if(element.lastChild.id == "bmtMessages"){
+				$.unblockUI();
 				return;
 			}
 			element.removeChild(element.lastChild);
@@ -170,6 +174,7 @@ function stopAudio(){
 			iframeQuestion.src = bmtIframeSrc;
 		}	
 		element.appendChild(iframeQuestion);
+		$.unblockUI();
   }
   	
 </script>

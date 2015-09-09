@@ -121,12 +121,15 @@
 							//This will directly populate the rubric
 							if(!isRubricPopulated){
 								UIBlock();
+								unlinkQuestionIframe();
 								viewRubricNewUI(itemIdRub,itemNumberRub,itemTypeRub,testRosterIdRub,itemSetIdRub);
 							}
+						}else if(divID == "scoringQues"){
+						 	linkQuestionIframe();
 						}
 						if(index != 1) { // Audio Response will stop if first accordion is clicked
 							var x = document.getElementById('iframeDiv');
-							if(x != null && x != undefined) {
+							if(x != null && x != undefined  && typeof(x.childNodes[0].contentWindow.stopAudio)=="function") {
 								x.childNodes[0].contentWindow.stopAudio();
 							}
 						}

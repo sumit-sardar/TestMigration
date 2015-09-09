@@ -2193,6 +2193,9 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
  	
 		$.ajax({
 				async:		false,
+				beforeSend:	function(){
+								UIBlock();
+							},
 				url:		'getBMTApiUrl.do',
 				type:		'POST',
 				data:		initparam,
@@ -2207,15 +2210,18 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 										$("#bmtFrame").remove();
 										dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
 					        			elementDiv.appendChild(dynTable);
+					        			$.unblockUI();
 									}	
 								}else{
 									$("#bmtFrame").remove();
 									dynTable.innerHTML = "<tr><td><div><img src='../resources/images/messaging/icon_error.gif' border='0' width='16' height='16'></div></td><td><div>"+$("#bmtNetworkFailure").val()+"</div></td></tr>";
 				        			elementDiv.appendChild(dynTable);
+				        			$.unblockUI();
 								}	
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 								setTimeout(function(){ iframe.contentWindow.location.href="/SessionWeb/logout.do"; }, 100); //added a timeout as at times the login screen does not show in the popup.
+								$.unblockUI();
 							}
 			});
  	
@@ -2260,6 +2266,9 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 							        }else{ 
 							        	return;
 							        }
+								},
+					complete :  function(){
+									 $.unblockUI();  
 								}
 			});
 		}	
