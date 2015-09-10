@@ -899,6 +899,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 								if(data.bmtAPIUrl){
 									bmtURL = data.bmtAPIUrl;
 									if(bmtURL.indexOf("https") > -1){
+										elementDiv.innerHTML = "";
 										isSuccess = true;
 									}else{
 										$("#bmtFrame").remove();
@@ -957,7 +958,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 							        }else{ 
 							        	return;
 							        }
-								}
+							}
 			});
 		}	
 	}
