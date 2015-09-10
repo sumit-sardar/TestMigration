@@ -232,6 +232,8 @@ public class AssignmentRestClient {
 				updateAssignmentStatus(testAdminId, studentIdKey, false, 
 				        "999", "Response from BMT doesn't match request from OAS.");
 				processedStudentIds.put(studentIdKey, Boolean.TRUE);
+				logger.error("ErrorCode 999 ErrorType DataError StudentId "+studentIdKey+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+
 			}
 			return;
 		}

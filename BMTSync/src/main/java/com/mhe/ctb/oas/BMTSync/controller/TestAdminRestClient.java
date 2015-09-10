@@ -118,11 +118,15 @@ public class TestAdminRestClient {
 		final Calendar startDBTime = Calendar.getInstance();
 		if (resp == null) {
 			updateTestAdminStatus(req.getOasTestAdministrationID(), false, "999", "Error from BMT sync API.");
+			logger.error("ErrorCode 999 ErrorType DataError TestAdminId "+resp.getOasTestAdministrationID()+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+
 			return;
 		}
 		
 		if (resp.getErrorCode() != null && resp.getErrorMessage() != null) {
 			updateTestAdminStatus(req.getOasTestAdministrationID(), false, resp.getErrorCode().toString(), resp.getErrorMessage());
+			logger.error("ErrorCode 999 ErrorType DataError TestAdminId "+req.getOasTestAdministrationID()+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+
 			return;
 		}
 		

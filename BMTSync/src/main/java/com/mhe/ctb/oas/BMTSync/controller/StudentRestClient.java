@@ -189,6 +189,8 @@ public class StudentRestClient {
 					} else {
 						updateMessages.put(failedUpdate.getOasStudentId(), errorMessage);
 					}
+					logger.error("ErrorCode "+failedUpdate.getErrorCode()+ "ErrorType DataError StudentId "+failedUpdate.getOasStudentId()+" SyncCallType ServiceAPI SyncCallDest BMT.Student");
+
 				}
 			}
 			logger.debug(failedStudentIds.toString());
