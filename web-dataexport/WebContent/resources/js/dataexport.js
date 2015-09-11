@@ -891,7 +891,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
  	
 		$.ajax({
 				async:		false,
-								beforeSend:	function(){
+				beforeSend:	function(){
 								UIBlock();
 							},
 				url:		'getBMTApiUrl.do',
@@ -928,6 +928,9 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 	
 		$.ajax({
 					async:		true,
+					beforeSend:	function(){
+								UIBlock();
+							},
 					url:		bmtURL,
 					type:		'POST',
 					data:		JSON.stringify(param),
