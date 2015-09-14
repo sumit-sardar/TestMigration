@@ -96,7 +96,7 @@ public class AssignmentRestClient {
 				logger.error(String.format("[TestAssignment] Unknown test assignment. [testAdminId=%d,studentId=%d]",
 						message.getTestAdminId(), message.getStudentId()));
 				updateAssignmentStatus(message.getTestAdminId(), message.getStudentId(), false, "999", "Unknown test assignment.");
-				logger.error("ErrorCode 999 ErrorType UnknownTestAssignmentException CustomerId "+message.getCustomerId()+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+				logger.error("ErrorCode 999 ErrorType UnknownTestAssignmentException TestAdminId "+message.getTestAdminId()+" CustomerId "+message.getCustomerId()+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
 			}
 		}
 
@@ -211,6 +211,8 @@ public class AssignmentRestClient {
 				updateAssignmentStatus(testAdminId, studentIdKey, false, 
 				        resp.getServiceErrorCode(), resp.getServiceErrorMessage());
 				processedStudentIds.put(studentIdKey, Boolean.TRUE);
+				logger.error("ErrorCode "+resp.getServiceErrorCode()+" ErrorType DataError SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+
 			}
 			return;
 		}
@@ -298,6 +300,9 @@ public class AssignmentRestClient {
 		        success, 
 		        errorCode, 
 		        errMsg));
+		if (success == false) {
+			logger.error("ErrorCode "+errorCode+" ErrorType DataError StudentId "+studentId+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");			
+		}
 		try {
 			testAssignmentDAO.updateAssignmentAPIStatus(
 					testAdminId,
