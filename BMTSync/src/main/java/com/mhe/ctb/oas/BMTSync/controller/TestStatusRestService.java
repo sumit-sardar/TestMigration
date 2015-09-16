@@ -237,6 +237,9 @@ public class TestStatusRestService {
 			response.setFailures(testStatusErrList);
 			
 			logger.info("[TestStatus] Response to BMT: "+response.toJson());
+			if (Integer.parseInt(response.getServiceErrorCode()) > 0 ) {
+				logger.error("ErrorCode "+response.getServiceErrorCode()+" ErrorType DataError SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+			}
 		} catch (Exception e) {
 			// Generic logger message.
 			logger.info(e.getMessage());
