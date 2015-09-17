@@ -1691,10 +1691,15 @@ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPo
 					element.appendChild(iframe);
 		 	 }
 			
-			updateMaxPoints(maxPoints);		
-			var scoreAndPoints =  getScorePoints();
-			score = scoreAndPoints[0];
-			status = scoreAndPoints[1];
+			updateMaxPoints(maxPoints);			 
+			if (scoreObtained == null || scoreObtained == undefined || scoringStatus == null || scoringStatus == undefined){
+				var scoreAndPoints =  getScorePoints();
+				score = scoreAndPoints[0];
+				status = scoreAndPoints[1];
+			}else{
+			  	score = scoreObtained;
+			  	status = scoringStatus;
+			}
 			selectedRowObjectScoring.scoreObtained = score;
 			selectedRowObjectScoring.scoringStatus = status;				
 		
