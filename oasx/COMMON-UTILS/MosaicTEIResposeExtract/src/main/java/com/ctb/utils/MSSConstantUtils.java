@@ -47,7 +47,8 @@ public class MSSConstantUtils {
 	// : Various interaction types of TE items
 	final public static String INTERACTION_TYPE_TEXT_REST = "Text Restricted";
 	final public static String INTERACTION_TYPE_MCQ = "MCQ";
-	final public static String INTERACTION_MCQ_PREFIX = "mc";
+	final public static String INTERACTION_MCQ_PREFIX = ExtractUtils.get("oas.das.mcq.prefix");
+	final public static String INTERACTION_MSR_PREFIX = ExtractUtils.get("oas.das.msr.prefix");
 
 	// : Variables are used in customized exclusion strategy policy of MSS JSON
 	// object creation
@@ -76,6 +77,9 @@ public class MSSConstantUtils {
 	final public static String excelSheetName = "Student_Data";
 
 	final public static Map<String, String> textRestrictedMap = new HashMap<String, String>();
+	final public static Map<String, String> dndButCompoundItemMap = new HashMap<String, String>();
+	final public static Map<String, String> msrDasItemIdsMap = new HashMap<String, String>();
+	
 
 	static {
 		BufferedReader br = null;
@@ -99,6 +103,36 @@ public class MSSConstantUtils {
 					System.exit(1);
 				}
 		}
+		
+		try {
+			String compoundItems = ExtractUtils.get("oas.dnd.compound.items");
+			String msrDasItems = ExtractUtils.get("oas.msr.das.items");
+			String splitChar = ExtractUtils.get("oas.split.character");
+			
+			if("".equals(splitChar)){
+				throw new Exception("Split character is not provided...");
+			}
+			if(!"".equals(compoundItems)){
+				String[] strarr = compoundItems.split(splitChar);
+				for(String val : strarr){
+					dndButCompoundItemMap.put(val, val);
+				}
+			}else{
+				throw new Exception("Special DND compund items are not provided...");
+			}
+			if(!"".equals(msrDasItems)){
+				String[] strarr = msrDasItems.split(splitChar);
+				for(String val : strarr){
+					msrDasItemIdsMap.put(val, val);
+				}
+			}else{
+				throw new Exception("MSR type DAS items are not provided...");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 	/**
@@ -111,16 +145,21 @@ public class MSSConstantUtils {
 	 */
 	public static int processMSRTypeResponse(Answer answer,
 			List<CandidateItemResponse> candidateResponseList,
-			String interactionType, int order) {
+			String interactionType, int order, String dasItemId) {
 
 		CandidateItemResponse candidateResponse = new CandidateItemResponse();
 		if (answer.getId() != null && !answer.getId().isEmpty()) {
 			candidateResponse.setOrder(String.valueOf((order++)));
+
+			//: add mentioned DAS MSR items & other MCQ item prefix
 			candidateResponse
-					.setValue((MSSConstantUtils.INTERACTION_TYPE_MCQ
-							.equals(interactionType)) ? MSSConstantUtils.INTERACTION_MCQ_PREFIX
+					.setValue((dasItemId != null && MSSConstantUtils.msrDasItemIdsMap
+							.containsKey(dasItemId)) ? MSSConstantUtils.INTERACTION_MSR_PREFIX
 							.concat(getElementValue(answer.getId()))
-							: getElementValue(answer.getId()));
+							: ((MSSConstantUtils.INTERACTION_TYPE_MCQ
+									.equals(interactionType)) ? MSSConstantUtils.INTERACTION_MCQ_PREFIX
+									.concat(getElementValue(answer.getId()))
+									: getElementValue(answer.getId())));
 			candidateResponseList.add(candidateResponse);
 		}
 		return order;
@@ -276,5 +315,22 @@ public class MSSConstantUtils {
 		}
 		sb.insert(0, "\"").append("\"");
 		return sb.toString();
+	}
+	
+	/**
+	 * Time unit formatter
+	 * 
+	 * @param millis
+	 * @return
+	 */
+	public static String timeTaken(long millis) {
+		long p = millis % 1000;
+		long s = (millis / 1000) % 60;
+		long m = ((millis / 1000) / 60) % 60;
+		long h = ((millis / 1000) / (60 * 60)) % 24;
+		return (h == 0) ? ((m == 0) ? String.format("%02d.%03d Sec", s, p)
+				: String.format("%02d Minutes %02d.%03d Sec", m, s, p))
+				: String.format("%d Hours %02d Minutes %02d.%03d Sec", h, m, s,
+						p);
 	}
 }

@@ -226,7 +226,7 @@ public class MSSRequestScore {
 					}
 				}
 				long endTime = System.currentTimeMillis();
-				System.out.println("*** MSSRequestScore : getResponsesFromDB : Fetched query"+indx+" time taken : "+ ((endTime - startTime) / 1000) + " Sec ...");
+				System.out.println("*** MSSRequestScore : getResponsesFromDB : Fetched query"+indx+" time taken : "+ MSSConstantUtils.timeTaken(endTime - startTime) + " ...");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

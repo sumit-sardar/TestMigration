@@ -1,6 +1,7 @@
 package com.ctb;
 
 import com.ctb.utils.ExtractUtils;
+import com.ctb.utils.MSSConstantUtils;
 
 /**
  * MainTest is the entry point of this utility.
@@ -36,7 +37,7 @@ public class MainTest {
 
 		long endTime = System.currentTimeMillis();
 		System.out.println("*** MainTest : Total time taken : "
-				+ ((endTime - startTime) / 1000) + " Sec !!");
+				+ MSSConstantUtils.timeTaken((endTime - startTime)) + " !!");
 
 	}
 
