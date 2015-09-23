@@ -12,11 +12,15 @@ import org.apache.log4j.Logger;
  */ 
 public class ConstructedResponseEncoder {
 	
-	private static final String XML_END = "]]></answer></answers>";
+	private static final String XML_ANSWERS_END = "</answers>";
+
+	private static final String XML_ANSWERS_START = "<answers>";
+
+	private static final String XML_END = "]]></answer>";
 
 	private static final String XML_MIDDLE = "\"><![CDATA[";
 
-	private static final String XML_START = "<answers><answer id=\"widget";
+	private static final String XML_START = "<answer id=\"widget";
 	
 	private final Random rng;
 	
@@ -34,6 +38,7 @@ public class ConstructedResponseEncoder {
 		}
 	}
 	
+
 	/**
 	 * Per Sumit Sardar, OAS requires constructed responses to be in the following format:
 	 * <answers><answer id="widget6486081002"><![CDATA[dummy response for single line CR.]]></answer></answers>
@@ -46,12 +51,21 @@ public class ConstructedResponseEncoder {
 	 */
 	public String formatConstructedResponse(final String response) throws UnsupportedEncodingException {
 		final StringBuilder builder = new StringBuilder();
+		
+		// The response may be multiline; if it is, each line needs to be in its own answer tag.
+		final String[] responseLines = response.split("\\n");
 
-		builder.append(XML_START);
-		builder.append(String.format("%05d%05d", rng.nextInt(99999), rng.nextInt(99999)));
-		builder.append(XML_MIDDLE);
-		builder.append(response);
-		builder.append(XML_END);
+		builder.append(XML_ANSWERS_START);
+		
+		for (final String line : responseLines) {
+			builder.append(XML_START);
+			builder.append(String.format("%05d%05d", rng.nextInt(99999), rng.nextInt(99999)));
+			builder.append(XML_MIDDLE);
+			builder.append(line);
+			builder.append(XML_END);
+		}
+		
+		builder.append(XML_ANSWERS_END);
 		LOGGER.debug("[ConstructedResponseEncoder] Encoding string for storage: " + builder.toString());
 		final String builtResponse = URLEncoder.encode(builder.toString(), "UTF-8");
 		final String encodedResponse = builtResponse.replaceAll("\\+", "%20");

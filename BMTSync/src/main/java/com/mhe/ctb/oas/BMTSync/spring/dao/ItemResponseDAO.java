@@ -314,7 +314,6 @@ public class ItemResponseDAO {
 					+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
 						+ itemCode + "]", sqle);
 		}				
-		
 	}
 	
 	private Integer getItemSetIdForRosterAndSubtest(final Integer testRosterId, final String subTestId) throws SQLException {

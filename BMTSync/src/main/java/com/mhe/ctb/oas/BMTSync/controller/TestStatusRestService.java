@@ -248,7 +248,7 @@ public class TestStatusRestService {
 		final Calendar endTime = Calendar.getInstance();
 		final long callTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
         logger.info("[TestStatus] Service Call Time: " + callTime + ",responseSetsFetched=" + responseSetsFetched + "]");
-        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest OAS.TestStatus ResponseSetsFetched" + responseSetsFetched);
+        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest OAS.TestStatus ResponseSetsFetched " + responseSetsFetched);
 
 		return response;
 	}
