@@ -7630,7 +7630,7 @@ function downloadBulkReportCSV(element) {
 	}
 	showLoadingProgress('<br/><b>Downloading file...</b><br/>');
     var element = document.getElementById("exportRequestId");
-    element.form.action = "DownloadBulkReport";
+    element.form.action = "downloadBulkReportCSV.do";
     element.form.method = "POST";
     element.form.submit();
 	return false;
