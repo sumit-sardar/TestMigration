@@ -60,6 +60,12 @@ public class SimpleCache {
 		}
 	}
 
+	public void removeRoster(Integer id){
+		synchronized(rosterCache){
+			rosterCache.remove(id);
+		}
+	}
+	
 	public void flush() {
 		rosterCache.flush();
 	}

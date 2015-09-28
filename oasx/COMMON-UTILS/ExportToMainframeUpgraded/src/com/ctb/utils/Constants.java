@@ -53,6 +53,11 @@ public class Constants {
 	public static final String SUBMITTER_EMAIL = "SUBMITTER_EMAIL";
 	
 	/**
+	 * Optional query condition
+	 */
+	public static final String STUDENT_EXPORT_CHECK_CONDITION = " AND NVL(ROSTER.STUDENT_EXPORTED,'F')='F'";
+	
+	/**
 	 * Query for LAS Links A / B / ESP A Customer 
 	 **/
 	
@@ -208,14 +213,16 @@ public class Constants {
 														"                       'MMDDYYYY HH24:MI:SS') AS PROGRAMSTARTDATE," + 
 														"               TO_CHAR((ROST.COMPLETION_DATE), 'MMDDYYYY HH24:MI:SS') AS DATETESTINGCOMPLETED," + 
 														"               ROST.CATALOG_ID," + 
-														"               ROST.PROGRAM_ID" + 
+														"               ROST.PROGRAM_ID," +
+														"				ROST.STUDENT_EXPORTED" + 
 														"          FROM (SELECT 		 ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID," + 
 														"                                ROS.ACTIVATION_STATUS AS ACTIVATION_STATUS," + 
 														"                                ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS," + 
 														"                                ROS.CUSTOMER_ID AS CUSTOMER_ID," + 
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
-														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," + 
+														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -238,7 +245,8 @@ public class Constants {
 														"                                ROS.CUSTOMER_ID AS CUSTOMER_ID," + 
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
-														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," + 
+														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -273,7 +281,8 @@ public class Constants {
 														"                                ROS.CUSTOMER_ID AS CUSTOMER_ID," + 
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
-														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," + 
+														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -474,14 +483,16 @@ public class Constants {
 														"                       'MMDDYYYY HH24:MI:SS') AS PROGRAMSTARTDATE," + 
 														"               TO_CHAR((ROST.COMPLETION_DATE), 'MMDDYYYY HH24:MI:SS') AS DATETESTINGCOMPLETED," + 
 														"               ROST.CATALOG_ID," + 
-														"               ROST.PROGRAM_ID" + 
+														"               ROST.PROGRAM_ID," +
+														"				ROST.STUDENT_EXPORTED" + 
 														"          FROM (SELECT 		 ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID," + 
 														"                                ROS.ACTIVATION_STATUS AS ACTIVATION_STATUS," + 
 														"                                ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS," + 
 														"                                ROS.CUSTOMER_ID AS CUSTOMER_ID," + 
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
-														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," + 
+														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -504,7 +515,8 @@ public class Constants {
 														"                                ROS.CUSTOMER_ID AS CUSTOMER_ID," + 
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
-														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," + 
+														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -539,7 +551,8 @@ public class Constants {
 														"                                ROS.CUSTOMER_ID AS CUSTOMER_ID," + 
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
-														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," + 
+														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -572,5 +585,90 @@ public class Constants {
 														" WHERE ROSTER.TEST_ROSTER_ID IS NOT NULL ";
 		
 		
-/** End 2nd Edition **/
+	/** End 2nd Edition **/
+	
+	public static String VALIDATE_SCORING_STATUS = "SELECT DERIVED.TEST_ROSTER_ID, DECODE(COUNT(1), 0, 'CO', 'IN') " +
+													"   FROM (SELECT DERIVEDRESPOINT.TEST_ROSTER_ID, " +
+													"                DERIVEDRESPOINT.DATAPOINT_ID, " +
+													"                DERIVEDRESPOINT.ITEM_RESPONSE_ID, " +
+													"                COUNT(RESPOINT.DATAPOINT_ID) RECORDCOUNT " +
+													"           FROM (SELECT DISTINCT TR.TEST_ROSTER_ID AS TEST_ROSTER_ID, " +
+													"                                 DP.DATAPOINT_ID     DATAPOINT_ID, " +
+													"                                 IR.ITEM_RESPONSE_ID ITEM_RESPONSE_ID " +
+													"                   FROM ITEM_RESPONSE_CR IRS, " +
+													"                        STUDENT_ITEM_SET_STATUS SISS, " +
+													"                        ITEM_SET_ANCESTOR ITA, " +
+													"                        ITEM IT, " +
+													"                        DATAPOINT DP, " +
+													"                        ITEM_RESPONSE IR, " +
+													"                        TEST_ROSTER TR, " +
+													"                        TEST_ADMIN TA, " +
+													"                        (SELECT MAX(RESPONSE_SEQ_NUM) SEQ_RESPONSE_ID, " +
+													"                                ITEM_SET_ID, " +
+													"                                TEST_ROSTER_ID, " +
+													"                                ITEM_ID " +
+													"                           FROM ITEM_RESPONSE " +
+													"                          WHERE TEST_ROSTER_ID  IN (#IDS#) " +
+													"                          GROUP BY ITEM_SET_ID, TEST_ROSTER_ID, ITEM_ID) DERIVEDRS, " +
+													"                        (SELECT P.DELIVERY_CLIENT_ID " +
+													"                           FROM PRODUCT P, TEST_ADMIN TA, TEST_ROSTER TR " +
+													"                          WHERE TA.TEST_ADMIN_ID = TR.TEST_ADMIN_ID " +
+													"                            AND P.PRODUCT_ID = TA.PRODUCT_ID " +
+													"                            AND TR.TEST_ROSTER_ID IN (#IDS#)) PROD " +
+													"                  WHERE TR.TEST_ROSTER_ID IN (#IDS#) " +
+													"                    AND TA.TEST_ADMIN_ID = TR.TEST_ADMIN_ID " +
+													"                    AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID " +
+													"                    AND ITA.ANCESTOR_ITEM_SET_ID = TA.ITEM_SET_ID " +
+													"                    AND ITA.ITEM_SET_TYPE = 'TD' " +
+													"                    AND SISS.TEST_ROSTER_ID = IRS.TEST_ROSTER_ID " +
+													"                    AND SISS.COMPLETION_STATUS IN ('CO', 'IS', 'IC') " +
+													"                    AND SISS.VALIDATION_STATUS = 'VA' " +
+													"                    AND SISS.ABSENT <> 'Y' " +
+													"                    AND SISS.EXEMPTIONS <> 'Y' " +
+													"                    AND SISS.ITEM_SET_ID = ITA.ITEM_SET_ID " +
+													"                    AND ITA.ITEM_SET_ID = IRS.ITEM_SET_ID " +
+													"                    AND IT.ITEM_ID = IRS.ITEM_ID " +
+													"                    AND ((UPPER(IT.ITEM_TYPE) = 'CR' AND " +
+													"                        (IT.ANSWER_AREA IS NULL OR " +
+													"                        UPPER(IT.ANSWER_AREA) = UPPER('AudioItem')))) " +
+													"                    AND DP.ITEM_ID = IT.ITEM_ID " +
+													"                    AND (DECODE(PROD.DELIVERY_CLIENT_ID, " +
+													"                                2, " +
+													"                                DECODE(IT.ANSWER_AREA, " +
+													"                                       NULL, " +
+													"                                       DECODE(DBMS_LOB.GETLENGTH(IRS.CONSTRUCTED_RESPONSE), " +
+													"                                              NULL, " +
+													"                                              0, " +
+													"                                              DECODE(INSTR(IRS.CONSTRUCTED_RESPONSE, " +
+													"                                                           'CDATA'), " +
+													"                                                     0, " +
+													"                                                     0, " +
+													"                                                     1)), " +
+													"                                       DECODE(IRS.AUDIO_URL, NULL, 0, 1)), " +
+													"                                DECODE(DBMS_LOB.GETLENGTH(IRS.CONSTRUCTED_RESPONSE), " +
+													"                                       NULL, " +
+													"                                       0, " +
+													"                                       DECODE(IT.ANSWER_AREA, " +
+													"                                              NULL, " +
+													"                                              DECODE(INSTR(IRS.CONSTRUCTED_RESPONSE, " +
+													"                                                           'CDATA'), " +
+													"                                                     0, " +
+													"                                                     0, " +
+													"                                                     1), " +
+													"                                              1)))) = 1 " +
+													"                    AND DERIVEDRS.ITEM_SET_ID = ITA.ITEM_SET_ID " +
+													"                    AND DERIVEDRS.TEST_ROSTER_ID = SISS.TEST_ROSTER_ID " +
+													"                    AND DERIVEDRS.ITEM_ID = IT.ITEM_ID " +
+													"                    AND IR.RESPONSE_SEQ_NUM = DERIVEDRS.SEQ_RESPONSE_ID " +
+													"                    AND IR.ITEM_SET_ID = ITA.ITEM_SET_ID " +
+													"                    AND IR.TEST_ROSTER_ID = SISS.TEST_ROSTER_ID " +
+													"                    AND IR.ITEM_ID = IT.ITEM_ID) DERIVEDRESPOINT, " +
+													"                ITEM_RESPONSE_POINTS RESPOINT " +
+													"          WHERE DERIVEDRESPOINT.DATAPOINT_ID = RESPOINT.DATAPOINT_ID(+) " +
+													"            AND DERIVEDRESPOINT.ITEM_RESPONSE_ID = RESPOINT.ITEM_RESPONSE_ID(+) " +
+													"          GROUP BY DERIVEDRESPOINT.test_roster_id, DERIVEDRESPOINT.DATAPOINT_ID, DERIVEDRESPOINT.ITEM_RESPONSE_ID " +
+													"         HAVING COUNT(RESPOINT.DATAPOINT_ID) = 0) DERIVED " +
+													"         GROUP BY DERIVED.TEST_ROSTER_ID";
+	
+	public static String MARK_EXPORTED_STATUS = " UPDATE TEST_ROSTER ROSTER SET ROSTER.STUDENT_EXPORTED = 'T' WHERE ROSTER.TEST_ROSTER_ID IN (#ROS#)";
 }

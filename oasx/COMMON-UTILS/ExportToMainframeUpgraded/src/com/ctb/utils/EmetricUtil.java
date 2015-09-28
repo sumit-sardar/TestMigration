@@ -410,4 +410,20 @@ public class EmetricUtil {
 		}
 	}
 
+	/**
+	 * Time unit formatter
+	 * 
+	 * @param millis
+	 * @return
+	 */
+	public static String timeTaken(long millis) {
+		long p = millis % 1000;
+		long s = (millis / 1000) % 60;
+		long m = ((millis / 1000) / 60) % 60;
+		long h = ((millis / 1000) / (60 * 60)) % 24;
+		return (h == 0) ? ((m == 0) ? String.format("%02d.%03d Sec", s, p)
+				: String.format("%02d Minutes %02d.%03d Sec", m, s, p))
+				: String.format("%d Hours %02d Minutes %02d.%03d Sec", h, m, s,
+						p);
+	}
 }

@@ -113,7 +113,7 @@ public class ExportData {
 
 			if(null == levelElementNumberStr || "".equals(levelElementNumberStr)) {
 				logger.info("Optional Class Element Start Number is blank.");
-				logger.info("\nContinuing... considering Class Element Start Number as 0000001");
+				logger.info("Continuing... considering Class Element Start Number as 0000001");
 			}
 			else if (java.util.regex.Pattern.matches("\\d+", levelElementNumberStr)){
 				int levelElementNumberInt = new Integer(levelElementNumberStr).intValue();
@@ -122,12 +122,12 @@ public class ExportData {
 					classLevelElementNumber = levelElementNumberInt - 1;
 				}else{
 					logger.info("Optional Class Element Start Number is not in correct range [1-9999991]");
-					logger.info("\nContinuing... considering Class Element Start Number as 0000001");
+					logger.info("Continuing... considering Class Element Start Number as 0000001");
 				}
 			}
 			else {
 				logger.info("Optional Class Element Start Number is Non Numeric.");
-				logger.info("\nContinuing... considering Class Element Start Number as 0000001");
+				logger.info("Continuing... considering Class Element Start Number as 0000001");
 			}
 			
 			// Checking product_id
@@ -150,7 +150,7 @@ public class ExportData {
 			}
 
 			logger.info("END !");
-			logger.info("Total time taken :: "+((new Long(System.currentTimeMillis())).longValue()-time) + "ms \n");
+			logger.info("Total time taken :: "+EmetricUtil.timeTaken((new Long(System.currentTimeMillis())).longValue()-time));
 		} catch (IOException e) {
 			logger.error(e.getMessage() + "Processing Failed.\n");
 			e.printStackTrace();

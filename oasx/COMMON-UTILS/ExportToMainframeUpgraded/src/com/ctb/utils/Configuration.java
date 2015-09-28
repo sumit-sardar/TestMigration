@@ -18,6 +18,7 @@ public class Configuration {
 	static String log4jFile = "";
 	static String maxElementsInMemory="";
 	static String classlevelElementNumber="";
+	static String markAsStudnetExported="";
 	
 	static {
 		
@@ -37,6 +38,7 @@ public class Configuration {
 		maxElementsInMemory = ExtractUtil.getDetail("cache.inmemory.maxlimit");
 		threadCount = ExtractUtil.getDetail("thread.connection.number");
 		classlevelElementNumber = ExtractUtil.getDetail("oas.classelement.startNumber");
+		markAsStudnetExported=ExtractUtil.getDetail("oas.mark.student.exported");
 	}
 
 	
@@ -148,6 +150,13 @@ public class Configuration {
 
 	public static String getClasslevelElementNumber() {
 		return classlevelElementNumber;
+	}
+
+	/**
+	 * @return the markAsStudnetExported
+	 */
+	public static String getMarkAsStudnetExported() {
+		return markAsStudnetExported;
 	}
 
 }

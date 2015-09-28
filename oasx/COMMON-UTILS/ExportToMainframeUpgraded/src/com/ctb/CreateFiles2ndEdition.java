@@ -99,7 +99,8 @@ public class CreateFiles2ndEdition {
 	private Map<String, Integer> levelMap = Collections.synchronizedMap(new HashMap<String, Integer>());
 	private Map<Integer, Integer> studentMap = Collections.synchronizedMap(new HashMap<Integer, Integer>());
 	private static Integer ROSTER_COUNTER = Integer.valueOf(0);
-//	private Progress progress = new Progress(true);
+	private static String exportedRosters = null;
+	private static String unexportedRosters = null;
 	static {
 		wrongMap.put("A", "1");
 		wrongMap.put("B", "2");
@@ -138,7 +139,7 @@ public class CreateFiles2ndEdition {
 		 */
 		List<TfilLL2ND> myList = createList(orderFile);
 		if (null == myList) {
-			logger.error("No roster found to extract.\nExecution forcefully stopped.");
+			logger.info("No roster found to extract.\nExecution forcefully stopped.");
 			System.exit(1);
 		}
 		logger.info("Data populattion process completed.");
@@ -200,6 +201,13 @@ public class CreateFiles2ndEdition {
 			SftpUtil.closeSFtpClient(session);
 		}
 		/* SFTP the generated data file: End */
+		
+		if(!"".equals(Configuration.getMarkAsStudnetExported())
+				&& "true".equalsIgnoreCase(Configuration.getMarkAsStudnetExported())){
+			logger.info("Started marking student exported flag...");
+			markExportedFlagAsTrue();
+			logger.info("Marking process is successfully completed for file :: ["+localFilePath+File.separator+fileName.toString() +" ].");
+		}
 	}
 	
 	/**
@@ -603,9 +611,13 @@ public class CreateFiles2ndEdition {
 		StringBuilder rosterIds = new StringBuilder();
 		StringBuilder sessionStuIds = new StringBuilder();
 		StringBuilder adminIds = new StringBuilder();
-		int counter = 0;
-		boolean firstValue = true;
+		int cot = 0;
 		try{
+			
+			if (!"".equals(Configuration.getMarkAsStudnetExported())
+					&& "true".equalsIgnoreCase(Configuration.getMarkAsStudnetExported())){
+				Constants.MODIFIED_QUERY_TO_FETCH_ROSTER += Constants.STUDENT_EXPORT_CHECK_CONDITION; 
+			}			
 			if(this.isValidStartDate) {
 				String START_DATE = this.extractSpanStartDate.replaceAll("/", "").toString().trim();
 				Constants.MODIFIED_QUERY_TO_FETCH_ROSTER += " AND TRUNC(ROSTER.COMPLETION_DATE) >= TO_DATE('" + START_DATE + "', 'MMDDYYYY')";
@@ -623,7 +635,7 @@ public class CreateFiles2ndEdition {
 			ps.setInt(6, customerId);
 			ps.setFetchSize(100);
 			rs = ps.executeQuery(); 
-			int cot = 0;
+			int counter = 0;
 			TestRoster ros  = null;
 			while (rs.next()){
 				ros = new TestRoster();
@@ -670,9 +682,72 @@ public class CreateFiles2ndEdition {
 					studentMap.put(ros.getTestRosterId(), integer);
 				}
 				
-				/**
-				 * Populate required combined string for further query
-				 */	
+				//:prepare IN clause string for hand scoring validate query
+				rosterIds.append(ros.getTestRosterId());
+				rosterIds.append(',');
+				counter++;
+				if(counter % BATCH_SIZE == 0){
+					rosterIds.append('#');
+					counter = 0;
+				}
+				
+				cache.addRoster(ros.getTestRosterId(),ros);
+				cot++;
+			}
+			logger.info("#Total roster found :: "+cot);
+		}catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception("SQLException at getTestRoster:"+e.getMessage());
+		}finally {
+			SqlUtil.close(ps, rs);
+		}
+		if(cache.size() != 0){
+			//: If  Student exported mark parameter is true then validate the hand scoring status for each roster
+			if (!"".equals(Configuration.getMarkAsStudnetExported())
+					&& "true".equalsIgnoreCase(Configuration.getMarkAsStudnetExported())){
+				logger.info("Validating Hand Scoring Status for each rosters...");
+				int inCompletedCount = validateRosterHandScoringStatus(oascon,
+						irscon, cache, rosterIds.toString());
+				if (inCompletedCount != 0) {
+					logger.info("#Hand Scoring status is INCOMPLETE for "
+							+ inCompletedCount + " rosters out of " + cot + " ...");
+					logger.info("Unscored rosters are :: "+CreateFiles2ndEdition.unexportedRosters);
+				}
+				logger.info("Validation process is completed...");
+			}
+			if(cache.size() != 0){
+				logger.info("#To be exported rosters :: " + cache.size());
+				populatedRequiredData(cache, studentIds, rosterStud, sessionStuIds,
+						adminIds, (rosterIds = new StringBuilder()));
+				logger.info("Roster process will be started after 8 level of caching...");
+				generateStudentDetails(oascon, irscon, cache,
+						studentIds.toString(), rosterStud.toString(), rosterIds
+								.toString(), sessionStuIds.toString(), adminIds
+								.toString());
+				logger.info("8 level of Caching process completed... #Total Cache Size :: "
+								+ cache.size());
+			}
+		}
+	}
+	
+	/**
+	 * Populate required combined string for further query
+	 * @param cache 
+	 * @param studentIds
+	 * @param rosterStud
+	 * @param sessionStuIds
+	 * @param adminIds
+	 * @param rosterIds
+	 */
+	private void populatedRequiredData(SimpleCache cache, StringBuilder studentIds,
+			StringBuilder rosterStud, StringBuilder sessionStuIds,
+			StringBuilder adminIds, StringBuilder rosterIds) {
+		if(cache.size()!= 0){
+			int counter = 0;
+			boolean firstValue = true;
+			for(Integer rosterId: cache.getKeys()){
+				TestRoster ros = cache.getRoster(rosterId);
+				Student std = ros.getStudent();
 				String sisId = "("+ros.getStudentId()+","+ros.getTestRosterId()+")";
 				String irsId = "("+ros.getStudentId()+","+ros.getTestAdminId()+")";
 				if(firstValue){
@@ -699,22 +774,8 @@ public class CreateFiles2ndEdition {
 					firstValue = true;
 					counter = 0;
 				}
-				cache.addRoster(ros.getTestRosterId(),ros);
-				cot++;
 			}
-			logger.info("Found rosters... #Total Roster Size :: "+cot);
-		}catch (SQLException e) {
-			e.printStackTrace();
-			throw new Exception("SQLException at getTestRoster:"+e.getMessage());
-		}finally {
-			SqlUtil.close(ps, rs);
-		}
-		if(cache.size() != 0){
-			logger.info("Roster process will be started after 8 level of caching...");
-			generateStudentDetails(oascon, irscon, cache, studentIds.toString(),
-					rosterStud.toString(), rosterIds.toString(), sessionStuIds
-							.toString(), adminIds.toString());
-			logger.info("8 level of Caching process completed... #Total Cache Size :: " +cache.size());
+			CreateFiles2ndEdition.exportedRosters = rosterIds.toString();
 		}
 	}
 	
@@ -2556,5 +2617,77 @@ public class CreateFiles2ndEdition {
 			}
 		}
 		return CRItems;
+	}
+
+	/**
+	 * validating Rosters hand scoring status whether hand scoring is completed
+	 * or not
+	 * 
+	 * @param string
+	 */
+	private int validateRosterHandScoringStatus(Connection oascon,
+			Connection irscon, SimpleCache cache, String rosterIds)
+			throws Exception {
+
+		StringBuilder rosterBuilder = new StringBuilder();
+		Set<Integer> rosterIdSet = new HashSet<Integer>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String[] str = rosterIds.split("#");
+			for (int i = 0; i < str.length; i++) {
+				String query = Constants.VALIDATE_SCORING_STATUS.replaceAll(
+						"#IDS#", str[i].substring(0, str[i].lastIndexOf(",")));
+				ps = oascon.prepareStatement(query);
+				rs = ps.executeQuery();
+				rs.setFetchSize(100);
+				while (rs.next()) {
+					Integer testRosterId = rs.getInt(1);
+					cache.removeRoster(testRosterId);
+					rosterIdSet.add(testRosterId);
+					rosterBuilder.append(testRosterId).append("|");
+				}
+				SqlUtil.close(ps, rs);
+			}
+			CreateFiles2ndEdition.unexportedRosters = rosterBuilder.toString();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(
+					"SQLException at validateRosterHandScoringStatus:"
+							+ e.getMessage());
+		} finally {
+			SqlUtil.close(ps, rs);
+		}
+		return rosterIdSet.size();
+	}
+
+	/**
+	 * Mark the student exported flag as true
+	 * 
+	 * @throws Exception
+	 */
+	private void markExportedFlagAsTrue() throws Exception {
+		Connection oascon = null;
+		PreparedStatement ps = null;
+		try {
+			oascon = SqlUtil.openOASDBconnectionForResearch();
+			String[] str = CreateFiles2ndEdition.exportedRosters.split("#");
+			for (int i = 0; i < str.length; i++) {
+				String query = Constants.MARK_EXPORTED_STATUS.replace("#ROS#",
+						str[i]);
+				ps = oascon.prepareStatement(query);
+				ps.executeUpdate();
+				SqlUtil.close(ps);
+			}
+			oascon.commit();
+		} catch (SQLException e) {
+			oascon.rollback();
+			e.printStackTrace();
+			throw new Exception("SQLException at markExportedFlagAsTrue:"
+					+ e.getMessage());
+		} finally {
+			SqlUtil.close(oascon);
+		}
+
 	}
 }
