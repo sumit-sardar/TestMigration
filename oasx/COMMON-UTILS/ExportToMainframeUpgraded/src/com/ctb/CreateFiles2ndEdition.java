@@ -617,7 +617,11 @@ public class CreateFiles2ndEdition {
 			if (!"".equals(Configuration.getMarkAsStudnetExported())
 					&& "true".equalsIgnoreCase(Configuration.getMarkAsStudnetExported())){
 				Constants.MODIFIED_QUERY_TO_FETCH_ROSTER += Constants.STUDENT_EXPORT_CHECK_CONDITION; 
-			}			
+			}
+			if (!"".equals(Configuration.getExcludeInvRosters())
+					&& "true".equalsIgnoreCase(Configuration.getExcludeInvRosters())) {
+				Constants.MODIFIED_QUERY_TO_FETCH_ROSTER += Constants.EXCLUDE_INVALIDATED_ROSTERS_CONDITION;
+			}
 			if(this.isValidStartDate) {
 				String START_DATE = this.extractSpanStartDate.replaceAll("/", "").toString().trim();
 				Constants.MODIFIED_QUERY_TO_FETCH_ROSTER += " AND TRUNC(ROSTER.COMPLETION_DATE) >= TO_DATE('" + START_DATE + "', 'MMDDYYYY')";

@@ -19,6 +19,7 @@ public class Configuration {
 	static String maxElementsInMemory="";
 	static String classlevelElementNumber="";
 	static String markAsStudnetExported="";
+	static String excludeInvRosters="";
 	
 	static {
 		
@@ -39,6 +40,7 @@ public class Configuration {
 		threadCount = ExtractUtil.getDetail("thread.connection.number");
 		classlevelElementNumber = ExtractUtil.getDetail("oas.classelement.startNumber");
 		markAsStudnetExported=ExtractUtil.getDetail("oas.mark.student.exported");
+		excludeInvRosters=ExtractUtil.getDetail("oas.exclude.inv.rosters");
 	}
 
 	
@@ -157,6 +159,13 @@ public class Configuration {
 	 */
 	public static String getMarkAsStudnetExported() {
 		return markAsStudnetExported;
+	}
+
+	/**
+	 * @return the excludeInvRosters
+	 */
+	public static String getExcludeInvRosters() {
+		return excludeInvRosters;
 	}
 
 }

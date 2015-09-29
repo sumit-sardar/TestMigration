@@ -56,6 +56,7 @@ public class Constants {
 	 * Optional query condition
 	 */
 	public static final String STUDENT_EXPORT_CHECK_CONDITION = " AND NVL(ROSTER.STUDENT_EXPORTED,'F')='F'";
+	public static final String EXCLUDE_INVALIDATED_ROSTERS_CONDITION = " AND ROSTER.VALIDATION_STATUS <> 'IN'";
 	
 	/**
 	 * Query for LAS Links A / B / ESP A Customer 
@@ -214,7 +215,8 @@ public class Constants {
 														"               TO_CHAR((ROST.COMPLETION_DATE), 'MMDDYYYY HH24:MI:SS') AS DATETESTINGCOMPLETED," + 
 														"               ROST.CATALOG_ID," + 
 														"               ROST.PROGRAM_ID," +
-														"				ROST.STUDENT_EXPORTED" + 
+														"				ROST.STUDENT_EXPORTED," +
+														"				ROST.VALIDATION_STATUS" + 
 														"          FROM (SELECT 		 ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID," + 
 														"                                ROS.ACTIVATION_STATUS AS ACTIVATION_STATUS," + 
 														"                                ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS," + 
@@ -222,7 +224,8 @@ public class Constants {
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
 														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
-														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," +
+														"								 ROS.VALIDATION_STATUS AS VALIDATION_STATUS," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -246,7 +249,8 @@ public class Constants {
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
 														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
-														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," +
+														"								 ROS.VALIDATION_STATUS AS VALIDATION_STATUS," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -282,7 +286,8 @@ public class Constants {
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
 														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
-														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," +
+														"								 ROS.VALIDATION_STATUS AS VALIDATION_STATUS," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -484,7 +489,8 @@ public class Constants {
 														"               TO_CHAR((ROST.COMPLETION_DATE), 'MMDDYYYY HH24:MI:SS') AS DATETESTINGCOMPLETED," + 
 														"               ROST.CATALOG_ID," + 
 														"               ROST.PROGRAM_ID," +
-														"				ROST.STUDENT_EXPORTED" + 
+														"				ROST.STUDENT_EXPORTED," +
+														"				ROST.VALIDATION_STATUS" + 
 														"          FROM (SELECT 		 ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID," + 
 														"                                ROS.ACTIVATION_STATUS AS ACTIVATION_STATUS," + 
 														"                                ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS," + 
@@ -492,7 +498,8 @@ public class Constants {
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
 														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
-														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," +
+														"								 ROS.VALIDATION_STATUS AS VALIDATION_STATUS," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -516,7 +523,8 @@ public class Constants {
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
 														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
-														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," +
+														"								 ROS.VALIDATION_STATUS AS VALIDATION_STATUS," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
@@ -552,7 +560,8 @@ public class Constants {
 														"                                ROS.STUDENT_ID AS STUDENT_ID," + 
 														"                                ROS.TEST_ADMIN_ID AS TEST_ADMIN_ID," + 
 														"                                ROS.COMPLETION_DATE_TIME AS COMPLETION_DATE," +
-														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," + 
+														"								 ROS.STUDENT_EXPORTED AS STUDENT_EXPORTED," +
+														"								 ROS.VALIDATION_STATUS AS VALIDATION_STATUS," + 
 														"                                TO_CHAR((ROS.START_DATE_TIME)," + 
 														"                                        'MMDDYY HH24:MI:SS') AS TESTDATE," + 
 														"                                PROD.PRODUCT_ID AS PRODUCT_ID," + 
