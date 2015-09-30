@@ -57,6 +57,7 @@ public class Constants {
 	 */
 	public static final String STUDENT_EXPORT_CHECK_CONDITION = " AND NVL(ROSTER.STUDENT_EXPORTED,'F')='F'";
 	public static final String EXCLUDE_INVALIDATED_ROSTERS_CONDITION = " AND ROSTER.VALIDATION_STATUS <> 'IN'";
+	public static final String EXCLUDE_INACTIVE_STUDENTS_CONDITION = " AND EXISTS (SELECT 1 FROM STUDENT WHERE STUDENT_ID = ROSTER.STUDENT_ID AND ACTIVATION_STATUS = 'AC')"; 
 	
 	/**
 	 * Query for LAS Links A / B / ESP A Customer 

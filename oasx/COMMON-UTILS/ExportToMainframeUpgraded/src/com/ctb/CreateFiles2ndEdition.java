@@ -622,6 +622,10 @@ public class CreateFiles2ndEdition {
 					&& "true".equalsIgnoreCase(Configuration.getExcludeInvRosters())) {
 				Constants.MODIFIED_QUERY_TO_FETCH_ROSTER += Constants.EXCLUDE_INVALIDATED_ROSTERS_CONDITION;
 			}
+			if(!"".equals(Configuration.getExcludeInactiveStudent())
+					&& "true".equalsIgnoreCase(Configuration.getExcludeInactiveStudent())){
+				Constants.MODIFIED_QUERY_TO_FETCH_ROSTER += Constants.EXCLUDE_INACTIVE_STUDENTS_CONDITION;
+			}
 			if(this.isValidStartDate) {
 				String START_DATE = this.extractSpanStartDate.replaceAll("/", "").toString().trim();
 				Constants.MODIFIED_QUERY_TO_FETCH_ROSTER += " AND TRUNC(ROSTER.COMPLETION_DATE) >= TO_DATE('" + START_DATE + "', 'MMDDYYYY')";

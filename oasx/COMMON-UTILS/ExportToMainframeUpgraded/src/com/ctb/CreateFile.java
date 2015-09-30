@@ -573,6 +573,10 @@ public class CreateFile{
 					&& "true".equalsIgnoreCase(Configuration.getExcludeInvRosters())){
 				Constants.modifiedQueryToFetchRosters += Constants.EXCLUDE_INVALIDATED_ROSTERS_CONDITION;
 			}
+			if(!"".equals(Configuration.getExcludeInactiveStudent())
+					&& "true".equalsIgnoreCase(Configuration.getExcludeInactiveStudent())){
+				Constants.modifiedQueryToFetchRosters += Constants.EXCLUDE_INACTIVE_STUDENTS_CONDITION;
+			}
 			if(this.isValidStartDate) {
 				String START_DATE = this.extractSpanStartDate.replaceAll("/", "").toString().trim();
 				Constants.modifiedQueryToFetchRosters += " AND TRUNC(ROSTER.COMPLETION_DATE) >= TO_DATE('" + START_DATE + "', 'MMDDYYYY')";

@@ -20,6 +20,7 @@ public class Configuration {
 	static String classlevelElementNumber="";
 	static String markAsStudnetExported="";
 	static String excludeInvRosters="";
+	static String excludeInactiveStudent="";
 	
 	static {
 		
@@ -41,6 +42,7 @@ public class Configuration {
 		classlevelElementNumber = ExtractUtil.getDetail("oas.classelement.startNumber");
 		markAsStudnetExported=ExtractUtil.getDetail("oas.mark.student.exported");
 		excludeInvRosters=ExtractUtil.getDetail("oas.exclude.inv.rosters");
+		excludeInactiveStudent=ExtractUtil.getDetail("oas.exclude.inactive.student");
 	}
 
 	
@@ -166,6 +168,13 @@ public class Configuration {
 	 */
 	public static String getExcludeInvRosters() {
 		return excludeInvRosters;
+	}
+
+	/**
+	 * @return the excludeInactiveStudent
+	 */
+	public static String getExcludeInactiveStudent() {
+		return excludeInactiveStudent;
 	}
 
 }
