@@ -1342,8 +1342,11 @@ function studentScoring() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId" , "parentProductId", "deliveryClientId", "testAdminId", "extItemSetId"],
+          colNames:["deliveryClientId", "testAdminId", "extItemSetId", $("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId" , "parentProductId"],
 		   	colModel:[
+		   		{name:'deliveryClientId',index:'deliveryClientId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testAdminId',index:'testAdminId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'extItemSetId',index:'extItemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'int', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:responseLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1354,10 +1357,7 @@ function studentScoring() {
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left",sorttype:scoreObtainedUnformatter, sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'parentProductId',index:'parentProductId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'deliveryClientId',index:'deliveryClientId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testAdminId',index:'testAdminId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'extItemSetId',index:'extItemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'parentProductId',index:'parentProductId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }		   		
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
 		    records: function(obj) {
