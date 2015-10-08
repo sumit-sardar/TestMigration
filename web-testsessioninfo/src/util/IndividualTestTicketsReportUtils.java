@@ -673,7 +673,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
    private String getMultipleAccessCode(){
 	   String accessCodeSubtestList = "";
 	   for (SubtestAccessCodeDetail sACD:this.subtestAccessList){
-		   accessCodeSubtestList += "_"+sACD.getAccessCode()+" ("+sACD.getSubtestName()+")\n";		   		   
+		   accessCodeSubtestList += sACD.getAccessCode()+" ("+sACD.getSubtestName()+")\n";
 	   }	   	   
        return getNonBlankString(accessCodeSubtestList);
   }
