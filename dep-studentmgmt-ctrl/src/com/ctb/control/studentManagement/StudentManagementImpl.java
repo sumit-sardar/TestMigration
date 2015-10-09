@@ -180,6 +180,7 @@ public class StudentManagementImpl implements StudentManagement
 	private static final String LANGUAGEARTS = "Language Arts";
 	private static final String MATHEMATICS	="Technical Subjects";
 	private String bmtValMsgStdDel = "Unable to contact the server at this time. Please try again later or call Customer Support if you continue to receive this message.";
+	private static final String NO_STUDENT_IN_BMT = "2";
 
 	/**
 	 * Get student profile for the specified student.
@@ -4203,14 +4204,27 @@ public class StudentManagementImpl implements StudentManagement
 			BMTStudentDeleteResponseJSON respJSON = gson.fromJson(result.toString(), BMTStudentDeleteResponseJSON.class);
 
 			if(statusCode == 200) {
+				/**
+				 * Delete request success from BMT.Hence delete the roster from system.Hence return 'true'.
+				 */
 				return true;
-			} else if(respJSON!=null && respJSON.getErrorCode()!=null && respJSON.getErrorCode().equals("2")) {
-				bmtValMsgStdDel = "The student cannot be deleted due to system validation error. Please contact Customer Support for assistance";
-				return false;
+			} else if(respJSON!=null && respJSON.getErrorCode()!=null && NO_STUDENT_IN_BMT.equals(respJSON.getErrorCode())) {
+				/**
+				 * Changes for story OAS -3943 LLO RP - Allow Student/Roster Deletion When Student Does Not Exist in BMT
+				 * Error code = 2 means :: Requested student is not in the system. This student can be deleted from system.Hence return 'true'.
+				 */
+				bmtValMsgStdDel = "Student deleted.Requested student is not in the BMT system";
+				return true;
 			} else if(respJSON!=null && respJSON.getErrorCode()!=null) {
+				/**
+				 * For all other error codes - Do not delete the roster.Hence return false.
+				 */
 				bmtValMsgStdDel = "You cannot delete this student. Student is associated with one or more test administrations";
 				return false;
 			} else {
+				/**
+				 * If there is no response from API Url.Then don't delete.
+				 */
 				bmtValMsgStdDel = "Unable to contact the server at this time. Please try again later or call Customer Support if you continue to receive this message.";
 				return null;
 			}

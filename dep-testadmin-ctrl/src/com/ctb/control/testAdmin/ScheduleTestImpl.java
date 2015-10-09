@@ -228,6 +228,7 @@ public class ScheduleTestImpl implements ScheduleTest
     private static final int CTB_CUSTOMER_ID =2;
     private static final String BMT_SESSION_API_URL = "BMTSESNAPI";
     private static final String BMT_ROSTER_API_URL = "BMTROSTAPI";
+    private static final String BMT_NO_ASSGMNT_CODE = "30";
     
     static final ResourceBundle rb = ResourceBundle.getBundle("security");
     
@@ -5780,10 +5781,25 @@ public class ScheduleTestImpl implements ScheduleTest
 			BMTRosterDeleteResponseJSON respJSON = gson.fromJson(result.toString(), BMTRosterDeleteResponseJSON.class);
 
 			if(statusCode == 200)
+				/**
+				 * Delete request success from BMT.Hence delete the roster from system.Hence return 'true'.
+				 */
+				return true;
+			else if(respJSON!=null && !respJSON.getErrorCode().isEmpty() && BMT_NO_ASSGMNT_CODE.equalsIgnoreCase(respJSON.getErrorCode()))
+				/**
+				 * Changes for story OAS -3943 LLO RP - Allow Student/Roster Deletion When Student Does Not Exist in BMT
+				 * Error code = 30 means :: Assignments not found for given roster. This roster can be deleted from system.Hence return 'true'.
+				 */
 				return true;
 			else if(respJSON!=null && respJSON.getErrorCode()!=null)
+				/**
+				 * For all other error codes - Do not delete the roster.Hence return false.
+				 */
 				return false;
 			else
+				/**
+				 * If there is no response from API Url.Then don't delete.
+				 */
 				return null;
 
 		} catch (Exception e) {
