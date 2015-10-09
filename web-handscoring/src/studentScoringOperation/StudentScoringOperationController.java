@@ -227,7 +227,7 @@ public class StudentScoringOperationController extends PageFlowController {
 	    		}
 	    		
 				resp.flushBuffer();
-	    		stream.write(json.getBytes());
+	    		stream.write(json.getBytes("UTF-8"));
 
 			}
 

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -382,7 +383,7 @@ public class TestScoringImpl implements TestScoring {
 		try {
 			if (deliveryClientId.equalsIgnoreCase("2")) {
 				if (itemType.equals("CR")) {
-					itemResponse = getCRItemResponse(testRosterId,
+					itemResponse = getCRItemResponseForBMT(testRosterId,
 							deliverableItemSetId, itemId);
 					answerContent.setIsAudioItem(false);
 					answerContent.setCRItemContent(itemResponse);
@@ -952,6 +953,44 @@ public class TestScoringImpl implements TestScoring {
 			throw rde;
 		}
 
+	}
+	
+	
+	private String[] getCRItemResponseForBMT(Integer testRosterId,
+			Integer deliverableItemId, String itemId) throws Exception {
+		String crResponse = "";
+		Clob responseContent = null;
+		List<String> cRItemResponse = new ArrayList<String>();
+		responseContent = scoring.getCRItemResponse(testRosterId,
+				deliverableItemId, itemId);
+		int len = (int) responseContent.length();
+		crResponse = responseContent.getSubString(1, len);
+		cRItemResponse = extractAnswerForBMT(crResponse);
+		return cRItemResponse.toArray(new String[cRItemResponse.size()]);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<String> extractAnswerForBMT(String responseXML) throws Exception {
+		List<Element> list = null;
+		List<String> itemResponseData = new ArrayList<String>();
+		String str = URLDecoder.decode(responseXML, Constants.ENCODING_UTF8); 
+        Document parsedDoc = XMLUtils.parse(str,Constants.ENCODING_UTF8); 
+		list = XMLUtils.extractAllElement("answer", parsedDoc.getRootElement());
+		for (Element el : list) {
+			boolean isAnswered = false;
+			List<Object> listCh = el.getContent();
+			for (Object e2 : listCh) {
+				if (e2 instanceof CDATA) {
+					isAnswered = true;
+					itemResponseData.add(((CDATA) e2).getText());
+				}
+			}
+			if (!isAnswered) {
+				itemResponseData.add("");
+			}
+		}
+
+		return itemResponseData;
 	}
 
 }

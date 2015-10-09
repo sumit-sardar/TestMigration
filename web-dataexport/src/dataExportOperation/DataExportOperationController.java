@@ -816,7 +816,7 @@ public class DataExportOperationController extends PageFlowController {
 				resp.setContentType(CONTENT_TYPE_JSON);
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
-				stream.write(json.getBytes());
+				stream.write(json.getBytes("UTF-8"));
 
 			}catch(IOException ioe){
 				ioe.printStackTrace();
@@ -947,7 +947,7 @@ public class DataExportOperationController extends PageFlowController {
 		   resp.setContentType("application/json");
            resp.flushBuffer();
 	        OutputStream stream = resp.getOutputStream();
-	        stream.write(jsonResponse.getBytes());
+	        stream.write(jsonResponse.getBytes("UTF-8"));
 	        stream.close();
 	        
 		} catch (Exception e) {
