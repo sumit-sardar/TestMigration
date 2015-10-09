@@ -256,7 +256,8 @@ public class TestTicketController extends PageFlowController
                                 new Boolean(multipleAccessAllow),                                
                                 subtestAccessList,
                                 isTabeAdaptive,
-                                printSessionName
+                                printSessionName,
+                                removeKeyShortcut(tsd)
                                 }); // Changed for TABE BAUM - 028
         }
         catch (IOException ie)
@@ -267,7 +268,37 @@ public class TestTicketController extends PageFlowController
         return null;
     }
 
-    private TestProductData getTestProductDataForUser()
+    /**
+     * Check whether the test product has deliveryClientId is 2 or not
+     * @param tsd
+     * @return boolean
+     */
+    private boolean removeKeyShortcut(TestSessionData tsd) {
+		if(tsd.getTestSessions() != null){
+			Integer deliveryClientId = tsd.getTestSessions()[0].getDeliveryClientId();
+			if(deliveryClientId.intValue() == 2){
+				return hasRemoveKeyShortcutConf();
+			}
+		}
+		return false;
+	}
+
+    /**
+     * Check whether the customer has remove keyboard shortcut configuration
+     * @return boolean
+     */
+	private boolean hasRemoveKeyShortcutConf() {
+		for (int i=0; i < this.customerConfigurations.length; i++) {
+            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+            if("Remove_IndvlTckt_Keyboard".equals(cc.getCustomerConfigurationName())
+					&& "T".equals(cc.getDefaultValue())) {
+            	return true;
+			}
+        }
+		return false;
+	}
+
+	private TestProductData getTestProductDataForUser()
     {
         TestProductData tpd = null;                
         try

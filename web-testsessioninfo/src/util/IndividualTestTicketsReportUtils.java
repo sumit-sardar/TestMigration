@@ -163,6 +163,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private boolean multipleAccessAllow = false;
     private boolean isTestBreak = false;
     private SubtestAccessCodeDetail[] subtestAccessList = null;
+    private boolean removeKeyShortcut = false;
     
     //START - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
     protected boolean createStaticAboveTables() throws DocumentException, IOException {
@@ -212,10 +213,12 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
       	this.subtestAccessList = (SubtestAccessCodeDetail[])args[13];
       	this.isTabeAdaptive = (Boolean)args[14];
       	this.printSessionName = (String)args[15];
-      	
+      	this.removeKeyShortcut = (Boolean)args[16];
         if(!isMultiIndividualTkt) {
-        	this.getKeyboardShortcutsTables();
-        	addKeyboardShortcuts();
+        	if(!removeKeyShortcut) {
+	        	this.getKeyboardShortcutsTables();
+	        	addKeyboardShortcuts();
+        	}
         	addWavingMan();
         	this.createStaticAboveTables();
         	this.createPages();
@@ -248,7 +251,9 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
                 	tables.add(getClassNameValue(student, yValue));
             	tables.add(getLoginTable(student, yValue));
             }
-            tables.add(getKeyboardShortcutsTable(student));
+            if(!this.removeKeyShortcut) {
+            	tables.add(getKeyboardShortcutsTable(student));
+            }
             this.pages.add(tables);
         }
     }
