@@ -140,6 +140,8 @@ public class ItemResponseDAO {
 	
 	private void updateConstructedResponse(final Integer testRosterId, final Integer itemSetId,
 			final ItemResponse itemResponse) throws SQLException {
+		//BMTOAS-1973 fix - insert a record into ITEM_RESPONSE first - per suggested solution
+		insertPlaceholderItemResponse(testRosterId, itemSetId, itemResponse);		
 		try {
 			if ("CR".equals(itemResponse.getItemType())) {
 				final Calendar startDBTime = Calendar.getInstance();
