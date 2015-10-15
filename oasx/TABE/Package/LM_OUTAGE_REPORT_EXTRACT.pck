@@ -102,13 +102,13 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                      0,
                      D.CUMULATIVE_NET_AVL) AS CUMULATIVE_NET_AVL,
               /* DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
-                                                 0,
-                                                 (0 - D.NODE_NET_AVAILABLE),
-                                                 0) AS NODE_LVL_LIC_NEEDED,
-                                          DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
-                                                 0,
-                                                 (0 - D.CUMULATIVE_NET_AVL),
-                                                 0) AS CUM_NODE_LIC_NEEDED,*/
+                                                               0,
+                                                               (0 - D.NODE_NET_AVAILABLE),
+                                                               0) AS NODE_LVL_LIC_NEEDED,
+                                                        DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
+                                                               0,
+                                                               (0 - D.CUMULATIVE_NET_AVL),
+                                                               0) AS CUM_NODE_LIC_NEEDED,*/
               SYSDATE,
               'AC',
               'F'
@@ -245,7 +245,7 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       ('CU', 'PA')
                                                   AND TA.ACTIVATION_STATUS = 'AC'
                                                   AND TR.ACTIVATION_STATUS = 'AC'
-                                                  AND TRUNC(TA.CREATED_DATE_TIME) BETWEEN
+                                                  AND TRUNC(TR.START_DATE_TIME) BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
                                                   AND TA.CUSTOMER_ID =
@@ -355,13 +355,13 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                      0,
                      D.CUMULATIVE_NET_AVL) AS CUMULATIVE_NET_AVL,
               /* DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
-                                                 0,
-                                                 (0 - D.NODE_NET_AVAILABLE),
-                                                 0) AS NODE_LVL_LIC_NEEDED,
-                                          DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
-                                                 0,
-                                                 (0 - D.CUMULATIVE_NET_AVL),
-                                                 0) AS CUM_NODE_LIC_NEEDED,*/
+                                                               0,
+                                                               (0 - D.NODE_NET_AVAILABLE),
+                                                               0) AS NODE_LVL_LIC_NEEDED,
+                                                        DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
+                                                               0,
+                                                               (0 - D.CUMULATIVE_NET_AVL),
+                                                               0) AS CUM_NODE_LIC_NEEDED,*/
               SYSDATE,
               'AC',
               'T'
@@ -536,7 +536,7 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       ('SC', 'NT')
                                                   AND SISS.COMPLETION_STATUS NOT IN
                                                       ('SC', 'NT')
-                                                  AND TRUNC(TA.CREATED_DATE_TIME) BETWEEN
+                                                  AND TRUNC(SISS.START_DATE_TIME) BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
                                                   AND TA.CUSTOMER_ID =
@@ -735,10 +735,9 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
     END IF;
     V_LOG_MESSAGE := 'Extract Process completed successfully..';
     COMMIT;
-    
+  
     --LOG THE INFORMATION
-    LOG_MESSAGE(IN_CUSTOMER_ID,
-                  V_LOG_MESSAGE ||' - ' || V_INPUTS);
+    LOG_MESSAGE(IN_CUSTOMER_ID, V_LOG_MESSAGE || ' - ' || V_INPUTS);
     DBMS_OUTPUT.PUT_LINE('Extract Process completed successfully..');
   
   EXCEPTION
