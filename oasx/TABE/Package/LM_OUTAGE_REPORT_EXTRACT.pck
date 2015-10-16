@@ -488,7 +488,7 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                   AND TA.ACTIVATION_STATUS = 'AC'
                                                   AND TR.ACTIVATION_STATUS = 'AC'
                                                   AND TR.TEST_COMPLETION_STATUS IN
-                                                      ('SC', 'IC')
+                                                      ('SC', 'IC','IS')
                                                   AND SISS.COMPLETION_STATUS = 'SC'
                                                   AND TRUNC(TR.CREATED_DATE_TIME) BETWEEN
                                                       EXTRACT_START_DATE AND
