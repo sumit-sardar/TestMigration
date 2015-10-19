@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -145,8 +148,10 @@ public class ItemResponseDAO {
 		try {
 			if ("CR".equals(itemResponse.getItemType())) {
 				final Calendar startDBTime = Calendar.getInstance();
+				//BMTOAS-2005 requirement - add a check for empty response, so it does not get encoded with tags
 				int rowsUpdated = template.update(UPDATE_CONSTRUCTED_RESPONSE,
-						encoder.formatConstructedResponse(itemResponse.getItemResponse()), testRosterId, itemSetId, itemResponse.getItemCode());
+						(!StringUtils.isBlank(itemResponse.getItemResponse()) ? encoder.formatConstructedResponse(itemResponse.getItemResponse()) : itemResponse.getItemResponse()), 
+						testRosterId, itemSetId, itemResponse.getItemCode());
 				final Calendar endDBTime = Calendar.getInstance();
 				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.UPDATE_CONSTRUCTED_RESPONSE");
@@ -201,9 +206,10 @@ public class ItemResponseDAO {
 		try {
 			if ("CR".equals(itemResponse.getItemType())) {
 				final Calendar startDBTime = Calendar.getInstance();
+				//BMTOAS-2005 requirement - add a check for empty response, so it does not get encoded with tags
 				int rowsUpdated = template.update(INSERT_CONSTRUCTED_RESPONSE, 
 						testRosterId, itemSetId, itemResponse.getItemCode(),
-						encoder.formatConstructedResponse(itemResponse.getItemResponse()));
+						(!StringUtils.isBlank(itemResponse.getItemResponse()) ? encoder.formatConstructedResponse(itemResponse.getItemResponse()) : itemResponse.getItemResponse()));
 				final Calendar endDBTime = Calendar.getInstance();
 				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.INSERT_CONSTRUCTED_RESPONSE");
