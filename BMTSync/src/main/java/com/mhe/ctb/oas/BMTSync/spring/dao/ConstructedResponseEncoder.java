@@ -3,6 +3,8 @@ package com.mhe.ctb.oas.BMTSync.spring.dao;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Random;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -16,9 +18,13 @@ public class ConstructedResponseEncoder {
 
 	private static final String XML_ANSWERS_START = "<answers>";
 
-	private static final String XML_END = "]]></answer>";
+	private static final String XML_END = "</answer>";
 
-	private static final String XML_MIDDLE = "\"><![CDATA[";
+	private static final String XML_MIDDLE = "\">";
+	
+	private static final String XML_CDATA_START = "<![CDATA[";
+	
+	private static final String XML_CDATA_END = "]]>";
 
 	private static final String XML_START = "<answer id=\"widget";
 	
@@ -61,7 +67,9 @@ public class ConstructedResponseEncoder {
 			builder.append(XML_START);
 			builder.append(String.format("%05d%05d", rng.nextInt(99999), rng.nextInt(99999)));
 			builder.append(XML_MIDDLE);
-			builder.append(line);
+			if (!StringUtils.isBlank(line)) {
+				builder.append(XML_CDATA_START+line+XML_CDATA_END);
+			}
 			builder.append(XML_END);
 		}
 		
