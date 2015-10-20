@@ -15,19 +15,21 @@ public class MosaicRequestExcelPojo implements Serializable,
 	private String studentrosterid;
 	private String oasItemId;
 	private String PEId;
+	private String answered;
 
-	public MosaicRequestExcelPojo(String itemresponsesource, String itemsource,
-			String itemid, String itemBankid, String sResponse, String json,
-			String studentrosterid, String oasItemId, String pEId) {
-		this.itemresponsesource = itemresponsesource;
-		this.itemsource = itemsource;
+	public MosaicRequestExcelPojo(String itemid, String sResponse, String json,
+			String studentrosterid, String oasItemId, String pEId,
+			String answered) {
+		this.itemresponsesource = MSSConstantUtils.ITEM_RESPONSE_SOURCE;
+		this.itemsource = MSSConstantUtils.ITEM_SOURCE;
 		this.itemid = itemid;
-		this.itemBankid = itemBankid;
+		this.itemBankid = MSSConstantUtils.ITEM_BANK_ID;
 		this.sResponse = sResponse;
 		this.json = json;
 		this.studentrosterid = studentrosterid;
 		this.oasItemId = oasItemId;
-		PEId = pEId;
+		this.PEId = pEId;
+		this.answered = answered;
 	}
 
 	/**
@@ -163,6 +165,21 @@ public class MosaicRequestExcelPojo implements Serializable,
 	 */
 	public void setPEId(String pEId) {
 		PEId = pEId;
+	}
+
+	/**
+	 * @return the answered
+	 */
+	public String getAnswered() {
+		return answered;
+	}
+
+	/**
+	 * @param answered
+	 *            the answered to set
+	 */
+	public void setAnswered(String answered) {
+		this.answered = answered;
 	}
 
 	public int compareTo(MosaicRequestExcelPojo o) {

@@ -86,6 +86,7 @@ public class StudentResponseExcelUtils {
 				addCell(row, (short) cellno++, msReq.getStudentrosterid());
 				addCell(row, (short) cellno++, msReq.getOasItemId());
 				addCell(row, (short) cellno++, msReq.getPEId());
+				addCell(row, (short) cellno++, msReq.getAnswered());
 				addCell(row, (short) cellno++, msReq.getJson());
 				reportSheet.addMergedRegion(new CellRangeAddress(rowno-1, rowno-1, cellno-1, cellno+5));
 				/*
@@ -105,7 +106,7 @@ public class StudentResponseExcelUtils {
 	 * @return
 	 */
 	private String[] populateStudentHeader() {
-		String[] result = new String[8];
+		String[] result = new String[9];
 		result[0] = MSSConstantUtils.COL1_DAS_ITEM_ID;
 		result[1] = MSSConstantUtils.COL2_ITEM_SOURCE;
 		result[2] = MSSConstantUtils.COL3_ITEM_BANK_ID;
@@ -113,7 +114,8 @@ public class StudentResponseExcelUtils {
 		result[4] = MSSConstantUtils.COL5_STUDENT_ROSTER_ID;
 		result[5] = MSSConstantUtils.COL6_OAS_ITEM_ID;
 		result[6] = MSSConstantUtils.COL7_PEID;
-		result[7] = MSSConstantUtils.COL8_OAS_JSON;
+		result[7] = MSSConstantUtils.COL8_ANSWERED;
+		result[8] = MSSConstantUtils.COL9_OAS_JSON;
 		return result;
 	}
 	

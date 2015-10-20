@@ -11,6 +11,9 @@ public class StudentResponses implements Serializable {
 	private String PEId;
 	private String clobResponse;
 	private String itemOrder;
+	private String itemSerIdTD;
+	private String answered;
+	
 	/**
 	 * @return the rosterid
 	 */
@@ -82,5 +85,29 @@ public class StudentResponses implements Serializable {
 	 */
 	public void setItemOrder(String itemOrder) {
 		this.itemOrder = itemOrder;
+	}
+	/**
+	 * @return the itemSerIdTD
+	 */
+	public String getItemSerIdTD() {
+		return itemSerIdTD;
+	}
+	/**
+	 * @param itemSerIdTD the itemSerIdTD to set
+	 */
+	public void setItemSerIdTD(String itemSerIdTD) {
+		this.itemSerIdTD = itemSerIdTD;
+	}
+	/**
+	 * @return the answered
+	 */
+	public String getAnswered() {
+		return answered;
+	}
+	/**
+	 * @param answered the answered to set
+	 */
+	public void setAnswered(String answered) {
+		this.answered = answered;
 	}
 }

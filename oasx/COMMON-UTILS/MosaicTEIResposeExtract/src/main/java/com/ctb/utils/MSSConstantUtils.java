@@ -34,6 +34,9 @@ public class MSSConstantUtils {
 
 	final public static String ANSWER_TAG = "answer";
 	final public static String CHARACTER_ENCODE = "UTF-8";
+	final public static String ANSWERED = "True";
+	final public static String NOT_ANSWERED = "False";
+	final public static String BLANK_FIELD = "";
 
 	// : Constant value of MSS Request JSON parameter
 	final public static String ITEM_RESPONSE_SOURCE = "OAS";
@@ -72,7 +75,8 @@ public class MSSConstantUtils {
 	final public static String COL5_STUDENT_ROSTER_ID = "Student Roster ID";
 	final public static String COL6_OAS_ITEM_ID = "OAS Item ID";
 	final public static String COL7_PEID = "PEID Item ID";
-	final public static String COL8_OAS_JSON = "OAS Captured Student Response";
+	final public static String COL8_ANSWERED = "Answered";
+	final public static String COL9_OAS_JSON = "OAS Captured Student Response";
 
 	final public static String excelSheetName = "Student_Data";
 
@@ -332,5 +336,14 @@ public class MSSConstantUtils {
 				: String.format("%02d Minutes %02d.%03d Sec", m, s, p))
 				: String.format("%d Hours %02d Minutes %02d.%03d Sec", h, m, s,
 						p);
+	}
+	
+	/**
+	 * Get Attempted value 
+	 * @param isAnswered
+	 * @return 
+	 */
+	public static String getAnsweredValue(boolean isAnswered) {
+		return (isAnswered)?MSSConstantUtils.ANSWERED:MSSConstantUtils.NOT_ANSWERED;
 	}
 }

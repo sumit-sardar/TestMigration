@@ -1,6 +1,8 @@
 package com.ctb.utils;
 
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import net.sf.ehcache.CacheManager;
@@ -40,18 +42,13 @@ public class SimpleCache {
 	}
 
 	public void addResponse(String id, StudentResponses response) {
-		synchronized (response) {
-			Element element = new Element(id, response);
-			responseCache.put(element);
-		}
-
+		Element element = new Element(id, response);
+		responseCache.put(element);
 	}
 	
 	public void addExtractResponse(String id, MosaicRequestExcelPojo response){
-		synchronized (response) {
-			Element element = new Element(id, response);
-			extractResponseCache.put(element);
-		}
+		Element element = new Element(id, response);
+		extractResponseCache.put(element);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -64,7 +61,16 @@ public class SimpleCache {
 	@SuppressWarnings("unchecked")
 	public List<String> getExtractKeys(){
 		synchronized (extractResponseCache) {
-			return extractResponseCache.getKeys();
+			List<String> keySet = extractResponseCache.getKeys();
+			Collections.sort(keySet, new Comparator<String>() {
+				public int compare(String o1, String o2) {
+					if (o1 != null && o2 != null) {
+						return o1.compareTo(o2);
+					} else
+						return 0;
+				}
+			});
+			return keySet;
 		}
 	}
 

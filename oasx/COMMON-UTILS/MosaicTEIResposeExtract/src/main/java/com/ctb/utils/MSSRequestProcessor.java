@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.ctb.utils.datamodel.Answer;
 import com.ctb.utils.datamodel.ScoreData;
 import com.ctb.utils.datamodel.ScoreResponseNew;
@@ -16,20 +18,25 @@ import com.google.gson.GsonBuilder;
 
 public class MSSRequestProcessor implements Runnable {
 
-	
+	static Logger logger = Logger
+			.getLogger(MSSRequestProcessor.class.getName());
 	private StudentResponses response;
 	private SimpleCache cache;
+	private String extractKey;
 
 
 	public MSSRequestProcessor(StudentResponses response, SimpleCache cache) {
 		this.response = response;
 		this.cache = cache;
+		this.extractKey = response.getRosterid()
+				.concat(response.getOasItemId())
+				.concat(response.getDasItemid());
 	}
 
 	public void run() {
 
 		try {
-			System.out.println("*** MSSRequestProcessor : run : Processing for roster "+this.response.getRosterid()+" item "+this.response.getOasItemId()+" & dasItemId "+this.response.getDasItemid());
+			logger.info("*** run : Processing for roster "+this.response.getRosterid()+" item "+this.response.getOasItemId()+" & dasItemId "+this.response.getDasItemid());
 			// Generate requested time in UTC Time-zone
 			String timeStampUTC = MSSConstantUtils.getUTCTimezone();
 
@@ -52,14 +59,15 @@ public class MSSRequestProcessor implements Runnable {
 					:processStudentResponse(studentResponse, mssRequestResponse);
 				
 				if(processedRequest != null && !processedRequest.isEmpty()){
-					prepareCollection(this.response.getRosterid().concat(this.response.getOasItemId()).concat(this.response.getDasItemid()), new MosaicRequestExcelPojo(
-							mssRequest.getItemResponseSource(),
-							mssRequest.getItemSource(), this.response.getDasItemid(),
-							mssRequest.getItemBankId(), processedRequest,
-							studentResponse, this.response.getRosterid(), this.response.getOasItemId(), this.response.getPEId()));
+					prepareCollection(Boolean.TRUE, processedRequest, studentResponse);
+				} else {
+					prepareCollection(Boolean.FALSE, MSSConstantUtils.BLANK_FIELD, MSSConstantUtils.BLANK_FIELD);
 				}
+		    } else {
+		    	prepareCollection(Boolean.FALSE, MSSConstantUtils.BLANK_FIELD, MSSConstantUtils.BLANK_FIELD);
 		    }
 		}catch (Exception e) {
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -232,8 +240,21 @@ public class MSSRequestProcessor implements Runnable {
 		return json;
 	}
 	
-	private void prepareCollection(String id, MosaicRequestExcelPojo obj) {
-		cache.addExtractResponse(id, obj);
+	/**
+	 * Populate final extract object from response
+	 * @param isAnswered
+	 * @param processedRequest
+	 * @param studentResponse
+	 */
+	private void prepareCollection(boolean isAnswered, String processedRequest,
+			String studentResponse) {
+		cache.addExtractResponse(
+				this.extractKey,
+				new MosaicRequestExcelPojo(this.response.getDasItemid(),
+						processedRequest, studentResponse, this.response
+								.getRosterid(), this.response.getOasItemId(),
+						this.response.getPEId(), MSSConstantUtils
+								.getAnsweredValue(isAnswered)));
 	}
 
 }

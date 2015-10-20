@@ -6,7 +6,8 @@ public class SQLUtils {
 			+ "        odim.oas_item_id, "
 			+ "        odim.das_item_id, "
 			+ "        odim.peid, "
-			+ "        odim.item_order "
+			+ "        odim.item_order,"
+			+ "		   isi.item_set_id "
 			+ "   FROM oas_das_item_mapping_mss odim, "
 			+ "        product                  prod, "
 			+ "        test_admin               ta, "
@@ -25,9 +26,7 @@ public class SQLUtils {
 			+ "    AND odim.activation_status = 'AC' "
 			+ "    AND EXISTS (SELECT 1 "
 			+ "           FROM item_response_cr irc "
-			+ "          WHERE irc.test_roster_id = tr.test_roster_id "
-			+ "            AND irc.item_set_id = isi.item_Set_id "
-			+ "            AND irc.item_id = odim.oas_item_id) "
+			+ "          WHERE irc.test_roster_id = tr.test_roster_id) "
 			+ "  ORDER BY tr.test_roster_id ";
 
 	public static String GET_CR_RESPONSE_BY_ROSTER_ITEM = "SELECT irc.test_roster_id||irc.item_id||odim.das_item_id as key, "
@@ -36,5 +35,5 @@ public class SQLUtils {
 			+ "       oas_das_item_mapping_mss  odim "
 			+ " WHERE odim.oas_item_id  = irc.item_id "
 			+ "   AND odim.activation_status = 'AC' "
-			+ "   AND (irc.test_roster_id, irc.item_id) IN ( ";
+			+ "   AND (irc.test_roster_id, irc.item_set_id, irc.item_id) IN ( ";
 }

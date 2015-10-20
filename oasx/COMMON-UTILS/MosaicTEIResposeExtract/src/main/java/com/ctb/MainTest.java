@@ -1,5 +1,8 @@
 package com.ctb;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.ctb.utils.ExtractUtils;
 import com.ctb.utils.MSSConstantUtils;
 
@@ -11,6 +14,7 @@ import com.ctb.utils.MSSConstantUtils;
  */
 public class MainTest {
 
+	static Logger logger = Logger.getLogger(MainTest.class.getName());
 	/**
 	 * Need to pass two arguments
 	 * args[0] : Properties file path [e.g. /local/apps/oas/properties/]
@@ -23,12 +27,14 @@ public class MainTest {
 			if (args.length != 2)
 				throw new IllegalArgumentException();
 			ExtractUtils.loadExternalProperties(args[0],args[1]);
+			PropertyConfigurator.configure(ExtractUtils.get("oas.log4j.file"));
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("*** Process Stopped : "+e.getMessage());
 			System.exit(1);
 		}
 
-		System.out.println("*** MainTest : Process Started ...");
+		logger.info("*** Process Started ...");
 		long startTime = System.currentTimeMillis();
 		/**
 		 * MSS Request JSON prepare
@@ -36,7 +42,7 @@ public class MainTest {
 		new MSSRequestScore().run();
 
 		long endTime = System.currentTimeMillis();
-		System.out.println("*** MainTest : Total time taken : "
+		logger.info("*** Total time taken : "
 				+ MSSConstantUtils.timeTaken((endTime - startTime)) + " !!");
 
 	}
