@@ -93,6 +93,7 @@ public class SoftwareOperationController extends PageFlowController {
     })
     protected Forward begin() throws CTBBusinessException
     {   
+    	boolean hasTABEContent = false;
     	if(getSession().getAttribute("is3to8Selected") == null)
 			this.is3to8Selected = (getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))? true: false; 
     	if(getSession().getAttribute("isEOISelected") == null)
@@ -146,6 +147,13 @@ public class SoftwareOperationController extends PageFlowController {
     	    	
 		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
         this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
+        
+        try {
+        	hasTABEContent = new Boolean(this.orgnode.hasTABEContent(this.userName).toString()).booleanValue();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
         String PC_URI = "'" + getdownloadURI("TDCINSTPC") + "'";
         String MAC_URI = "'" + getdownloadURI("TDCINSTMAC") + "'";
@@ -162,6 +170,7 @@ public class SoftwareOperationController extends PageFlowController {
         this.getRequest().setAttribute("runURI_PC", "location.href=" + RUN_PC_URI);
         this.getRequest().setAttribute("runURI_MAC", "location.href=" + RUN_MAC_URI);
         this.getRequest().setAttribute("runURI_LINUX", "location.href=" + RUN_LINUX_URI);
+        this.getRequest().setAttribute("hasTABEContent",hasTABEContent);
         
         if(this.isLASLinkCustomer){
         	populateThirdPartySoftwareLinks();// Change for: OAS - 2463 LLO 2015 - Change Download Software Page
@@ -1169,6 +1178,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
+		this.getRequest().setAttribute("isTABECustomer", TABECustomer);
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && (adminUser||adminCoordinatorUser))||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin) || (isTASCReadinessCustomer && isTopLevelAdmin))));
 		this.getRequest().setAttribute("isISTEPCustomer", isISTEPCustomer);

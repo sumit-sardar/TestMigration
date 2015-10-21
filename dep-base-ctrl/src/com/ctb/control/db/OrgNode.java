@@ -2050,4 +2050,7 @@ public interface OrgNode extends JdbcControl
     
     @JdbcControl.SQL(statement = "select distinct product_id from org_node_test_catalog where customer_id = {customerId}")
 	String[] getProductIdsForCustomerId(Integer customerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select decode(count(1), 0, 'False', 'True') from users u, user_role ur, org_node o, org_node_test_catalog ontc, product p where u.user_id = ur.user_id and ur.org_node_id = o.org_node_id and o.customer_id = ontc.customer_id and ontc.product_id  = p.product_id and p.parent_product_id = 4000 and u.user_name = {userName}")
+	String hasTABEContent(String userName) throws SQLException;
 }

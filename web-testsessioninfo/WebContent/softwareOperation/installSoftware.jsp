@@ -22,6 +22,8 @@
 		<% 
 	Boolean isISTEPCustomer = (Boolean)request.getAttribute("isISTEPCustomer");
 	Boolean isLasLinkCustomer = (Boolean)request.getAttribute("isLasLinkCustomer");
+	Boolean isTABECustomer = (Boolean)request.getAttribute("isTABECustomer");
+	Boolean hasTABEContent = (Boolean)request.getAttribute("hasTABEContent");
 %>
 
 		<!-- ********************************************************************************************************************* -->
@@ -88,23 +90,39 @@
 					<td class="transparent-top">
 					<table class="transparent">
 						<tr id="installJavaRow" class="transparent">
-							<td class="transparent-top"><netui:content
+							<td class="transparent-top">
+							<% if (isTABECustomer.booleanValue() && hasTABEContent.booleanValue()) { %>
+							<netui:content
+								value="<b>For PC</b>: The required version of Java for Windows will be installed with the locked-down browser. If Java already resides on your PC, you don’t need to change it." /> <br>
+							<% } else { %>
+							<netui:content
 								value="<b>For PC</b>: Go to the Java website and download the current JRE update for free." /> <br>
 							<a href="#" onclick="newWindow('http://www.java.com/en/');"><netui:content value="http://www.java.com/en/" /></a>
 							<br>
+							<% } %>
 							</td>
 						</tr>
 						<tr class="transparent">
-							<td class="transparent-top"><netui:content
-								value="<b>For Mac</b>: Open Software Update on the Mac workstation to update the JRE." /> <br>
+							<td class="transparent-top">
+							<% if (isTABECustomer.booleanValue() && hasTABEContent.booleanValue()) { %>
+								<netui:content
+									value="<b>For Mac</b>: Go to the Java archive and download JRE 7.72 for Mac." /> <br>
+									<a href="#" onclick="newWindow('http://www.oracle.com/technetwork/java/archive-139210.html');"><netui:content value="http://www.oracle.com/technetwork/java/archive-139210.html" /></a>
+								<br>
+							<%} else { %>
+								<netui:content
+									value="<b>For Mac</b>: Open Software Update on the Mac workstation to update the JRE." /> <br>
+							<% } %>
 							</td>
 						</tr>
+						<% if (!(isTABECustomer.booleanValue() && hasTABEContent.booleanValue())) { %>
 						<tr class="transparent">
 							<td class="transparent-top"><netui:content
 								value="<b>For Linux</b>: Use your distribution's package manager or software update tools (e.g., apt/yum/zypper) to install the JRE." />
 							<br>
 							</td>
 						</tr>
+						<% } %>
 					</table>
 					</td>
 				</tr>
@@ -131,8 +149,12 @@
 					<td class="transparent-top">
 					<table class="transparent">
 						<tr id="installJavaRow" class="transparent">
-							<td class="transparent-top"><netui:content
-								value="<b>For PC and Linux</b>: Go to the Adobe website and download the latest Adobe AIR for free. Then log in to OAS again to install Online Assessment Software." />
+							<td class="transparent-top">
+							<% if (isTABECustomer.booleanValue() && hasTABEContent.booleanValue()) { %>
+								<netui:content value="<b>For PC</b>: Go to the Adobe website and download the latest Adobe AIR for free. Then log in to OAS again to install Online Assessment Software." />
+							<% } else { %>
+								<netui:content value="<b>For PC and Linux</b>: Go to the Adobe website and download the latest Adobe AIR for free. Then log in to OAS again to install Online Assessment Software." />
+							<% } %>
 							<br>
 							<a href="#" onclick="newWindow('http://www.adobe.com/go/getair');"><netui:content
 								value="http://www.adobe.com/go/getair" /></a> <br>
@@ -253,8 +275,11 @@
 								src="../resources/images/legacy/icon_macX.gif" /></td>
 							<td class="transparent-top" width="40%"><b><netui:content
 								value="${bundle.web['installClient.mac.clientName']}" /></b><br>
-							<i><netui:content value="${bundle.web['installClient.mac.OS']}" /></i><br>
-
+							<% if (isTABECustomer.booleanValue() && hasTABEContent.booleanValue()) { %>
+								<i><netui:content value="${bundle.web['installClient.mac.OS.Tabe']}" /></i><br>
+							<% } else { %>
+								<i><netui:content value="${bundle.web['installClient.mac.OS']}" /></i><br>
+							<% } %>		
 							<a href="#" onclick="<%= href_MAC %>" class="rounded {transparent} button" tabindex="2"> <netui:content
 								value="${bundle.web['installClient.windows.buttonText']}" /> </a></td>
 								<td class="transparent-top" width="10%">&nbsp;</td>
@@ -273,8 +298,11 @@
 								src="../resources/images/legacy/icon_macX.gif" /></td>
 							<td class="transparent-top" width="40%"><b><netui:content
 								value="${bundle.web['installClient.mac.clientName2']}" /></b><br>
-							<i><netui:content value="${bundle.web['installClient.mac.OS']}" /></i><br>
-
+							<% if (isTABECustomer.booleanValue() && hasTABEContent.booleanValue()) { %>
+								<i><netui:content value="${bundle.web['installClient.mac.OS.Tabe']}" /></i><br>
+							<%} else { %>
+								<i><netui:content value="${bundle.web['installClient.mac.OS']}" /></i><br>
+							<% } %>
 							<a href="#" onclick="<%= href_RUNMAC %>" class="rounded {transparent} button" tabindex="2"> <netui:content
 								value="${bundle.web['installClient.windows.buttonText2']}" /> </a></td>
 							<% }} %>
