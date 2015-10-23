@@ -102,13 +102,13 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                      0,
                      D.CUMULATIVE_NET_AVL) AS CUMULATIVE_NET_AVL,
               /* DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
-                                                                                                         0,
-                                                                                                         (0 - D.NODE_NET_AVAILABLE),
-                                                                                                         0) AS NODE_LVL_LIC_NEEDED,
-                                                                                                  DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
-                                                                                                         0,
-                                                                                                         (0 - D.CUMULATIVE_NET_AVL),
-                                                                                                         0) AS CUM_NODE_LIC_NEEDED,*/
+                                                                                                                       0,
+                                                                                                                       (0 - D.NODE_NET_AVAILABLE),
+                                                                                                                       0) AS NODE_LVL_LIC_NEEDED,
+                                                                                                                DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
+                                                                                                                       0,
+                                                                                                                       (0 - D.CUMULATIVE_NET_AVL),
+                                                                                                                       0) AS CUM_NODE_LIC_NEEDED,*/
               SYSDATE,
               'AC',
               'F'
@@ -170,11 +170,14 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                   AND TA.TEST_ADMIN_STATUS = 'PA'
                                                   AND TA.ACTIVATION_STATUS = 'AC'
                                                   AND TR.ACTIVATION_STATUS = 'AC'
+                                                  AND TA.PRODUCT_ID NOT IN
+                                                      (4008, 4013)
                                                   AND TA.CUSTOMER_ID =
                                                       IN_CUSTOMER_ID
-                                                  AND TRUNC(TR.CREATED_DATE_TIME) <
+                                                  AND TR.CREATED_DATE_TIME <
                                                       LM_DOWM_DATE
-                                                  AND TRUNC(TA.LOGIN_END_DATE) BETWEEN
+                                                  AND TA.LOGIN_END_DATE >= LM_DOWM_DATE
+                                                  AND TA.LOGIN_END_DATE BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
                                                   AND TR.TEST_COMPLETION_STATUS IN
@@ -210,7 +213,9 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       ('CU', 'FU')
                                                   AND TA.ACTIVATION_STATUS = 'AC'
                                                   AND TR.ACTIVATION_STATUS = 'AC'
-                                                  AND TRUNC(TR.CREATED_DATE_TIME) BETWEEN
+                                                  AND TA.PRODUCT_ID NOT IN
+                                                      (4008, 4013)
+                                                  AND TR.CREATED_DATE_TIME BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
                                                   AND TA.CUSTOMER_ID =
@@ -224,6 +229,7 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                           AND SISS.TEST_ROSTER_ID =
                                                               TR.TEST_ROSTER_ID
                                                           AND ISET.SAMPLE = 'F'
+                                                          AND ISET.ITEM_SET_LEVEL != 'L'
                                                           AND SISS.COMPLETION_STATUS <> 'SC')
                                                 GROUP BY TR.ORG_NODE_ID) LIC_ORG,
                                               ORG_NODE ORG
@@ -245,7 +251,9 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       ('CU', 'PA')
                                                   AND TA.ACTIVATION_STATUS = 'AC'
                                                   AND TR.ACTIVATION_STATUS = 'AC'
-                                                  AND TRUNC(TR.START_DATE_TIME) BETWEEN
+                                                  AND TA.PRODUCT_ID NOT IN
+                                                      (4008, 4013)
+                                                  AND TR.START_DATE_TIME BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
                                                   AND TA.CUSTOMER_ID =
@@ -259,6 +267,7 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                           AND SISS.TEST_ROSTER_ID =
                                                               TR.TEST_ROSTER_ID
                                                           AND ISET.SAMPLE = 'F'
+                                                          AND ISET.ITEM_SET_LEVEL != 'L'
                                                           AND SISS.COMPLETION_STATUS <> 'SC')
                                                 GROUP BY TR.ORG_NODE_ID) LIC_ORG,
                                               ORG_NODE ORG
@@ -356,13 +365,13 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                      0,
                      D.CUMULATIVE_NET_AVL) AS CUMULATIVE_NET_AVL,
               /* DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
-                                                                                                         0,
-                                                                                                         (0 - D.NODE_NET_AVAILABLE),
-                                                                                                         0) AS NODE_LVL_LIC_NEEDED,
-                                                                                                  DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
-                                                                                                         0,
-                                                                                                         (0 - D.CUMULATIVE_NET_AVL),
-                                                                                                         0) AS CUM_NODE_LIC_NEEDED,*/
+                                                                                                                       0,
+                                                                                                                       (0 - D.NODE_NET_AVAILABLE),
+                                                                                                                       0) AS NODE_LVL_LIC_NEEDED,
+                                                                                                                DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
+                                                                                                                       0,
+                                                                                                                       (0 - D.CUMULATIVE_NET_AVL),
+                                                                                                                       0) AS CUM_NODE_LIC_NEEDED,*/
               SYSDATE,
               'AC',
               'T'
@@ -429,6 +438,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       TR.TEST_ADMIN_ID
                                                   AND TR.TEST_ROSTER_ID =
                                                       SISS.TEST_ROSTER_ID
+                                                  AND TA.PRODUCT_ID NOT IN
+                                                      (4008, 4013)
                                                   AND SISS.ITEM_SET_ID =
                                                       ISP.ITEM_SET_ID
                                                   AND ISP.PARENT_ITEM_SET_ID =
@@ -439,9 +450,10 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                   AND TA.TEST_ADMIN_STATUS = 'PA'
                                                   AND TA.ACTIVATION_STATUS = 'AC'
                                                   AND TR.ACTIVATION_STATUS = 'AC'
-                                                  AND TRUNC(TR.CREATED_DATE_TIME) <
+                                                  AND TR.CREATED_DATE_TIME <
                                                       LM_DOWM_DATE
-                                                  AND TRUNC(TA.LOGIN_END_DATE) BETWEEN
+                                                  AND TA.LOGIN_END_DATE >= LM_DOWM_DATE
+                                                  AND TA.LOGIN_END_DATE BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
                                                   AND TR.TEST_COMPLETION_STATUS IN
@@ -487,10 +499,12 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       ('CU', 'FU')
                                                   AND TA.ACTIVATION_STATUS = 'AC'
                                                   AND TR.ACTIVATION_STATUS = 'AC'
+                                                  AND TA.PRODUCT_ID NOT IN
+                                                      (4008, 4013)
                                                   AND TR.TEST_COMPLETION_STATUS IN
-                                                      ('SC', 'IC','IS')
+                                                      ('SC', 'IC', 'IS')
                                                   AND SISS.COMPLETION_STATUS = 'SC'
-                                                  AND TRUNC(TR.CREATED_DATE_TIME) BETWEEN
+                                                  AND TR.CREATED_DATE_TIME BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
                                                   AND TA.CUSTOMER_ID =
@@ -533,11 +547,13 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       ('CU', 'PA')
                                                   AND TA.ACTIVATION_STATUS = 'AC'
                                                   AND TR.ACTIVATION_STATUS = 'AC'
+                                                  AND TA.PRODUCT_ID NOT IN
+                                                      (4008, 4013)
                                                   AND TR.TEST_COMPLETION_STATUS NOT IN
                                                       ('SC', 'NT')
                                                   AND SISS.COMPLETION_STATUS NOT IN
                                                       ('SC', 'NT')
-                                                  AND TRUNC(SISS.START_DATE_TIME) BETWEEN
+                                                  AND SISS.START_DATE_TIME BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
                                                   AND TA.CUSTOMER_ID =
