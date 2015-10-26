@@ -102,13 +102,13 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                      0,
                      D.CUMULATIVE_NET_AVL) AS CUMULATIVE_NET_AVL,
               /* DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
-                                                                                                                       0,
-                                                                                                                       (0 - D.NODE_NET_AVAILABLE),
-                                                                                                                       0) AS NODE_LVL_LIC_NEEDED,
-                                                                                                                DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
-                                                                                                                       0,
-                                                                                                                       (0 - D.CUMULATIVE_NET_AVL),
-                                                                                                                       0) AS CUM_NODE_LIC_NEEDED,*/
+                                                                                                                                     0,
+                                                                                                                                     (0 - D.NODE_NET_AVAILABLE),
+                                                                                                                                     0) AS NODE_LVL_LIC_NEEDED,
+                                                                                                                              DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
+                                                                                                                                     0,
+                                                                                                                                     (0 - D.CUMULATIVE_NET_AVL),
+                                                                                                                                     0) AS CUM_NODE_LIC_NEEDED,*/
               SYSDATE,
               'AC',
               'F'
@@ -176,7 +176,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       IN_CUSTOMER_ID
                                                   AND TR.CREATED_DATE_TIME <
                                                       LM_DOWM_DATE
-                                                  AND TA.LOGIN_END_DATE >= LM_DOWM_DATE
+                                                  AND TA.LOGIN_END_DATE >=
+                                                      LM_DOWM_DATE
                                                   AND TA.LOGIN_END_DATE BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
@@ -365,13 +366,13 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                      0,
                      D.CUMULATIVE_NET_AVL) AS CUMULATIVE_NET_AVL,
               /* DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
-                                                                                                                       0,
-                                                                                                                       (0 - D.NODE_NET_AVAILABLE),
-                                                                                                                       0) AS NODE_LVL_LIC_NEEDED,
-                                                                                                                DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
-                                                                                                                       0,
-                                                                                                                       (0 - D.CUMULATIVE_NET_AVL),
-                                                                                                                       0) AS CUM_NODE_LIC_NEEDED,*/
+                                                                                                                                     0,
+                                                                                                                                     (0 - D.NODE_NET_AVAILABLE),
+                                                                                                                                     0) AS NODE_LVL_LIC_NEEDED,
+                                                                                                                              DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
+                                                                                                                                     0,
+                                                                                                                                     (0 - D.CUMULATIVE_NET_AVL),
+                                                                                                                                     0) AS CUM_NODE_LIC_NEEDED,*/
               SYSDATE,
               'AC',
               'T'
@@ -433,7 +434,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       TEST_ROSTER             TR,
                                                       STUDENT_ITEM_SET_STATUS SISS,
                                                       ITEM_SET_PARENT         ISP,
-                                                      ITEM_SET                ISET
+                                                      ITEM_SET                ISET,
+                                                      ITEM_SET                ISET_TD
                                                 WHERE TA.TEST_ADMIN_ID =
                                                       TR.TEST_ADMIN_ID
                                                   AND TR.TEST_ROSTER_ID =
@@ -442,6 +444,10 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       (4008, 4013)
                                                   AND SISS.ITEM_SET_ID =
                                                       ISP.ITEM_SET_ID
+                                                  AND ISET_TD.ITEM_SET_ID =
+                                                      SISS.ITEM_SET_ID
+                                                  AND ISET_TD.SAMPLE = 'F'
+                                                  AND ISET_TD.ITEM_SET_LEVEL != 'L'
                                                   AND ISP.PARENT_ITEM_SET_ID =
                                                       ISET.ITEM_SET_ID
                                                   AND ISET.ITEM_SET_TYPE = 'TS'
@@ -452,7 +458,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                   AND TR.ACTIVATION_STATUS = 'AC'
                                                   AND TR.CREATED_DATE_TIME <
                                                       LM_DOWM_DATE
-                                                  AND TA.LOGIN_END_DATE >= LM_DOWM_DATE
+                                                  AND TA.LOGIN_END_DATE >=
+                                                      LM_DOWM_DATE
                                                   AND TA.LOGIN_END_DATE BETWEEN
                                                       EXTRACT_START_DATE AND
                                                       EXTRACT_END_DATE
@@ -483,13 +490,18 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       TEST_ROSTER             TR,
                                                       STUDENT_ITEM_SET_STATUS SISS,
                                                       ITEM_SET_PARENT         ISP,
-                                                      ITEM_SET                ISET
+                                                      ITEM_SET                ISET,
+                                                      ITEM_SET                ISET_TD
                                                 WHERE TA.TEST_ADMIN_ID =
                                                       TR.TEST_ADMIN_ID
                                                   AND TR.TEST_ROSTER_ID =
                                                       SISS.TEST_ROSTER_ID
                                                   AND SISS.ITEM_SET_ID =
                                                       ISP.ITEM_SET_ID
+                                                  AND ISET_TD.ITEM_SET_ID =
+                                                      SISS.ITEM_SET_ID
+                                                  AND ISET_TD.SAMPLE = 'F'
+                                                  AND ISET_TD.ITEM_SET_LEVEL != 'L'
                                                   AND ISP.PARENT_ITEM_SET_ID =
                                                       ISET.ITEM_SET_ID
                                                   AND ISET.ITEM_SET_TYPE = 'TS'
@@ -531,13 +543,18 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                                       TEST_ROSTER             TR,
                                                       STUDENT_ITEM_SET_STATUS SISS,
                                                       ITEM_SET_PARENT         ISP,
-                                                      ITEM_SET                ISET
+                                                      ITEM_SET                ISET,
+                                                      ITEM_SET                ISET_TD
                                                 WHERE TA.TEST_ADMIN_ID =
                                                       TR.TEST_ADMIN_ID
                                                   AND TR.TEST_ROSTER_ID =
                                                       SISS.TEST_ROSTER_ID
                                                   AND SISS.ITEM_SET_ID =
                                                       ISP.ITEM_SET_ID
+                                                  AND ISET_TD.ITEM_SET_ID =
+                                                      SISS.ITEM_SET_ID
+                                                  AND ISET_TD.SAMPLE = 'F'
+                                                  AND ISET_TD.ITEM_SET_LEVEL != 'L'
                                                   AND ISP.PARENT_ITEM_SET_ID =
                                                       ISET.ITEM_SET_ID
                                                   AND ISET.ITEM_SET_TYPE = 'TS'
