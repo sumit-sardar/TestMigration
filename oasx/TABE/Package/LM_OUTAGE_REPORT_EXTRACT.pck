@@ -67,6 +67,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
        CUM_LIC_RESERVED,
        LIC_CONSUMED_AT_NODE,
        CUM_LIC_CONSUMED,
+       LIC_MOD_CONSUMED_AT_NODE,
+       CUM_LIC_MOD_CONSUMED,
        NODE_LVL_AVAILABLE,
        CUM_AVAILABLE,
        NODE_NET_AVAILABLE,
@@ -91,6 +93,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
               D.CUM_RESERVED,
               D.CONSUMED,
               D.CUM_CONSUMED,
+              D.MOD_CONSUMED,
+              D.CUM_MOD_CONSUMED,
               D.NODE_LVL_AVAILABLE,
               D.CUMULATIVE_AVAILABLE,
               DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
@@ -102,13 +106,13 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                      0,
                      D.CUMULATIVE_NET_AVL) AS CUMULATIVE_NET_AVL,
               /* DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
-                                                                                                                                     0,
-                                                                                                                                     (0 - D.NODE_NET_AVAILABLE),
-                                                                                                                                     0) AS NODE_LVL_LIC_NEEDED,
-                                                                                                                              DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
-                                                                                                                                     0,
-                                                                                                                                     (0 - D.CUMULATIVE_NET_AVL),
-                                                                                                                                     0) AS CUM_NODE_LIC_NEEDED,*/
+                                                                                                                                                                 0,
+                                                                                                                                                                 (0 - D.NODE_NET_AVAILABLE),
+                                                                                                                                                                 0) AS NODE_LVL_LIC_NEEDED,
+                                                                                                                                                          DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
+                                                                                                                                                                 0,
+                                                                                                                                                                 (0 - D.CUMULATIVE_NET_AVL),
+                                                                                                                                                                 0) AS CUM_NODE_LIC_NEEDED,*/
               SYSDATE,
               'AC',
               'F'
@@ -128,17 +132,19 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                       DERIVED.CUM_RESERVED,
                       DERIVED.CONSUMED,
                       DERIVED.CUM_CONSUMED,
+                      DERIVED.MOD_CONSUMED,
+                      DERIVED.CUM_MOD_CONSUMED,
                       (DERIVED.COL_AVL + DERIVED.TIER2_PURCHASE +
                       DERIVED.RETURNED_AVL) AS NODE_LVL_AVAILABLE,
                       ((DERIVED.COL_AVL + DERIVED.TIER2_PURCHASE +
                       DERIVED.RETURNED_AVL) -
-                      (DERIVED.RESERVED + DERIVED.CONSUMED)) AS NODE_NET_AVAILABLE,
+                      (DERIVED.RESERVED + DERIVED.MOD_CONSUMED)) AS NODE_NET_AVAILABLE,
                       (DERIVED.CUM_COL_AVAILABLE +
                       DERIVED.CUM_TIER2_PURCHASE + DERIVED.CUM_RETURNED_AVL) AS CUMULATIVE_AVAILABLE,
                       ((DERIVED.CUM_COL_AVAILABLE +
                       DERIVED.CUM_TIER2_PURCHASE +
                       DERIVED.CUM_RETURNED_AVL) -
-                      (DERIVED.CUM_RESERVED + DERIVED.CUM_CONSUMED)) AS CUMULATIVE_NET_AVL
+                      (DERIVED.CUM_RESERVED + DERIVED.CUM_MOD_CONSUMED)) AS CUMULATIVE_NET_AVL
                  FROM (SELECT DERIVED4.*,
                               NVL(COL.AVAILABLE, 0) AS COL_AVL,
                               NVL(TIER2.PURCHASE_COUNT, 0) AS TIER2_PURCHASE,
@@ -146,6 +152,7 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                               SUM(DERIVED4.RETURNED_AVL) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_RETURNED_AVL,
                               SUM(DERIVED4.RESERVED) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_RESERVED,
                               SUM(DERIVED4.CONSUMED) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_CONSUMED,
+                              SUM(DERIVED4.MOD_CONSUMED) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_MOD_CONSUMED,
                               SUM(NVL(COL.AVAILABLE, 0)) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_COL_AVAILABLE,
                               SUM(NVL(TIER2.PURCHASE_COUNT, 0)) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_TIER2_PURCHASE
                          FROM (SELECT ONC.CATEGORY_NAME,
@@ -156,7 +163,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                       DERIVED1.ORG_NODE_ID,
                                       DERIVED1.AVAILABLE AS RETURNED_AVL,
                                       DERIVED2.RESERVED,
-                                      DERIVED3.CONSUMED
+                                      DERIVED3.CONSUMED,
+                                      DERIVED5.MOD_CONSUMED
                                  FROM (SELECT ORG.ORG_NODE_NAME,
                                               ORG.ORG_NODE_ID,
                                               ORG.ORG_NODE_CATEGORY_ID,
@@ -276,12 +284,54 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                           AND ORG.ORG_NODE_ID =
                                               LIC_ORG.ORG_NODE_ID(+)
                                           AND ORG.ACTIVATION_STATUS = 'AC') DERIVED3,
+                                      (SELECT ORG.ORG_NODE_NAME,
+                                              ORG.ORG_NODE_ID,
+                                              ORG.ORG_NODE_CATEGORY_ID,
+                                              NVL(LIC_ORG.MOD_CONSUMED, 0) AS MOD_CONSUMED
+                                         FROM (SELECT TR.ORG_NODE_ID AS ORG_NODE_ID,
+                                                      COUNT(1) AS MOD_CONSUMED
+                                                 FROM TEST_ADMIN  TA,
+                                                      TEST_ROSTER TR
+                                                WHERE TA.TEST_ADMIN_ID =
+                                                      TR.TEST_ADMIN_ID
+                                                  AND TA.TEST_ADMIN_STATUS IN
+                                                      ('CU', 'PA')
+                                                  AND TA.ACTIVATION_STATUS = 'AC'
+                                                  AND TR.ACTIVATION_STATUS = 'AC'
+                                                  AND TA.PRODUCT_ID NOT IN
+                                                      (4008, 4013)
+                                                  AND TR.CREATED_DATE_TIME >
+                                                      LM_DOWM_DATE
+                                                  AND TR.START_DATE_TIME BETWEEN
+                                                      EXTRACT_START_DATE AND
+                                                      EXTRACT_END_DATE
+                                                  AND TA.CUSTOMER_ID =
+                                                      IN_CUSTOMER_ID
+                                                  AND EXISTS
+                                                (SELECT 1
+                                                         FROM STUDENT_ITEM_SET_STATUS SISS,
+                                                              ITEM_SET                ISET
+                                                        WHERE SISS.ITEM_SET_ID =
+                                                              ISET.ITEM_SET_ID
+                                                          AND SISS.TEST_ROSTER_ID =
+                                                              TR.TEST_ROSTER_ID
+                                                          AND ISET.SAMPLE = 'F'
+                                                          AND ISET.ITEM_SET_LEVEL != 'L'
+                                                          AND SISS.COMPLETION_STATUS <> 'SC')
+                                                GROUP BY TR.ORG_NODE_ID) LIC_ORG,
+                                              ORG_NODE ORG
+                                        WHERE ORG.CUSTOMER_ID = IN_CUSTOMER_ID
+                                          AND ORG.ORG_NODE_ID =
+                                              LIC_ORG.ORG_NODE_ID(+)
+                                          AND ORG.ACTIVATION_STATUS = 'AC') DERIVED5,
                                       ORG_NODE_CATEGORY ONC,
                                       ORG_NODE_PARENT ONP,
                                       ORG_NODE PORG
                                 WHERE DERIVED1.ORG_NODE_ID =
                                       DERIVED2.ORG_NODE_ID
                                   AND DERIVED3.ORG_NODE_ID =
+                                      DERIVED2.ORG_NODE_ID
+                                  AND DERIVED5.ORG_NODE_ID =
                                       DERIVED2.ORG_NODE_ID
                                   AND DERIVED1.ORG_NODE_CATEGORY_ID =
                                       ONC.ORG_NODE_CATEGORY_ID
@@ -331,6 +381,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
        CUM_LIC_RESERVED,
        LIC_CONSUMED_AT_NODE,
        CUM_LIC_CONSUMED,
+       LIC_MOD_CONSUMED_AT_NODE,
+       CUM_LIC_MOD_CONSUMED,
        NODE_LVL_AVAILABLE,
        CUM_AVAILABLE,
        NODE_NET_AVAILABLE,
@@ -355,6 +407,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
               D.CUM_RESERVED,
               D.CONSUMED,
               D.CUM_CONSUMED,
+              D.MOD_CONSUMED,
+              D.CUM_MOD_CONSUMED,
               D.NODE_LVL_AVAILABLE,
               D.CUMULATIVE_AVAILABLE,
               DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
@@ -366,13 +420,13 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                      0,
                      D.CUMULATIVE_NET_AVL) AS CUMULATIVE_NET_AVL,
               /* DECODE(GREATEST(D.NODE_NET_AVAILABLE, 0),
-                                                                                                                                     0,
-                                                                                                                                     (0 - D.NODE_NET_AVAILABLE),
-                                                                                                                                     0) AS NODE_LVL_LIC_NEEDED,
-                                                                                                                              DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
-                                                                                                                                     0,
-                                                                                                                                     (0 - D.CUMULATIVE_NET_AVL),
-                                                                                                                                     0) AS CUM_NODE_LIC_NEEDED,*/
+                                                                                                                                                                 0,
+                                                                                                                                                                 (0 - D.NODE_NET_AVAILABLE),
+                                                                                                                                                                 0) AS NODE_LVL_LIC_NEEDED,
+                                                                                                                                                          DECODE(GREATEST(D.CUMULATIVE_NET_AVL, 0),
+                                                                                                                                                                 0,
+                                                                                                                                                                 (0 - D.CUMULATIVE_NET_AVL),
+                                                                                                                                                                 0) AS CUM_NODE_LIC_NEEDED,*/
               SYSDATE,
               'AC',
               'T'
@@ -392,17 +446,19 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                       DERIVED.CUM_RESERVED,
                       DERIVED.CONSUMED,
                       DERIVED.CUM_CONSUMED,
+                      DERIVED.MOD_CONSUMED,
+                      DERIVED.CUM_MOD_CONSUMED,
                       (DERIVED.COL_AVL + DERIVED.TIER2_PURCHASE +
                       DERIVED.RETURNED_AVL) AS NODE_LVL_AVAILABLE,
                       ((DERIVED.COL_AVL + DERIVED.TIER2_PURCHASE +
                       DERIVED.RETURNED_AVL) -
-                      (DERIVED.RESERVED + DERIVED.CONSUMED)) AS NODE_NET_AVAILABLE,
+                      (DERIVED.RESERVED + DERIVED.MOD_CONSUMED)) AS NODE_NET_AVAILABLE,
                       (DERIVED.CUM_COL_AVAILABLE +
                       DERIVED.CUM_TIER2_PURCHASE + DERIVED.CUM_RETURNED_AVL) AS CUMULATIVE_AVAILABLE,
                       ((DERIVED.CUM_COL_AVAILABLE +
                       DERIVED.CUM_TIER2_PURCHASE +
                       DERIVED.CUM_RETURNED_AVL) -
-                      (DERIVED.CUM_RESERVED + DERIVED.CUM_CONSUMED)) AS CUMULATIVE_NET_AVL
+                      (DERIVED.CUM_RESERVED + DERIVED.CUM_MOD_CONSUMED)) AS CUMULATIVE_NET_AVL
                  FROM (SELECT DERIVED4.*,
                               NVL(COL.AVAILABLE, 0) AS COL_AVL,
                               NVL(TIER2.PURCHASE_COUNT, 0) AS TIER2_PURCHASE,
@@ -410,6 +466,7 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                               SUM(DERIVED4.RETURNED_AVL) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_RETURNED_AVL,
                               SUM(DERIVED4.RESERVED) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_RESERVED,
                               SUM(DERIVED4.CONSUMED) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_CONSUMED,
+                              SUM(DERIVED4.MOD_CONSUMED) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_MOD_CONSUMED,
                               SUM(NVL(COL.AVAILABLE, 0)) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_COL_AVAILABLE,
                               SUM(NVL(TIER2.PURCHASE_COUNT, 0)) OVER(PARTITION BY CONNECT_BY_ROOT(DERIVED4.ORG_NODE_ID)) CUM_TIER2_PURCHASE
                          FROM (SELECT ONC.CATEGORY_NAME,
@@ -420,7 +477,8 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                       DERIVED1.ORG_NODE_ID,
                                       DERIVED1.AVAILABLE AS RETURNED_AVL,
                                       DERIVED2.RESERVED,
-                                      DERIVED3.CONSUMED
+                                      DERIVED3.CONSUMED,
+                                      DERIVED5.MOD_CONSUMED
                                  FROM (SELECT ORG.ORG_NODE_ID,
                                               ORG.ORG_NODE_NAME,
                                               ORG.ORG_NODE_CATEGORY_ID,
@@ -584,12 +642,69 @@ CREATE OR REPLACE PACKAGE BODY LM_OUTAGE_REPORT_EXTRACT AS
                                         GROUP BY ORG.ORG_NODE_ID,
                                                  ORG.ORG_NODE_NAME,
                                                  ORG.ORG_NODE_CATEGORY_ID) DERIVED3,
-                                      ORG_NODE_CATEGORY ONC,
+                                      (SELECT ORG.ORG_NODE_ID,
+                                              ORG.ORG_NODE_NAME,
+                                              ORG.ORG_NODE_CATEGORY_ID,
+                                              NVL(SUM(LIC_DATA.MOD_CONSUMED), 0) AS MOD_CONSUMED
+                                         FROM ORG_NODE ORG,
+                                              (SELECT TR.TEST_ROSTER_ID,
+                                                      TR.ORG_NODE_ID,
+                                                      COUNT(DISTINCT
+                                                            ISET.ITEM_SET_ID) AS MOD_CONSUMED
+                                                 FROM TEST_ADMIN              TA,
+                                                      TEST_ROSTER             TR,
+                                                      STUDENT_ITEM_SET_STATUS SISS,
+                                                      ITEM_SET_PARENT         ISP,
+                                                      ITEM_SET                ISET,
+                                                      ITEM_SET                ISET_TD
+                                                WHERE TA.TEST_ADMIN_ID =
+                                                      TR.TEST_ADMIN_ID
+                                                  AND TR.TEST_ROSTER_ID =
+                                                      SISS.TEST_ROSTER_ID
+                                                  AND SISS.ITEM_SET_ID =
+                                                      ISP.ITEM_SET_ID
+                                                  AND ISET_TD.ITEM_SET_ID =
+                                                      SISS.ITEM_SET_ID
+                                                  AND ISET_TD.SAMPLE = 'F'
+                                                  AND ISET_TD.ITEM_SET_LEVEL != 'L'
+                                                  AND ISP.PARENT_ITEM_SET_ID =
+                                                      ISET.ITEM_SET_ID
+                                                  AND ISET.ITEM_SET_TYPE = 'TS'
+                                                  AND ISET.SAMPLE = 'F'
+                                                  AND ISET.ITEM_SET_LEVEL != 'L'
+                                                  AND TA.TEST_ADMIN_STATUS IN
+                                                      ('CU', 'PA')
+                                                  AND TA.ACTIVATION_STATUS = 'AC'
+                                                  AND TR.ACTIVATION_STATUS = 'AC'
+                                                  AND TA.PRODUCT_ID NOT IN
+                                                      (4008, 4013)
+                                                  AND TR.TEST_COMPLETION_STATUS NOT IN
+                                                      ('SC', 'NT')
+                                                  AND SISS.COMPLETION_STATUS NOT IN
+                                                      ('SC', 'NT')
+                                                  AND SISS.START_DATE_TIME BETWEEN
+                                                      EXTRACT_START_DATE AND
+                                                      EXTRACT_END_DATE
+                                                  AND TR.CREATED_DATE_TIME >
+                                                      LM_DOWM_DATE
+                                                  AND TA.CUSTOMER_ID =
+                                                      IN_CUSTOMER_ID
+                                                GROUP BY TR.TEST_ROSTER_ID,
+                                                         TR.ORG_NODE_ID) LIC_DATA
+                                        WHERE ORG.ORG_NODE_ID =
+                                              LIC_DATA.ORG_NODE_ID(+)
+                                          AND ORG.CUSTOMER_ID = IN_CUSTOMER_ID
+                                          AND ORG.ACTIVATION_STATUS = 'AC'
+                                        GROUP BY ORG.ORG_NODE_ID,
+                                                 ORG.ORG_NODE_NAME,
+                                                 ORG.ORG_NODE_CATEGORY_ID) DERIVED5 ,ORG_NODE_CATEGORY ONC,
                                       ORG_NODE_PARENT ONP,
                                       ORG_NODE PORG
                                 WHERE DERIVED1.ORG_NODE_ID =
                                       DERIVED2.ORG_NODE_ID
                                   AND DERIVED3.ORG_NODE_ID =
+                                      DERIVED2.ORG_NODE_ID
+                                  AND DERIVED5.ORG_NODE_ID =
                                       DERIVED2.ORG_NODE_ID
                                   AND DERIVED1.ORG_NODE_CATEGORY_ID =
                                       ONC.ORG_NODE_CATEGORY_ID
