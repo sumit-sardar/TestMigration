@@ -58,20 +58,15 @@ public class ConstructedResponseEncoder {
 	public String formatConstructedResponse(final String response) throws UnsupportedEncodingException {
 		final StringBuilder builder = new StringBuilder();
 		
-		// The response may be multiline; if it is, each line needs to be in its own answer tag.
-		final String[] responseLines = response.split("\\n");
-
 		builder.append(XML_ANSWERS_START);
 		
-		for (final String line : responseLines) {
-			builder.append(XML_START);
-			builder.append(String.format("%05d%05d", rng.nextInt(99999), rng.nextInt(99999)));
-			builder.append(XML_MIDDLE);
-			if (!StringUtils.isBlank(line)) {
-				builder.append(XML_CDATA_START+line+XML_CDATA_END);
-			}
-			builder.append(XML_END);
+		builder.append(XML_START);
+		builder.append(String.format("%05d%05d", rng.nextInt(99999), rng.nextInt(99999)));
+		builder.append(XML_MIDDLE);
+		if (!StringUtils.isBlank(response)) {
+			builder.append(XML_CDATA_START+response+XML_CDATA_END);
 		}
+		builder.append(XML_END);
 		
 		builder.append(XML_ANSWERS_END);
 		LOGGER.debug("[ConstructedResponseEncoder] Encoding string for storage: " + builder.toString());
