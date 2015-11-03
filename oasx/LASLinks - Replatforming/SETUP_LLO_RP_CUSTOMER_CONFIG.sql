@@ -482,7 +482,33 @@ BEGIN
          SYSDATE);
       dbms_output.put_line('Allow_Hide_Tooltips Inserted');
     END IF;
+    
+    SELECT COUNT(1)
+      INTO V_CONFIGCOUNT
+      FROM OAS.CUSTOMER_CONFIGURATION
+     WHERE CUSTOMER_CONFIGURATION_NAME = 'Remove_IndvlTckt_Keyboard'
+       AND CUSTOMER_ID = IN_CUSTOMER_ID;
   
+    IF (V_CONFIGCOUNT = 0) THEN
+      INSERT INTO OAS.CUSTOMER_CONFIGURATION
+        (CUSTOMER_CONFIGURATION_ID,
+         CUSTOMER_CONFIGURATION_NAME,
+         CUSTOMER_ID,
+         EDITABLE,
+         DEFAULT_VALUE,
+         CREATED_BY,
+         CREATED_DATE_TIME)
+      VALUES
+        (SEQ_CUSTOMER_CONFIGURATION_ID.NEXTVAL,
+         'Remove_IndvlTckt_Keyboard',
+         IN_CUSTOMER_ID,
+         'T',
+         'T',
+         1,
+         SYSDATE);
+      dbms_output.put_line('Remove_IndvlTckt_Keyboard Inserted');
+    END IF;
+    
     SELECT COUNT(1)
       INTO V_CONFIGCOUNT
       FROM OAS.CUSTOMER_CONFIGURATION
