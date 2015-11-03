@@ -39,6 +39,10 @@ public class ConstructedResponseEncoder {
 
 	private static final String XML_START = "<answer id=\"widget";
 	
+	private static final String MCR_ORDER = "crOrder";
+	
+	private static final String MCR_RESPONSE = "response";
+	
 	private final Random rng;
 	
 	private static final Logger LOGGER = Logger.getLogger(ConstructedResponseEncoder.class);
@@ -129,16 +133,16 @@ public class ConstructedResponseEncoder {
 					//add sorting by crOrder
 					Collections.sort(jsonResponses, new Comparator<Map<String, Object>>() {
 						public int compare(Map<String, Object> a, Map<String, Object> b) {
-							return ((Integer)a.get("crOrder")).intValue() - (((Integer)b.get("crOrder")).intValue());
+							return ((Integer)a.get(MCR_ORDER)).intValue() - (((Integer)b.get(MCR_ORDER)).intValue());
 						}
 					});					
 					for (int i=0; jsonResponses!=null && i<jsonResponses.size(); i++) {						
-						responses.add((String)jsonResponses.get(i).get("response")); 
+						responses.add((String)jsonResponses.get(i).get(MCR_RESPONSE)); 
 					}
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.warn("Deserialize JSON content as a tree! Response is not a JSON: [reponse=" + response + "]");			
+			LOGGER.warn("Could not deserialize JSON content as a tree! Response is not a JSON: [response=" + response + "]");			
 		}
 
 		//if responses array is empty, then there was no JSON response, then it is a single string value response
@@ -150,4 +154,5 @@ public class ConstructedResponseEncoder {
 		
 		return responses;
 	}
+
 }
