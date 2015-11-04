@@ -126,19 +126,17 @@ public class ConstructedResponseEncoder {
 		ObjectMapper mapper = new ObjectMapper(factory);
 		try {
 			JsonNode root = mapper.readTree(response);
-			if (root!=null) {
-				if  (root.isArray()) {
-					//process array
-					List<Map<String, Object>> jsonResponses = mapper.readValue(response, new TypeReference<List<Map<String,Object>>>() {}); 
-					//add sorting by crOrder
-					Collections.sort(jsonResponses, new Comparator<Map<String, Object>>() {
-						public int compare(Map<String, Object> a, Map<String, Object> b) {
-							return ((Integer)a.get(MCR_ORDER)).intValue() - (((Integer)b.get(MCR_ORDER)).intValue());
-						}
-					});					
-					for (int i=0; jsonResponses!=null && i<jsonResponses.size(); i++) {						
-						responses.add((String)jsonResponses.get(i).get(MCR_RESPONSE)); 
+			if (root!=null && root.isArray()) {
+				//process array
+				List<Map<String, Object>> jsonResponses = mapper.readValue(response, new TypeReference<List<Map<String,Object>>>() {}); 
+				//add sorting by crOrder
+				Collections.sort(jsonResponses, new Comparator<Map<String, Object>>() {
+					public int compare(Map<String, Object> a, Map<String, Object> b) {
+						return ((Integer)a.get(MCR_ORDER)).intValue() - (((Integer)b.get(MCR_ORDER)).intValue());
 					}
+				});					
+				for (int i=0; jsonResponses!=null && i<jsonResponses.size(); i++) {						
+					responses.add((String)jsonResponses.get(i).get(MCR_RESPONSE)); 
 				}
 			}
 		} catch (IOException e) {
