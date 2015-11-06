@@ -156,7 +156,7 @@ public class ConstructedResponseEncoder {
 							//add sorting by crOrder
 							Collections.sort(jsonResponses, new Comparator<Map<String, Object>>() {
 								public int compare(Map<String, Object> a, Map<String, Object> b) {
-									return (a.get(MCR_CRORDER)!=null ? ((Integer)a.get(MCR_CRORDER)).intValue():-1) - (b.get(MCR_CRORDER)!=null ? (((Integer)b.get(MCR_CRORDER)).intValue()):-1);
+									return (a.get(MCR_CRORDER)!=null ? ((Integer)a.get(MCR_CRORDER)).intValue():-1) - (b.get(MCR_CRORDER)!=null ? ((Integer)b.get(MCR_CRORDER)).intValue():-1);
 								}
 							});					
 							for (int i=0; jsonResponses!=null && i<jsonResponses.size(); i++) {
