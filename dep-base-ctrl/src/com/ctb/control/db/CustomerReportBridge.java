@@ -94,22 +94,33 @@ public interface CustomerReportBridge extends JdbcControl
      *     bridge.PRODUCT_ID as productId,
      *     program.PROGRAM_NAME as programName,
      *     org_node.org_node_id as orgNodeId,
-     *     onc.category_level as categoryLevel
+     *     count(ona.ORG_NODE_ID) AS categoryLevel
      * from 
-     *      customer_report_bridge bridge, org_node, customer, program, org_node_category onc
+     *      customer_report_bridge bridge, org_node, customer, program, org_node_category onc, org_node_ancestor ona
      * where 
      *         bridge.customer_id = program.customer_id
      *     and bridge.product_id = program.product_id
      *     and program.customer_id = org_node.customer_id
+     *     and ona.org_node_id = org_node.org_node_id
+     *     and ona.ancestor_org_node_id NOT IN (1, 2)
      *     and program.program_id = {programId}
      *     and org_node.org_node_id = {orgNodeId}
      *     and org_node.activation_status = 'AC' 
      *     and customer.customer_id = bridge.customer_id
-     *     and org_node.org_node_category_id = onc.org_node_category_id::
-     *     array-max-length="all"
+     *     and org_node.org_node_category_id = onc.org_node_category_id
+     *     group by bridge.CUSTOMER_ID,
+     *			    bridge.REPORT_NAME,
+     *				bridge.DISPLAY_NAME,
+     *				bridge.DESCRIPTION,
+     *				bridge.SYSTEM_KEY,
+     *				bridge.CUSTOMER_KEY,
+     *				bridge.REPORT_URL,
+     *				bridge.PRODUCT_ID,
+     *				program.PROGRAM_NAME,
+     *				org_node.ORG_NODE_ID"
      */
-    @JdbcControl.SQL(statement = "select distinct  bridge.CUSTOMER_ID as customerId,  bridge.REPORT_NAME as reportName,  bridge.DISPLAY_NAME as displayName,  bridge.DESCRIPTION as description,  bridge.SYSTEM_KEY as systemKey,  bridge.CUSTOMER_KEY as customerKey,  bridge.REPORT_URL as reportUrl,  bridge.PRODUCT_ID as productId,  program.PROGRAM_NAME as programName,  org_node.org_node_id as orgNodeId,  onc.category_level as categoryLevel from  customer_report_bridge bridge, org_node, customer, program, org_node_category onc where  bridge.customer_id = program.customer_id  and bridge.product_id = program.product_id  and program.customer_id = org_node.customer_id  and program.program_id = {programId}  and org_node.org_node_id = {orgNodeId}  and org_node.activation_status = 'AC'  and customer.customer_id = bridge.customer_id  and org_node.org_node_category_id = onc.org_node_category_id",
-                     arrayMaxLength = 100000)
+    @JdbcControl.SQL(statement = "select distinct  bridge.CUSTOMER_ID as customerId,  bridge.REPORT_NAME as reportName,  bridge.DISPLAY_NAME as displayName,  bridge.DESCRIPTION as description,  bridge.SYSTEM_KEY as systemKey,  bridge.CUSTOMER_KEY as customerKey,  bridge.REPORT_URL as reportUrl,  bridge.PRODUCT_ID as productId,  program.PROGRAM_NAME as programName,  org_node.org_node_id as orgNodeId, COUNT(ona.ORG_NODE_ID) as categoryLevel from  customer_report_bridge bridge, org_node, customer, program, org_node_category onc where  bridge.customer_id = program.customer_id  and bridge.product_id = program.product_id  and program.customer_id = org_node.customer_id  and program.program_id = {programId}  and org_node.org_node_id = {orgNodeId}  and org_node.activation_status = 'AC' and ona.org_node_id = org_node.org_node_id and ona.ancestor_org_node_id NOT IN (1, 2) and customer.customer_id = bridge.customer_id  and org_node.org_node_category_id = onc.org_node_category_id group by bridge.CUSTOMER_ID, bridge.REPORT_NAME, bridge.DISPLAY_NAME, bridge.DESCRIPTION, bridge.SYSTEM_KEY, bridge.CUSTOMER_KEY, bridge.REPORT_URL, bridge.PRODUCT_ID, program.PROGRAM_NAME, org_node.ORG_NODE_ID",
+    		arrayMaxLength = 0, fetchSize = 100)
     CustomerReport [] getReportAssignmentsForProgram(Integer programId, Integer orgNodeId) throws SQLException;
 
    
