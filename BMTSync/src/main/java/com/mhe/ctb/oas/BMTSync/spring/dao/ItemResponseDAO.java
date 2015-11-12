@@ -143,7 +143,9 @@ public class ItemResponseDAO {
 		//BMTOAS-1973 fix - insert a record into ITEM_RESPONSE first - per suggested solution
 		insertPlaceholderItemResponse(testRosterId, itemSetId, itemResponse);		
 		try {
-			if ("CR".equals(itemResponse.getItemType())) {
+			if ("CR".equals(itemResponse.getItemType()) || "MCR".equals(itemResponse.getItemType())) {
+				//fix for BMTOAS-2083: make sure itemType set to "CR", in case when "MCR" was passed for multi-part responses; at this point it can be only CR or MCR
+				itemResponse.setItemType("CR");
 				final Calendar startDBTime = Calendar.getInstance();
 				int rowsUpdated = template.update(UPDATE_CONSTRUCTED_RESPONSE,
 						encoder.formatConstructedResponse(itemResponse.getItemResponse()), testRosterId, itemSetId, itemResponse.getItemCode());
@@ -199,7 +201,9 @@ public class ItemResponseDAO {
 		// THere has to be a placeholder entry in the ITEM_RESPONSE table for the scoring module to work.
 		insertPlaceholderItemResponse(testRosterId, itemSetId, itemResponse);
 		try {
-			if ("CR".equals(itemResponse.getItemType())) {
+			if ("CR".equals(itemResponse.getItemType()) || "MCR".equals(itemResponse.getItemType())) {
+				//fix for BMTOAS-2083: make sure itemType set to "CR", in case when "MCR" was passed for multi-part responses; at this point it can be only CR or MCR
+				itemResponse.setItemType("CR");
 				final Calendar startDBTime = Calendar.getInstance();
 				int rowsUpdated = template.update(INSERT_CONSTRUCTED_RESPONSE, 
 						testRosterId, itemSetId, itemResponse.getItemCode(),
