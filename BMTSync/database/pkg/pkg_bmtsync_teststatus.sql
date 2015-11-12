@@ -1,6 +1,13 @@
 CREATE OR REPLACE PACKAGE PKG_BMTSYNC_TESTSTATUS AS
     TYPE REF_CURSOR IS REF CURSOR;
 	
+    /********************************************************
+     * Function to compare original and a new StartDate 
+     * and return accordinlgy per requirements in BMTOAS-2067
+     * 
+     *********************************************************/
+    FUNCTION processStartDate (origStartDate IN DATE, newStartDate IN DATE) RETURN DATE;
+    
     /***************************************************
 	*
 	* Procedure to validate the Test Status Data
@@ -36,6 +43,20 @@ END PKG_BMTSYNC_TESTSTATUS;
 
 
 CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
+
+	/********************************************************
+     * Function to compare original and a new StartDate 
+     * and return accordinlgy per requirements in BMTOAS-2067
+     * 
+     *********************************************************/
+	FUNCTION processStartDate (origStartDate IN DATE, newStartDate IN DATE) RETURN DATE IS
+	BEGIN
+		IF origStartDate is NULL then RETURN newStartDate;
+		end if;
+		IF newStartDate > origStartDate then RETURN origStartDate;
+		ELSE RETURN newStartDate;
+		END IF;
+	END processStartDate;
 
     /***************************************************
 	*
@@ -284,7 +305,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 			ELSE
 				UPDATE Test_Roster SET
 				   Test_Completion_Status = vFinalStatus,
-				   Start_Date_Time = NVL(Start_Date_Time, pStartDate),
+				   Start_Date_Time = processStartDate(Start_Date_Time, pStartDate),
 				   Updated_Date_Time = SYSDATE
 				WHERE Test_Roster_ID = pRosterId;
 			END IF;
