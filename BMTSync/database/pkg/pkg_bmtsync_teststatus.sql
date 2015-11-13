@@ -8,6 +8,13 @@ CREATE OR REPLACE PACKAGE PKG_BMTSYNC_TESTSTATUS AS
      *********************************************************/
     FUNCTION processStartDate (origStartDate IN DATE, newStartDate IN DATE) RETURN DATE;
     
+    /********************************************************
+     * Function to compare original and a new CompletionDate 
+     * and return accordinlgy per requirements in BMTOAS-2092
+     * 
+     *********************************************************/
+    FUNCTION processCompletionDate (origCompletionDate IN DATE, newCompletionDate IN DATE) RETURN DATE;
+    
     /***************************************************
 	*
 	* Procedure to validate the Test Status Data
@@ -57,6 +64,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 		ELSE RETURN newStartDate;
 		END IF;
 	END processStartDate;
+	
+	/********************************************************
+     * Function to compare original and a new CompletionDate 
+     * and return accordinlgy per requirements in BMTOAS-2092
+     * 
+     *********************************************************/
+    FUNCTION processCompletionDate (origCompletionDate IN DATE, newCompletionDate IN DATE) RETURN DATE IS
+    BEGIN
+		IF origCompletionDate is NULL then RETURN newCompletionDate;
+		end if;
+		IF newCompletionDate > origCompletionDate then RETURN newCompletionDate;
+		ELSE RETURN origCompletionDate;
+		END IF;
+	END processCompletionDate;
 
     /***************************************************
 	*
@@ -284,22 +305,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 
 		-- Update the Roster Status,  Update with CO if all the subtest is complete
 		--DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
-        IF vFinalStatus IS NOT NULL   THEN
+		IF vFinalStatus IS NOT NULL   THEN
 
-            IF vFinalStatus = 'CO' THEN
+			IF vFinalStatus = 'CO' THEN
 				UPDATE Test_Roster ROS
-				SET Completion_Date_Time = pCompletionDate,
-				    Updated_Date_Time = SYSDATE,
-				   Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status
-					   WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)
+				SET Completion_Date_Time = processCompletionDate(Completion_Date_Time, pCompletionDate),
+					Updated_Date_Time = SYSDATE,
+					Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status
+						WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)
 				WHERE Test_Roster_Id = pRosterId;
 			ELSIF vFinalStatus = 'IS' THEN
 				UPDATE Test_Roster SET
-				   Test_Completion_Status = vFinalStatus,
-				   Start_Date_Time = NVL(Start_Date_Time, pStartDate),
-				   -- Fix BMTOAS-1835
-				   Completion_Date_Time = pCompletionDate,
-				   Updated_Date_Time = SYSDATE
+					Test_Completion_Status = vFinalStatus,
+					Start_Date_Time = processStartDate(Start_Date_Time, pStartDate),
+					-- Fix BMTOAS-1835
+					Completion_Date_Time = processCompletionDate(Completion_Date_Time, pCompletionDate),
+					Updated_Date_Time = SYSDATE
 				WHERE Test_Roster_ID = pRosterId;
 
 			ELSE
