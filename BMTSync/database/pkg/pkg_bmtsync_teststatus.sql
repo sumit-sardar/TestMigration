@@ -6,14 +6,14 @@ CREATE OR REPLACE PACKAGE PKG_BMTSYNC_TESTSTATUS AS
      * and return accordinlgy per requirements in BMTOAS-2067
      * 
      *********************************************************/
-    FUNCTION processStartDate (origStartDate IN DATE, newStartDate IN DATE) RETURN DATE;
+    FUNCTION processStartDate (origStartDate IN TIMESTAMP, newStartDate IN TIMESTAMP) RETURN TIMESTAMP;
     
     /********************************************************
      * Function to compare original and a new CompletionDate 
      * and return accordinlgy per requirements in BMTOAS-2092
      * 
      *********************************************************/
-    FUNCTION processCompletionDate (origCompletionDate IN DATE, newCompletionDate IN DATE) RETURN DATE;
+    FUNCTION processCompletionDate (origCompletionDate IN TIMESTAMP, newCompletionDate IN TIMESTAMP) RETURN TIMESTAMP;
     
     /***************************************************
 	*
@@ -56,7 +56,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
      * and return accordinlgy per requirements in BMTOAS-2067
      * 
      *********************************************************/
-	FUNCTION processStartDate (origStartDate IN DATE, newStartDate IN DATE) RETURN DATE IS
+	FUNCTION processStartDate (origStartDate IN TIMESTAMP, newStartDate IN TIMESTAMP) RETURN TIMESTAMP IS
 	BEGIN
 		IF origStartDate is NULL then RETURN newStartDate;
 		end if;
@@ -70,7 +70,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
      * and return accordinlgy per requirements in BMTOAS-2092
      * 
      *********************************************************/
-    FUNCTION processCompletionDate (origCompletionDate IN DATE, newCompletionDate IN DATE) RETURN DATE IS
+    FUNCTION processCompletionDate (origCompletionDate IN TIMESTAMP, newCompletionDate IN TIMESTAMP) RETURN TIMESTAMP IS
     BEGIN
 		IF origCompletionDate is NULL then RETURN newCompletionDate;
 		end if;
