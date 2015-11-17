@@ -92,6 +92,14 @@ public class TestAdminDAO {
 		final Calendar endDBTime = Calendar.getInstance();
 		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
         logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_TESTADMIN.getTestAdmin");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        logger.info("{\"Name\":\"CloudWatchLog\""
+        		+",\"Application\":\"BMTSyncClient\""
+        		+",\"IsError\":false,\"ErrorCode\":0"
+        		+",\"CallType\":\"StoredProcedure\""
+        		+",\"CallDest\":\"PKG_BMTSYNC_TESTADMIN.getTestAdmin\""
+        		+",\"APICallDuration\":"+callDBTime+"}");
 
 		// See if we got a response
 		if (result == null || !result.containsKey(OUTPUT_ASSIGNMENT)) {
@@ -165,6 +173,14 @@ public class TestAdminDAO {
 		final Calendar endDBTime = Calendar.getInstance();
 		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
         logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_TESTADMIN.updateTestAdminAPIStatus");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        logger.info("{\"Name\":\"CloudWatchLog\""
+        		+",\"Application\":\"BMTSyncClient\""
+        		+",\"IsError\":false,\"ErrorCode\":0"
+        		+",\"CallType\":\"StoredProcedure\""
+        		+",\"CallDest\":\"PKG_BMTSYNC_TESTADMIN.updateTestAdminAPIStatus\""
+        		+",\"APICallDuration\":"+callDBTime+"}");
 	}
 	
 }

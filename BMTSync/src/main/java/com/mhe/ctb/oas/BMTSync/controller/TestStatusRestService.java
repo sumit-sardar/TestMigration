@@ -125,6 +125,16 @@ public class TestStatusRestService {
 							// If something goes wrong with the REST call, log the error.
 							logger.error("[ItemResponses] Http Client Error: " + rce.getMessage(), rce);
 							logger.error("ErrorCode 412 ErrorType RestClientException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+							
+							//BMTOAS-2042 - logging for CloudWatch
+							logger.error("{\"Name\":\"CloudWatchLog\""
+									+",\"Application\":\"BMTSyncClient\""
+									+",\"IsError\":true"
+									+",\"ErrorCode\":412"
+									+",\"ErrorType\":\"RestClientException\""
+									+",\"CustomerId\":"+customerId
+									+",\"CallType\":\"ServiceAPI\""
+									+",\"CallDest\":\"OAS.TestStatus\"}");
 
 							storeStatusUpdate = false;
 							testStatus.setErrorCode(412);
@@ -134,6 +144,16 @@ public class TestStatusRestService {
 							// If something unexpected goes wrong, log it.
 							logger.error("[ItemResponses] Error in TestStatusRestService class : "+e.getMessage(), e);
 							logger.error("ErrorCode 500 ErrorType Exception CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+							
+							//BMTOAS-2042 - logging for CloudWatch
+							logger.error("{\"Name\":\"CloudWatchLog\""
+									+",\"Application\":\"BMTSyncClient\""
+									+",\"IsError\":true"
+									+",\"ErrorCode\":500"
+									+",\"ErrorType\":\"Exception\""
+									+",\"CustomerId\":"+customerId
+									+",\"CallType\":\"ServiceAPI\""
+									+",\"CallDest\":\"OAS.TestStatus\"}");
 
 							storeStatusUpdate = false;
 							testStatus.setErrorCode(500);
@@ -145,6 +165,16 @@ public class TestStatusRestService {
 			        	} catch (final SQLException sqle) {
 				        	logger.error("[ItemResponses] Error storing responses in database: " + sqle.getMessage(), sqle);
 							logger.error("ErrorCode 500 ErrorType SQLException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+							
+							//BMTOAS-2042 - logging for CloudWatch
+							logger.error("{\"Name\":\"CloudWatchLog\""
+									+",\"Application\":\"BMTSyncClient\""
+									+",\"IsError\":true"
+									+",\"ErrorCode\":500"
+									+",\"ErrorType\":\"SQLException\""
+									+",\"CustomerId\":"+customerId
+									+",\"CallType\":\"ServiceAPI\""
+									+",\"CallDest\":\"OAS.TestStatus\"}");
 
 							storeStatusUpdate = false;
 							testStatus.setErrorCode(500);
@@ -152,6 +182,17 @@ public class TestStatusRestService {
 			        	} catch (final RestClientException rce) {
 				        	logger.error("[ItemResponses] Error with data from BMT: " + rce.getMessage(), rce);
 				        	logger.error("ErrorCode 500 ErrorType RestClientException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+				        	
+				        	//BMTOAS-2042 - logging for CloudWatch
+							logger.error("{\"Name\":\"CloudWatchLog\""
+									+",\"Application\":\"BMTSyncClient\""
+									+",\"IsError\":true"
+									+",\"ErrorCode\":500"
+									+",\"ErrorType\":\"RestClientException\""
+									+",\"CustomerId\":"+customerId
+									+",\"CallType\":\"ServiceAPI\""
+									+",\"CallDest\":\"OAS.TestStatus\"}");
+							
 							storeStatusUpdate = false;
 							testStatus.setErrorCode(500);
 							testStatus.setErrorMessage("Error with data from BMT: " + rce.getMessage());	
@@ -184,41 +225,58 @@ public class TestStatusRestService {
 							testStatus.getCompletedDate());
 					final Calendar endDBTime = Calendar.getInstance();
 					final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
-			        logger.info("[TestStatus] Service Database Update Call Time: " + callDBTime
-			        		+ " [service=Sync.TestStatus,testRosterId=" + testStatus.getOasRosterId()
-			        		+ "subTestId=" + testStatus.getOasTestId() + "]");
-			        logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.STUDENT_ITEM_SET_STATUS");
+					logger.info("[TestStatus] Service Database Update Call Time: " + callDBTime
+							+ " [service=Sync.TestStatus,testRosterId=" + testStatus.getOasRosterId()
+							+ "subTestId=" + testStatus.getOasTestId() + "]");
+					logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.STUDENT_ITEM_SET_STATUS");
+
+					//BMTOAS-2042 - logging for CloudWatch
+					logger.info("{\"Name\":\"CloudWatchLog\""
+							+",\"Application\":\"BMTSyncClient\""
+							+",\"IsError\":false,\"ErrorCode\":0"
+							+",\"CallType\":\"DatabaseUpdatesAll\""
+							+",\"CallDest\":\"OAS.STUDENT_ITEM_SET_STATUS\""
+							+",\"APICallDuration\":"+callDBTime+"}");
+
 					if (testStatus.getDeliveryStatus().equals("CO")) {
-		        		int retryCount = 1;
-		        		boolean sendSuccessful = false;
-		        		// BMTOAS-1557 Must retry three times to send scoring messaage.				        					        		
-		        		while (! sendSuccessful && retryCount <= SCORING_RETRY_MAX_COUNT) {
-			            	try {
-				        		Thread.sleep(SCORING_RETRY_DELAY * retryCount);
-				        	} catch (final InterruptedException ie) {
-				        		logger.error("[ItemResponses] Thread interrupted waiting for scoring retry.", ie);
-				        	}
-		        			try {
-				        		logger.info("[ItemResponses] Sending testRosterId to scoring queue: [testRosterId="
-				        				+ testStatus.getOasRosterId() + "]");
-				        		scoringQueue.send(testStatus.getOasRosterId());
-		        				sendSuccessful = true;
-		        			} catch (final JMSException jmse) {
-					        	logger.error("[ItemResponses] Error sending roster ID to scoring queue: " + jmse.getMessage(), jmse);
-					        	retryCount++;
-		        			}
-		        		}
-		        		if (sendSuccessful) {
-		        			logger.info("[ItemResponses] Roster ID sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
-		        		} else {
-		        			logger.error("[ItemResponses] Roster ID could not be sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
+						int retryCount = 1;
+						boolean sendSuccessful = false;
+						// BMTOAS-1557 Must retry three times to send scoring messaage.				        					        		
+						while (! sendSuccessful && retryCount <= SCORING_RETRY_MAX_COUNT) {
+							try {
+								Thread.sleep(SCORING_RETRY_DELAY * retryCount);
+							} catch (final InterruptedException ie) {
+								logger.error("[ItemResponses] Thread interrupted waiting for scoring retry.", ie);
+							}
+							try {
+								logger.info("[ItemResponses] Sending testRosterId to scoring queue: [testRosterId="
+										+ testStatus.getOasRosterId() + "]");
+								scoringQueue.send(testStatus.getOasRosterId());
+								sendSuccessful = true;
+							} catch (final JMSException jmse) {
+								logger.error("[ItemResponses] Error sending roster ID to scoring queue: " + jmse.getMessage(), jmse);
+								retryCount++;
+							}
+						}
+						if (sendSuccessful) {
+							logger.info("[ItemResponses] Roster ID sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
+						} else {
+							logger.error("[ItemResponses] Roster ID could not be sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");
 							storeStatusUpdate = false;
 							testStatus.setErrorCode(500);
 							testStatus.setErrorMessage("Roster ID could not be sent to scoring queue. [testRosterId=" + testStatus.getOasRosterId() + "]");	
-				        	logger.error("ErrorCode 500 ErrorType OASScoringQueue TestRosterID "+ testStatus.getOasRosterId()+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+							logger.error("ErrorCode 500 ErrorType OASScoringQueue TestRosterID "+ testStatus.getOasRosterId()+" SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
 
-
-		        		}
+							//BMTOAS-2042 - logging for CloudWatch
+							logger.error("{\"Name\":\"CloudWatchLog\""
+									+",\"Application\":\"BMTSyncClient\""
+									+",\"IsError\":true"
+									+",\"ErrorCode\":500"
+									+",\"ErrorType\":\"OASScoringQueue\""
+									+",\"TestRosterID\":"+testStatus.getOasRosterId()
+									+",\"CallType\":\"ServiceAPI\""
+									+",\"CallDest\":\"OAS.TestStatus\"}");
+						}
 					}
 				}
 				
@@ -239,16 +297,44 @@ public class TestStatusRestService {
 			logger.info("[TestStatus] Response to BMT: "+response.toJson());
 			if (response.getServiceErrorCode()!=null && Integer.parseInt(response.getServiceErrorCode()) > 0 ) {
 				logger.error("ErrorCode "+response.getServiceErrorCode()+" ErrorType DataError SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+				
+				//BMTOAS-2042 - logging for CloudWatch
+				logger.error("{\"Name\":\"CloudWatchLog\""
+						+",\"Application\":\"BMTSyncClient\""
+						+",\"IsError\":true"
+						+",\"ErrorCode\":\""+response.getServiceErrorCode()+"\""
+						+",\"ErrorType\":\"DataError\""
+						+",\"CallType\":\"ServiceAPI\""
+						+",\"CallDest\":\"OAS.TestStatus\"}");
+				
 			}
 		} catch (Exception e) {
 			// Generic logger message.
 			logger.info(e.getMessage());
         	logger.error("ErrorCode 999 ErrorType Exception SyncCallType ServiceAPI SyncCallDest OAS.TestStatus");
+        	
+        	//BMTOAS-2042 - logging for CloudWatch
+			logger.error("{\"Name\":\"CloudWatchLog\""
+					+",\"Application\":\"BMTSyncClient\""
+					+",\"IsError\":true"
+					+",\"ErrorCode\":999"
+					+",\"ErrorType\":\"Exception\""
+					+",\"CallType\":\"ServiceAPI\""
+					+",\"CallDest\":\"OAS.TestStatus\"}");
 		}
 		final Calendar endTime = Calendar.getInstance();
 		final long callTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
-        logger.info("[TestStatus] Service Call Time: " + callTime + ",responseSetsFetched=" + responseSetsFetched + "]");
-        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest OAS.TestStatus ResponseSetsFetched " + responseSetsFetched);
+		logger.info("[TestStatus] Service Call Time: " + callTime + ",responseSetsFetched=" + responseSetsFetched + "]");
+		logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest OAS.TestStatus ResponseSetsFetched " + responseSetsFetched);
+
+		//BMTOAS-2042 - logging for CloudWatch
+		logger.info("{\"Name\":\"CloudWatchLog\""
+				+",\"Application\":\"BMTSyncClient\""
+				+",\"IsError\":false,\"ErrorCode\":0"
+				+",\"CallType\":\"ServiceAPI\""
+				+",\"CallDest\":\"OAS.TestStatus\""
+				+",\"ResponseSetsFetched\":"+responseSetsFetched
+				+",\"APICallDuration\":"+callTime+"}");
 
 		return response;
 	}
@@ -264,6 +350,15 @@ public class TestStatusRestService {
 		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
         logger.info("[ItemResponses] Database Update Call Time: " + callDBTime);
         logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.ITEM_RESPONSE");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        logger.info("{\"Name\":\"CloudWatchLog\""
+    		+",\"Application\":\"BMTSyncClient\""
+    		+",\"IsError\":false,\"ErrorCode\":0"
+    		+",\"CallType\":\"DatabaseUpdatesAll\""
+    		+",\"CallDest\":\"OAS.ITEM_RESPONSE\""
+    		+",\"APICallDuration\":"+callDBTime+"}");
+        
 	}
 	
 	private List<ItemResponse> getItemResponsesFromBMT(final int customerId, final TestStatus testStatus) {
@@ -285,6 +380,14 @@ public class TestStatusRestService {
         		+ " [service=BMT.ItemResponses,testRosterId=" + testStatus.getOasRosterId()
         		+ "subTestId=" + testStatus.getOasTestId() + "]");
         logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.ItemResponse");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        logger.info("{\"Name\":\"CloudWatchLog\""
+        		+",\"Application\":\"BMTSyncClient\""
+        		+",\"IsError\":false,\"ErrorCode\":0"
+        		+",\"CallType\":\"ServiceAPI\""
+        		+",\"CallDest\":\"BMT.ItemResponse\""
+        		+",\"APICallDuration\":"+callTime+"}");
 
         final ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -292,6 +395,16 @@ public class TestStatusRestService {
 		} catch (Exception e) {
 			logger.error("[ItemResponses] Error unmarshalling BMT responses! [assignmentId=" + testStatus.getAssignmentId() + "]", e);
 			logger.error("ErrorCode 999 ErrorType Exception CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest BMT.ItemResponse");
+			
+			//BMTOAS-2042 - logging for CloudWatch
+			logger.error("{\"Name\":\"CloudWatchLog\""
+					+",\"Application\":\"BMTSyncClient\""
+					+",\"IsError\":true"
+					+",\"ErrorCode\":999"
+					+",\"ErrorType\":\"Exception\""
+					+",\"CustomerId\":"+customerId
+					+",\"CallType\":\"ServiceAPI\""
+					+",\"CallDest\":\"BMT.ItemResponse\"}");
 			
 			throw new RestClientException("[ItemResponses] Error unmarshalling BMT responses! [assignmentId="
 			+ testStatus.getAssignmentId() + "]", e);

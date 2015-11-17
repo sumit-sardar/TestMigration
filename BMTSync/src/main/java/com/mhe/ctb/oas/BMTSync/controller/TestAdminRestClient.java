@@ -70,30 +70,70 @@ public class TestAdminRestClient {
 				final Calendar startTime = Calendar.getInstance();
 				testAdminResponse = restTemplate.postForObject(endpointSelector.getEndpoint(testAdmin.getOasCustomerId())
 						+RestURIConstants.POST_TESTADMIN,
-		        		testAdmin, CreateTestAdminResponse.class);
+						testAdmin, CreateTestAdminResponse.class);
 				final Calendar endTime = Calendar.getInstance();
 				final long callTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
-		        logger.info("[TestAdmin] Service Call Time: " + callTime
-		        		+ " [service=BMT.TestAdmin,testAdminId=" + testAdminId + "]");
-		        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
-	        logger.info("[TestAdmin] Response json from BMT: " + testAdminResponse.toJson());
-		        //Updates the BMTSYNC_TestAdmin_Status table, with success or failure
-		        processResponses(testAdmin, testAdminResponse, true);
+				logger.info("[TestAdmin] Service Call Time: " + callTime
+						+ " [service=BMT.TestAdmin,testAdminId=" + testAdminId + "]");
+				logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+				
+				//BMTOAS-2042 - logging for CloudWatch
+				logger.info("{\"Name\":\"CloudWatchLog\""
+					+",\"Application\":\"BMTSyncClient\""
+					+",\"IsError\":false,\"ErrorCode\":0"
+					+",\"CallType\":\"ServiceAPI\""
+					+",\"CallDest\":\"BMT.TestAdmin\""
+					+",\"APICallDuration\":"+callTime+"}");
+				
+				logger.info("[TestAdmin] Response json from BMT: " + testAdminResponse.toJson());
+				//Updates the BMTSYNC_TestAdmin_Status table, with success or failure
+				processResponses(testAdmin, testAdminResponse, true);
 			}
 		} catch (RestClientException rce) {
 			logger.error("[TestAdmin] Http Client Error: " + rce.getMessage(), rce);
 			logger.error("ErrorCode 999 ErrorType RestClientException TestAdminId "+testAdminId+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+			
+			//BMTOAS-2042 - logging for CloudWatch
+			logger.error("{\"Name\":\"CloudWatchLog\""
+					+",\"Application\":\"BMTSyncClient\""
+					+",\"IsError\":true"
+					+",\"ErrorCode\":999"
+					+",\"ErrorType\":\"RestClientException\""
+					+",\"TestAdminId\":"+testAdminId
+					+",\"CallType\":\"ServiceAPI\""
+					+",\"CallDest\":\"BMT.TestAdmin\"}");
 
 			try {
 				processResponses(testAdmin, testAdminResponse, false);
 			} catch (Exception e) {
 				logger.error("[TestAdmin] Error trying to process TestAdmin API responses.", e);
 				logger.error("ErrorCode 999 ErrorType Exception TestAdminId "+testAdminId+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+				
+				//BMTOAS-2042 - logging for CloudWatch
+				logger.error("{\"Name\":\"CloudWatchLog\""
+						+",\"Application\":\"BMTSyncClient\""
+						+",\"IsError\":true"
+						+",\"ErrorCode\":999"
+						+",\"ErrorType\":\"Exception\""
+						+",\"TestAdminId\":"+testAdminId
+						+",\"CallType\":\"ServiceAPI\""
+						+",\"CallDest\":\"BMT.TestAdmin\"}");
 
 			}
 		} catch (Exception e) {
 			logger.error("[TestAdmin] Error in TestAdminRestClient class : "+e.getMessage(), e);
 			logger.error("ErrorCode 999 ErrorType Exception TestAdminId "+testAdminId+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+			
+			//BMTOAS-2042 - logging for CloudWatch
+			logger.error("{\"Name\":\"CloudWatchLog\""
+					+",\"Application\":\"BMTSyncClient\""
+					+",\"IsError\":true"
+					+",\"ErrorCode\":999"
+					+",\"ErrorType\":\"Exception\""
+					+",\"TestAdminId\":"+testAdminId
+					+",\"CallType\":\"ServiceAPI\""
+					+",\"CallDest\":\"BMT.TestAdmin\"}");
+			
 			try {
 				processResponses(testAdmin, testAdminResponse, false);
 			} catch (Exception ee) {
@@ -119,6 +159,16 @@ public class TestAdminRestClient {
 		if (resp == null) {
 			updateTestAdminStatus(req.getOasTestAdministrationID(), false, "999", "Error from BMT sync API.");
 			logger.error("ErrorCode 999 ErrorType DataError TestAdminId "+resp.getOasTestAdministrationID()+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+			
+			//BMTOAS-2042 - logging for CloudWatch
+			logger.error("{\"Name\":\"CloudWatchLog\""
+					+",\"Application\":\"BMTSyncClient\""
+					+",\"IsError\":true"
+					+",\"ErrorCode\":999"
+					+",\"ErrorType\":\"DataError\""
+					+",\"TestAdminId\":"+resp.getOasTestAdministrationID()
+					+",\"CallType\":\"ServiceAPI\""
+					+",\"CallDest\":\"BMT.TestAdmin\"}");
 
 			return;
 		}
@@ -126,6 +176,16 @@ public class TestAdminRestClient {
 		if (resp.getErrorCode() != null && resp.getErrorMessage() != null) {
 			updateTestAdminStatus(req.getOasTestAdministrationID(), false, resp.getErrorCode().toString(), resp.getErrorMessage());
 			logger.error("ErrorCode 999 ErrorType DataError TestAdminId "+req.getOasTestAdministrationID()+" SyncCallType ServiceAPI SyncCallDest BMT.TestAdmin");
+			
+			//BMTOAS-2042 - logging for CloudWatch
+			logger.error("{\"Name\":\"CloudWatchLog\""
+					+",\"Application\":\"BMTSyncClient\""
+					+",\"IsError\":true"
+					+",\"ErrorCode\":999"
+					+",\"ErrorType\":\"DataError\""
+					+",\"TestAdminId\":"+req.getOasTestAdministrationID()
+					+",\"CallType\":\"ServiceAPI\""
+					+",\"CallDest\":\"BMT.TestAdmin\"}");
 
 			return;
 		}
@@ -136,6 +196,14 @@ public class TestAdminRestClient {
         logger.info("[Student] Service Database Update Call Time: " + callDBTime + " [service=BMT.TestAdmin,testAdminId="
         		+ req.getOasTestAdministrationID() + "]");
         logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.BMTSYNC_TESTADMIN_STATUS");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        logger.info("{\"Name\":\"CloudWatchLog\""
+    		+",\"Application\":\"BMTSyncClient\""
+    		+",\"IsError\":false,\"ErrorCode\":0"
+    		+",\"CallType\":\"DatabaseUpdatesAll\""
+    		+",\"CallDest\":\"OAS.BMTSYNC_TESTADMIN_STATUS\""
+    		+",\"APICallDuration\":"+callDBTime+"}");
 	}
 	
 	/**

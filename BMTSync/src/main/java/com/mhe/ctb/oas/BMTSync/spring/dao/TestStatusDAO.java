@@ -112,6 +112,14 @@ public class TestStatusDAO {
 		final Calendar endDBTime = Calendar.getInstance();
 		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
         logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_TESTSTATUS.ValidateSaveTestStatus");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        logger.info("{\"Name\":\"CloudWatchLog\""
+        		+",\"Application\":\"BMTSyncClient\""
+        		+",\"IsError\":false,\"ErrorCode\":0"
+        		+",\"CallType\":\"StoredProcedure\""
+        		+",\"CallDest\":\"PKG_BMTSYNC_TESTSTATUS.ValidateSaveTestStatus\""
+        		+",\"APICallDuration\":"+callDBTime+"}");
 
 		// See if we got a response
 		if (result == null || !result.containsKey(OUTPUT_TESTSTATUS)) {

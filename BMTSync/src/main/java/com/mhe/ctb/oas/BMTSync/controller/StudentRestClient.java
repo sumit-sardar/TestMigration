@@ -98,13 +98,32 @@ public class StudentRestClient {
 								studentRequest, CreateStudentsResponse.class);
 						final Calendar endTime = Calendar.getInstance();
 						final long callTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
-				        logger.info("[Student] Service Call Time: " + callTime + " [service=BMT.Student]");
-				        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.Student");
+						logger.info("[Student] Service Call Time: " + callTime + " [service=BMT.Student]");
+						logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.Student");
+
+						//BMTOAS-2042 - logging for CloudWatch
+						logger.info("{\"Name\":\"CloudWatchLog\""
+							+",\"Application\":\"BMTSyncClient\""
+							+",\"IsError\":false,\"ErrorCode\":0"
+							+",\"CallType\":\"ServiceAPI\""
+							+",\"CallDest\":\"BMT.Student\""
+							+",\"APICallDuration\":"+callTime+"}");
+
 						logger.info("[Student] Response json from BMT: " + studentListResponse.toJson());
 						processResponses(studentRequest, studentListResponse, true);
 					} catch (RestClientException rce) {
 						logger.error("Http Client Error: " + rce.getMessage(), rce);
 						logger.error("ErrorCode 999 ErrorType RestClientException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest BMT.Student");
+						
+						//BMTOAS-2042 - logging for CloudWatch
+						logger.error("{\"Name\":\"CloudWatchLog\""
+								+",\"Application\":\"BMTSyncClient\""
+								+",\"IsError\":true"
+								+",\"ErrorCode\":999"
+								+",\"ErrorType\":\"RestClientException\""
+								+",\"CustomerId\":"+customerId
+								+",\"CallType\":\"ServiceAPI\""
+								+",\"CallDest\":\"BMT.Student\"}");
 
 						try {
 							// On Error Mark the Student ID status as Failed
@@ -190,6 +209,16 @@ public class StudentRestClient {
 						updateMessages.put(failedUpdate.getOasStudentId(), errorMessage);
 					}
 					logger.error("ErrorCode "+failedUpdate.getErrorCode()+ " ErrorType DataError StudentId "+failedUpdate.getOasStudentId()+" SyncCallType ServiceAPI SyncCallDest BMT.Student");
+					
+					//BMTOAS-2042 - logging for CloudWatch
+					logger.error("{\"Name\":\"CloudWatchLog\""
+							+",\"Application\":\"BMTSyncClient\""
+							+",\"IsError\":true"
+							+",\"ErrorCode\":\""+failedUpdate.getErrorCode()+"\""
+							+",\"ErrorType\":\"DataError\""
+							+",\"StudentId\":"+failedUpdate.getOasStudentId()
+							+",\"CallType\":\"ServiceAPI\""
+							+",\"CallDest\":\"BMT.Student\"}");
 
 				}
 			}
@@ -215,6 +244,16 @@ public class StudentRestClient {
 						+ " [studentId=%d][updateSuccess=%b][updateMessage=%s]",
 						studentId, updateStatuses.get(studentId), updateMessages.get(studentId)));
 				logger.error("ErrorCode 999 ErrorType SQLException StudentId "+studentId+" SyncCallType ServiceAPI SyncCallDest BMT.Student");
+				
+				//BMTOAS-2042 - logging for CloudWatch
+				logger.error("{\"Name\":\"CloudWatchLog\""
+						+",\"Application\":\"BMTSyncClient\""
+						+",\"IsError\":true"
+						+",\"ErrorCode\":999"
+						+",\"ErrorType\":\"SQLException\""
+						+",\"StudentId\":"+studentId
+						+",\"CallType\":\"ServiceAPI\""
+						+",\"CallDest\":\"BMT.Student\"}");
 
 			}
 		}
@@ -222,6 +261,14 @@ public class StudentRestClient {
 		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
         logger.info("[Student] Service Database Update Call Time: " + callDBTime + " [service=BMT.Student]");
         logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.BMTSYNC_STUDENT_STATUS");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        logger.info("{\"Name\":\"CloudWatchLog\""
+    		+",\"Application\":\"BMTSyncClient\""
+    		+",\"IsError\":false,\"ErrorCode\":0"
+    		+",\"CallType\":\"DatabaseUpdatesAll\""
+    		+",\"CallDest\":\"OAS.BMTSYNC_STUDENT_STATUS\""
+    		+",\"APICallDuration\":"+callDBTime+"}");
 	}
 	
 	/**

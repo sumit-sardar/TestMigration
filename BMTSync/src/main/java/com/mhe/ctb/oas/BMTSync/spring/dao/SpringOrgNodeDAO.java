@@ -75,6 +75,14 @@ public class SpringOrgNodeDAO {
 		final Calendar endDBTime = Calendar.getInstance();
 		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
         logger.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_STUDENTS.Hierarchy");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        logger.info("{\"Name\":\"CloudWatchLog\""
+        		+",\"Application\":\"BMTSyncClient\""
+        		+",\"IsError\":false,\"ErrorCode\":0"
+        		+",\"CallType\":\"StoredProcedure\""
+        		+",\"CallDest\":\"PKG_BMTSYNC_STUDENTS.Hierarchy\""
+        		+",\"APICallDuration\":"+callDBTime+"}");
 
 		if (result == null || !result.containsKey(OUTPUT_HEIRARCHY_LIST)) {
 			throw new UnknownStudentException(studentId);

@@ -97,6 +97,17 @@ public class AssignmentRestClient {
 						message.getTestAdminId(), message.getStudentId()));
 				updateAssignmentStatus(message.getTestAdminId(), message.getStudentId(), false, "999", "Unknown test assignment.");
 				logger.error("ErrorCode 999 ErrorType UnknownTestAssignmentException TestAdminId "+message.getTestAdminId()+" CustomerId "+message.getCustomerId()+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+				
+				//BMTOAS-2042 - logging for CloudWatch
+				logger.error("{\"Name\":\"CloudWatchLog\""
+						+",\"Application\":\"BMTSyncClient\""
+						+",\"IsError\":true"
+						+",\"ErrorCode\":999"
+						+",\"ErrorType\":\"UnknownTestAssignmentException\""
+						+",\"TestAdminId\":"+message.getTestAdminId()
+						+",\"CustomerId\":"+message.getCustomerId()
+						+",\"CallType\":\"ServiceAPI\""
+						+",\"CallDest\":\"BMT.Assignment\"}");
 			}
 		}
 
@@ -127,6 +138,14 @@ public class AssignmentRestClient {
 				        logger.info("[TestAssignment] Service Call Time: " + callTime
 				        		+ " [service=BMT.TestAssignment,testAdminId=" + testAdminId + "]");
 				        logger.info("SyncCallTime " + callTime + " SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+				        
+				        //BMTOAS-2042 - logging for CloudWatch
+				        logger.info("{\"Name\":\"CloudWatchLog\""
+				        		+",\"Application\":\"BMTSyncClient\""
+				        		+",\"IsError\":false,\"ErrorCode\":0"
+				        		+",\"CallType\":\"ServiceAPI\""
+				        		+",\"CallDest\":\"BMT.Assignment\""
+				        		+",\"APICallDuration\":"+callTime+"}");
 
 				        if (assignmentResponse != null) {
 				        	// If BMT responds, log the response.
@@ -139,6 +158,16 @@ public class AssignmentRestClient {
 						// If something goes wrong with the REST call, log the error.
 						logger.error("[TestAssignment] Http Client Error: " + rce.getMessage(), rce);
 						logger.error("ErrorCode 999 ErrorType RestClientException CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+						
+						//BMTOAS-2042 - logging for CloudWatch
+						logger.error("{\"Name\":\"CloudWatchLog\""
+								+",\"Application\":\"BMTSyncClient\""
+								+",\"IsError\":true"
+								+",\"ErrorCode\":999"
+								+",\"ErrorType\":\"RestClientException\""
+								+",\"CustomerId\":"+customerId
+								+",\"CallType\":\"ServiceAPI\""
+								+",\"CallDest\":\"BMT.Assignment\"}");
 
 			        	for (final StudentRoster roster : assignment.getRoster()) {
 			        		updateAssignmentStatus(assignment.getOasTestAdministrationID(), Integer.valueOf(roster.getOasStudentid()),
@@ -148,6 +177,16 @@ public class AssignmentRestClient {
 						// If something unexpected goes wrong, log it.
 						logger.error("[TestAssignment] Error in AssignmentRestClient class : "+e.getMessage(), e);
 						logger.error("ErrorCode 999 ErrorType Exception CustomerId "+customerId+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+						
+						//BMTOAS-2042 - logging for CloudWatch
+						logger.error("{\"Name\":\"CloudWatchLog\""
+								+",\"Application\":\"BMTSyncClient\""
+								+",\"IsError\":true"
+								+",\"ErrorCode\":999"
+								+",\"ErrorType\":\"Exception\""
+								+",\"CustomerId\":"+customerId
+								+",\"CallType\":\"ServiceAPI\""
+								+",\"CallDest\":\"BMT.Assignment\"}");
 
 			        	for (final StudentRoster roster : assignment.getRoster()) {
 			        		updateAssignmentStatus(assignment.getOasTestAdministrationID(), Integer.valueOf(roster.getOasStudentid()),
@@ -212,6 +251,15 @@ public class AssignmentRestClient {
 				        resp.getServiceErrorCode(), resp.getServiceErrorMessage());
 				processedStudentIds.put(studentIdKey, Boolean.TRUE);
 				logger.error("ErrorCode "+resp.getServiceErrorCode()+" ErrorType DataError SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+				
+				//BMTOAS-2042 - logging for CloudWatch
+				logger.error("{\"Name\":\"CloudWatchLog\""
+						+",\"Application\":\"BMTSyncClient\""
+						+",\"IsError\":true"
+						+",\"ErrorCode\":\""+resp.getServiceErrorCode()+"\""
+						+",\"ErrorType\":\"DataError\""
+						+",\"CallType\":\"ServiceAPI\""
+						+",\"CallDest\":\"BMT.Assignment\"}");
 
 			}
 			return;
@@ -235,6 +283,16 @@ public class AssignmentRestClient {
 				        "999", "Response from BMT doesn't match request from OAS.");
 				processedStudentIds.put(studentIdKey, Boolean.TRUE);
 				logger.error("ErrorCode 999 ErrorType DataError StudentId "+studentIdKey+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+				
+				//BMTOAS-2042 - logging for CloudWatch
+				logger.error("{\"Name\":\"CloudWatchLog\""
+						+",\"Application\":\"BMTSyncClient\""
+						+",\"IsError\":true"
+						+",\"ErrorCode\":999"
+						+",\"ErrorType\":\"DataError\""
+						+",\"StudentId\":"+studentIdKey
+						+",\"CallType\":\"ServiceAPI\""
+						+",\"CallDest\":\"BMT.Assignment\"}");
 
 			}
 			return;
@@ -273,6 +331,14 @@ public class AssignmentRestClient {
         logger.info("[TestAssignment] Service Database Update Call Time: " + callDBTime
         		+ " [service=BMT.TestAssignment,testAdminId=" + testAdminId + "]");
         logger.info("SyncCallTime " + callDBTime + " SyncCallType DatabaseUpdatesAll SyncCallDest OAS.BMTSYNC_ASSIGNMENT_STATUS");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        logger.info("{\"Name\":\"CloudWatchLog\""
+        		+",\"Application\":\"BMTSyncClient\""
+        		+",\"IsError\":false,\"ErrorCode\":0"
+        		+",\"CallType\":\"DatabaseUpdatesAll\""
+        		+",\"CallDest\":\"OAS.BMTSYNC_ASSIGNMENT_STATUS\""
+        		+",\"APICallDuration\":"+callDBTime+"}");
 	}
 	
 	/**
@@ -301,7 +367,17 @@ public class AssignmentRestClient {
 		        errorCode, 
 		        errMsg));
 		if (success == false) {
-			logger.error("ErrorCode "+errorCode+" ErrorType DataError StudentId "+studentId+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");			
+			logger.error("ErrorCode "+errorCode+" ErrorType DataError StudentId "+studentId+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+			
+			//BMTOAS-2042 - logging for CloudWatch
+			logger.error("{\"Name\":\"CloudWatchLog\""
+					+",\"Application\":\"BMTSyncClient\""
+					+",\"IsError\":true"
+					+",\"ErrorCode\":\""+errorCode+"\""
+					+",\"ErrorType\":\"DataError\""
+					+",\"StudentId\":"+studentId
+					+",\"CallType\":\"ServiceAPI\""
+					+",\"CallDest\":\"BMT.Assignment\"}");
 		}
 		try {
 			testAssignmentDAO.updateAssignmentAPIStatus(
@@ -313,6 +389,16 @@ public class AssignmentRestClient {
 		} catch (final SQLException sqle) {
 			logger.error("Unable to update data source. SQLException occurred: " + sqle.getMessage(), sqle);
 			logger.error("ErrorCode 999 ErrorType SQLException StudentId "+studentId+" SyncCallType ServiceAPI SyncCallDest BMT.Assignment");
+			
+			//BMTOAS-2042 - logging for CloudWatch
+			logger.error("{\"Name\":\"CloudWatchLog\""
+					+",\"Application\":\"BMTSyncClient\""
+					+",\"IsError\":true"
+					+",\"ErrorCode\":999"
+					+",\"ErrorType\":\"SQLException\""
+					+",\"StudentId\":"+studentId
+					+",\"CallType\":\"ServiceAPI\""
+					+",\"CallDest\":\"BMT.Assignment\"}");
 
 		}
 	}

@@ -98,6 +98,14 @@ public class StudentDAO {
 		final Calendar endDBTime = Calendar.getInstance();
 		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
         LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_STUDENTS.StudentDetails");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+        		+",\"Application\":\"BMTSyncClient\""
+        		+",\"IsError\":false,\"ErrorCode\":0"
+        		+",\"CallType\":\"StoredProcedure\""
+        		+",\"CallDest\":\"PKG_BMTSYNC_STUDENTS.StudentDetails\""
+        		+",\"APICallDuration\":"+callDBTime+"}");
 
 		// See if we got a response
 		if (result == null || !result.containsKey(OUTPUT_STUDENT)) {
@@ -141,6 +149,14 @@ public class StudentDAO {
 		final Calendar endDBTime = Calendar.getInstance();
 		final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
         LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType StoredProcedure SyncCallDest PKG_BMTSYNC_STUDENTS.updateStudentAPIStatus");
+        
+        //BMTOAS-2042 - logging for CloudWatch
+        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+        		+",\"Application\":\"BMTSyncClient\""
+        		+",\"IsError\":false,\"ErrorCode\":0"
+        		+",\"CallType\":\"StoredProcedure\""
+        		+",\"CallDest\":\"PKG_BMTSYNC_STUDENTS.updateStudentAPIStatus\""
+        		+",\"APICallDuration\":"+callDBTime+"}");
 		
 		/* int numRowsUpdated = Integer.valueOf((Integer) results.get("#update-count-1"));
 		if (numRowsUpdated != 1) {

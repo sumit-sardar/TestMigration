@@ -152,6 +152,15 @@ public class ItemResponseDAO {
 				final Calendar endDBTime = Calendar.getInstance();
 				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.UPDATE_CONSTRUCTED_RESPONSE");
+		        
+		        //BMTOAS-2042 - logging for CloudWatch
+		        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+		        		+",\"Application\":\"BMTSyncClient\""
+		        		+",\"IsError\":false,\"ErrorCode\":0"
+		        		+",\"CallType\":\"DirectQuery\""
+		        		+",\"CallDest\":\"ITEM_RESPONSE_CR.UPDATE_CONSTRUCTED_RESPONSE\""
+		        		+",\"APICallDuration\":"+callDBTime+"}");
+		        
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error updating constructed response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -169,6 +178,15 @@ public class ItemResponseDAO {
 				final Calendar endDBTime = Calendar.getInstance();
 				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.UPDATE_AUDIO_RESPONSE");
+		        
+		        //BMTOAS-2042 - logging for CloudWatch
+		        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+		        		+",\"Application\":\"BMTSyncClient\""
+		        		+",\"IsError\":false,\"ErrorCode\":0"
+		        		+",\"CallType\":\"DirectQuery\""
+		        		+",\"CallDest\":\"ITEM_RESPONSE_CR.UPDATE_AUDIO_RESPONSE\""
+		        		+",\"APICallDuration\":"+callDBTime+"}");
+		        
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error inserting audio response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -211,6 +229,15 @@ public class ItemResponseDAO {
 				final Calendar endDBTime = Calendar.getInstance();
 				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.INSERT_CONSTRUCTED_RESPONSE");
+		        
+		        //BMTOAS-2042 - logging for CloudWatch
+		        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+		        		+",\"Application\":\"BMTSyncClient\""
+		        		+",\"IsError\":false,\"ErrorCode\":0"
+		        		+",\"CallType\":\"DirectQuery\""
+		        		+",\"CallDest\":\"ITEM_RESPONSE_CR.INSERT_CONSTRUCTED_RESPONSE\""
+		        		+",\"APICallDuration\":"+callDBTime+"}");
+		        
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error inserting constructed response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -228,6 +255,15 @@ public class ItemResponseDAO {
 				final Calendar endDBTime = Calendar.getInstance();
 				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.INSERT_AUDIO_RESPONSE");
+		        
+		        //BMTOAS-2042 - logging for CloudWatch
+		        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+		        		+",\"Application\":\"BMTSyncClient\""
+		        		+",\"IsError\":false,\"ErrorCode\":0"
+		        		+",\"CallType\":\"DirectQuery\""
+		        		+",\"CallDest\":\"ITEM_RESPONSE_CR.INSERT_AUDIO_RESPONSE\""
+		        		+",\"APICallDuration\":"+callDBTime+"}");
+		        
 				if (rowsUpdated != 1) {
 					LOGGER.error("[ItemResponseDAO] Error inserting audio response: expected one row inserted, actual: "
 							+ rowsUpdated + "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -263,6 +299,15 @@ public class ItemResponseDAO {
 			final Calendar endDBTime = Calendar.getInstance();
 			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.SELECT_UNIQUE_CONSTRUCTED_RESPONSE");
+	        
+	        //BMTOAS-2042 - logging for CloudWatch
+	        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+	        		+",\"Application\":\"BMTSyncClient\""
+	        		+",\"IsError\":false,\"ErrorCode\":0"
+	        		+",\"CallType\":\"DirectQuery\""
+	        		+",\"CallDest\":\"ITEM_RESPONSE_CR.SELECT_UNIQUE_CONSTRUCTED_RESPONSE\""
+	        		+",\"APICallDuration\":"+callDBTime+"}");
+	        
 			if (extantRows > 0) {
 				LOGGER.debug("No rows found in ITEM_RESPONSE_CR."
 						+ "[testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId=" + itemId + "]");
@@ -307,6 +352,15 @@ public class ItemResponseDAO {
 			final Calendar endDBTime = Calendar.getInstance();
 			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE.INSERT_ITEM_RESPONSE");
+	        
+	        //BMTOAS-2042 - logging for CloudWatch
+	        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+	        		+",\"Application\":\"BMTSyncClient\""
+	        		+",\"IsError\":false,\"ErrorCode\":0"
+	        		+",\"CallType\":\"DirectQuery\""
+	        		+",\"CallDest\":\"ITEM_RESPONSE.INSERT_ITEM_RESPONSE\""
+	        		+",\"APICallDuration\":"+callDBTime+"}");
+	        
 			if (rowsUpdated != 1) {
 				throw new SQLException("[ItemResponseDAO] INSERT error! Expected updatedRows = 1, Actual updatedRows = "
 						+ rowsUpdated + "! [testRosterId=" + testRosterId + ",itemSetId=" + itemSetId + ",itemId="
@@ -330,6 +384,15 @@ public class ItemResponseDAO {
 			final Calendar endDBTime = Calendar.getInstance();
 			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE.SELECT_ITEM_SET_ID");
+	        
+	        //BMTOAS-2042 - logging for CloudWatch
+	        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+	        		+",\"Application\":\"BMTSyncClient\""
+	        		+",\"IsError\":false,\"ErrorCode\":0"
+	        		+",\"CallType\":\"DirectQuery\""
+	        		+",\"CallDest\":\"ITEM_RESPONSE.SELECT_ITEM_SET_ID\""
+	        		+",\"APICallDuration\":"+callDBTime+"}");
+	        
 		} catch (final DataAccessException sqle) {
 			LOGGER.error("[ItemResponseDAO] Error trying to find item_set_id: " + sqle.getMessage()
 					+ "[testRosterId=" + testRosterId + ",extCmsItemSetId=" + subTestId + "]", sqle);
@@ -348,6 +411,15 @@ public class ItemResponseDAO {
 			final Calendar endDBTime = Calendar.getInstance();
 			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest OAS.SELECT_ITEM_RESPONSE_ID");
+	        
+	        //BMTOAS-2042 - logging for CloudWatch
+	        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+	        		+",\"Application\":\"BMTSyncClient\""
+	        		+",\"IsError\":false,\"ErrorCode\":0"
+	        		+",\"CallType\":\"DirectQuery\""
+	        		+",\"CallDest\":\"OAS.SELECT_ITEM_RESPONSE_ID\""
+	        		+",\"APICallDuration\":"+callDBTime+"}");
+	        
 		} catch (final DataAccessException sqle) {
 			LOGGER.error("[ItemResponseDAO] Error trying to select next item_response_id: " + sqle.getMessage() + "]", sqle);
 			throw new SQLException("[ItemResponseDAO] Error trying to select next item_response_id: " + sqle.getMessage() + "]", sqle);
@@ -365,6 +437,15 @@ public class ItemResponseDAO {
 			final Calendar endDBTime = Calendar.getInstance();
 			final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 	        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE.SELECT_MAX_RESPONSE_SEQ_NUM");
+	        
+	        //BMTOAS-2042 - logging for CloudWatch
+	        LOGGER.info("{\"Name\":\"CloudWatchLog\""
+	        		+",\"Application\":\"BMTSyncClient\""
+	        		+",\"IsError\":false,\"ErrorCode\":0"
+	        		+",\"CallType\":\"DirectQuery\""
+	        		+",\"CallDest\":\"ITEM_RESPONSE.SELECT_MAX_RESPONSE_SEQ_NUM\""
+	        		+",\"APICallDuration\":"+callDBTime+"}");
+	        
 		} catch (final DataAccessException sqle) {
 			LOGGER.error("[ItemResponseDAO] Error trying to select next sequence_response_num: " + sqle.getMessage() + "]", sqle);
 			throw new SQLException("[ItemResponseDAO] Error trying to select next sequence_response_num: " + sqle.getMessage() + "]", sqle);
