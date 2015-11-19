@@ -1995,12 +1995,36 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 													//Message
 												
 													if(data.SaveStatus.isSuccess){
+													var getRowDataObjectSBS = jQuery("#studentItemListGridSBS").jqGrid ('getRowData', itemId);
+													var	scorePointSBS = $("#pointsDropDown option:selected").val();
+													
 													var dataToBeAdded = {scoreStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
-				
-													jQuery("#studentItemListGridSBS").setRowData(itemId, dataToBeAdded, "first");
-													jQuery("#studentItemListGrid").setRowData(itemId, dataToBeAdded, "first");	
+														if(!jQuery.isEmptyObject(getRowDataObjectSBS)){
+															jQuery("#studentItemListGridSBS").setRowData(itemId, dataToBeAdded, "first");
+														}else{
+															if(jQuery("#studentItemListGridSBS").hasClass("ui-jqgrid-btable")){
+																jQuery("#studentItemListGridSBS").jqGrid('getLocalRow', itemId).scoreStatus = "Complete";
+																jQuery("#studentItemListGridSBS").jqGrid('getLocalRow', itemId).scorePoint = scorePointSBS;
+															}	
+														}
+																										
+													jQuery("#studentItemListGrid").setRowData(itemId, dataToBeAdded, "first");
+													
+													
+													var getRowDataObjectSBI = jQuery("#itemStudentListGridSBI").jqGrid ('getRowData', selectedRowObjectScoring.testRosterId);
+													var	scorePointSBI = $("#pointsDropDown option:selected").val();
+													
 													var dataToBeAddedItem = {scoringStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
-													jQuery("#itemStudentListGridSBI").setRowData(selectedRowObjectScoring.testRosterId,dataToBeAddedItem,"first");	
+													
+													if(!jQuery.isEmptyObject(getRowDataObjectSBI)){
+														jQuery("#itemStudentListGridSBI").setRowData(selectedRowObjectScoring.testRosterId,dataToBeAddedItem,"first");
+													}else{
+														if(jQuery("#itemStudentListGridSBI").hasClass("ui-jqgrid-btable")){
+															jQuery("#itemStudentListGridSBI").jqGrid('getLocalRow', selectedRowObjectScoring.testRosterId).scoringStatus = "Complete";
+															jQuery("#itemStudentListGridSBI").jqGrid('getLocalRow', selectedRowObjectScoring.testRosterId).scorePoint = scorePointSBI;
+														}	
+													}
+														
 													var dataForScoreByStudentGrid;	
 													
 													if (data.SaveStatus.completionStatus == 'CO'){
