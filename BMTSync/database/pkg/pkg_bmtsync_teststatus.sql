@@ -1,19 +1,5 @@
 CREATE OR REPLACE PACKAGE PKG_BMTSYNC_TESTSTATUS AS
     TYPE REF_CURSOR IS REF CURSOR;
-	
-    /********************************************************
-     * Function to compare original and a new StartDate 
-     * and return accordinlgy per requirements in BMTOAS-2067
-     * 
-     *********************************************************/
-    FUNCTION processStartDate (origStartDate IN TIMESTAMP, newStartDate IN TIMESTAMP) RETURN TIMESTAMP;
-    
-    /********************************************************
-     * Function to compare original and a new CompletionDate 
-     * and return accordinlgy per requirements in BMTOAS-2092
-     * 
-     *********************************************************/
-    FUNCTION processCompletionDate (origCompletionDate IN TIMESTAMP, newCompletionDate IN TIMESTAMP) RETURN TIMESTAMP;
     
     /***************************************************
 	*
@@ -41,43 +27,13 @@ CREATE OR REPLACE PACKAGE PKG_BMTSYNC_TESTSTATUS AS
 	   pRosterId           IN NUMBER,
 	   pCurrSubTestStatus  IN VARCHAR2,
 	   pStartDate          IN DATE,
-	   pCompletionDate     IN DATE);
-
-	   
+	   pCompletionDate     IN DATE);	   
 
 END PKG_BMTSYNC_TESTSTATUS;
 /
 
 
 CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
-
-	/********************************************************
-     * Function to compare original and a new StartDate 
-     * and return accordinlgy per requirements in BMTOAS-2067
-     * 
-     *********************************************************/
-	FUNCTION processStartDate (origStartDate IN TIMESTAMP, newStartDate IN TIMESTAMP) RETURN TIMESTAMP IS
-	BEGIN
-		IF origStartDate is NULL then RETURN newStartDate;
-		end if;
-		IF newStartDate > origStartDate then RETURN origStartDate;
-		ELSE RETURN newStartDate;
-		END IF;
-	END processStartDate;
-	
-	/********************************************************
-     * Function to compare original and a new CompletionDate 
-     * and return accordinlgy per requirements in BMTOAS-2092
-     * 
-     *********************************************************/
-    FUNCTION processCompletionDate (origCompletionDate IN TIMESTAMP, newCompletionDate IN TIMESTAMP) RETURN TIMESTAMP IS
-    BEGIN
-		IF origCompletionDate is NULL then RETURN newCompletionDate;
-		end if;
-		IF newCompletionDate > origCompletionDate then RETURN newCompletionDate;
-		ELSE RETURN origCompletionDate;
-		END IF;
-	END processCompletionDate;
 
     /***************************************************
 	*
@@ -243,73 +199,84 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 	* pCurrSubTestStatus = Current Sub-test status
 	**********************************************************/
 	PROCEDURE UpdateRosterTestStatus(
-	   pRosterId           IN NUMBER,
-	   pCurrSubTestStatus  IN VARCHAR2,
-	   pStartDate          IN DATE,
-	   pCompletionDate     IN DATE) AS
+		pRosterId           IN NUMBER,
+		pCurrSubTestStatus  IN VARCHAR2,
+		pStartDate          IN DATE,
+		pCompletionDate     IN DATE) AS
 
-	   --pRosterId NUMBER := 8662811;
-	   --pDeliveryStatus VARCHAR2(2);
+		--pRosterId NUMBER := 8662811;
+		--pDeliveryStatus VARCHAR2(2);
 
-	   CURSOR curSISS IS
-	   SELECT Completion_Status, Item_set_Order FROM Student_Item_Set_Status
-	   WHERE Test_Roster_Id = pRosterId
-       ORDER BY Item_set_Order;
+		CURSOR curSISS IS
+		SELECT Completion_Status, Item_set_Order FROM Student_Item_Set_Status
+		WHERE Test_Roster_Id = pRosterId
+		ORDER BY Item_set_Order;
 
-	   vFinalStatus VARCHAR2(2) := null;
-	BEGIN
+		vFinalStatus 			VARCHAR2(2) := null;
+		vFinalStartDate 		DATE := pStartDate;
+		vFinalCompletionDate	DATE := pCompletionDate;
+
+		BEGIN
 
 		FOR rec_SISS IN curSISS LOOP
-		   --DBMS_OUTPUT.PUT_LINE('rec_SISS.Completion_Status is:'||rec_SISS.Completion_Status);
-		   CASE rec_SISS.Completion_Status
+			--DBMS_OUTPUT.PUT_LINE('rec_SISS.Completion_Status is:'||rec_SISS.Completion_Status);
+			CASE rec_SISS.Completion_Status
 				WHEN 'IP' THEN
 					vFinalStatus := 'IP';
 					EXIT;
 				WHEN 'IN' THEN
-				    IF pCurrSubTestStatus = 'IP' THEN
-					   vFinalStatus := 'IP';
+					IF pCurrSubTestStatus = 'IP' THEN
+						vFinalStatus := 'IP';
 					ELSE
-					   vFinalStatus := 'IN';
+						vFinalStatus := 'IN';
 					END IF;
 					EXIT;
 				WHEN 'CO' THEN
-				    IF pCurrSubTestStatus = 'IP' THEN
-					   vFinalStatus := 'IP';
-					   EXIT;
+					IF pCurrSubTestStatus = 'IP' THEN
+						vFinalStatus := 'IP';
+						EXIT;
 					END IF;
-				    IF vFinalStatus = 'SC' THEN
-					   vFinalStatus := 'IS';
-					   EXIT;
+					IF vFinalStatus = 'SC' THEN
+						vFinalStatus := 'IS';
+						EXIT;
 					ELSE
-					   vFinalStatus := 'CO';
+						vFinalStatus := 'CO';
 					END IF;
 				WHEN 'SC' THEN
-                    CASE pCurrSubTestStatus
-					    WHEN 'IP' THEN
-					       vFinalStatus := 'IP';
-					       EXIT;
-                      	WHEN 'IN' THEN
-					       vFinalStatus := 'IN';
-					       EXIT;
-                        WHEN 'CO' THEN
-                            vFinalStatus := 'IS';
-                            EXIT;
+					CASE pCurrSubTestStatus
+						WHEN 'IP' THEN
+							vFinalStatus := 'IP';
+							EXIT;
+						WHEN 'IN' THEN
+							vFinalStatus := 'IN';
+							EXIT;
+						WHEN 'CO' THEN
+							vFinalStatus := 'IS';
+							EXIT;
 						ELSE
-					       vFinalStatus := 'SC';
-                    END CASE;
-
+							vFinalStatus := 'SC';
+					END CASE;
 				ELSE
-                  NULL;
-		   END CASE;
+					NULL;
+				END CASE;
+		   
 		END LOOP;
 
+		-- set vFinalStartDate as MIN of startDates in SISS for a given roster ID
+		select MIN(Start_Date_Time) into vFinalStartDate FROM Student_Item_Set_Status
+		WHERE Test_Roster_Id = pRosterId;
+		
+		-- set vFinalCompletionDate as MAX of completionDates in SISS for a given roster ID
+		select MAX(Completion_Date_Time) into vFinalCompletionDate FROM Student_Item_Set_Status
+		WHERE Test_Roster_Id = pRosterId;
+		
 		-- Update the Roster Status,  Update with CO if all the subtest is complete
 		--DBMS_OUTPUT.PUT_LINE('vFinalStatus is:'||NVL(vFinalStatus, 'ZZZ'));
 		IF vFinalStatus IS NOT NULL   THEN
 
 			IF vFinalStatus = 'CO' THEN
 				UPDATE Test_Roster ROS
-				SET Completion_Date_Time = processCompletionDate(Completion_Date_Time, pCompletionDate),
+				SET Completion_Date_Time = vFinalCompletionDate,
 					Updated_Date_Time = SYSDATE,
 					Test_Completion_Status = DECODE((SELECT count(*) FROM Student_Item_Set_Status
 						WHERE Test_Roster_Id = ROS.Test_Roster_Id AND Completion_Status != 'CO'), 0, 'CO', Test_Completion_Status)
@@ -317,16 +284,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_BMTSYNC_TESTSTATUS AS
 			ELSIF vFinalStatus = 'IS' THEN
 				UPDATE Test_Roster SET
 					Test_Completion_Status = vFinalStatus,
-					Start_Date_Time = processStartDate(Start_Date_Time, pStartDate),
+					Start_Date_Time = vFinalStartDate, 
 					-- Fix BMTOAS-1835
-					Completion_Date_Time = processCompletionDate(Completion_Date_Time, pCompletionDate),
+					Completion_Date_Time = vFinalCompletionDate,
 					Updated_Date_Time = SYSDATE
 				WHERE Test_Roster_ID = pRosterId;
 
 			ELSE
 				UPDATE Test_Roster SET
 				   Test_Completion_Status = vFinalStatus,
-				   Start_Date_Time = processStartDate(Start_Date_Time, pStartDate),
+				   Start_Date_Time = vFinalStartDate, 
 				   Updated_Date_Time = SYSDATE
 				WHERE Test_Roster_ID = pRosterId;
 			END IF;
