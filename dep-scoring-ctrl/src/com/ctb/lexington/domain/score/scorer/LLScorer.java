@@ -193,7 +193,7 @@ public class LLScorer extends STScorer {
 		                             }
 		                         }
 		                         if((!ca.getContentAreaName().equals("Oral") && !ca.getContentAreaName().equals("Comprehension")) 
-		                        		 || (!ca.getContentAreaName().equals("Productive") && (!ca.getContentAreaName().equals("Literacy")))){
+		                        		 && (!ca.getContentAreaName().equals("Productive") && (!ca.getContentAreaName().equals("Literacy")))){
 			                		 itemData.markItemsValidForSubtest(ca.getSubtestId());
 			                	 }
 		                         break;
@@ -209,7 +209,7 @@ public class LLScorer extends STScorer {
 		                          }
 		                      }
 		                      if((!ca.getContentAreaName().equals("Oral") && !ca.getContentAreaName().equals("Comprehension")) 
-		                        		 || (!ca.getContentAreaName().equals("Productive") && (!ca.getContentAreaName().equals("Literacy")))){
+		                        		 && (!ca.getContentAreaName().equals("Productive") && (!ca.getContentAreaName().equals("Literacy")))){
 				            		 itemData.markItemsNonValidForSubtest(ca.getSubtestId());
 				              }
 		                      break;

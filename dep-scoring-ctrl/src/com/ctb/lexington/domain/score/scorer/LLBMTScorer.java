@@ -222,7 +222,7 @@ public class LLBMTScorer extends STScorer {
 						}
 						if ((!ca.getContentAreaName().equals("Oral") && !ca.getContentAreaName()
 								.equals("Comprehension"))
-								|| (!ca.getContentAreaName().equals("Productive") && (!ca
+								&& (!ca.getContentAreaName().equals("Productive") && (!ca
 										.getContentAreaName().equals("Literacy")))) {
 							itemData.markItemsValidForSubtest(ca.getSubtestId());
 						}
@@ -241,7 +241,7 @@ public class LLBMTScorer extends STScorer {
 						}
 						if ((!ca.getContentAreaName().equals("Oral") && !ca.getContentAreaName()
 								.equals("Comprehension"))
-								|| (!ca.getContentAreaName().equals("Productive") && (!ca
+								&& (!ca.getContentAreaName().equals("Productive") && (!ca
 										.getContentAreaName().equals("Literacy")))) {
 							itemData.markItemsNonValidForSubtest(ca.getSubtestId());
 						}
