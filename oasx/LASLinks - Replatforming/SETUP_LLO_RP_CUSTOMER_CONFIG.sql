@@ -1,6 +1,7 @@
 create or replace
 PROCEDURE SETUP_LLO_RP_CUSTOMER_CONFIG(IN_CUSTOMER_ID     INTEGER,
-                                                         ADD_ENGRADE_CONFIG BOOLEAN) AS
+                                       ADD_ENGRADE_CONFIG BOOLEAN,
+                                       IS_NEW_CUSTOMER BOOLEAN) AS
 
   V_CHECK_CONFIG         NUMBER := 0;
   V_NEW_PRODUCT_ID       NUMBER := 0;
@@ -81,10 +82,16 @@ BEGIN
            IF V_CONFIGCOUNT > 0 THEN
              
             dbms_output.put_line('program start');
-            DELETE FROM PROGRAM PROG
-             WHERE PROG.PRODUCT_ID = ALL_PRODUCT_ID.PARENT_PRODUCT_ID
-               AND PROG.CUSTOMER_ID = IN_CUSTOMER_ID;
-          
+            IF (IS_NEW_CUSTOMER) THEN
+               DELETE FROM PROGRAM PROG
+               WHERE PROG.PRODUCT_ID = ALL_PRODUCT_ID.PARENT_PRODUCT_ID
+                 AND PROG.CUSTOMER_ID = IN_CUSTOMER_ID;
+            ELSE
+              UPDATE PROGRAM PROG SET PROG.ACTIVATION_STATUS = 'DE', PROG.PROGRAM_END_DATE = add_months(SYSDATE, 120)
+               WHERE PROG.PRODUCT_ID = ALL_PRODUCT_ID.PARENT_PRODUCT_ID
+                 AND PROG.CUSTOMER_ID = IN_CUSTOMER_ID;             
+            END IF;
+            
             SELECT CAST(IN_CUSTOMER_ID || '72' AS INT)
               INTO V_PROGRAM_ID
               FROM DUAL;
@@ -122,11 +129,19 @@ BEGIN
         /* Program end*/
         dbms_output.put_line('program end');
         /*ORG_NODE_TEST_CATALOG table start */
-        DELETE FROM ORG_NODE_TEST_CATALOG ONTC
-         WHERE ONTC.PRODUCT_ID = ALL_PRODUCT_ID.PRODUCT_ID
-           AND ONTC.CUSTOMER_ID = IN_CUSTOMER_ID;
       
         dbms_output.put_line('ONTC start');
+        IF (IS_NEW_CUSTOMER) THEN
+          DELETE FROM ORG_NODE_TEST_CATALOG ONTC
+           WHERE ONTC.PRODUCT_ID = ALL_PRODUCT_ID.PRODUCT_ID
+             AND ONTC.CUSTOMER_ID = IN_CUSTOMER_ID;
+        ELSE
+          UPDATE ORG_NODE_TEST_CATALOG ONTC
+             SET ONTC.ACTIVATION_STATUS = 'IN'
+           WHERE ONTC.PRODUCT_ID = ALL_PRODUCT_ID.PRODUCT_ID
+             AND ONTC.CUSTOMER_ID = IN_CUSTOMER_ID;
+        END IF;
+        
         SELECT COUNT(1)
           INTO V_CHECK_NEW_PRODUCT
           FROM ORG_NODE_TEST_CATALOG
@@ -252,9 +267,15 @@ BEGIN
            IF V_CONFIGCOUNT > 0 THEN
            
             dbms_output.put_line('Program start');
-            DELETE FROM PROGRAM PROG
-             WHERE PROG.PRODUCT_ID = ALL_PRODUCT_ID.PARENT_PRODUCT_ID
-               AND PROG.CUSTOMER_ID = IN_CUSTOMER_ID;
+            IF (IS_NEW_CUSTOMER) THEN
+               DELETE FROM PROGRAM PROG
+               WHERE PROG.PRODUCT_ID = ALL_PRODUCT_ID.PARENT_PRODUCT_ID
+                 AND PROG.CUSTOMER_ID = IN_CUSTOMER_ID;
+            ELSE
+              UPDATE PROGRAM PROG SET PROG.ACTIVATION_STATUS = 'DE', PROG.PROGRAM_END_DATE = add_months(SYSDATE, 120)
+               WHERE PROG.PRODUCT_ID = ALL_PRODUCT_ID.PARENT_PRODUCT_ID
+                 AND PROG.CUSTOMER_ID = IN_CUSTOMER_ID;             
+            END IF;
           
             SELECT CAST(IN_CUSTOMER_ID || '78' AS INT)
               INTO V_PROGRAM_ID
@@ -293,10 +314,18 @@ BEGIN
         /* Program end*/
       
         /*ORG_NODE_TEST_CATALOG table start */
-        DELETE FROM ORG_NODE_TEST_CATALOG ONTC
-         WHERE ONTC.PRODUCT_ID = ALL_PRODUCT_ID.PRODUCT_ID
-           AND ONTC.CUSTOMER_ID = IN_CUSTOMER_ID;
+ 
         dbms_output.put_line('ONTC start');
+        IF (IS_NEW_CUSTOMER) THEN
+          DELETE FROM ORG_NODE_TEST_CATALOG ONTC
+           WHERE ONTC.PRODUCT_ID = ALL_PRODUCT_ID.PRODUCT_ID
+             AND ONTC.CUSTOMER_ID = IN_CUSTOMER_ID;
+        ELSE
+          UPDATE ORG_NODE_TEST_CATALOG ONTC
+             SET ONTC.ACTIVATION_STATUS = 'IN'
+           WHERE ONTC.PRODUCT_ID = ALL_PRODUCT_ID.PRODUCT_ID
+             AND ONTC.CUSTOMER_ID = IN_CUSTOMER_ID;
+        END IF;
       
         SELECT COUNT(1)
           INTO V_CHECK_NEW_PRODUCT
