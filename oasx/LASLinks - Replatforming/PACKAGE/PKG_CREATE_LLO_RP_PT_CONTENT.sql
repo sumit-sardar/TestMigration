@@ -23,19 +23,26 @@ CREATE OR REPLACE PACKAGE BODY PKG_CREATE_LLO_RP_PT_CONTENT AS
        AND LLPDL.NEW_PRODUCT_ID = IN_PT_PRODUCT_ID;
 
   CURSOR CUR_TC_ITEM_SET(IN_PT_PRODUCT_ID INTEGER) IS
-    SELECT DISTINCT LLPDL.TEST_NAME, LLPDL.TEST_LEVEL
+    SELECT DISTINCT LLPDL.TEST_NAME,
+                    LLPDL.TEST_LEVEL,
+                    SUBSTR(LLPDL.EXT_TST_ITEM_SET_ID,
+                           1,
+                           INSTR(LLPDL.EXT_TST_ITEM_SET_ID, '_', -1) - 5) AS EXT_TST_ITEM_SET_ID
       FROM LLRP_PRACTICE_DATA_LIST LLPDL
      WHERE LLPDL.ACTIVATION_STATUS = V_ACTIVATION_STATUS
        AND LLPDL.NEW_PRODUCT_ID = IN_PT_PRODUCT_ID;
 
   CURSOR CUR_TS_ITEM_SET(IN_TEST_NAME VARCHAR2, IN_PT_PRODUCT_ID INTEGER) IS
-    SELECT DISTINCT SUBSTR(LLPDL.EXT_TST_ITEM_SET_ID, 1,
-                           INSTR(LLPDL.EXT_TST_ITEM_SET_ID, '_', -1)) AS EXT_TST_ITEM_SET_ID,
-                    LLPDL.SCHEDULE_UNIT_NAME AS ITEM_SET_NAME
+    SELECT DISTINCT SUBSTR(LLPDL.EXT_TST_ITEM_SET_ID,
+                           1,
+                           INSTR(LLPDL.EXT_TST_ITEM_SET_ID, '_', -1) - 1) AS EXT_TST_ITEM_SET_ID,
+                    LLPDL.SCHEDULE_UNIT_NAME AS ITEM_SET_NAME,
+                    LLPDL.SCHEDULE_UNIT_ORDER AS ITEM_SET_ORDER
       FROM LLRP_PRACTICE_DATA_LIST LLPDL
      WHERE LLPDL.ACTIVATION_STATUS = V_ACTIVATION_STATUS
        AND LLPDL.NEW_PRODUCT_ID = IN_PT_PRODUCT_ID
-       AND LLPDL.TEST_NAME = IN_TEST_NAME;
+       AND LLPDL.TEST_NAME = IN_TEST_NAME
+     ORDER BY LLPDL.SCHEDULE_UNIT_ORDER;
 
   CURSOR CUR_TD_ITEM_SET(IN_TEST_NAME VARCHAR2, IN_PT_PRODUCT_ID INTEGER) IS
     SELECT DISTINCT LLPDL.EXT_TST_ITEM_SET_ID, LLPDL.ITEM_SET_NAME
@@ -151,7 +158,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_CREATE_LLO_RP_PT_CONTENT AS
        V_SUBJECT,
        NULL,
        V_SAMPLE,
-       NULL,
+       '/oastd-web/versions/cab/1.0/',
        0,
        0,
        NULL,
@@ -177,7 +184,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_CREATE_LLO_RP_PT_CONTENT AS
        NULL,
        'F',
        'F',
-       NULL);
+       'https://oas.ctb.com/content/');
   
     -- POPULATE ALL ITEM SET ID AND TST ITEM SET ID MAPPING FOR ALL LEVEL ITEM SET
     TD_SET.EXTEND;
@@ -461,12 +468,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_CREATE_LLO_RP_PT_CONTENT AS
     -- TC LEVEL ENTRIES
     FOR TC_DATA IN CUR_TC_ITEM_SET(IN_NEW_PRODUCT_ID) LOOP
     
-      V_TST_ITEM_SET_ID := 'LLA_PT_' || TC_DATA.TEST_LEVEL;
+      V_TST_ITEM_SET_ID := TC_DATA.EXT_TST_ITEM_SET_ID;
       V_TEST_LEVEL      := TC_DATA.TEST_LEVEL;
       V_TC_ITEM_SET_ID  := GET_NEW_ITEM_SET_ID();
-      INSERT_ITEM_SET_RELATION(V_TC_ITEM_SET_ID, NULL, NULL,
-                               TC_DATA.TEST_NAME, V_TST_ITEM_SET_ID,
-                               V_TEST_LEVEL, 'TC', NULL);
+      INSERT_ITEM_SET_RELATION(V_TC_ITEM_SET_ID,
+                               NULL,
+                               NULL,
+                               TC_DATA.TEST_NAME,
+                               V_TST_ITEM_SET_ID,
+                               V_TEST_LEVEL,
+                               'TC',
+                               NULL);
     
       -- TS LEVEL ENTRIES
       OPEN CUR_TS_ITEM_SET(TC_DATA.TEST_NAME, IN_NEW_PRODUCT_ID);
@@ -477,9 +489,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_CREATE_LLO_RP_PT_CONTENT AS
       FOR I IN 1 .. TS_DATA.COUNT LOOP
         V_TST_ITEM_SET_ID := TS_DATA(I).EXT_TST_ITEM_SET_ID;
         V_TS_ITEM_SET_ID  := GET_NEW_ITEM_SET_ID();
-        INSERT_ITEM_SET_RELATION(V_TS_ITEM_SET_ID, V_TC_ITEM_SET_ID, I,
-                                 TS_DATA(I).ITEM_SET_NAME, V_TST_ITEM_SET_ID,
-                                 V_TEST_LEVEL, 'TS', 'TC');
+        INSERT_ITEM_SET_RELATION(V_TS_ITEM_SET_ID,
+                                 V_TC_ITEM_SET_ID,
+                                 I,
+                                 TS_DATA(I).ITEM_SET_NAME,
+                                 V_TST_ITEM_SET_ID,
+                                 V_TEST_LEVEL,
+                                 'TS',
+                                 'TC');
       
         --TD LEVEL ENTRIES
         OPEN CUR_TD_ITEM_SET(V_TST_ITEM_SET_ID, IN_NEW_PRODUCT_ID);
@@ -489,17 +506,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_CREATE_LLO_RP_PT_CONTENT AS
       
         FOR J IN 1 .. TD_DATA.COUNT LOOP
           V_TST_ITEM_SET_ID := TD_DATA(J).EXT_TST_ITEM_SET_ID;
-          INSERT_ITEM_SET_RELATION(GET_NEW_ITEM_SET_ID(), V_TS_ITEM_SET_ID,
-                                   J, TD_DATA(J).ITEM_SET_NAME,
-                                   V_TST_ITEM_SET_ID, V_TEST_LEVEL, 'TD',
+          INSERT_ITEM_SET_RELATION(GET_NEW_ITEM_SET_ID(),
+                                   V_TS_ITEM_SET_ID,
+                                   J,
+                                   TD_DATA(J).ITEM_SET_NAME,
+                                   V_TST_ITEM_SET_ID,
+                                   V_TEST_LEVEL,
+                                   'TD',
                                    'TS');
         
         END LOOP; --TD LEVEL
       END LOOP; -- TS LEVEL
     
       -- CREATE TEST_CATALOG_ENTRIES.
-      CREATE_TEST_CATALOG(IN_NEW_PRODUCT_ID, V_TC_ITEM_SET_ID,
-                          TC_DATA.TEST_NAME, V_TEST_LEVEL);
+      CREATE_TEST_CATALOG(IN_NEW_PRODUCT_ID,
+                          V_TC_ITEM_SET_ID,
+                          TC_DATA.TEST_NAME,
+                          V_TEST_LEVEL);
     
     END LOOP; -- TC LEVEL
   
@@ -658,17 +681,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_CREATE_LLO_RP_PT_CONTENT AS
     WHEN PRODUCT_NOT_FOUND THEN
       RAISE_APPLICATION_ERROR(-20000,
                               'The new product ID [' ||
-                               IN_NEW_PT_PRODUCT_ID ||
-                               '] is not found in lookup table.');
+                              IN_NEW_PT_PRODUCT_ID ||
+                              '] is not found in lookup table.');
     WHEN NEW_PRODUCT_EXIST THEN
       RAISE_APPLICATION_ERROR(-20000,
                               'The new product ID [' ||
-                               IN_NEW_PT_PRODUCT_ID ||
-                               '] is already exists in database.');
+                              IN_NEW_PT_PRODUCT_ID ||
+                              '] is already exists in database.');
     WHEN CHECK_EXISTING_PRODUCT THEN
       RAISE_APPLICATION_ERROR(-20000,
                               'The old product ID [' ||
-                               IN_OLD_PT_PRODUCT_ID || '] does not exists.');
+                              IN_OLD_PT_PRODUCT_ID || '] does not exists.');
     
     WHEN OTHERS THEN
       DBMS_OUTPUT.PUT_LINE('Process completed with error.');
