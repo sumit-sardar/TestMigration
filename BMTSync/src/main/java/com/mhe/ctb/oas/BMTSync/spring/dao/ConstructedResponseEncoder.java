@@ -183,9 +183,18 @@ public class ConstructedResponseEncoder {
 					malformedJSON = true;
 				}
 			} else {
-				final String msg = "[ConstructedResponseEncoder] Passed response string does not contain a JSON object = [" + response + "]!";
-				errorMsg.append(msg);
-				malformedJSON = true;
+				//if came here, the JSON could not be parsed, then check if JSON object is passed in a response string
+				if (response!=null && !response.trim().startsWith("{")) {
+					//not a JSON string, then assuming it is a single string value response
+					if (responses.isEmpty()) {
+						//process single string value response - just add it to the responses array
+						responses.add(response);
+					}
+				} else {
+					final String msg = "[ConstructedResponseEncoder] Passed response string does not contain a JSON object = [" + response + "]!";
+					errorMsg.append(msg);
+					malformedJSON = true;
+				}
 			}
 		} catch (IOException e) {
 			//if came here, the JSON could not be parsed, then check if JSON object is passed in a response string
