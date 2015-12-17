@@ -75,10 +75,10 @@ public class ConstructedResponseEncoder {
 	 * @param response
 	 * @return
 	 */
-	public String formatConstructedResponse(final String response) throws UnsupportedEncodingException {
+	public String formatConstructedResponse(final String response, final String itemType) throws UnsupportedEncodingException {
 		final StringBuilder builder = new StringBuilder();
 
-		ArrayList<String> responses = processResponse(response);
+		ArrayList<String> responses = processResponse(response, itemType);
 
 		builder.append(XML_ANSWERS_START);
 		for (int i=0; responses!=null && i<responses.size(); i++) {
@@ -124,87 +124,73 @@ public class ConstructedResponseEncoder {
 	 * @return 
 	 */
 	@SuppressWarnings("unchecked")
-	private ArrayList<String> processResponse(String response) throws UnsupportedEncodingException {
+	private ArrayList<String> processResponse(String response, final String itemType) throws UnsupportedEncodingException {
 		ArrayList<String> responses = new ArrayList<String>();
 		boolean malformedJSON = false;
 		StringBuilder errorMsg = new StringBuilder("");
-
-		//try to convert string to JSON; if it does not fail, process JSON to get data from it
-		//if cannot convert to JSON, then it is possibly a single response
-		JsonFactory factory = new JsonFactory();
-		ObjectMapper mapper = new ObjectMapper(factory);
-		try {
-			JsonNode root = mapper.readTree(response.trim());
-			if (root!=null && root.isObject()) {
-				//convert response into JSON object in order to check if an array of multiple responses is passed along with subItems counter
-				//process root object
-				Map<String, Object> jsonRootObj = mapper.readValue(response,  new TypeReference<Map<String,Object>>() {});
-				if (jsonRootObj!=null) {
-					//get subItemsCount
-					int subItemsCount = (jsonRootObj.get(MCR_SUBITEMCOUNT)!=null ? ((Integer)jsonRootObj.get(MCR_SUBITEMCOUNT)).intValue() : 0);
-					//get subItems
-					List<Map<String, Object>> jsonResponses = (List<Map<String, Object>>)jsonRootObj.get(MCR_SUBITEMS);
-					if (jsonResponses!=null) {
-						//process array
-						//validate count against subItems array size
-						if (subItemsCount != jsonResponses.size()) {
-							//log a validation error
-							final String msg = "[ConstructedResponseEncoder] JSON Validation failed: Number of sub-items in JSON array ["+jsonResponses.size()+"] does not match sub-items count in JSON = ["+subItemsCount+"]";
-							errorMsg.append(msg);
-							malformedJSON = true;
-						} else {
-							//add sorting by crOrder
-							Collections.sort(jsonResponses, new Comparator<Map<String, Object>>() {
-								public int compare(Map<String, Object> a, Map<String, Object> b) {
-									return (a.get(MCR_CRORDER)!=null ? ((Integer)a.get(MCR_CRORDER)).intValue():-1) - (b.get(MCR_CRORDER)!=null ? ((Integer)b.get(MCR_CRORDER)).intValue():-1);
-								}
-							});					
-							for (int i=0; jsonResponses!=null && i<jsonResponses.size(); i++) {
-								//check if crResponse is present in each element
-								if (jsonResponses.get(i)!=null && jsonResponses.get(i).get(MCR_CRORDER)!=null) {
-									responses.add((String)jsonResponses.get(i).get(MCR_RESPONSE));
-								} else {
-									//if it is missing, then throw an exception
-									final String msg = "[ConstructedResponseEncoder] "+MCR_CRORDER+" property is missing in responses JSON array = [" + response + "]!";
-									errorMsg.append(msg);
-									malformedJSON = true;
-									break;
+		
+		if ("CR".equalsIgnoreCase(itemType)) {
+			//process single string value response - just add it to the responses array
+			responses.add(response);
+		} else { // then it is "MCR"	
+			//try to convert string to JSON; if it does not fail, process JSON to get data from it
+			JsonFactory factory = new JsonFactory();
+			ObjectMapper mapper = new ObjectMapper(factory);
+			try {
+				JsonNode root = mapper.readTree(response.trim());
+				if (root!=null && root.isObject()) {
+					//convert response into JSON object in order to check if an array of multiple responses is passed along with subItems counter
+					//process root object
+					Map<String, Object> jsonRootObj = mapper.readValue(response,  new TypeReference<Map<String,Object>>() {});
+					if (jsonRootObj!=null) {
+						//get subItemsCount
+						int subItemsCount = (jsonRootObj.get(MCR_SUBITEMCOUNT)!=null ? ((Integer)jsonRootObj.get(MCR_SUBITEMCOUNT)).intValue() : 0);
+						//get subItems
+						List<Map<String, Object>> jsonResponses = (List<Map<String, Object>>)jsonRootObj.get(MCR_SUBITEMS);
+						if (jsonResponses!=null) {
+							//process array
+							//validate count against subItems array size
+							if (subItemsCount != jsonResponses.size()) {
+								//log a validation error
+								final String msg = "[ConstructedResponseEncoder] JSON Validation failed: Number of sub-items in JSON array ["+jsonResponses.size()+"] does not match sub-items count in JSON = ["+subItemsCount+"]";
+								errorMsg.append(msg);
+								malformedJSON = true;
+							} else {
+								//add sorting by crOrder
+								Collections.sort(jsonResponses, new Comparator<Map<String, Object>>() {
+									public int compare(Map<String, Object> a, Map<String, Object> b) {
+										return (a.get(MCR_CRORDER)!=null ? ((Integer)a.get(MCR_CRORDER)).intValue():-1) - (b.get(MCR_CRORDER)!=null ? ((Integer)b.get(MCR_CRORDER)).intValue():-1);
+									}
+								});					
+								for (int i=0; jsonResponses!=null && i<jsonResponses.size(); i++) {
+									//check if crResponse is present in each element
+									if (jsonResponses.get(i)!=null && jsonResponses.get(i).get(MCR_CRORDER)!=null) {
+										responses.add((String)jsonResponses.get(i).get(MCR_RESPONSE));
+									} else {
+										//if it is missing, then throw an exception
+										final String msg = "[ConstructedResponseEncoder] "+MCR_CRORDER+" property is missing in responses JSON array = [" + response + "]!";
+										errorMsg.append(msg);
+										malformedJSON = true;
+										break;
+									}
 								}
 							}
+						} else {
+							final String msg = "[ConstructedResponseEncoder] Error mapping JSON array of multi-part responses = [" + response + "]!";
+							errorMsg.append(msg);
+							malformedJSON = true;
 						}
 					} else {
-						final String msg = "[ConstructedResponseEncoder] Error mapping JSON array of multi-part responses = [" + response + "]!";
+						final String msg = "[ConstructedResponseEncoder] Error mapping JSON root object = [" + response + "]!";
 						errorMsg.append(msg);
 						malformedJSON = true;
-					}
-				} else {
-					final String msg = "[ConstructedResponseEncoder] Error mapping JSON root object = [" + response + "]!";
-					errorMsg.append(msg);
-					malformedJSON = true;
-				}
-			} else {
-				//if came here, the JSON could not be parsed, then check if JSON object is passed in a response string
-				if (response!=null && !response.trim().startsWith("{")) {
-					//not a JSON string, then assuming it is a single string value response
-					if (responses.isEmpty()) {
-						//process single string value response - just add it to the responses array
-						responses.add(response);
 					}
 				} else {
 					final String msg = "[ConstructedResponseEncoder] Passed response string does not contain a JSON object = [" + response + "]!";
 					errorMsg.append(msg);
 					malformedJSON = true;
 				}
-			}
-		} catch (IOException e) {
-			//if came here, the JSON could not be parsed, then check if JSON object is passed in a response string
-			if (response!=null && !response.trim().startsWith("{")) {
-				//not a JSON string, then assuming it is a single string value response
-				if (responses.isEmpty()) {
-					//process single string value response - just add it to the responses array
-					responses.add(response);
-				}
-			} else {
+			} catch (IOException e) {
 				final String msg = "[ConstructedResponseEncoder] Could not deserialize JSON content as a tree! Response is not a valid JSON: = [" + response + "]!";
 				errorMsg.append(msg);
 				malformedJSON = true;
@@ -217,5 +203,17 @@ public class ConstructedResponseEncoder {
 		}
 
 		return responses;
+	}
+	
+	//for developer's testing
+	public static void main(String[] args) {
+		try {
+			final String response = "[\"Dinner!\"]"; //"}10fingers"; //"500 bc can be found in schools and parks";
+			final String response2 = "{\"subItemCount\":3,\"subItems\":[{\"crOrder\":3,\"response\":\"10 part3}\"},{\"crOrder\":1, \"response\":\"part1!\"},{\"crOrder\":2, \"response\":\"part2!\"}]}";
+			new ConstructedResponseEncoder().formatConstructedResponse(response2, "MCR");
+			new ConstructedResponseEncoder().formatConstructedResponse(response, "CR");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }
