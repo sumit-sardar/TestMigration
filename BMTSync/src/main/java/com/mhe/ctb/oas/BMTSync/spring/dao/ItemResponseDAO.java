@@ -143,12 +143,14 @@ public class ItemResponseDAO {
 		//BMTOAS-1973 fix - insert a record into ITEM_RESPONSE first - per suggested solution
 		insertPlaceholderItemResponse(testRosterId, itemSetId, itemResponse);		
 		try {
-			if ("CR".equals(itemResponse.getItemType()) || "MCR".equals(itemResponse.getItemType())) {
-				//fix for BMTOAS-2083: make sure itemType set to "CR", in case when "MCR" was passed for multi-part responses; at this point it can be only CR or MCR
-				itemResponse.setItemType("CR");
+			if ("CR".equals(itemResponse.getItemType()) || "MCR".equals(itemResponse.getItemType())) {				
 				final Calendar startDBTime = Calendar.getInstance();
 				int rowsUpdated = template.update(UPDATE_CONSTRUCTED_RESPONSE,
-						encoder.formatConstructedResponse(itemResponse.getItemResponse()), testRosterId, itemSetId, itemResponse.getItemCode());
+						encoder.formatConstructedResponse(itemResponse.getItemResponse(), itemResponse.getItemType()), testRosterId, itemSetId, itemResponse.getItemCode());
+				
+				//fix for BMTOAS-2083: make sure itemType set to "CR", in case when "MCR" was passed for multi-part responses; at this point it can be only CR or MCR
+				itemResponse.setItemType("CR");
+				
 				final Calendar endDBTime = Calendar.getInstance();
 				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.UPDATE_CONSTRUCTED_RESPONSE");
@@ -220,12 +222,14 @@ public class ItemResponseDAO {
 		insertPlaceholderItemResponse(testRosterId, itemSetId, itemResponse);
 		try {
 			if ("CR".equals(itemResponse.getItemType()) || "MCR".equals(itemResponse.getItemType())) {
-				//fix for BMTOAS-2083: make sure itemType set to "CR", in case when "MCR" was passed for multi-part responses; at this point it can be only CR or MCR
-				itemResponse.setItemType("CR");
 				final Calendar startDBTime = Calendar.getInstance();
 				int rowsUpdated = template.update(INSERT_CONSTRUCTED_RESPONSE, 
 						testRosterId, itemSetId, itemResponse.getItemCode(),
-						encoder.formatConstructedResponse(itemResponse.getItemResponse()));
+						encoder.formatConstructedResponse(itemResponse.getItemResponse(), itemResponse.getItemType()));
+				
+				//fix for BMTOAS-2083: make sure itemType set to "CR", in case when "MCR" was passed for multi-part responses; at this point it can be only CR or MCR
+				itemResponse.setItemType("CR");
+				
 				final Calendar endDBTime = Calendar.getInstance();
 				final long callDBTime = endDBTime.getTimeInMillis() - startDBTime.getTimeInMillis();
 		        LOGGER.info("SyncCallTime " + callDBTime + " SyncCallType DirectQuery SyncCallDest ITEM_RESPONSE_CR.INSERT_CONSTRUCTED_RESPONSE");
