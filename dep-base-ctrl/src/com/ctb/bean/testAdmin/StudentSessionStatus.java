@@ -57,7 +57,11 @@ public class StudentSessionStatus extends CTBBean
 	private String recommendedProductName;
 	//END - TABE BAUM 020 Form Recommendation 
 	
-    
+	//START - Added for BMT Reset API call
+	private String tdTstItemSetId;
+	private Integer tdItemSetOrder;
+    //END - Added for BMT Reset API call
+	
     /**
 	 * @return the testExemptions
 	 */
@@ -524,5 +528,28 @@ public class StudentSessionStatus extends CTBBean
 	public void setInvalidationReason(String invalidationReason) {
 		this.invalidationReason = invalidationReason;
 	}
-	
+	/**
+	 * @return the tdTstItemSetId
+	 */
+	public String getTdTstItemSetId() {
+		return tdTstItemSetId;
+	}
+	/**
+	 * @param tdTstItemSetId the tdTstItemSetId to set
+	 */
+	public void setTdTstItemSetId(String tdTstItemSetId) {
+		this.tdTstItemSetId = tdTstItemSetId;
+	}
+	/**
+	 * @return the tdItemSetOrder
+	 */
+	public Integer getTdItemSetOrder() {
+		return tdItemSetOrder;
+	}
+	/**
+	 * @param tdItemSetOrder the tdItemSetOrder to set
+	 */
+	public void setTdItemSetOrder(Integer tdItemSetOrder) {
+		this.tdItemSetOrder = tdItemSetOrder;
+	}
 } 

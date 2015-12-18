@@ -553,16 +553,35 @@
 			dataType:	'json',
 			data:		 postDataObject,
 			success:	function(data, textStatus, XMLHttpRequest){	
-							$.unblockUI(); 
-							if(data != undefined && data != null && data.studentDetailsList.length>0){
+							$.unblockUI();
 							
-								populate_reset_by_session_step3_student_grid(data.studentDetailsList);
-								populateAllTDAndStudentDataMap(data.studentDetailsList);
-								$("#reset_by_session_step3").show();
+							if(data != undefined && data != null && data.errorMsg != null){
+								if(data.errorStudents != null && data.errorStudents != undefined && data.errorStudents.length>0){
+									if(data.studentDetailsList!=null && data.studentDetailsList!= undefined && data.studentDetailsList.length>0){
+										populate_reset_by_session_step3_student_grid(data.studentDetailsList);
+										populateAllTDAndStudentDataMap(data.studentDetailsList);
+										$("#reset_by_session_step3").show();
+									}
+									$("#bmtResetValidationErrorMsg").html(data.errorMsg);
+									$("#bmtResetValFailStdUsrName").html(data.errorStudents);
+									bmtResetValidationErrorPopup();
+									$('#bmtResetValidationErrorPopup').show();
+								}else{
+									$('#displayMessageImg')[0].src = $('#displayMessageImg')[0].src.replace("icon_info","icon_error");
+									showHideMessage(true, $("#resetTestTitle").val(), data.errorMsg);
+								}
 								hideStepsShowBySession(false,false,false,true);
-								showHideMessage(true, $("#resetTestTitle").val(), $("#resetTestBySessionSuccessMessage").val());
-							} else {
-								hideStepsShowBySession(false,false,false,false);
+							}else{						
+								if(data != undefined && data != null && data.studentDetailsList.length>0){							
+									populate_reset_by_session_step3_student_grid(data.studentDetailsList);
+									populateAllTDAndStudentDataMap(data.studentDetailsList);
+									$("#reset_by_session_step3").show();
+									hideStepsShowBySession(false,false,false,true);
+									$('#displayMessageImg')[0].src = $('#displayMessageImg')[0].src.replace("icon_error","icon_info");
+									showHideMessage(true, $("#resetTestTitle").val(), $("#resetTestBySessionSuccessMessage").val());
+								} else {
+									hideStepsShowBySession(false,false,false,false);
+								}
 							}
 							
 						},
@@ -576,6 +595,22 @@
 		});
 	
 	
+	}
+	
+	function bmtResetValidationErrorPopup(){
+	$("#bmtResetValidationErrorPopup").dialog({  
+		title:"Validation Error",  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#bmtResetValidationErrorPopup").css('height','200px');
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#bmtResetValidationErrorPopup").parent().css("top",toppos);
+		 $("#bmtResetValidationErrorPopup").parent().css("left",leftpos);	
 	}
 	
 	
@@ -972,16 +1007,22 @@
 			dataType:	'json',
 			data:		 postDataObject,
 			success:	function(data, textStatus, XMLHttpRequest){	
-							$.unblockUI(); 
-							if(data != undefined && data != null && data.studentDetailsList.length>0){
+							$.unblockUI();
+							if(data != undefined && data != null && data.errorMsg != null){
 								hideStepsShowByStudent(false,false,false,true);
-								$("#reset_by_session_step3").show();
-								populate_reset_by_student_step3_session_grid(data.studentDetailsList);
-								showHideMessage(true, $("#resetTestTitle").val(),  selectedSubTestSessionData.itemSetName+ " "+$("#resetTestByStudentSuccessMessage").val()+" "+selectedSudentData.studentLoginId+".");
-							}else {
-								hideStepsShowBySession(false,false,false,false);
+								$('#displayMessageImg')[0].src = $('#displayMessageImg')[0].src.replace("icon_info","icon_error");
+								showHideMessage(true, $("#resetTestTitle").val(), data.errorMsg);
+							}else{
+								if(data != undefined && data != null && data.studentDetailsList.length>0){
+									hideStepsShowByStudent(false,false,false,true);
+									$("#reset_by_session_step3").show();
+									populate_reset_by_student_step3_session_grid(data.studentDetailsList);
+									$('#displayMessageImg')[0].src = $('#displayMessageImg')[0].src.replace("icon_error","icon_info");
+									showHideMessage(true, $("#resetTestTitle").val(),  selectedSubTestSessionData.itemSetName+ " "+$("#resetTestByStudentSuccessMessage").val()+" "+selectedSudentData.studentLoginId+".");
+								}else {
+									hideStepsShowBySession(false,false,false,false);
+								}
 							}
-							
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();  

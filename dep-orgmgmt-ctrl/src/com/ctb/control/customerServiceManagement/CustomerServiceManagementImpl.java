@@ -1,8 +1,10 @@
 package com.ctb.control.customerServiceManagement;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Writer;
-import oracle.sql.CLOB;
+import java.net.URI;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,17 +12,27 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
+import oracle.sql.CLOB;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.AuditFileReopenSubtest;
+import com.ctb.bean.testAdmin.BMTResetSessionResponseBean;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.ScheduleElementData;
@@ -32,6 +44,10 @@ import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.customerServiceManagement.StudentDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 @ControlImplementation(isTransient=true)
@@ -84,6 +100,12 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 	 */
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.validation.Validator validator;
+	
+	/**
+	 * @common:control
+	 */
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.Product product;
 
 	static final long serialVersionUID = 1L;
 
@@ -633,6 +655,193 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 					e.printStackTrace();
 				}
 		}
+	}
+
+	@Override
+	public boolean validateResetProcessFromBMT(Object[] objects)
+			throws CTBBusinessException {
+
+		Integer customerId = (Integer) objects[0];
+		BMTResetSessionResponseBean bmtRSRBean = (BMTResetSessionResponseBean) objects[1];
+		String bmtApiResourceType = (String) objects[2];
+		Integer submittedCount = (Integer) objects[3];
+		Boolean isBySession = (Boolean) objects[4];
+		String bmtApiURL = null;
+		Map<String, String> errorRosterMap = new HashMap<String, String>();
+		StringBuilder errorMsg = new StringBuilder(
+				"Server is not responding. Please try again later or call Customer Support if you continue to receive this message.");
+		try {
+			/**
+			 * Get the BMT url for database
+			 */
+			bmtApiURL = this.product.getBMTApiUrl(customerId,
+					bmtApiResourceType);
+			if (bmtApiURL != null) {
+				if (!invokeBMTApiForResetStudent(bmtApiURL, bmtRSRBean,
+						errorMsg, errorRosterMap, submittedCount.intValue(), isBySession)) {
+					/**
+					 * When server is unreachable or error record found.
+					 */
+					objects[5] = errorRosterMap;
+					objects[6] = errorMsg.toString();
+					return false;
+				}
+			} else {
+				/**
+				 * When URL not found but expected.
+				 */
+				objects[6] = errorMsg.toString();
+				return false;
+			}
+		} catch (Exception e) {
+			/**
+			 * If any exception then server is not responding msg will be shown
+			 */
+			throw new CTBBusinessException(errorMsg.toString());
+		}
+		/**
+		 * Validation passed. Allow reset the student(s).
+		 */
+		return true;
+	}
+	
+	/**
+	 * Invokes BMT API with the required parameters. Returns
+	 * False - If server is unreachable or erroneous student record
+	 * True - If success for all student
+	 * 
+	 * @param url
+	 * @param bmtRSRBean
+	 * @param errorMsg
+	 * @param errorRosterMap
+	 * @param submittedCount
+	 * @param isBySession 
+	 * @return
+	 */
+	private boolean invokeBMTApiForResetStudent(String url,
+			BMTResetSessionResponseBean bmtRSRBean, StringBuilder errorMsg,
+			Map<String, String> errorRosterMap, int submittedCount, Boolean isBySession) {
+		try {
+			
+			BMTResetSessionResponseBean respJSON = null;
+			CloseableHttpClient client = HttpClientBuilder.create().build();
+			String payload = getPayloadBody(bmtRSRBean);
+			System.out.println("Reset reequest JSON: "+payload);
+			/**
+			 * Creates a StringEntity with the specified pay load and content type. 
+			 */
+			StringEntity requestBody = new StringEntity(payload, ContentType.create("text/json"));
+			HttpEntityEnclosingRequestBase httpDeleteReq = new HttpEntityEnclosingRequestBase() {
+				@Override
+				public String getMethod() {
+					final String METHOD_NAME = "DELETE";
+					return METHOD_NAME;
+				}
+			};
+
+			httpDeleteReq.setURI(new URI(url)); // set URI
+			httpDeleteReq.setEntity(requestBody); // set pay load
+			
+			HttpResponse response = client.execute(httpDeleteReq);
+			int statusCode = response.getStatusLine().getStatusCode();
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+			StringBuffer result = new StringBuffer();
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result.append(line);
+			}
+			System.out.println("Reset Invoked URL: \""+url+"\" & Response Code: "+statusCode);
+			if (result != null) {
+				System.out.println("Reset response JSON: "+result.toString());
+				Gson gson = new Gson();
+				respJSON = gson.fromJson(result.toString(),
+						BMTResetSessionResponseBean.class);
+			}
+
+			if (statusCode != 200) {
+				/**
+				 * Unable to access with BMT URL successfully.
+				 */
+				return false;
+			} else if (respJSON != null && respJSON.getRosters() != null
+					&& respJSON.getRosters().length > 0) {
+				for (BMTResetSessionResponseBean.ResetRosters roster : respJSON
+						.getRosters()) {
+					if (roster.isError()) {
+						errorRosterMap.put(roster.getRosterId(), bmtRSRBean
+								.getStudentLogindNameMap().get(
+										roster.getRosterId()));
+					}
+				}
+				if (!errorRosterMap.isEmpty() && errorRosterMap.size()>0) {
+					if (!isBySession.booleanValue()) {
+						errorMsg
+								.delete(0, errorMsg.length())
+								.append(
+										"Failed to reset the student. Please contact Customer Support for assistance.");
+						errorRosterMap.clear();
+						/**
+						 * By Student view for single student
+						 */
+						return false;
+					}
+					
+					if (errorRosterMap.size() == submittedCount) {
+						errorMsg
+								.delete(0, errorMsg.length())
+								.append(
+										"Failed to reset subtest for selected student(s). Please contact Customer Support for assistance.");
+						errorRosterMap.clear();
+					} else {
+						errorMsg
+								.delete(0, errorMsg.length())
+								.append(
+										"The system was not able to reset below student(s) from the test session. Please try again later or call Customer Support if you continue to receive this message.");
+					}
+					/**
+					 * Some erroneous students are present in total count
+					 */
+					return false; // 
+				}else
+					/**
+					 * For all success
+					 */
+					return true;
+			}
+			/**
+			 * Do not reset any student
+			 */
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Get JSON string from BMTResetSessionResponseBean object
+	 * @param bmtRSRBean
+	 * @return JSON string for pay load
+	 */
+	private String getPayloadBody(BMTResetSessionResponseBean bmtRSRBean) {
+		Gson gson = new GsonBuilder().setExclusionStrategies(
+				new ExclusionStrategy() {
+					@Override
+					public boolean shouldSkipClass(Class<?> arg0) {
+						return false;
+					}
+
+					@Override
+					public boolean shouldSkipField(FieldAttributes arg0) {
+						return (arg0.getName() == "errorDesc"
+								|| arg0.getName() == "isError" || arg0
+								.getName() == "studentLogindNameMap");
+					}
+
+				}).serializeNulls().create();
+		return gson.toJson(bmtRSRBean);
 	}
 }
 

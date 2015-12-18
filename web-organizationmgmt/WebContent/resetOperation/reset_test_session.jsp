@@ -82,7 +82,7 @@
 					<tbody>
 						<tr>
 							<td valign="middle" width="18">
-								<img height="16" src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
+								<img id="displayMessageImg" height="16" src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
 							</td>
 							<td valign="middle" >
 								<div id="messageTitle" style="display:none;font-weight:bold;"></div>
@@ -139,6 +139,22 @@
 			</div>
 			</div>
 
+			<div id="bmtResetValidationErrorPopup"
+				style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+				<div style="padding:10px;text-align:center;">
+					<div style="text-align: left; padding-bottom: 10px">
+						<span id='bmtResetValidationErrorMsg'></span>
+					</div>
+					<div style="background-color: #d4ecff;  height: 80px; overflow-x: hidden !important; padding-top: 5px; word-wrap: break-word; text-align: left;">
+						<span id = 'bmtResetValFailStdUsrName'></span>
+					</div>
+				</div>
+				<div style="padding:10px;">			
+					<center>
+						<input type="button" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('bmtResetValidationErrorPopup');" class="ui-widget-header">&nbsp;
+					</center>
+				</div>	
+			</div>
 
 
 		</netui:form>

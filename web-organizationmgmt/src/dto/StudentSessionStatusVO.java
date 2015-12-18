@@ -4,9 +4,9 @@ package dto;
  *@author Tata Consultancy Services 
  */
 
-import com.ctb.bean.CTBBean;
-import com.ctb.bean.testAdmin.StudentSessionStatus;
 import java.util.Date;
+
+import com.ctb.bean.testAdmin.StudentSessionStatus;
 
 public class StudentSessionStatusVO implements java.io.Serializable
 {
@@ -45,6 +45,8 @@ public class StudentSessionStatusVO implements java.io.Serializable
 	private String itemAnsweredByStudent;
 	private Date testStartDate;
 	private Date testEndDate;
+	private String tdTstItemSetId;
+	private Integer tdItemSetOrder;
 
     public StudentSessionStatusVO() {
 	}
@@ -82,7 +84,8 @@ public class StudentSessionStatusVO implements java.io.Serializable
 		this.testStartDate = sst.getStartDateTime();
 		this.testEndDate = sst.getCompletionDateTime();
 		this.setTimeSpentForDisplay(sst.getTimeSpent());
-		
+		this.tdTstItemSetId = sst.getTdTstItemSetId();
+		this.tdItemSetOrder = sst.getTdItemSetOrder();
 	}    
 	
 	/**
@@ -509,5 +512,33 @@ public class StudentSessionStatusVO implements java.io.Serializable
 		this.itemSetLevel = itemSetLevel;
 	}
 
+	/**
+	 * @return the tdTstItemSetId
+	 */
+	public String getTdTstItemSetId() {
+		return tdTstItemSetId;
+	}
+
+	/**
+	 * @param tdTstItemSetId the tdTstItemSetId to set
+	 */
+	public void setTdTstItemSetId(String tdTstItemSetId) {
+		this.tdTstItemSetId = tdTstItemSetId;
+	}
+
+	/**
+	 * @return the tdItemSetOrder
+	 */
+	public Integer getTdItemSetOrder() {
+		return tdItemSetOrder;
+	}
+
+	/**
+	 * @param tdItemSetOrder the tdItemSetOrder to set
+	 */
+	public void setTdItemSetOrder(Integer tdItemSetOrder) {
+		this.tdItemSetOrder = tdItemSetOrder;
+	}
+	
 } 
 

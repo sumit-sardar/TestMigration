@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -23,6 +24,7 @@ import utils.PermissionsUtils;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.BMTResetSessionResponseBean;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
@@ -33,6 +35,8 @@ import com.ctb.bean.testAdmin.StudentData;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.BMTResetSessionResponseBean.ResetRosters;
+import com.ctb.control.customerServiceManagement.CustomerServiceManagement;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.SuccessInfo;
 import com.google.gson.Gson;
@@ -82,6 +86,7 @@ public class ResetOperationController extends PageFlowController {
     private Map<String, StudentSessionStatusVO> studentDetailsMap = null;
     
     private boolean isLasLinkCustomer = false;
+    private boolean isLLORPCustomer = false;
     private boolean isTASCCustomer = false;
     private boolean isTASCReadinessCustomer = false; //Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
     private boolean isEngradeCustomer = false;
@@ -1039,8 +1044,25 @@ public class ResetOperationController extends PageFlowController {
 			Integer creatorOrgId = Integer.parseInt(getRequest().getParameter("creatorOrgId"));
 			List<StudentSessionStatusVO> resetStudentDataList = prepareResetStudentDataList(getRequest().getParameter("resetStudentDataList"));
 			Boolean isWipeOut = new Boolean (getRequest().getParameter("isWipeOut"));
-			
+			Object[] validationObj = null;
 			if(isWipeOut){
+				if (this.isLLORPCustomer
+						&& !validateResetProcessFromBMT(validationObj = new Object[] {
+								this.customerServiceManagement,// [0] Controller
+								this.user,// [1] User bean
+								customerID,// [2] Customer ID
+								testAdminId,// [3] Session ID
+								resetStudentDataList,// [4] Submitted student list
+								"BMTRSETAPI",// [5] BMT API Type
+								Boolean.TRUE,// [6] isBySession
+								null,// [7] Erroneous Student Login ID(s)[Out]
+								null,// [8] Error message[Out]
+								null // [9] Modified student list to be reset
+						})) {
+					vo.setErrorStudents((String) validationObj[7]);
+					vo.setErrorMsg((String) validationObj[8]);
+					resetStudentDataList = (List<StudentSessionStatusVO>) validationObj[9];
+				}
 				CustomerServiceSearchUtils.wipeOutSubtest ( 
 						this.customerServiceManagement ,
 						this.user,
@@ -1077,26 +1099,25 @@ public class ResetOperationController extends PageFlowController {
 			
 			sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
 					customerServiceManagement, testAdminId, itemSetId , null, null, null);
-			 List<StudentSessionStatusVO> studentDetailsList = CustomerServiceSearchUtils.buildSubtestList(sstData, this.userTimeZone);
-			 prepareStudentDetailsMapForSessionFlow(studentDetailsList);
-			 vo.setStudentDetailsList(studentDetailsList);
+			List<StudentSessionStatusVO> studentDetailsList = CustomerServiceSearchUtils.buildSubtestList(sstData, this.userTimeZone);
+			prepareStudentDetailsMapForSessionFlow(studentDetailsList);
+			vo.setStudentDetailsList(studentDetailsList);
 			
-			 vo.setSelectedTestAdmin(testAdminId);
-			 vo.setSelectedItemSetId(itemSetId);
-			 try {
-					Gson gson = new Gson();
-					String json = gson.toJson(vo);
-					resp.setContentType(CONTENT_TYPE_JSON);
-					resp.flushBuffer();
-					stream = resp.getOutputStream();
-					stream.write(json.getBytes("UTF-8"));
-
-				} finally{
-					if (stream!=null){
-						stream.close();
-					}
+			vo.setSelectedTestAdmin(testAdminId);
+			vo.setSelectedItemSetId(itemSetId);
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(vo);
+				resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes("UTF-8"));
+			
+			} finally {
+				if (stream != null) {
+					stream.close();
 				}
-			
+			}
 		} catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			System.err.println("Exception while findSubtestListBySessionTD.");
@@ -1166,6 +1187,7 @@ public class ResetOperationController extends PageFlowController {
 			}
 		}
 	}
+	
 
 	@Jpf.Action()
 	protected Forward resetSubtestForAStudent(){
@@ -1199,9 +1221,25 @@ public class ResetOperationController extends PageFlowController {
 			if(studentDetailsMap.get(itemSetId.toString()) != null){
 				studentTestStatusDetailsList.add(studentDetailsMap.get(itemSetId.toString()));
 			} 
-			
+			Object [] validationObj = null;
 			if(isWipeOut){
-				
+				if (this.isLLORPCustomer
+						&& !validateResetProcessFromBMT(validationObj = new Object[] {
+								this.customerServiceManagement,// [0] Controller
+								this.user,// [1] User bean
+								customerID,// [2] Customer ID
+								testAdminId,// [3] Session ID
+								studentTestStatusDetailsList,// [4] Submitted student list
+								"BMTRSETAPI",// [5] BMT API Type
+								Boolean.FALSE,// [6] isBySession
+								null,// [7] Erroneous Student Login ID(s)[Out]
+								null,// [8] Error message[Out]
+								null // [9] Modified student list to be reset
+						})) {
+					vo.setErrorStudents((String) validationObj[7]);
+					vo.setErrorMsg((String) validationObj[8]);
+					studentTestStatusDetailsList = (List<StudentSessionStatusVO>) validationObj[9];
+				}
 				CustomerServiceSearchUtils.wipeOutSubtest (
 						this.customerServiceManagement, 
 						this.user,
@@ -1270,6 +1308,102 @@ public class ResetOperationController extends PageFlowController {
 		return null;
 	}
 
+	/**
+	 * Validate students through BMT API and Modified the student list. Generate
+	 * Erroneous record and messages if any
+	 * 
+	 * @param objects
+	 * @return boolean
+	 */
+	private boolean validateResetProcessFromBMT(Object[] objects) {
+		CustomerServiceManagement customerServiceManagement = (CustomerServiceManagement) objects[0];
+
+		User user = (User) objects[1];
+		Integer customerId = (Integer) objects[2];
+		Integer testSessionId = (Integer) objects[3];
+		List<StudentSessionStatusVO> stdSessionList = (List<StudentSessionStatusVO>) objects[4];
+		Map<String, String> studentLogindNameMap = new HashMap<String, String>();
+
+		// START: BMT API request JSON bean preparation
+		List<ResetRosters> rosterList = new ArrayList<ResetRosters>();
+		for (StudentSessionStatusVO stdVO : stdSessionList) {
+			ResetRosters rosters = new ResetRosters();
+			rosters.setRosterId(stdVO.getTestRosterId().toString());
+			rosters.setSubtestId(stdVO.getTdTstItemSetId());
+			rosters.setSubtestOrder(stdVO.getTdItemSetOrder().toString());
+			studentLogindNameMap.put(stdVO.getTestRosterId().toString(), stdVO
+					.getStudentLoginName());
+			rosterList.add(rosters);
+		}
+		BMTResetSessionResponseBean bmtRSRBean = new BMTResetSessionResponseBean();
+		bmtRSRBean.setExternalAdminUserId(user.getUserId().toString());
+		bmtRSRBean.setTestSessionId(testSessionId.toString());
+		bmtRSRBean.setRosters(rosterList);
+		bmtRSRBean.setStudentLogindNameMap(studentLogindNameMap);
+		// END: BMT API request JSON bean preparation
+
+		try {
+			Object[] validateObjs = null;
+			boolean flag = customerServiceManagement
+					.validateResetProcessFromBMT(validateObjs = new Object[] {
+							customerId, // [0] Customer ID
+							bmtRSRBean, // [1] BMT Request JSON Bean
+							objects[5], // [2] BMT API Type
+							stdSessionList.size(), // [3]Total count
+							objects[6], // [4] isBySession
+							null, // [5] Erroneous Student Login ID(s)[Out]
+							null // [6] Error message[Out]
+					});
+			objects[7] = toString((Map<String, String>) validateObjs[5]);
+			objects[8] = validateObjs[6];
+			objects[9] = (flag) ? stdSessionList : populatedModifiedRosterList(
+					stdSessionList, (Map<String, String>) validateObjs[5]);
+			return flag;
+		} catch (CTBBusinessException e) {
+			objects[8] = e.getMessage();
+			return false;
+		}
+	}
+
+	/**
+	 * Modify student list if any erroneous record found from BMT
+	 * 
+	 * @param stdSessionList
+	 * @param errorRosters
+	 * @return
+	 */
+	private List<StudentSessionStatusVO> populatedModifiedRosterList(
+			List<StudentSessionStatusVO> stdSessionList,
+			Map<String, String> errorRosters) {
+		List<StudentSessionStatusVO> modStdSessionList = new ArrayList<StudentSessionStatusVO>();
+		if (errorRosters != null && !errorRosters.isEmpty()) {
+			for (StudentSessionStatusVO stdVO : stdSessionList) {
+				if (!errorRosters.containsKey(stdVO.getTestRosterId()
+						.toString())) {
+					modStdSessionList.add(stdVO);
+				}
+			}
+		}
+		return (modStdSessionList.isEmpty()) ? null : modStdSessionList;
+	}
+
+	/**
+	 * Generated Student Login Name that will be shown in UI
+	 * 
+	 * @param collection
+	 * @return
+	 */
+	private String toString(Map<String, String> errorRosters) {
+		if (errorRosters != null && !errorRosters.isEmpty()) {
+			StringBuilder strValue = new StringBuilder();
+			for (String value : errorRosters.keySet()) {
+				strValue.append(errorRosters.get(value)).append("<br/>");
+			}
+			return strValue.toString();
+		}
+		return null;
+	}
+	
     private List<StudentSessionStatusVO> prepareResetStudentDataList(	String parameter) {
     	List<StudentSessionStatusVO> resetStudentDataList = new ArrayList<StudentSessionStatusVO>();
     	if(parameter !=null && parameter.trim().length()>0){
@@ -1614,7 +1748,7 @@ public class ResetOperationController extends PageFlowController {
 					&& cc.getDefaultValue().equals("T")) {
             	lloRPCustomer = true;
 				continue;
-            }
+			}       
 		}       
 		if (isWVCustomer)
 		{
@@ -1634,7 +1768,7 @@ public class ResetOperationController extends PageFlowController {
 		
 		this.isTASCCustomer = isTascCustomer;
 		this.isTASCReadinessCustomer = isTASCReadinessCustomer;//Added for story OAS-1542 TASC Readiness - Enable/Test 'Test Reset'
-		
+		this.isLLORPCustomer = lloRPCustomer; //Added for BMT API Reset call
 		if(isWVCustomer)
 		{
 			this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig));
@@ -1659,7 +1793,7 @@ public class ResetOperationController extends PageFlowController {
      	//Done for Engrade customer to block admin users from adding/editing/deleting users
      	this.getSession().setAttribute("hasSSOHideUserProfile", new Boolean(hasSSOHideUserProfile));
      	this.getSession().setAttribute("hasSSOBlockUserModifications", new Boolean(hasSSOBlockUserModifications));
-     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));
+     	this.getSession().setAttribute("isEngradeCustomer", new Boolean(this.isEngradeCustomer));     	
      	this.getSession().setAttribute("isLLORPCustomer", new Boolean(lloRPCustomer));
 	}
 	

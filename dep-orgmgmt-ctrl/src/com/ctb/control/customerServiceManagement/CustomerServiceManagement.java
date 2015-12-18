@@ -6,7 +6,6 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.AuditFileReopenSubtest;
-import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 
 @ControlInterface()
@@ -25,4 +24,5 @@ public interface CustomerServiceManagement {
 	void wipeOutSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)	throws CTBBusinessException;
 	void wipeOutScoringData(java.lang.Integer testAdminId, java.lang.String studentList, java.lang.Integer itemSetId) throws CTBBusinessException;
 	void wipeOutScoringDataForTASC(java.lang.Integer testAdminId, java.lang.String studentList, java.lang.Integer itemSetId) throws CTBBusinessException;
+	boolean validateResetProcessFromBMT(Object [] object) throws CTBBusinessException;
 }

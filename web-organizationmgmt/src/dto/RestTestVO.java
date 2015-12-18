@@ -15,6 +15,9 @@ public class RestTestVO implements java.io.Serializable {
 	Integer selectedItemSetId = null;
 	OperationStatus status = new OperationStatus();
 	
+	String errorStudents = null;
+	String errorMsg = null;
+	
 
 	public void setDeliverableItemSetList(List<ScheduleElementVO> deliverableItemSetList) {
 		if(deliverableItemSetList != null)
@@ -52,4 +55,14 @@ public class RestTestVO implements java.io.Serializable {
 		this.studentList = studentList;
 	}
 
+
+	public void setErrorStudents(String errorStudents) {
+		this.errorStudents = errorStudents;
+	}
+
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
+	}
+	
 }
