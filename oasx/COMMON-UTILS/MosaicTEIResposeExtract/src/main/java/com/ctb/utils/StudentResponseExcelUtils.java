@@ -19,8 +19,7 @@ public class StudentResponseExcelUtils {
 	private HSSFWorkbook wb;
 
 	/**
-	 * Generate the excel report with a single sheet Here 65k limit restriction
-	 * is not present
+	 * Generate the excel report
 	 * 
 	 * @param args
 	 * @throws Exception
@@ -29,11 +28,7 @@ public class StudentResponseExcelUtils {
 		setupForExcel(args);
 		if (cache != null && cache.getExtractKeys().size() > 0) {
 			wb = new HSSFWorkbook();
-			HSSFSheet reportSheet = wb.createSheet();
-			wb.setSheetName(0, MSSConstantUtils.excelSheetName);
-
-			prepareReportSheet(reportSheet);
-
+			prepareReportSheet();
 			HSSFPalette palette = wb.getCustomPalette();
 
 			palette.setColorAtIndex(HSSFColor.TEAL.index, (byte) 70, // RGB red
@@ -58,21 +53,14 @@ public class StudentResponseExcelUtils {
 	
 	/**
 	 * Preparing the header and other data of excel sheet
-	 * @param reportSheet
-	 * @param wb
 	 * @throws IOException
 	 */
-	private void prepareReportSheet(HSSFSheet reportSheet) throws IOException {
+	private void prepareReportSheet() throws IOException {
 		int rowno = 0;
-		String[] headings;
-		headings = populateStudentHeader();
-		HSSFRow row = null;
-		row = reportSheet.createRow(rowno++);
-		int cellCount = 0;
-		for (int i = 0; i < headings.length; i++) {
-			addCell(row, (short) cellCount++, headings[i]);
-		}
-		reportSheet.addMergedRegion(new CellRangeAddress(rowno-1, rowno-1, cellCount-1, cellCount+5));
+		int sheetCount = 0;
+		HSSFSheet reportSheet = wb.createSheet();
+		wb.setSheetName(sheetCount, MSSConstantUtils.excelSheetName);
+		HSSFRow row = createHeaderRow(reportSheet, rowno++);
 
 		for (String id : cache.getExtractKeys()) {
 			MosaicRequestExcelPojo msReq = cache.getExtractResponse(id);
@@ -96,9 +84,32 @@ public class StudentResponseExcelUtils {
 				 * msReq.getStudentrosterid() + "\t||\t" + msReq.getOasItemId()
 				 * + "\t||\t" + msReq.getPEId() + "\t||\t" + msReq.getJson());
 				 */
-			}
+				//Handle 65k limit here.Create more sheets if needed.
+				if(rowno % 65535 == 0){
+					reportSheet = wb.createSheet();
+					wb.setSheetName(++sheetCount, MSSConstantUtils.excelSheetName.concat("_").concat(String.valueOf(sheetCount)));
+					rowno = 0;
+					row = createHeaderRow(reportSheet, rowno++);
+				}
+			}			
 		}
-
+	}
+	
+	/**
+	 * 
+	 * @param reportSheet
+	 * @param rowno
+	 * @return
+	 */
+	private HSSFRow createHeaderRow(HSSFSheet reportSheet, int rowno){
+		String[] headings = populateStudentHeader();
+		HSSFRow row = reportSheet.createRow(rowno);
+		int cellCount = 0;
+		for (int i = 0; i < headings.length; i++) {
+			addCell(row, (short) cellCount++, headings[i]);
+		}
+		reportSheet.addMergedRegion(new CellRangeAddress(rowno, rowno, cellCount-1, cellCount+5));
+		return row;
 	}
 	
 	/**
