@@ -20,6 +20,7 @@ public class SQLUtils {
 			+ "    AND tr.customer_id = ta.customer_id "
 			+ "    AND tr.test_admin_id = ta.test_admin_id "
 			+ "    AND ta.product_id = prod.product_id "
+			+ "	   AND siss.completion_status not in ('SC','NT') "
 			+ "    AND prod.parent_product_id = ? "
 			+ "    AND ta.activation_status = 'AC' "
 			+ "    AND tr.activation_status = 'AC' "
