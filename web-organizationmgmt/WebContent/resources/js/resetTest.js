@@ -302,6 +302,7 @@
 	}
 	
 	function populateAndDisplayStep4BySession(){
+		$("#displayMessage").hide();
 		bySession = true;
 		isWipeOut = false;
 		$("#wipeOutBySession1").attr("checked","checked");
@@ -562,16 +563,17 @@
 										populateAllTDAndStudentDataMap(data.studentDetailsList);
 										$("#reset_by_session_step3").show();
 									}
+									hideStepsShowBySession(false,false,false,true);
 									$("#bmtResetValidationErrorMsg").html(data.errorMsg);
 									$("#bmtResetValFailStdUsrName").html(data.errorStudents);
 									bmtResetValidationErrorPopup();
 									$('#bmtResetValidationErrorPopup').show();
 								}else{
+									hideStepsShowBySession(false,false,false,true);
 									$('#displayMessageImg')[0].src = $('#displayMessageImg')[0].src.replace("icon_info","icon_error");
 									showHideMessage(true, $("#resetTestTitle").val(), data.errorMsg);
 								}
-								hideStepsShowBySession(false,false,false,true);
-							}else{						
+							}else{ 						
 								if(data != undefined && data != null && data.studentDetailsList.length>0){							
 									populate_reset_by_session_step3_student_grid(data.studentDetailsList);
 									populateAllTDAndStudentDataMap(data.studentDetailsList);

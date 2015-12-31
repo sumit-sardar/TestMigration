@@ -25,6 +25,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.BMTResetSessionResponseBean;
+import com.ctb.bean.testAdmin.BMTSoftResetSessionResponseBean;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
@@ -1057,7 +1058,8 @@ public class ResetOperationController extends PageFlowController {
 								Boolean.TRUE,// [6] isBySession
 								null,// [7] Erroneous Student Login ID(s)[Out]
 								null,// [8] Error message[Out]
-								null // [9] Modified student list to be reset
+								null, // [9] Modified student list to be reset
+								Boolean.FALSE // [10] FALSE for Hard reset
 						})) {
 					vo.setErrorStudents((String) validationObj[7]);
 					vo.setErrorMsg((String) validationObj[8]);
@@ -1076,6 +1078,24 @@ public class ResetOperationController extends PageFlowController {
 						creatorOrgId,
 						null);
 			} else {
+				if (this.isLLORPCustomer
+						&& !validateResetProcessFromBMT(validationObj = new Object[] {
+								this.customerServiceManagement,// [0] Controller
+								this.user,// [1] User bean
+								customerID,// [2] Customer ID
+								testAdminId,// [3] Session ID
+								resetStudentDataList,// [4] Submitted student list
+								"BMTSOFTAPI",// [5] BMT API Type
+								Boolean.TRUE,// [6] isBySession
+								null,// [7] Erroneous Student Login ID(s)[Out]
+								null,// [8] Error message[Out]
+								null, // [9] Modified student list to be reset
+								Boolean.TRUE // [10] TRUE for soft reset
+						})) {
+					vo.setErrorStudents((String) validationObj[7]);
+					vo.setErrorMsg((String) validationObj[8]);
+					resetStudentDataList = (List<StudentSessionStatusVO>) validationObj[9];
+				}
 				CustomerServiceSearchUtils.reOpenSubtest( 
 						this.customerServiceManagement ,
 						this.user,
@@ -1089,11 +1109,13 @@ public class ResetOperationController extends PageFlowController {
 						creatorOrgId,
 						null);
 				
-				if(this.isLasLinkCustomer){
-					wipeOutScoringData(testAdminId, resetStudentDataList);
-				}
-				else if(this.isTASCCustomer){
-					wipeOutScoringDataForTASC(testAdminId, resetStudentDataList);
+				if(resetStudentDataList != null  && resetStudentDataList.size() > 0){
+					if(this.isLasLinkCustomer){
+						wipeOutScoringData(testAdminId, resetStudentDataList);
+					}
+					else if(this.isTASCCustomer){
+						wipeOutScoringDataForTASC(testAdminId, resetStudentDataList);
+					}
 				}
 			}
 			
@@ -1234,7 +1256,8 @@ public class ResetOperationController extends PageFlowController {
 								Boolean.FALSE,// [6] isBySession
 								null,// [7] Erroneous Student Login ID(s)[Out]
 								null,// [8] Error message[Out]
-								null // [9] Modified student list to be reset
+								null, // [9] Modified student list to be reset
+								Boolean.FALSE // [10] FALSE for Hard reset
 						})) {
 					vo.setErrorStudents((String) validationObj[7]);
 					vo.setErrorMsg((String) validationObj[8]);
@@ -1253,6 +1276,24 @@ public class ResetOperationController extends PageFlowController {
 						creatorOrgId,
 						studentId);
 			} else {
+				if (this.isLLORPCustomer
+						&& !validateResetProcessFromBMT(validationObj = new Object[] {
+								this.customerServiceManagement,// [0] Controller
+								this.user,// [1] User bean
+								customerID,// [2] Customer ID
+								testAdminId,// [3] Session ID
+								studentTestStatusDetailsList,// [4] Submitted student list
+								"BMTSOFTAPI",// [5] BMT API Type
+								Boolean.FALSE,// [6] isBySession
+								null,// [7] Erroneous Student Login ID(s)[Out]
+								null,// [8] Error message[Out]
+								null, // [9] Modified student list to be reset
+								Boolean.TRUE // [10] TRUE for soft reset
+						})) {
+					vo.setErrorStudents((String) validationObj[7]);
+					vo.setErrorMsg((String) validationObj[8]);
+					studentTestStatusDetailsList = (List<StudentSessionStatusVO>) validationObj[9];
+				}
 				CustomerServiceSearchUtils.reOpenSubtest (
 						this.customerServiceManagement, 
 						this.user,
@@ -1266,11 +1307,13 @@ public class ResetOperationController extends PageFlowController {
 						creatorOrgId,
 						studentId);
 				
-				if(this.isLasLinkCustomer){
-					customerServiceManagement.wipeOutScoringData(testAdminId, studentId.toString(), itemSetId);
-				}
-				else if(this.isTASCCustomer){
-					customerServiceManagement.wipeOutScoringDataForTASC(testAdminId, studentId.toString(), itemSetId);
+				if(studentTestStatusDetailsList != null  && studentTestStatusDetailsList.size() > 0){
+					if(this.isLasLinkCustomer){
+						customerServiceManagement.wipeOutScoringData(testAdminId, studentId.toString(), itemSetId);
+					}
+					else if(this.isTASCCustomer){
+						customerServiceManagement.wipeOutScoringDataForTASC(testAdminId, studentId.toString(), itemSetId);
+					}
 				}
 			}
 			
@@ -1323,36 +1366,52 @@ public class ResetOperationController extends PageFlowController {
 		Integer testSessionId = (Integer) objects[3];
 		List<StudentSessionStatusVO> stdSessionList = (List<StudentSessionStatusVO>) objects[4];
 		Map<String, String> studentLogindNameMap = new HashMap<String, String>();
-
-		// START: BMT API request JSON bean preparation
-		List<ResetRosters> rosterList = new ArrayList<ResetRosters>();
-		for (StudentSessionStatusVO stdVO : stdSessionList) {
-			ResetRosters rosters = new ResetRosters();
-			rosters.setRosterId(stdVO.getTestRosterId().toString());
-			rosters.setSubtestId(stdVO.getTdTstItemSetId());
-			rosters.setSubtestOrder(stdVO.getTdItemSetOrder().toString());
-			studentLogindNameMap.put(stdVO.getTestRosterId().toString(), stdVO
-					.getStudentLoginName());
-			rosterList.add(rosters);
-		}
+		Boolean isSoftReset = (Boolean)objects[10];
 		BMTResetSessionResponseBean bmtRSRBean = new BMTResetSessionResponseBean();
-		bmtRSRBean.setExternalAdminUserId(user.getUserId().toString());
-		bmtRSRBean.setTestSessionId(testSessionId.toString());
-		bmtRSRBean.setRosters(rosterList);
-		bmtRSRBean.setStudentLogindNameMap(studentLogindNameMap);
-		// END: BMT API request JSON bean preparation
-
+		BMTSoftResetSessionResponseBean[] bmtSRSRBeanArr = null;
+		if(isSoftReset.booleanValue()){
+			// START: Soft Reset BMT API request JSON bean preparation
+			List<BMTSoftResetSessionResponseBean> reqJsn = new ArrayList<BMTSoftResetSessionResponseBean>();
+			for (StudentSessionStatusVO stdVO : stdSessionList) {
+				BMTSoftResetSessionResponseBean reqResp = new BMTSoftResetSessionResponseBean();
+				reqResp.setRosterId(stdVO.getTestRosterId().toString());
+				reqResp.setStudentLogindName(stdVO.getStudentLoginName());
+				reqJsn.add(reqResp);
+			}
+			bmtSRSRBeanArr = reqJsn
+					.toArray(new BMTSoftResetSessionResponseBean[reqJsn.size()]);
+			// END: Soft Reset BMT API request JSON bean preparation
+		} else {
+			// START: Hard Reset BMT API request JSON bean preparation
+			List<ResetRosters> rosterList = new ArrayList<ResetRosters>();
+			for (StudentSessionStatusVO stdVO : stdSessionList) {
+				ResetRosters rosters = new ResetRosters();
+				rosters.setRosterId(stdVO.getTestRosterId().toString());
+				rosters.setSubtestId(stdVO.getTdTstItemSetId());
+				rosters.setSubtestOrder(stdVO.getTdItemSetOrder().toString());
+				studentLogindNameMap.put(stdVO.getTestRosterId().toString(),
+						stdVO.getStudentLoginName());
+				rosterList.add(rosters);
+			}
+			
+			bmtRSRBean.setExternalAdminUserId(user.getUserId().toString());
+			bmtRSRBean.setTestSessionId(testSessionId.toString());
+			bmtRSRBean.setRosters(rosterList);
+			bmtRSRBean.setStudentLogindNameMap(studentLogindNameMap);
+			// END: Hard Reset BMT API request JSON bean preparation
+		}
 		try {
 			Object[] validateObjs = null;
 			boolean flag = customerServiceManagement
 					.validateResetProcessFromBMT(validateObjs = new Object[] {
 							customerId, // [0] Customer ID
-							bmtRSRBean, // [1] BMT Request JSON Bean
+							(isSoftReset.booleanValue())?bmtSRSRBeanArr:bmtRSRBean, // [1] BMT Request JSON Bean
 							objects[5], // [2] BMT API Type
 							stdSessionList.size(), // [3]Total count
 							objects[6], // [4] isBySession
 							null, // [5] Erroneous Student Login ID(s)[Out]
-							null // [6] Error message[Out]
+							null, // [6] Error message[Out]
+							isSoftReset // [7] TRUE for Soft Reset
 					});
 			objects[7] = toString((Map<String, String>) validateObjs[5]);
 			objects[8] = validateObjs[6];

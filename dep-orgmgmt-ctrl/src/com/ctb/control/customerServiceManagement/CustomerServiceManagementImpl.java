@@ -23,6 +23,7 @@ import oracle.sql.CLOB;
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -33,6 +34,7 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.AuditFileReopenSubtest;
 import com.ctb.bean.testAdmin.BMTResetSessionResponseBean;
+import com.ctb.bean.testAdmin.BMTSoftResetSessionResponseBean;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.ScheduleElementData;
@@ -48,6 +50,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 
 @ControlImplementation(isTransient=true)
@@ -610,7 +613,6 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 					if(cstmt != null)
 						cstmt.close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 		}
@@ -662,7 +664,9 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 			throws CTBBusinessException {
 
 		Integer customerId = (Integer) objects[0];
-		BMTResetSessionResponseBean bmtRSRBean = (BMTResetSessionResponseBean) objects[1];
+		Boolean isSoftReset = (Boolean) objects[7];
+		BMTResetSessionResponseBean bmtRSRBean = null;
+		BMTSoftResetSessionResponseBean[] bmtSRSRBean = null;
 		String bmtApiResourceType = (String) objects[2];
 		Integer submittedCount = (Integer) objects[3];
 		Boolean isBySession = (Boolean) objects[4];
@@ -670,6 +674,12 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 		Map<String, String> errorRosterMap = new HashMap<String, String>();
 		StringBuilder errorMsg = new StringBuilder(
 				"Server is not responding. Please try again later or call Customer Support if you continue to receive this message.");
+		
+		if (isSoftReset.booleanValue()) {
+			bmtSRSRBean = (BMTSoftResetSessionResponseBean[]) objects[1];
+		} else {
+			bmtRSRBean = (BMTResetSessionResponseBean) objects[1];
+		}
 		try {
 			/**
 			 * Get the BMT url for database
@@ -677,14 +687,26 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 			bmtApiURL = this.product.getBMTApiUrl(customerId,
 					bmtApiResourceType);
 			if (bmtApiURL != null) {
-				if (!invokeBMTApiForResetStudent(bmtApiURL, bmtRSRBean,
-						errorMsg, errorRosterMap, submittedCount.intValue(), isBySession)) {
-					/**
-					 * When server is unreachable or error record found.
-					 */
-					objects[5] = errorRosterMap;
-					objects[6] = errorMsg.toString();
-					return false;
+				if(isSoftReset.booleanValue()){
+					if (!invokeBMTApiForSoftResetStudent(bmtApiURL, bmtSRSRBean,
+							errorMsg, errorRosterMap, submittedCount.intValue(), isBySession)) {
+						/**
+						 * When server is unreachable or error record found.
+						 */
+						objects[5] = errorRosterMap;
+						objects[6] = errorMsg.toString();
+						return false;
+					}
+				}else {
+					if (!invokeBMTApiForResetStudent(bmtApiURL, bmtRSRBean,
+							errorMsg, errorRosterMap, submittedCount.intValue(), isBySession)) {
+						/**
+						 * When server is unreachable or error record found.
+						 */
+						objects[5] = errorRosterMap;
+						objects[6] = errorMsg.toString();
+						return false;
+					}
 				}
 			} else {
 				/**
@@ -705,6 +727,145 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 		return true;
 	}
 	
+	/**
+	 * Invokes BMT API with the required parameters. Returns False - If
+	 * server is unreachable or erroneous student record True - If success
+	 * for all student
+	 * 
+	 * @param bmtApiURL
+	 * @param bmtSRSRBean
+	 * @param errorMsg
+	 * @param errorRosterMap
+	 * @param submittedCount
+	 * @param isBySession
+	 * @return
+	 */
+	private boolean invokeBMTApiForSoftResetStudent(String bmtApiURL,
+			BMTSoftResetSessionResponseBean[] bmtSRSRBean,
+			StringBuilder errorMsg, Map<String, String> errorRosterMap,
+			int submittedCount, Boolean isBySession) {
+
+		try{
+			List<BMTSoftResetSessionResponseBean> bmtResponse = null;
+			CloseableHttpClient client = HttpClientBuilder.create().build();
+			String payload = getPayloadBody(bmtSRSRBean);
+			System.out.println("Soft Reset reequest JSON: "+payload);
+			/**
+			 * Creates a StringEntity with the specified pay load and content type. 
+			 */
+			StringEntity requestBody = new StringEntity(payload, ContentType.create("text/json"));
+			HttpPost httpPostReq = new HttpPost(new URI(bmtApiURL));
+			httpPostReq.setEntity(requestBody); // set pay load
+			HttpResponse response = client.execute(httpPostReq);
+			
+			int statusCode = response.getStatusLine().getStatusCode();
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+			StringBuffer result = new StringBuffer();
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result.append(line);
+			}
+			System.out.println("Soft Reset Invoked URL: \""+bmtApiURL+"\" & Response Code: "+statusCode);
+			if (result != null) {
+				System.out.println("Soft Reset response JSON: "
+						+ result.toString());
+				Gson gson = new Gson();
+				bmtResponse = gson
+						.fromJson(
+								result.toString(),
+								new TypeToken<ArrayList<BMTSoftResetSessionResponseBean>>() {
+								}.getType());
+			}
+			
+			if (statusCode != 200) {
+				/**
+				 * Unable to access with BMT URL successfully.
+				 */
+				return false;
+			} else if (bmtResponse != null && bmtResponse.size() > 0) {
+				for (BMTSoftResetSessionResponseBean respJSON : bmtResponse) {
+					if (respJSON != null && respJSON.getAssignments() != null
+							&& respJSON.getAssignments().length > 0) {
+
+						for (BMTSoftResetSessionResponseBean.Assignments assignment : respJSON
+								.getAssignments()) {
+							if (assignment.isInProgress()) {
+								String loginName = getStudentLoginName(
+										bmtSRSRBean, respJSON.getRosterId());
+								errorRosterMap.put(respJSON.getRosterId(),
+										loginName);
+								break;
+							}
+						}
+					}					
+				}
+				if (!errorRosterMap.isEmpty()
+						&& errorRosterMap.size() > 0) {
+					if (!isBySession.booleanValue()) {
+						errorMsg
+								.delete(0, errorMsg.length())
+								.append(
+										"Failed to reset the student. Please contact Customer Support for assistance.");
+						errorRosterMap.clear();
+						/**
+						 * By Student view for single student
+						 */
+						return false;
+					}
+					if (errorRosterMap.size() == submittedCount) {
+						errorMsg
+								.delete(0, errorMsg.length())
+								.append(
+										"Failed to reset subtest for selected student(s). Please contact Customer Support for assistance.");
+						errorRosterMap.clear();
+					} else {
+						errorMsg
+								.delete(0, errorMsg.length())
+								.append(
+										"The system was not able to reset below student(s) from the test session. Please try again later or call Customer Support if you continue to receive this message.");
+					}
+					/**
+					 * Some erroneous students are present in total
+					 * count
+					 */
+					return false;
+				} else
+					/**
+					 * For all success
+					 */
+					return true;
+			}
+			/**
+			 * Do not reset any student
+			 */
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * Get Student login name from roster Id
+	 * @param bmtSRSRBean
+	 * @param rosterId
+	 * @return String
+	 */
+	private String getStudentLoginName(
+			BMTSoftResetSessionResponseBean[] bmtSRSRBean, String rosterId) {
+
+		for (int indx = 0; indx < bmtSRSRBean.length; indx++) {
+			BMTSoftResetSessionResponseBean bean = bmtSRSRBean[indx];
+			if (bean != null && bean.getRosterId() != null
+					&& rosterId.equals(bean.getRosterId()))
+				return bean.getStudentLogindName();
+		}
+		return null;
+	}
+
 	/**
 	 * Invokes BMT API with the required parameters. Returns
 	 * False - If server is unreachable or erroneous student record
@@ -842,6 +1003,32 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 
 				}).serializeNulls().create();
 		return gson.toJson(bmtRSRBean);
+	}
+	
+	/**
+	 * Get JSON string from BMTSoftResetSessionResponseBean[] object
+	 * 
+	 * @param bmtSRSRBean
+	 * @return JSON string for pay load
+	 */
+	private String getPayloadBody(BMTSoftResetSessionResponseBean[] bmtSRSRBean) {
+		Gson gson = new GsonBuilder().setExclusionStrategies(
+				new ExclusionStrategy() {
+					@Override
+					public boolean shouldSkipClass(Class<?> arg0) {
+						return false;
+					}
+
+					@Override
+					public boolean shouldSkipField(FieldAttributes arg0) {
+						return ("assignments".equals(arg0.getName())
+								|| "errorCode".equals(arg0.getName())
+								|| "rosterStatus".equals(arg0.getName()) || "studentLogindNameMap"
+								.equals(arg0.getName()));
+					}
+
+				}).serializeNulls().create();
+		return gson.toJson(bmtSRSRBean);
 	}
 }
 
