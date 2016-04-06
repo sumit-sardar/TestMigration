@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.util.OASLogger;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
 
@@ -252,18 +254,22 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	
 	@Jpf.Action(forwards={	@Jpf.Forward(name = "success",	path ="") })
 	protected Forward getAllCompletedStudentForOrgNode(){
-
+		
 		OutputStream stream = null;
 		HttpServletResponse resp = getResponse();
 		resp.setCharacterEncoding("UTF-8"); 
 		List<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>(0);
 		Integer [] testRosterList = null;
+		OASLogger.getLogger("Immediate Reporting").info("***** OASLogger:: Immediate Reporting :: getAllCompletedStudentForOrgNode() called for logged-in user >> "+ this.userName); 
 		try {
 			ManageStudentData msData = null;
 			Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
 			Integer productId = Integer.parseInt(getRequest().getParameter("productId").toString());
-			System.out.println("Framework Product Id : "+ productId);
+			//System.out.println("Framework Product Id : "+ productId);
+			OASLogger.getLogger("Immediate Reporting").info("***** OASLogger:: Immediate Reporting :: Selected Org ID >> " + treeOrgNodeId + " :: Selected Framework Product ID >> " + productId);
+			OASLogger.getLogger("Immediate Reporting").info("***** OASLogger:: Immediate Reporting :: Student data fetch start time >> " +  new Date(System.currentTimeMillis()));
 			msData = StudentSearchUtils.getAllCompletedStudentForOrgNode(this.userName, this.studentManagement, treeOrgNodeId, productId);
+			OASLogger.getLogger("Immediate Reporting").info("***** OASLogger:: Immediate Reporting :: Student data fetch end time >> " + new Date(System.currentTimeMillis()));
 			studentList = StudentSearchUtils.buildStudentList(msData);
 			//populate student roster list
 			testRosterList = new Integer [msData.getManageStudents().length]; 
@@ -274,7 +280,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 				this.testRosterListForLLEAB = testRosterList;
 			else 
 				this.testRosterListForLL2ND = testRosterList;
-			System.out.println("Total Roster Present :"+ msData.getManageStudents().length );
+			//System.out.println("Total Roster Present :"+ msData.getManageStudents().length );
+			OASLogger.getLogger("Immediate Reporting").info("***** OASLogger:: Immediate Reporting :: Total Roster Count >> "+ msData.getManageStudents().length );
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
@@ -296,7 +303,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		}
 		catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			System.err.println("Exception while retrieving all completed student.");
+			//System.err.println("Exception while retrieving all completed student.");
+			OASLogger.getLogger("Immediate Reporting").error("***** OASLogger:: Immediate Reporting :: Exception in getAllCompletedStudentForOrgNode() method.");
 			e.printStackTrace();
 		}
 		return null;
