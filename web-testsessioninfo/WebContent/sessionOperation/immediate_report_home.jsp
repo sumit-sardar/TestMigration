@@ -38,13 +38,13 @@
 <h1><lb:label key="report.generic.title" /></h1>
 <c:if test="${singleProgOrg}"> 
 <p>
-    <lb:label key="report.generic.description" />
+    <lb:label key="report.generic.description.laslink" />
 </p>
 </c:if>
 
 <c:if test="${multipleProgram || multipleOrganizations}"> 
 <p>    
-	<lb:label key="report.mutipleProducts.description" />
+	<lb:label key="report.mutipleProducts.description.laslinks" />
 </p>
 </c:if>
 <br/>
