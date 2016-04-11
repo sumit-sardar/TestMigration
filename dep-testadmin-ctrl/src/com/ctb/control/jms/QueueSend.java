@@ -3,11 +3,14 @@ package com.ctb.control.jms;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.Hashtable;
 import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import com.ctb.util.OASLogger;
 
 public class QueueSend {
 
@@ -114,7 +117,8 @@ public class QueueSend {
 	    //BufferedReader msgStream = new BufferedReader(new InputStreamReader(System.in));
 	    if (testRosterId != null) {
 	        qs.send(testRosterId);
-	        System.out.println("JMS Message Sent");
+	        //System.out.println("JMS Message Sent");
+	        OASLogger.getLogger("QueueSend").info("*****OASLogger:: JMS message sent for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 	     } 
 	  }
 

@@ -130,6 +130,7 @@ import com.ctb.testSessionInfo.utils.UserPasswordUtils;
 import com.ctb.testSessionInfo.utils.WebUtils;
 import com.ctb.util.HMACQueryStringEncrypter;
 import com.ctb.util.LayoutUtil;
+import com.ctb.util.OASLogger;
 import com.ctb.util.OperationStatus;
 import com.ctb.util.SuccessInfo;
 import com.ctb.util.ValidationFailedInfo;
@@ -8454,11 +8455,13 @@ public class SessionOperationController extends PageFlowController {
 	     })
 		 protected Forward toggleValidationStatus() {
 	        Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+	        OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Roster Validation/Invalidation :: Initiated for roster ID >> [" + testRosterId + "] :: Requested by logged-in user >> [" + this.userName + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 			try {      
 	            this.testSessionStatus.toggleRosterValidationStatus(this.userName, testRosterId);
 	        }
 	        catch (Exception e) {
-	            e.printStackTrace();
+	        	OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Roster Validation/Invalidation :: Error occurred while processing of roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
+	            e.printStackTrace();	            
 	        }
 	        return null;
 		}
@@ -8480,7 +8483,7 @@ public class SessionOperationController extends PageFlowController {
             TestProduct testProduct = getProductForTestAdmin(this.sessionId);
             boolean isTabeSession = isTabeSession(testProduct.getProductType());
             base.setTabeSession(isTabeSession);
-            Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+            Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));            
 	        if(getRequest().getParameter("itemSetIds") != null){
 	        	strItemSetIds = getRequest().getParameter("itemSetIds");
 	        	itemSetIdsList = strItemSetIds.split("\\|");
@@ -8489,10 +8492,12 @@ public class SessionOperationController extends PageFlowController {
 	        for(int i=0; i<itemSetIdsList.length; i++){
 	        	itemSetIds[i] = Integer.valueOf(itemSetIdsList[i]);
 	        }
+	        OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Initiated for roster ID >> [" + testRosterId + "] and subtest IDs >> [" + strItemSetIds + "] :: Requested by logged-in user >> [" + this.userName + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 	        try {
 	        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, subtestIdAndReasonList, "ValidationStatus" );
 	        }
 	        catch (Exception e) {
+	        	OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Error occurred while processing of roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 	            e.printStackTrace();
 	        }
 	        createGson(base);
@@ -8508,9 +8513,11 @@ public class SessionOperationController extends PageFlowController {
 		 protected Forward toggleDonotScoreStatus() {
 	        Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
 	        String dnsStatus = getRequest().getParameter("dnsStatus");
+	        OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Roster - Do Not Score:: Initiated for roster ID >> [" + testRosterId + "] :: Requested by logged-in user >> [" + this.user.getUserName() + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 	        try {      
-	            this.testSessionStatus.updateDonotScore(testRosterId, dnsStatus, this.user.getUserId());
+	            this.testSessionStatus.updateDonotScore(testRosterId, dnsStatus, this.user.getUserId());	            
 	        } catch (Exception e) {
+	        	OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Roster - Do Not Score :: Error occured while processing roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 	            e.printStackTrace();
 	        }
 	        return null;
@@ -9617,10 +9624,12 @@ public class SessionOperationController extends PageFlowController {
 		        for(int i=0; i<itemSetIdsList.length; i++){
 		        	itemSetIds[i] = itemSetIdsList[i];
 		        }
+		        OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Initiated for roster ID >> [" + testRosterId + "] and subtest IDs >> [" + strItemSetIds + "] :: Requested by logged-in user >> [" + this.userName + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 		        try {
 		        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "ExemptionStatus" );
 		        }
 		        catch (Exception e) {
+		        	OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Error occured while processing roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 		            e.printStackTrace();
 		        }
 		        createGson(base);
@@ -9644,10 +9653,12 @@ public class SessionOperationController extends PageFlowController {
 		        for(int i=0; i<itemSetIdsList.length; i++){
 		        	itemSetIds[i] = itemSetIdsList[i];
 		        }
+		        OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Initiated for roster ID >> [" + testRosterId + "] and subtest IDs >> [" + strItemSetIds + "] :: Requested by logged-in user >> [" + this.userName + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 		        try {
 		        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "AbsentStatus" );
 		        }
 		        catch (Exception e) {
+		        	OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Error occured while processing roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 		            e.printStackTrace();
 		        }
 		        createGson(base);

@@ -3,6 +3,7 @@ package com.ctb.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -168,5 +169,15 @@ public class DateUtils
         }
         return result;
     }
-
+    
+    /**
+	 * Get the current timestamp in GMT time-zone  in long format
+	 * @return java.util.Date
+	 */
+	public static Long getCurrentGMTDateTime() {
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+		Date dateGMT = cal.getTime();
+		return new Long(dateGMT.getTime());
+	}
 } 

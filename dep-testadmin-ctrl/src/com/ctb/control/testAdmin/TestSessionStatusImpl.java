@@ -6,6 +6,7 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
@@ -1428,12 +1429,14 @@ public class TestSessionStatusImpl implements TestSessionStatus
 
             rosterDetail.setValidationStatus(newValidationStatus);
             roster.updateTestRoster(rosterDetail);
+            OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Roster Validation/Invalidation :: Validation Status updated to >> [" + newValidationStatus + "] for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
             
             if (!newValidationStatus.equals("PI")) {
                 StudentSessionStatus [] studentSessionStatuses =studentItemSetStatus.getStudentItemSetStatuses(testRosterId);
                 for (int i=0; i < studentSessionStatuses.length; i++) {
                     studentSessionStatuses[i].setValidationStatus(newValidationStatus);
                     studentItemSetStatus.updateStudentItemSetStatus(studentSessionStatuses[i]);
+                    OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Roster Validation/Invalidation :: Validation Status updated to >> [" + newValidationStatus + "] for subtest ID >> [" + studentSessionStatuses[i].getTdTstItemSetId() + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
                 }                
             }
            
@@ -1441,14 +1444,21 @@ public class TestSessionStatusImpl implements TestSessionStatus
             // scorer.sendObjectMessage(testRosterId);
           
             // new Weblogic 10.3 JMS call
-             invokeScoring(testRosterId);
+            OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Roster Validation/Invalidation :: Scoring invoked for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
+            invokeScoring(testRosterId);
+            
+            //OAS-4711: Adding scoring event log in database - GMT timestamp
+            roster.logScoringEvent(rosterDetail.getTestRosterId(), rosterDetail.getTestAdminId(), rosterDetail.getStudentId(), "Toggle Roster Validation/Invalidation", newValidationStatus, null, new Timestamp(DateUtils.getCurrentGMTDateTime()), userName, "Scoring triggered after Toggle Roster Validation/Invalidation");
+            OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Roster Validation/Invalidation :: Looged scoring event in database for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
             
         } catch (SQLException se) {
+        	OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Roster Validation/Invalidation :: SQLException occured while toggle for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleRosterValidationStatus: " + se.getMessage());
             rde.setStackTrace(se.getStackTrace());
             throw rde;  
         }
         catch (Exception se) {
+        	OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Roster Validation/Invalidation :: Exception occured while toggle for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleRosterValidationStatus: " + se.getMessage());
             rde.setStackTrace(se.getStackTrace());
             throw rde;  
@@ -1511,6 +1521,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
     public void toggleSubtestValidationStatus(String userName, Integer testRosterId, String [] itemSetIds,String status) throws CTBBusinessException{
         validator.validateRoster(userName, testRosterId, "testAdmin.toggleSubtestValidationStatus");
         //START- added for updating toggle values of validation ,exemption and absent status
+        String subtestIDs = "";
         try {
             if (itemSetIds == null || itemSetIds.length == 0)
                 return;
@@ -1521,16 +1532,22 @@ public class TestSessionStatusImpl implements TestSessionStatus
 		            		temp[1] = null;
 		            	}
 		            	studentItemSetStatus.toggleSubtestValidationStatus(testRosterId, Integer.parseInt(temp[0]),temp[1]);
+		            	subtestIDs += temp[0] + ",";
+		            	OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Subtest Validation Status :: Validation Status updated for subtest ID >> [" + temp[0] + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 		            }
              	}
              	else if(status.equals("ExemptionStatus")) {
 		            for (int i=0; i < itemSetIds.length; i++) {
 		            	studentItemSetStatus.toggleSubtestExemptionStatus(testRosterId, Integer.valueOf(itemSetIds[i]));
+		            	subtestIDs += Integer.valueOf(itemSetIds[i]) + ",";
+		            	OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Subtest Exemption Status :: Exemption Status updated for subtest ID >> [" + Integer.valueOf(itemSetIds[i]) + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 		            }
              	}
              	else if(status.equals("AbsentStatus")) {
 		            for (int i=0; i < itemSetIds.length; i++) {
 		            	studentItemSetStatus.toggleSubtestAbsentStatus(testRosterId, Integer.valueOf(itemSetIds[i]));
+		            	subtestIDs += Integer.valueOf(itemSetIds[i]) + ",";
+		            	OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Subtest Absent Status :: Absent Status updated for subtest ID >> [" + Integer.valueOf(itemSetIds[i]) + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
 		            }
              	}
              	 //END- added for updating toggle values of validation ,exemption and absent status
@@ -1539,19 +1556,27 @@ public class TestSessionStatusImpl implements TestSessionStatus
             RosterElement rosterDetail = getRoster(testRosterId);
             rosterDetail.setValidationStatus(newRosterStatus);
             roster.updateTestRoster(rosterDetail);
-          
+            OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Validation Status updated to >> [" + newRosterStatus + "] for roster ID >> " + testRosterId + " :: Timestamp >> " + new Date(System.currentTimeMillis()));
             // old Weblogic 8.1 JMS call
             // scorer.sendObjectMessage(testRosterId);
             
             // new Weblogic 10.3 JMS call
-             invokeScoring(testRosterId);
+            OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Scoring invoked for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
+            invokeScoring(testRosterId);
+            
+          //OAS-4711: Adding scoring event log in database - GMT timestamp
+            roster.logScoringEvent(rosterDetail.getTestRosterId(), rosterDetail.getTestAdminId(), rosterDetail.getStudentId(), "Toggle Subtest Validation/Invalidation", newRosterStatus, subtestIDs.substring(0, subtestIDs.length() -1), new Timestamp(DateUtils.getCurrentGMTDateTime()), userName, "Scoring triggered after Toggle Subtest Validation/Invalidation");
+            OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Logged scoring event in database for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
+            
             
         } catch (SQLException se) {
+        	OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Subtest Validation/Invalidation :: SQLException occured while toggle for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleSubtestValidationStatus: " + se.getMessage());
             rde.setStackTrace(se.getStackTrace());
             throw rde;  
         }
         catch (Exception se) {
+        	OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Subtest Validation/Invalidation :: Exception occured while toggle for roster ID >> [" + testRosterId + "] :: Timestamp >> " + new Date(System.currentTimeMillis()));
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleSubtestValidationStatus: " + se.getMessage());
             rde.setStackTrace(se.getStackTrace());
             throw rde;  
@@ -2410,7 +2435,9 @@ public class TestSessionStatusImpl implements TestSessionStatus
      public void updateDonotScore(Integer testRosterId, String dnsStatus, Integer userName) throws CTBBusinessException {	
      	try {
      		this.roster.updateDonotScore(testRosterId, dnsStatus, userName);
+     		OASLogger.getLogger("Toggle Validation").info("*****OASLogger:: Toggle Roster - Do Not Score :: DNS_STATUS updated to >> " + dnsStatus + " for roster ID >> " + testRosterId + " :: Timestamp >> " + new Date(System.currentTimeMillis()));
      	 } catch (SQLException se) {
+     		OASLogger.getLogger("Toggle Validation").error("*****OASLogger:: Toggle Roster - Do Not Score :: Exception occured while toggle for roster ID >> " + testRosterId + " :: Timestamp >> " + new Date(System.currentTimeMillis()));
      		CTBBusinessException rde = new CTBBusinessException("TestSessionStatusImpl: updateDoNotScore: " + se.getMessage());
      		rde.setStackTrace(se.getStackTrace());
  	        throw rde;
@@ -3201,6 +3228,5 @@ public class TestSessionStatusImpl implements TestSessionStatus
 		String number = padding + aIdx.toString();
 		aBuilder.append("&#" + number + ";");
    }
-	
      
 } 

@@ -1,6 +1,7 @@
 package com.ctb.control.db; 
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlExtension;
@@ -677,4 +678,8 @@ public interface TestRoster extends JdbcControl
     @JdbcControl.SQL(statement = "select ros.TEST_ROSTER_ID as testRosterId, ros.TEST_ADMIN_ID  as testAdminId, ros.STUDENT_ID  as studentId, st.ext_pin1  as extPin1 from test_roster ros , student st where ros.test_admin_id = {testAdminId} and ros.student_id = st.student_id and ros.activation_status = 'AC' and st.activation_status = 'AC'",
             arrayMaxLength = 0,fetchSize = 100)
     RosterElement [] getRosterDataForSession(Integer testAdminId) throws SQLException;
+    
+    //OAS-4711: Adding scoring event log in database
+    @JdbcControl.SQL(statement = "INSERT INTO OAS_SCORING_EVENT_LOG ( INVOKE_ID, ROSTER_ID, SESSION_ID, STUDENT_ID, SCORING_EVENT, ROSTER_VALIDATION_STATUS, SUBTEST_IDS, INVOKE_TIMESTAMP, INVOKED_BY, MESSAGE) VALUES (  SEQ_OAS_SCORING_EVENT_LOG_ID.NEXTVAL,  {testRosterId},  {sessionId},  {studentId},  {scoringEvent},  {rosterValidationStatus}, {subtestIds},  {logTimeStamp},  {userName},  {message} )")
+    void logScoringEvent(Integer testRosterId, Integer sessionId, Integer studentId, String scoringEvent, String rosterValidationStatus, String subtestIds, Timestamp logTimeStamp, String userName, String message) throws SQLException;
 }
