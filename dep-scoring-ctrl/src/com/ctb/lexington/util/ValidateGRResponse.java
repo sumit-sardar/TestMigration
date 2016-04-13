@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author 395168 kingshukc
@@ -23,7 +24,7 @@ public class ValidateGRResponse {
 
 		//GrRulesDAO grRulesDAO = new GrRulesDAO();
 		//String sanitizedString = new String(response);
-		
+		OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: validateGRResponse: validateGRResponse called with below scoring parameters for GR item ID = ["+ itemId +"] \n  GR response = [" + response+"] \n GR ItemRules = [" + grItemRules + "] \n GR CorrectAnswer = [" + grItemCorrectAnswer + "]");
 		String[] rulesSet=new String[200];
 		String sanitizedString = null;
 		String rawScore = "0";
@@ -34,7 +35,8 @@ public class ValidateGRResponse {
 			//System.out.println("Resposne is : " + response);
 			sanitizedString=new String(response);
 			if(ruleSetString==null||"".equals(ruleSetString)){
-				System.out.println("No rules defined for item:"+itemId);
+				//System.out.println("No rules defined for item:"+itemId);
+				OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ValidateGRResponse: validateGRResponse:: No rules defined for GR item ID : [" + itemId + "] ::  Timestamp: " + new Date(System.currentTimeMillis()));
 			}else{
 				rulesSet= ruleSetString.split(",");
 				// Apply the rules
@@ -118,27 +120,30 @@ public class ValidateGRResponse {
 						}
 					}
 				}catch(Exception e){
-					System.out.println("Error in Applying Rule"+ruleInt);
+					//System.out.println("Error in Applying Rule"+ruleInt);
+					OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ValidateGRResponse: validateGRResponse:: Error in applying GR rule : ["+ ruleInt + "] ::  Timestamp: " + new Date(System.currentTimeMillis()));
 					e.printStackTrace();
 				}
 			}
 		}catch(Exception e){
-			System.out.println("Error in rule module");
+			//System.out.println("Error in rule module");
+			OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ValidateGRResponse: validateGRResponse:: Error in GR rule processing  ::  Timestamp: " + new Date(System.currentTimeMillis()));
 			e.printStackTrace();
 		}
 		//System.out.println("Sanitized Reesponse:" + sanitizedString);
         
-		
+		OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ValidateGRResponse: validateGRResponse:: GR response after applying GR rules = [" + sanitizedString + "] ::  Timestamp: " + new Date(System.currentTimeMillis()));
 		// If response is fraction then round off to nearest 5 decimal places
 		sanitizedString=FractionConverstionUtil.roundTo4DecimalPlaces(sanitizedString);
-
+		OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ValidateGRResponse: validateGRResponse:: GR response after roundTo4DecimalPlaces = [" + sanitizedString + "] ::  Timestamp: " + new Date(System.currentTimeMillis()));
 		// Fetch set of correct answers
 		//String answerSetString = grRulesDAO.getCorrectAnswers(itemId);
 		String answerSetString = grItemCorrectAnswer;
 		String[] answerSet = new String[100];
 		try {
 			if (answerSetString == null || "".equals(answerSetString)) {
-				System.out.println("No correct answer for the item" + itemId);
+				//System.out.println("No correct answer for the item" + itemId);
+				OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ValidateGRResponse: validateGRResponse:: No correct answer for the item ID [" + itemId + "] ::  Timestamp: " + new Date(System.currentTimeMillis()));
 			} else {
 				answerSet = answerSetString.split(",");
 				//System.out.println("Correct Answer:" + answerSetString);
@@ -156,7 +161,9 @@ public class ValidateGRResponse {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error in answer validating module");
+			//System.out.println("Error in answer validating module");
+			OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ValidateGRResponse: validateGRResponse:: Error while validating GR response with correct answer set ::  Timestamp: " + new Date(System.currentTimeMillis()));
+			e.printStackTrace();
 		}
 		return "0";
 

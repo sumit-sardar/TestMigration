@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
@@ -16,6 +17,7 @@ import com.ctb.lexington.db.data.CurriculumData.Item;
 import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCItemFactMapper;
+import com.ctb.lexington.util.OASLogger;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
 public class StudentItemScoresController {
@@ -47,7 +49,7 @@ public class StudentItemScoresController {
 	}
 
     public void run() throws SQLException {
-    	
+    	OASLogger.getLogger("StudentItemScoresController").info("*****OASLogger:: StudentItemScoresController: run:: Persistence of item fact data started :: Timestamp: "+ new Date(System.currentTimeMillis()));
     	if(!this.isRetryFieldTestTE) {
 	        SqlMapClient insertSqlMap = null;
 			SqlMapClient deleteSqlMap = null;
@@ -55,17 +57,21 @@ public class StudentItemScoresController {
 	
 			IrsTASCItemFactData[] facts = getItemFactBeans();
 			for (int i = 0; i < facts.length; i++) {
-				IrsTASCItemFactData newFact = facts[i];
-				deleteSqlMap = ifMapper.deleteBatch(newFact, deleteSqlMap);
+				IrsTASCItemFactData newFact = facts[i];				
+				deleteSqlMap = ifMapper.deleteBatch(newFact, deleteSqlMap);	
+				OASLogger.getLogger("StudentItemScoresController").info("*****OASLogger:: StudentItemScoresController: run:: Added into DELETE batch: item ID ["+newFact.getItemid()+"] : ItemResponseTimestamp ["+newFact.getItemResponseTimestamp()+"] : PointsObtained ["+newFact.getPointsObtained()+"] : TestCompletionTimestamp ["+newFact.getTestCompletionTimestamp()+"] : TestStartTimestamp ["+newFact.getTestStartTimestamp()+"] : Student ID ["+newFact.getStudentid()+"] : Session ID ["+newFact.getSessionid()+"] : Subtest Name ["+newFact.getSubtestName()+"]");
 				if (new Long(1).equals(newFact.getCurrentResultid())
 						&& !itemList.contains(newFact.getItemid())) {
 					insertSqlMap = ifMapper.insertBatch(newFact, insertSqlMap);
+					OASLogger.getLogger("StudentItemScoresController").info("*****OASLogger:: StudentItemScoresController: run:: Added into INSERT batch: item ID ["+newFact.getItemid()+"] : ItemResponseTimestamp ["+newFact.getItemResponseTimestamp()+"] : PointsObtained ["+newFact.getPointsObtained()+"] : TestCompletionTimestamp ["+newFact.getTestCompletionTimestamp()+"] : TestStartTimestamp ["+newFact.getTestStartTimestamp()+"] : Student ID ["+newFact.getStudentid()+"] : Session ID ["+newFact.getSessionid()+"] : Subtest Name ["+newFact.getSubtestName()+"]");
 					itemList.add(newFact.getItemid());
 				}
 			}
-	
+			
 			ifMapper.executeItemBatch(deleteSqlMap);
+			OASLogger.getLogger("StudentItemScoresController").info("*****OASLogger:: StudentItemScoresController: run:: Deletion from item fact data completed : IrsTASCItemFactData count = ["+ facts.length+"] :: Timestamp: "+ new Date(System.currentTimeMillis()));
 			ifMapper.executeItemBatch(insertSqlMap);
+			OASLogger.getLogger("StudentItemScoresController").info("*****OASLogger:: StudentItemScoresController: run:: Insertion of item fact data completed : IrsTASCItemFactData count = ["+ itemList.size()+"] :: Timestamp: "+ new Date(System.currentTimeMillis()));
 			itemList.clear();
     	}
     	

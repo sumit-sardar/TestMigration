@@ -6,9 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Map;
 
 import javax.naming.NamingException;
+
 
 import com.ctb.lexington.db.data.TestRosterRecord;
 import com.ctb.lexington.db.mapper.TestRosterMapper;
@@ -21,6 +23,7 @@ import com.ctb.lexington.domain.teststructure.CompletionStatus;
 import com.ctb.lexington.domain.teststructure.ProductType;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.EventChannelException;
+import com.ctb.lexington.util.OASLogger;
 import com.ctb.lexington.util.SQLUtil;
 import com.ctb.lexington.util.SafeHashMap;
 import com.ibatis.sqlmap.client.SqlMapSession;
@@ -37,7 +40,7 @@ public class ScorerFactory {
     private ScorerFactory() {
         // so that no one instantiates this class
     }
-
+	
     /**
      * Creates a new <code>Scorer</code> for the given <var>assessment </var> or
      * retrieves an existing one based on the test roster id. Instantiating a
@@ -54,9 +57,11 @@ public class ScorerFactory {
         if (!containsScorer(testRosterId)) {
             try {
                 final Scorer scorer = instantiateScorer(assessment);
-                System.out.println("***** SCORING: ScorerFactory: createScorer: creating new scorer");
+                //System.out.println("***** SCORING: ScorerFactory: createScorer: creating new scorer");
+                OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: createScorer:: creating new scorer for roster ID :[" + testRosterId + "] :: Timestamp: " + new Date(System.currentTimeMillis()));
                 if (!(scorer instanceof DoNothingScorer)) {
-                	System.out.println("***** SCORING: ScorerFactory: createScorer: creating a non-do-nothing scorer");
+                	//System.out.println("***** SCORING: ScorerFactory: createScorer: creating a non-do-nothing scorer");
+                	OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: createScorer:: creating a non-do-nothing scorer for roster ID :[" + testRosterId + "] :: Timestamp: " + new Date(System.currentTimeMillis()));
                     // Kick off the events, and replay existing ones
                     scorer.notify(assessment);
                     ResponseReplayer responseReplayer = new ResponseReplayer(scorer);
@@ -97,8 +102,10 @@ public class ScorerFactory {
             if (! (originalStatus.isInterrupted()))
                 mapper.updateTestCompletionStatus(testRosterId, CompletionStatus.COMPLETED, new Timestamp(System.currentTimeMillis()));
             else {
-            	System.out.println("Not updating roster status from: " + originalStatus.getCode()
-                        + " to: " + CompletionStatus.COMPLETED.getCode());
+            	/*System.out.println("Not updating roster status from: " + originalStatus.getCode()
+                        + " to: " + CompletionStatus.COMPLETED.getCode());*/
+            	OASLogger.getLogger("ScorerFactory").info("***** OASLogger: ScorerFactory: setCompletionStatusForUnscoredTest:: Not updating roster status from: " + originalStatus.getCode()
+                        + " to: " + CompletionStatus.COMPLETED.getCode() + " :: Timestamp: " + new Date(System.currentTimeMillis()));
             }
         } catch (SQLException e) {
             throw new EventChannelException(e);
@@ -173,7 +180,8 @@ public class ScorerFactory {
                 	scorer.getResultHolder().setUpdateContextData(updateContextData);
                 }
                 scorer.notify(assessment);
-                System.out.println("***** SCORING: ScorerFactory: releaseScorer: finished persistence");
+                //System.out.println("***** SCORING: ScorerFactory: releaseScorer: finished persistence");
+                OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: releaseScorer:: finished persistence :: Timestamp: " + new Date(System.currentTimeMillis()));
                 scorer.forceCloseAllConnections(false);
             }
         } catch (final Exception e) {
@@ -238,9 +246,11 @@ public class ScorerFactory {
         try {
             Scorer scorer = createScorer(new AssessmentStartedEvent(testRosterId, productId, productType, grade, invokeKey, retryProcessFT)); // replays events
             scorer.getResultHolder().getStudentData().setPerformMatching(performMatching);
-            System.out.println("***** SCORING: ScorerFactory: scoreWithEventsInForeground: finished event replay");
+            //System.out.println("***** SCORING: ScorerFactory: scoreWithEventsInForeground: finished event replay");
+            OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: scoreWithEventsInForeground: finished event replay :: Timestamp: " + new Date(System.currentTimeMillis()));
             releaseScorer(testRosterId, updateContextData);
-            System.out.println("***** SCORING: ScorerFactory: scoreWithEventsInForeground: finished persistence");
+            //System.out.println("***** SCORING: ScorerFactory: scoreWithEventsInForeground: finished persistence");
+            OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: scoreWithEventsInForeground: finished persistence :: Timestamp: " + new Date(System.currentTimeMillis()));
         } catch (Exception e) {
             releaseFailedScorer(testRosterId);
             throw new RuntimeException(e);
@@ -251,7 +261,8 @@ public class ScorerFactory {
             throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
         try {
-        	System.out.println("*** PRODUCT TYPE :: "+assessment.getProductTypeValue()+" && PRODUCT ID :: "+assessment.getProductId());
+        	//System.out.println("*** PRODUCT TYPE :: "+assessment.getProductTypeValue()+" && PRODUCT ID :: "+assessment.getProductId());
+        	OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: instantiateScorer :: PRODUCT TYPE : "+assessment.getProductTypeValue()+" && PRODUCT ID : "+assessment.getProductId() + " :: Timestamp: " + new Date(System.currentTimeMillis()));
         	if("LL".equalsIgnoreCase(assessment.getProductTypeValue()) && !(assessment.getProductId().intValue() == 7001 
         			|| assessment.getProductId().intValue() == 7002 || assessment.getProductId().intValue() == 7003)) { // Added for laslink second edition
         		Class[] cls = new Class[1];
@@ -289,7 +300,8 @@ public class ScorerFactory {
     }
     
     public static void invokeScoring(Integer testRosterId, Long invokeKey, boolean runInBackGround, boolean updateContextData, boolean performMatching, boolean retryFTProcess) throws CTBSystemException, NamingException {
-    	System.out.println("***** SCORING: ScorerFactory: invokeScoring: called for roster: " + testRosterId);
+    	//System.out.println("***** SCORING: ScorerFactory: invokeScoring: called for roster: " + testRosterId);
+    	OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: invokeScoring:: called for roster: [" + testRosterId + "] :: Timestamp: " + new Date(System.currentTimeMillis()));
     	Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -322,8 +334,9 @@ public class ScorerFactory {
             ps.setInt(1, testRosterId.intValue());
             rs = ps.executeQuery();
             if (rs.next()) {
-            	System.out.println("***** SCORING: ScorerFactory: invokeScoring: found roster info. Admin id: " + SQLUtil.getInteger(rs, "TEST_ADMIN_ID"));
-                productId = SQLUtil.getInteger(rs, "PRODUCT_ID");
+            	//System.out.println("***** SCORING: ScorerFactory: invokeScoring: found roster info. Admin id: " + SQLUtil.getInteger(rs, "TEST_ADMIN_ID"));
+            	OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: invokeScoring:: found roster info. Admin id: [" + SQLUtil.getInteger(rs, "TEST_ADMIN_ID") + "] :: Timestamp: " + new Date(System.currentTimeMillis()));
+            	productId = SQLUtil.getInteger(rs, "PRODUCT_ID");
                 productType = SQLUtil.getString(rs, "PRODUCT_TYPE");
                 studentGrade = SQLUtil.getString(rs, "GRADE");
             }
@@ -337,14 +350,17 @@ public class ScorerFactory {
         
         if(productId != null) {
 	        if (runInBackGround) {
-	        	System.out.println("***** SCORING: ScorerFactory: invokeScoring: scoring in background");
-	            scoreWithEventsInBackground(DatabaseHelper.asLong(testRosterId), productId, productType, studentGrade, updateContextData, performMatching);
+	        	//System.out.println("***** SCORING: ScorerFactory: invokeScoring: scoring in background");
+	        	OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: invokeScoring:: scoring in background for roster ID : [" + testRosterId + "] :: Timestamp: " + new Date(System.currentTimeMillis()));
+	        	scoreWithEventsInBackground(DatabaseHelper.asLong(testRosterId), productId, productType, studentGrade, updateContextData, performMatching);
 	        } else {
-	        	System.out.println("***** SCORING: ScorerFactory: invokeScoring: scoring in foreground");
-	            scoreWithEventsInForeground(DatabaseHelper.asLong(testRosterId), invokeKey, productId, productType, studentGrade, updateContextData, performMatching, retryFTProcess);
+	        	//System.out.println("***** SCORING: ScorerFactory: invokeScoring: scoring in foreground");
+	        	OASLogger.getLogger("ScorerFactory").info("***** OASLogger:: ScorerFactory: invokeScoring:: scoring in foreground for roster ID : [" + testRosterId + "] :: Timestamp: " + new Date(System.currentTimeMillis()));
+	        	scoreWithEventsInForeground(DatabaseHelper.asLong(testRosterId), invokeKey, productId, productType, studentGrade, updateContextData, performMatching, retryFTProcess);
 	        }
         }else {
-        	System.out.println("ScorerFactory.invokeScoring(testRosterId, runInBackGround): no product info for roster: " + testRosterId);
+        	//System.out.println("ScorerFactory.invokeScoring(testRosterId, runInBackGround): no product info for roster: " + testRosterId);
+        	OASLogger.getLogger("ScorerFactory").info("***** OASLogger: ScorerFactory.invokeScoring(testRosterId, runInBackGround): no product info for roster: [" + testRosterId + "] :: Timestamp: " + new Date(System.currentTimeMillis()));
         }
     }
     

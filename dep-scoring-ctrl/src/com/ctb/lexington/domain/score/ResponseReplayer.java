@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Date;
 
 import javax.naming.NamingException;
 
@@ -35,6 +36,7 @@ import com.ctb.lexington.domain.teststructure.CompletionStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.EventChannelException;
 import com.ctb.lexington.util.CTBConstants;
+import com.ctb.lexington.util.OASLogger;
 import com.ctb.lexington.util.SafeHashMap;
 import com.ctb.lexington.util.ValidateGRResponse;
 
@@ -172,7 +174,7 @@ public class ResponseReplayer {
     protected List getEvents(final Long testRosterId,
             final boolean requireSubtestsComplete) {
         final Connection conn = getConnection();
-
+        OASLogger.getLogger("ResponseReplayer").info("*****OASLogger:: ResponseReplayer: getEvents called for roster ID [" + testRosterId + "]:: Timestamp: " + new Date(System.currentTimeMillis()));
         try {
             final List subtests = getSubtests(testRosterId,
                     getItemSetMapper(conn));
@@ -230,11 +232,11 @@ public class ResponseReplayer {
             	if(subtestMapBySubject.containsKey(subtest.getSubject())){
             		List responses = itemResponseMapper.findItemResponsesBySubtestForTASC(
             				(ArrayList)subtestMapBySubject.get(subtest.getSubject()), testRosterId);
-            		
+            		OASLogger.getLogger("ResponseReplayer").info("*****OASLogger:: ResponseReplayer: getEvents:: subtest.getSubject() = ["+ subtest.getSubject() +" : response count = ["+ responses.size() +"] :: Timestamp: "+new Date(System.currentTimeMillis()));
 	              	boolean validationStatusTASC = checkScoringValidationStatusForTASC(responses); // Added to store score validation Status for TASC
 	                boolean omissionStatusTASC = checkScoringOmissionStatusForTASC(responses); // Added to store score omission Status for TASC
 	                boolean suppressionStatusTASC = checkScoringSuppressionStatusForTASC(responses); // Added to store score suppression Status for TASC
-	                  
+	                OASLogger.getLogger("ResponseReplayer").info("*****OASLogger:: ResponseReplayer: getEvents:: validationStatusTASC = ["+validationStatusTASC+"] : omissionStatusTASC = ["+ omissionStatusTASC +" : suppressionStatusTASC = ["+ suppressionStatusTASC +"] :: Timestamp: "+ new Date(System.currentTimeMillis()));  
 	              	if(validationStatusTASC == true) {
 	              		subtest.setSubtestScoringStatus("");
 	              	}
@@ -709,10 +711,12 @@ public class ResponseReplayer {
             final boolean requireCompleteSubtests, final Scorer scorer) {
         // TODO: did I break something removing the instanceof check for DoNothingScorer? --bko
 
-    	System.out.println("***** SCORING: ResponseReplayer: replayEvents: replaying events.");
+    	//System.out.println("***** SCORING: ResponseReplayer: replayEvents: replaying events.");
+    	OASLogger.getLogger("ResponseReplayer").info("*****OASLogger:: ResponseReplayer: replayEvents: replaying events :: Timestamp: " + new Date(System.currentTimeMillis()));
         final List eventList = getEvents(testRosterId,requireCompleteSubtests);
         
-        System.out.println("***** SCORING: ResponseReplayer: replayEvents: found " + eventList.size() + "events.");
+        //System.out.println("***** SCORING: ResponseReplayer: replayEvents: found " + eventList.size() + "events.");
+        OASLogger.getLogger("ResponseReplayer").info("*****OASLogger:: ResponseReplayer: replayEvents: found " + eventList.size() + " events :: Timestamp: " + new Date(System.currentTimeMillis()));
         
         for (final Iterator it = eventList.iterator(); it.hasNext();) {
             try {

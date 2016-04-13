@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -79,6 +80,7 @@ import com.ctb.lexington.domain.teststructure.ValidationStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.EventChannelException;
 import com.ctb.lexington.util.CTBConstants;
+import com.ctb.lexington.util.OASLogger;
 import com.ctb.lexington.util.SQLUtil;
 import com.ctb.lexington.util.Timer;
 import com.ibatis.sqlmap.client.SqlMapSession;
@@ -201,7 +203,8 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                     //updateScoringStatus(testRosterId, ScoringStatus.IN_PROGRESS);
                     //System.out.println("***** SCORING: BaseScorer: handleAssessmentStartedEvent: set roster status to IP");
                     TestResultDataCollector collector = new TestResultDataCollector();
-                    System.out.println("***** SCORING: BaseScorer: handleAssessmentStartedEvent: collecting context");
+                    //System.out.println("***** SCORING: BaseScorer: handleAssessmentStartedEvent: collecting context");
+                    OASLogger.getLogger("BaseScorer").info("*****OASLogger:: BaseScorer: handleAssessmentStartedEvent: collecting context for roster ID ["+testRosterId+"]:: Timestamp: "+ new Date(System.currentTimeMillis()));
                     resultHolder = collector.collect(testRosterId, this);
                     setTEScoringDetails((AssessmentStartedEvent)event); // for only Field Test TE item score
                 } catch (Exception e) {
@@ -230,8 +233,9 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 	private void handleAssessmentEndedEvent(Event event) throws CTBSystemException {
         // TODO: There's no unit test for the persistence behavior on the scorers yet
         if (event instanceof AssessmentEndedEvent) {
-        	System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: starting persistence");
-            Timer assesmentEndedTime = Timer.startTimer();
+        	//System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: starting persistence");
+        	OASLogger.getLogger("BaseScorer").info("*****OASLogger:: BaseScorer: handleAssessmentEndedEvent: starting persistence :: Timestamp: "+ new Date(System.currentTimeMillis()));
+        	Timer assesmentEndedTime = Timer.startTimer();
             // if we have already processed an AssessmentEndedEvent, error out
             if (hasAssessmentEndedEvent) {
                 throw new IllegalStateException(
@@ -288,7 +292,8 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                     controller.run(getRosterValidationStatus(event.getTestRosterId()));
                 }
                 
-                System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: finished persistence");
+                //System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: finished persistence");
+                OASLogger.getLogger("BaseScorer").info("*****OASLogger:: BaseScorer: handleAssessmentEndedEvent: finished persistence :: Timestamp: "+ new Date(System.currentTimeMillis()));
                 forceCloseAllConnections(false);
             } catch (Exception e) {
                 e.printStackTrace();

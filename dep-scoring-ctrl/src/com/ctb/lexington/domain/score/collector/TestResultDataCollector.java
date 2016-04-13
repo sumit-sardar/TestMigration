@@ -3,6 +3,7 @@ package com.ctb.lexington.domain.score.collector;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +43,7 @@ import com.ctb.lexington.domain.teststructure.ScoringStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.DataException;
 import com.ctb.lexington.util.CTBConstants;
+import com.ctb.lexington.util.OASLogger;
 import com.ctb.lexington.util.SimpleCache;
 
 public class TestResultDataCollector {
@@ -53,7 +55,8 @@ public class TestResultDataCollector {
             throws SecurityException, IllegalStateException,
             CTBSystemException, SQLException, DataException, NamingException {
     	
-    	System.out.println("***** SCORING: TestResultDataCollector: collect: started collecting context");
+    	//System.out.println("***** SCORING: TestResultDataCollector: collect: started collecting context");
+    	OASLogger.getLogger("TestResultDataCollector").info("*****OASLogger:: TestResultDataCollector: collect: started collecting context :: Timestamp: "+ new Date(System.currentTimeMillis()));
         this.oasRosterId = oasRosterId;
         oasConnection = connectionProvider.getOASConnection();
         ScoreMoveData data = new ScoreMoveData();
@@ -81,7 +84,8 @@ public class TestResultDataCollector {
 	        	cachedCurriculumData = getCurriculumData(data.getAdminData().getAssessmentType());
 	        	SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
 	        }
-	        System.out.println("***** SCORING: TestResultDataCollector: collect: CurriculumData for TASC ->"+ productType +" Cached or Retrieved with key :: " + key);
+	        //System.out.println("***** SCORING: TestResultDataCollector: collect: CurriculumData for TASC ->"+ productType +" Cached or Retrieved with key :: " + key);
+	        OASLogger.getLogger("TestResultDataCollector").info("*****OASLogger:: TestResultDataCollector: collect: CurriculumData for TASC ["+ productType +"] Cached or Retrieved with key ["+ key +"] :: Timestamp: "+ new Date(System.currentTimeMillis()));
         }
         else if("TC".equals(productType)){
         	data.setRosterLevel(getRosterLevel());
@@ -91,7 +95,8 @@ public class TestResultDataCollector {
 	        	cachedCurriculumData = getCurriculumData(data.getAdminData().getAssessmentType());
 	        	SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
 	        }
-	        System.out.println("***** SCORING: TestResultDataCollector: collect: CurriculumData for TABE CCSS Cached or Retrieved with key :: " + key);
+	        //System.out.println("***** SCORING: TestResultDataCollector: collect: CurriculumData for TABE CCSS Cached or Retrieved with key :: " + key);
+	        OASLogger.getLogger("TestResultDataCollector").info("*****OASLogger:: TestResultDataCollector: collect: CurriculumData for TABE CCSS ["+ productType +"] Cached or Retrieved with key ["+ key +"] :: Timestamp: "+ new Date(System.currentTimeMillis()));
         }
         ContentArea[] allContentArea = cachedCurriculumData.getContentAreas();
         data.setCurriculumData(filterCurricula(cachedCurriculumData, data.getAdminData().getAssessmentType()));
@@ -126,7 +131,8 @@ public class TestResultDataCollector {
         	throw new CTBSystemException("Program ID is null for roster: " + oasRosterId);
         }
         
-        System.out.println("***** SCORING: TestResultDataCollector: collect: finished collecting context");
+        //System.out.println("***** SCORING: TestResultDataCollector: collect: finished collecting context");
+        OASLogger.getLogger("TestResultDataCollector").info("*****OASLogger:: TestResultDataCollector: collect: finished collecting context :: Timestamp: "+ new Date(System.currentTimeMillis()));
         
         return data;
     }
@@ -152,7 +158,8 @@ public class TestResultDataCollector {
             StudentItemSetStatusRecord subtest = (StudentItemSetStatusRecord) subtestMap.get(contentAreas[i].getSubtestId());
             String contentAreaName = contentAreas[i].getContentAreaName();
             if(subtest != null){
-            	System.out.println("****subtest.getCompletionStatus()*** -> " + subtest.getCompletionStatus() + " *for content**-> "+contentAreaName);
+            	//System.out.println("****subtest.getCompletionStatus()*** -> " + subtest.getCompletionStatus() + " *for content**-> "+contentAreaName);
+            	OASLogger.getLogger("TestResultDataCollector").info("*****OASLogger:: TestResultDataCollector: filterCurricula :: ****subtest.getCompletionStatus()**** >> " + subtest.getCompletionStatus() + " ****for content**** >> "+contentAreaName+" ::Timestamp: "+ new Date(System.currentTimeMillis()));
             }
             if(subtest != null && !"SC".equals(subtest.getCompletionStatus()) 
                                && !"NT".equals(subtest.getCompletionStatus())
@@ -280,7 +287,9 @@ public class TestResultDataCollector {
     private StudentItemResponseData getStudentItemResponseData() throws CTBSystemException {
         StudentItemResponseData data = new StudentItemResponseData();
     	ItemResponseMapper mapper = new ItemResponseMapper(oasConnection);
+    	OASLogger.getLogger("TestResultDataCollector").info("*****OASLogger:: TestResultDataCollector: getStudentItemResponseData: fetching item responses started for roster ID = ["+oasRosterId+"] :: Timestamp: "+ new Date(System.currentTimeMillis()));
         List responseVOList = mapper.findItemResponsesByRoster(oasRosterId);
+        OASLogger.getLogger("TestResultDataCollector").info("*****OASLogger:: TestResultDataCollector: getStudentItemResponseData: fetching item responses ended for roster ID = ["+oasRosterId+"] :: Timestamp: "+ new Date(System.currentTimeMillis()));
         Iterator iterator = responseVOList.iterator();
         while (iterator.hasNext()) {
         	data.addStudentItemResponseVO((ItemResponseVO) iterator.next());

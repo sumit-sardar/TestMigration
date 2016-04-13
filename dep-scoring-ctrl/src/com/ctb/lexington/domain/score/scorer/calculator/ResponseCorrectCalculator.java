@@ -1,6 +1,7 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import com.ctb.lexington.domain.score.event.NoResponseEvent;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
+import com.ctb.lexington.util.OASLogger;
 import com.ctb.lexington.util.ValidateGRResponse;
 
 
@@ -32,13 +34,16 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 	 * @param event
 	 */
 	public void onEvent(ResponseReceivedEvent event) {
+		OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent(ResponseReceivedEvent event) method called :: Timestamp:: " + new Date(System.currentTimeMillis()));
 		validateItemSetId(event.getItemSetId());
 
 		final String itemId = event.getItemId();
 		if (ItemVO.ITEM_TYPE_SR.equals(sicEvent.getType(itemId))) {
+			OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: got SR item: [" + itemId + "] :: Timestamp:: " + new Date(System.currentTimeMillis()));
 			final String response = event.getResponse();
 			final boolean isConditionCode = sicEvent.isConditionCode(itemId,
 					response);
+			OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: response = ["+ response + "] : isConditionCode = [" + isConditionCode +"] :: Timestamp:: " + new Date(System.currentTimeMillis()));
 			if (isConditionCode || response == null) {
 				if (sicEvent.isMarked(event)) {
 					channel.send(new IncorrectResponseEvent(event));
@@ -47,6 +52,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 				}
 			} else {
 				if (sicEvent.isCorrectResponse(itemId, response)) {
+					OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: isCorrectResponse = [TRUE] :: Timestamp:: " + new Date(System.currentTimeMillis()));
 					if (scorer.getResultHolder().getAdminData().getProductId() == 3700) {
 						LinkedHashMap<String, LinkedHashMap<String, String>> caItemMap = scorer
 								.getResultHolder().getCaResponseWsTv()
@@ -69,6 +75,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 					}
 					channel.send(new CorrectResponseEvent(event));
 				} else {
+					OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: isCorrectResponse = [FALSE] :: Timestamp:: " + new Date(System.currentTimeMillis()));
 					channel.send(new IncorrectResponseEvent(event));
 				}
 			}
@@ -79,16 +86,19 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 
 					if(null != sicEvent.getAnswerArea(itemId)
 						&& "GRID".equals(sicEvent.getAnswerArea(itemId))) {
+						OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: got GR item: [" + itemId + "] :: Timestamp: " + new Date(System.currentTimeMillis()));
 							
 							final String actualGrResponse = event.getGrResponse();
 							final String grItemRules = event.getGrItemRules();
 							final String grItemCorrectAnswer = event.getGrItemCorrectAnswer();
-							
+						
+							OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: got below scoring parameters for GR item ID = ["+ itemId +"] \n actualGrResponse = [" + actualGrResponse+"] \n grItemRules = [" + grItemRules + "] \n grItemCorrectAnswer = [" + grItemCorrectAnswer + "]");	
 						//7th Nov 2013 Not a valid production scenario uncomment this part once actual rules are defined
 						//if(grItemRules != null && grItemCorrectAnswer != null) {
 						if(actualGrResponse != null) {
 							
 							String itemsRawScore = new ValidateGRResponse().validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
+							OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: calculated itemsRawScore = [" + itemsRawScore + "] for GR item ID = [" + itemId + "] ::  Timestamp: " + new Date(System.currentTimeMillis()));
 							if (itemsRawScore.equals("1")) {
 								sicEvent.setGRItemMap(itemId, true);
 								channel.send(new CorrectResponseEvent(event));
@@ -102,7 +112,9 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 					} else if (null == sicEvent.getAnswerArea(itemId)
 							&& !"GRID".equals(sicEvent.getAnswerArea(itemId))){
 						//  TODO: how do we handle CR item responses?
+						OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: got CR item: [" + itemId + "] :: Timestamp: " + new Date(System.currentTimeMillis()));
 						final Integer pointsObtained = event.getCrResponse();
+						OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: pointsObtained = [" + pointsObtained + "] for CR item ID = [" + itemId + "] ::  Timestamp: " + new Date(System.currentTimeMillis()));
 						if (pointsObtained != null) {
 							if (pointsObtained > 0) {
 								channel.send(new CorrectResponseEvent(event));
@@ -116,6 +128,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 				}
 				else {
 					final Integer pointsObtained = event.getPointsObtained();
+					OASLogger.getLogger("ResponseCorrectCalculator").info("*****OASLogger:: ResponseCorrectCalculator: onEvent:: pointsObtained = [" + pointsObtained + "] for CR item ID = [" + itemId + "] ::  Timestamp: " + new Date(System.currentTimeMillis()));
 					if (pointsObtained != null) {
 						if (pointsObtained > 0) {
 							channel.send(new CorrectResponseEvent(event));

@@ -7,9 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Date;
 
 import com.ctb.lexington.data.ItemResponseVO;
 import com.ctb.lexington.exception.CTBSystemException;
+import com.ctb.lexington.util.OASLogger;
 import com.ctb.lexington.util.SQLUtil;
 
 public class ItemResponseMapper extends AbstractDBMapper {
@@ -120,7 +122,9 @@ public class ItemResponseMapper extends AbstractDBMapper {
         		//response.setConstructedResponse(SQLUtil.getClob(rs, "constructedResponse"));
         		responses.add(response);
         	}
+        	OASLogger.getLogger("ItemResponseMapper").info("*****OASLogger:: ItemResponseMapper: findItemResponsesByRoster :: roster ID = ["+testRosterId+" : total no. of response = ["+responses.size()+"] :: Timestamp: "+ new Date(System.currentTimeMillis()));
         } catch (SQLException e) {
+        	OASLogger.getLogger("ItemResponseMapper").info("*****OASLogger:: ItemResponseMapper: findItemResponsesByRoster :: Exception occured while fetching responses for roster ID = ["+testRosterId+"] :: Timestamp: "+ new Date(System.currentTimeMillis()));
 			e.printStackTrace();
 			throw new CTBSystemException(e.getMessage());
 		} finally {
