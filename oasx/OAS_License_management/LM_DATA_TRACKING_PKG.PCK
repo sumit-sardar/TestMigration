@@ -1,11 +1,16 @@
 CREATE OR REPLACE PACKAGE LM_DATA_TRACKING_PKG AS
 
   PROCEDURE LOG_MESSAGE(IN_CUSTOMER_ID INTEGER, V_LOG_MESSAGE VARCHAR2);
-
+  
   PROCEDURE POPULATE_SESSION_MODEL_DATA(IN_CUSTOMER_ID     INTEGER,
-                                               EXTRACT_END_DATE   DATE,
-                                               LM_DOWM_DATE       DATE);
+                                        EXTRACT_END_DATE   DATE,
+                                        LM_DOWM_DATE       DATE);
 
+  PROCEDURE POPULATE_SUBTEST_MODEL_DATA(IN_CUSTOMER_ID     INTEGER,
+                                      EXTRACT_END_DATE   DATE,
+                                      LM_DOWM_DATE       DATE);                                        
+   
+                                                                                     
   PROCEDURE EXTRACT_LM_OAS_USAGE_DATA(IN_CUSTOMER_ID     VARCHAR2,
                                       EXTRACT_END_DATE   DATE,
                                       IN_LM_DOWM_DATE    DATE);
@@ -15,7 +20,15 @@ END LM_DATA_TRACKING_PKG;
 CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
 
   /*Global Variable Declaration*/
-  V_EXTRACT_SEQ_NUM  INTEGER := 0;
+  V_EXTRACT_SEQ_NUM    INTEGER := 0;  
+  V_CONTACT_PHONE	     VARCHAR2(32) := '';
+  V_CONTACT	           VARCHAR2(64) := '';
+  V_CONTACT_EMAIL	     VARCHAR2(64) := '';
+  V_STATE_PR	         VARCHAR2(2) := '';
+  V_STATE_PR_DESC	     VARCHAR2(64) := '';
+  V_EXT_CUSTOMER_ID	   VARCHAR2(32) := '';
+  V_PRODUCT_NAME	     VARCHAR2(64) := '';
+  
   
   PROCEDURE LOG_MESSAGE(IN_CUSTOMER_ID INTEGER, V_LOG_MESSAGE VARCHAR2) AS
     PRAGMA AUTONOMOUS_TRANSACTION;
@@ -45,6 +58,13 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
   
     INSERT INTO LM_USAGE_DATA_OAS_STG
 	( CUSTOMER_ID,
+    CONTACT_PHONE,
+    CONTACT,
+    CONTACT_EMAIL,
+    STATE_PR,
+    STATE_PR_DESC,
+    EXT_CUSTOMER_ID,
+    PRODUCT_NAME,
 	  SUBTEST_MODEL,
 	  ORG_NODE_ID,
 	  ORG_NODE_NAME,
@@ -72,6 +92,13 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
 	  EXTRACT_DATE_TIME,
     EXTRACT_SEQ_NUM)
       (SELECT IN_CUSTOMER_ID,
+              V_CONTACT_PHONE,
+              V_CONTACT,
+              V_CONTACT_EMAIL,
+              V_STATE_PR,
+              V_STATE_PR_DESC,
+              V_EXT_CUSTOMER_ID,
+              V_PRODUCT_NAME,
 			        'T',
               D.ORG_NODE_ID,
               D.ORG_NODE_NAME,
@@ -448,6 +475,13 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
   
     INSERT INTO LM_USAGE_DATA_OAS_STG
 		( CUSTOMER_ID,
+      CONTACT_PHONE,
+      CONTACT,
+      CONTACT_EMAIL,
+      STATE_PR,
+      STATE_PR_DESC,
+      EXT_CUSTOMER_ID,
+      PRODUCT_NAME,
 		  SUBTEST_MODEL,
 		  ORG_NODE_ID,
 		  ORG_NODE_NAME,
@@ -475,6 +509,13 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
 		  EXTRACT_DATE_TIME,
       EXTRACT_SEQ_NUM)
       (SELECT IN_CUSTOMER_ID,
+              V_CONTACT_PHONE,
+              V_CONTACT,
+              V_CONTACT_EMAIL,
+              V_STATE_PR,
+              V_STATE_PR_DESC,
+              V_EXT_CUSTOMER_ID,
+              V_PRODUCT_NAME,
 			        'F',
               D.ORG_NODE_ID,
               D.ORG_NODE_NAME,
@@ -933,6 +974,38 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
          
              /* Determine LM Model for the customer: End */
             
+            /* Modification for additional fields: Start*/
+            SELECT C.CONTACT_NAME,
+                   C.CONTACT_PHONE,
+                   C.CONTACT_EMAIL,
+                   C.STATEPR,
+                   SC.STATEPR_DESC,
+                   C.EXT_CUSTOMER_ID,
+                   DECODE(CC.CUSTOMER_CONFIGURATION_NAME,
+                          'TABE_Customer',
+                          'TABE',
+                          'LL_Customer',
+                          'LLO',
+                          'TASC_Customer',
+                          'TASC',
+                          'TERRANOVA_Customer',
+                          'TN')
+              INTO V_CONTACT_PHONE,
+                   V_CONTACT,
+                   V_CONTACT_EMAIL,
+                   V_STATE_PR,
+                   V_STATE_PR_DESC,
+                   V_EXT_CUSTOMER_ID,
+                   V_PRODUCT_NAME
+              FROM CUSTOMER C, STATEPR_CODE SC, CUSTOMER_CONFIGURATION CC
+             WHERE C.STATEPR = SC.STATEPR
+               AND C.CUSTOMER_ID = CC.CUSTOMER_ID
+               AND C.CUSTOMER_ID = V_ARRAY_OF_INPUT_CUSTOMER_ID(I).CUSTOMER_ID
+               AND CC.CUSTOMER_CONFIGURATION_NAME IN
+                   ('TABE_Customer', 'LL_Customer', 'TASC_Customer',
+                    'TERRANOVA_Customer');
+            /* Modification for additional fields: End*/
+            
             /**
              * FINAL PROCESS STARTS FOR LM CALCULATION.
             **/
@@ -960,7 +1033,17 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
             --LOG THE INFORMATION
             LOG_MESSAGE(V_ARRAY_OF_INPUT_CUSTOMER_ID(I).CUSTOMER_ID, V_LOG_MESSAGE || ' - ' || V_INPUTS);
             --DBMS_OUTPUT.PUT_LINE('Extract Process completed successfully..');
-        
+            
+            /* Reset additional field variables : Start */
+            V_CONTACT_PHONE	     := '';
+            V_CONTACT	           := '';
+            V_CONTACT_EMAIL	     := '';
+            V_STATE_PR	         := '';
+            V_STATE_PR_DESC	     := '';
+            V_EXT_CUSTOMER_ID	   := '';
+            V_PRODUCT_NAME	     := '';
+            /* Reset additional field variables : End */
+            
         END LOOP;
         EXIT WHEN CUR_INPUT_CUSTOMER_ID%NOTFOUND;
      END LOOP;
@@ -1030,6 +1113,39 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
             END IF;        
          
              /* Determine LM Model for the customer: End */
+             
+            /* Modification for additional fields: Start*/
+            SELECT C.CONTACT_NAME,
+                   C.CONTACT_PHONE,
+                   C.CONTACT_EMAIL,
+                   C.STATEPR,
+                   SC.STATEPR_DESC,
+                   C.EXT_CUSTOMER_ID,
+                   DECODE(CC.CUSTOMER_CONFIGURATION_NAME,
+                          'TABE_Customer',
+                          'TABE',
+                          'LL_Customer',
+                          'LLO',
+                          'TASC_Customer',
+                          'TASC',
+                          'TERRANOVA_Customer',
+                          'TN')
+              INTO V_CONTACT_PHONE,
+                   V_CONTACT,
+                   V_CONTACT_EMAIL,
+                   V_STATE_PR,
+                   V_STATE_PR_DESC,
+                   V_EXT_CUSTOMER_ID,
+                   V_PRODUCT_NAME
+              FROM CUSTOMER C, STATEPR_CODE SC, CUSTOMER_CONFIGURATION CC
+             WHERE C.STATEPR = SC.STATEPR
+               AND C.CUSTOMER_ID = CC.CUSTOMER_ID
+               AND C.CUSTOMER_ID = V_ARRAY_OF_INPUT_CUSTOMER_ID(I).CUSTOMER_ID
+               AND CC.CUSTOMER_CONFIGURATION_NAME IN
+                   ('TABE_Customer', 'LL_Customer', 'TASC_Customer',
+                    'TERRANOVA_Customer');
+            /* Modification for additional fields: End*/
+            
             
             /**
              * FINAL PROCESS STARTS FOR LM CALCULATION.
@@ -1058,7 +1174,17 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
             --LOG THE INFORMATION
             LOG_MESSAGE( V_ARRAY_OF_CUSTOMER_ID(I).CUSTOMER_ID, V_LOG_MESSAGE || ' - ' || V_INPUTS);
             --DBMS_OUTPUT.PUT_LINE('Extract Process completed successfully..');
-        
+            
+            /* Reset additional field variables : Start */
+            V_CONTACT_PHONE	     := '';
+            V_CONTACT	           := '';
+            V_CONTACT_EMAIL	     := '';
+            V_STATE_PR	         := '';
+            V_STATE_PR_DESC	     := '';
+            V_EXT_CUSTOMER_ID	   := '';
+            V_PRODUCT_NAME	     := '';
+            /* Reset additional field variables : End */
+            
         END LOOP;
         EXIT WHEN CUR_GET_ALL_CUSTOMER_ID%NOTFOUND;
      END LOOP;
