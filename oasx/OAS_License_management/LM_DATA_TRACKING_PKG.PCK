@@ -233,7 +233,7 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
                                                   AND TA.PRODUCT_ID NOT IN
                                                       (4008, 4013)
                                                   AND TR.TEST_COMPLETION_STATUS IN
-                                                      ('SC', 'IC', 'IS')
+                                                      ('SC', 'IC', 'IS', 'IN')  -- Modified for defect #83288, #83287 : condition added for interrupted state
                                                   AND SISS.COMPLETION_STATUS = 'SC'
                                                   AND TR.CREATED_DATE_TIME <= EXTRACT_END_DATE
                                                   AND TA.CUSTOMER_ID =
@@ -393,7 +393,7 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
                                                   AND TA.PRODUCT_ID NOT IN
                                                       (4008, 4013)
                                                   AND TR.TEST_COMPLETION_STATUS IN
-                                                      ('SC', 'IC', 'IS')
+                                                      ('SC', 'IC', 'IS', 'IN') -- Modified for defect #83288, #83287 
                                                   AND SISS.COMPLETION_STATUS = 'SC'
                                                   AND TR.CREATED_DATE_TIME BETWEEN
                                                       LM_DOWM_DATE AND
