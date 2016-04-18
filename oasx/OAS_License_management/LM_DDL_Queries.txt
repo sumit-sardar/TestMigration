@@ -26,8 +26,8 @@ CREATE TABLE LM_PURCHASE_DATA_SF_STG
 CREATE TABLE LM_USAGE_DATA_OAS_STG
 (
   CUSTOMER_ID              		INTEGER,
+  CONTACT_NAME	                VARCHAR2(64),
   CONTACT_PHONE	              	VARCHAR2(32),
-  CONTACT	                    VARCHAR2(64),
   CONTACT_EMAIL	              	VARCHAR2(64),
   STATE_PR	                  	VARCHAR2(2),
   STATE_PR_DESC	              	VARCHAR2(64),
