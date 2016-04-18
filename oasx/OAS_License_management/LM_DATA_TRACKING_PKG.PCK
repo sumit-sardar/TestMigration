@@ -58,8 +58,8 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
   
     INSERT INTO LM_USAGE_DATA_OAS_STG
 	( CUSTOMER_ID,
+    CONTACT_NAME,
     CONTACT_PHONE,
-    CONTACT,
     CONTACT_EMAIL,
     STATE_PR,
     STATE_PR_DESC,
@@ -92,8 +92,8 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
 	  EXTRACT_DATE_TIME,
     EXTRACT_SEQ_NUM)
       (SELECT IN_CUSTOMER_ID,
-              V_CONTACT_PHONE,
               V_CONTACT,
+              V_CONTACT_PHONE,
               V_CONTACT_EMAIL,
               V_STATE_PR,
               V_STATE_PR_DESC,
@@ -475,8 +475,8 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
   
     INSERT INTO LM_USAGE_DATA_OAS_STG
 		( CUSTOMER_ID,
+      CONTACT_NAME,
       CONTACT_PHONE,
-      CONTACT,
       CONTACT_EMAIL,
       STATE_PR,
       STATE_PR_DESC,
@@ -509,8 +509,8 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
 		  EXTRACT_DATE_TIME,
       EXTRACT_SEQ_NUM)
       (SELECT IN_CUSTOMER_ID,
-              V_CONTACT_PHONE,
               V_CONTACT,
+              V_CONTACT_PHONE,
               V_CONTACT_EMAIL,
               V_STATE_PR,
               V_STATE_PR_DESC,
@@ -990,8 +990,8 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
                           'TASC',
                           'TERRANOVA_Customer',
                           'TN')
-              INTO V_CONTACT_PHONE,
-                   V_CONTACT,
+              INTO V_CONTACT,
+                   V_CONTACT_PHONE,
                    V_CONTACT_EMAIL,
                    V_STATE_PR,
                    V_STATE_PR_DESC,
@@ -1130,8 +1130,8 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
                           'TASC',
                           'TERRANOVA_Customer',
                           'TN')
-              INTO V_CONTACT_PHONE,
-                   V_CONTACT,
+              INTO V_CONTACT,
+                   V_CONTACT_PHONE,
                    V_CONTACT_EMAIL,
                    V_STATE_PR,
                    V_STATE_PR_DESC,
