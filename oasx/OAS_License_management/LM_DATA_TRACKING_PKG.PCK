@@ -15,6 +15,8 @@ CREATE OR REPLACE PACKAGE LM_DATA_TRACKING_PKG AS
                                       EXTRACT_END_DATE   DATE,
                                       IN_LM_DOWM_DATE    DATE);
 
+  PROCEDURE MERGE_LM_REPORT_DATA;                                   
+
 END LM_DATA_TRACKING_PKG;
 /
 CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
@@ -809,7 +811,7 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
 
 
   /**
-  * Creates framework product.
+  * Procedure to extract OAS license usage data.
   */
   PROCEDURE EXTRACT_LM_OAS_USAGE_DATA(IN_CUSTOMER_ID     VARCHAR2,
                                       EXTRACT_END_DATE   DATE,
@@ -1212,6 +1214,337 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
     ROLLBACK;
     
   END EXTRACT_LM_OAS_USAGE_DATA;
+  
+  /***
+  *
+  *Procedure to merge lm report data from OAS and SF raw staging tables
+  *
+  ***/
+   PROCEDURE MERGE_LM_REPORT_DATA IS
+    V_OAS_EXTRACT_SEQ_NUM    INTEGER := 0; 
+    V_SF_LOAD_SEQ_NUM        INTEGER := 0;
+    V_LM_MERGE_SEQ_NUM       INTEGER := 0;
+    V_LOG_MESSAGE            VARCHAR2(1024) := '';
+    V_INPUTS                 VARCHAR2(100) := '';
+    V_CURR_CUSTOMER_ID       INTEGER := -77;
+  
+  BEGIN
+    --DBMS_OUTPUT.PUT_LINE('Merge LM Report data started...');
+    
+    V_LOG_MESSAGE := 'Merge LM Report Data Process';
+    -- Fetch max extract sequence number for OAS usage data
+    select max(extract_seq_num)
+      into V_OAS_EXTRACT_SEQ_NUM
+      from lm_usage_data_oas_stg;
+    
+    -- Fetch max load sequence number for SF purchase data
+    select max(load_seq_num)
+      into V_SF_LOAD_SEQ_NUM
+      from lm_purchase_data_sf_stg;
+      
+    -- Generate merge sequence number
+    select SEQ_LM_MERGE_SEQ_NUM.nextval
+      into V_LM_MERGE_SEQ_NUM
+      from dual;  
+    
+   /* --Test Data for validation : Need to be commented
+    V_OAS_EXTRACT_SEQ_NUM    := 68; 
+    V_SF_LOAD_SEQ_NUM        := 16;*/
+    
+    V_INPUTS := 'For extract_seq_num = '||V_OAS_EXTRACT_SEQ_NUM||' : load_seq_num = '||V_SF_LOAD_SEQ_NUM|| ' : merge_seq_num = '||V_LM_MERGE_SEQ_NUM;  
+    
+    --DBMS_OUTPUT.PUT_LINE('Data will be merged for extract_seq_num = '||V_OAS_EXTRACT_SEQ_NUM||' :: load_seq_num = '||V_SF_LOAD_SEQ_NUM);
+        INSERT INTO LM_MERGED_REPORT_DATA
+      (OAS_CUSTOMER_ID,
+       OAS_CONTACT_NAME,
+       OAS_CONTACT_PHONE,
+       OAS_CONTACT_EMAIL,
+       OAS_STATE_PR,
+       OAS_STATE_PR_DESC,
+       OAS_EXT_CUSTOMER_ID,
+       OAS_PRODUCT_NAME,
+       OAS_SUBTEST_MODEL,
+       OAS_ORG_NODE_ID,
+       OAS_ORG_NODE_NAME,
+       OAS_ORG_NODE_CATEGORY_LEVEL,
+       OAS_ORG_NODE_CATEGORY_NAME,
+       OAS_PARENT_ORG_NODE_ID,
+       OAS_PARENT_ORG_NODE_NAME,
+       OAS_LIC_AVL_IN_DB,
+       OAS_CUM_LIC_AVL_IN_DB,
+       OAS_LIC_TO_BE_RELEASED,
+       OAS_CUM_LIC_TO_BE_RELEASED,
+       OAS_LIC_RESERVED_AT_NODE,
+       OAS_CUM_LIC_RESERVED,
+       OAS_LIC_CONSUMED_AT_NODE,
+       OAS_CUM_LIC_CONSUMED,
+       OAS_NODE_LVL_AVAILABLE,
+       OAS_CUM_AVAILABLE,
+       OAS_NODE_NET_AVAILABLE,
+       OAS_CUM_NET_AVAILABLE,
+       OAS_LIC_MOD_CONSUMED_AT_NODE,
+       CUM_LIC_MOD_CONSUMED,
+       OAS_LIC_MOD_RESERVED_AT_NODE,
+       OAS_CUM_LIC_MOD_RESERVED,
+       OAS_ACTIVATION_STATUS,
+       OAS_EXTRACT_DATE_TIME,
+       OAS_EXTRACT_SEQ_NUM,
+       SF_CUSTOMER_ID,
+       SF_OAS_IMPLEMENTATION_ID,
+       SF_IMPL_RECORD_TYPE,
+       SF_CUSTOMER_ACCOUNT_NAME,
+       SF_ACCOUNT_STATE,
+       SF_ORG_NODE_ID,
+       SF_ORG_NODE_NAME,
+       SF_CONTACT_PHONE,
+       SF_CONTACT,
+       SF_CONTACT_EMAIL,
+       SF_CATEGORY_NAME,
+       SF_CATEGORY_LEVEL,
+       SF_LICENSE_MODEL,
+       SF_LICENSE_COUNT,
+       SF_ORDER_QUANTITY,
+       SF_LICENSE_DISTRIBUTED_TO,
+       SF_CREATED_DATE,
+       SF_INTERVAL_NAME,
+       SF_LOAD_DATE_TIME,
+       SF_LOAD_SEQ_NUM,
+       MERGED_DATE_TIME,
+       MERGED_SEQ_NUM)
+      (select derived.oas_customer_id,
+              derived.oas_contact_name,
+              derived.oas_contact_phone,
+              derived.oas_contact_email,
+              derived.oas_state_pr,
+              derived.oas_state_pr_desc,
+              derived.oas_ext_customer_id,
+              derived.oas_product_name,
+              derived.oas_subtest_model,
+              derived.oas_org_node_id,
+              derived.oas_org_node_name,
+              derived.oas_org_node_category_level,
+              derived.oas_org_node_category_name,
+              derived.oas_parent_org_node_id,
+              derived.oas_parent_org_node_name,
+              derived.oas_lic_avl_in_db,
+              derived.oas_cum_lic_avl_in_db,
+              derived.oas_lic_to_be_released,
+              derived.oas_cum_lic_to_be_released,
+              derived.oas_lic_reserved_at_node,
+              derived.oas_cum_lic_reserved,
+              derived.oas_lic_consumed_at_node,
+              derived.oas_cum_lic_consumed,
+              derived.oas_node_lvl_available,
+              derived.oas_cum_available,
+              derived.oas_node_net_available,
+              derived.oas_cum_net_available,
+              derived.oas_lic_mod_consumed_at_node,
+              derived.oas_cum_lic_mod_consumed,
+              derived.oas_lic_mod_reserved_at_node,
+              derived.oas_cum_lic_mod_reserved,
+              derived.as_activation_status,
+              derived.oas_extract_date_time,
+              derived.oas_extract_seq_num,
+              derived.sf_customer_id,
+              derived.sf_oas_implementation_id,
+              derived.sf_impl_record_type,
+              derived.sf_customer_account_name,
+              derived.sf_account_state,
+              derived.sf_org_node_id,
+              derived.sf_org_node_name,
+              derived.sf_contact_phone,
+              derived.sf_contact,
+              derived.sf_contact_email,
+              derived.sf_category_name,
+              derived.sf_category_level,
+              derived.sf_license_model,
+              derived.sf_license_count,
+              derived.sf_order_quantity,
+              derived.sf_license_distributed_to,
+              derived.sf_created_date,
+              derived.sf_interval_name,
+              derived.sf_load_date_time,
+              derived.sf_load_seq_num,
+              sysdate,
+              V_LM_MERGE_SEQ_NUM
+         from (select oaslmdata.oas_customer_id,
+                      oaslmdata.oas_contact_name,
+                      oaslmdata.oas_contact_phone,
+                      oaslmdata.oas_contact_email,
+                      oaslmdata.oas_state_pr,
+                      oaslmdata.oas_state_pr_desc,
+                      oaslmdata.oas_ext_customer_id,
+                      oaslmdata.oas_product_name,
+                      oaslmdata.oas_subtest_model,
+                      oaslmdata.oas_org_node_id,
+                      oaslmdata.oas_org_node_name,
+                      oaslmdata.oas_org_node_category_level,
+                      oaslmdata.oas_org_node_category_name,
+                      oaslmdata.oas_parent_org_node_id,
+                      oaslmdata.oas_parent_org_node_name,
+                      oaslmdata.oas_lic_avl_in_db,
+                      oaslmdata.oas_cum_lic_avl_in_db,
+                      oaslmdata.oas_lic_to_be_released,
+                      oaslmdata.oas_cum_lic_to_be_released,
+                      oaslmdata.oas_lic_reserved_at_node,
+                      oaslmdata.oas_cum_lic_reserved,
+                      oaslmdata.oas_lic_consumed_at_node,
+                      oaslmdata.oas_cum_lic_consumed,
+                      oaslmdata.oas_node_lvl_available,
+                      oaslmdata.oas_cum_available,
+                      oaslmdata.oas_node_net_available,
+                      oaslmdata.oas_cum_net_available,
+                      oaslmdata.oas_lic_mod_consumed_at_node,
+                      oaslmdata.oas_cum_lic_mod_consumed,
+                      oaslmdata.oas_lic_mod_reserved_at_node,
+                      oaslmdata.oas_cum_lic_mod_reserved,
+                      oaslmdata.as_activation_status,
+                      oaslmdata.oas_extract_date_time,
+                      oaslmdata.oas_extract_seq_num,
+                      sflmdata.sf_customer_id,
+                      sflmdata.sf_oas_implementation_id,
+                      sflmdata.sf_impl_record_type,
+                      sflmdata.sf_customer_account_name,
+                      sflmdata.sf_account_state,
+                      sflmdata.sf_org_node_id,
+                      sflmdata.sf_org_node_name,
+                      sflmdata.sf_contact_phone,
+                      sflmdata.sf_contact,
+                      sflmdata.sf_contact_email,
+                      sflmdata.sf_category_name,
+                      sflmdata.sf_category_level,
+                      sflmdata.sf_license_model,
+                      sflmdata.sf_license_count,
+                      sflmdata.sf_order_quantity,
+                      sflmdata.sf_license_distributed_to,
+                      sflmdata.sf_created_date,
+                      sflmdata.sf_interval_name,
+                      sflmdata.sf_load_date_time,
+                      sflmdata.sf_load_seq_num
+                 from (select oasdata.customer_id              as oas_customer_id,
+                              oasdata.contact_name             as oas_contact_name,
+                              oasdata.contact_phone            as oas_contact_phone,
+                              oasdata.contact_email            as oas_contact_email,
+                              oasdata.state_pr                 as oas_state_pr,
+                              oasdata.state_pr_desc            as oas_state_pr_desc,
+                              oasdata.ext_customer_id          as oas_ext_customer_id,
+                              oasdata.product_name             as oas_product_name,
+                              oasdata.subtest_model            as oas_subtest_model,
+                              oasdata.org_node_id              as oas_org_node_id,
+                              oasdata.org_node_name            as oas_org_node_name,
+                              oasdata.org_node_category_level  as oas_org_node_category_level,
+                              oasdata.org_node_category_name   as oas_org_node_category_name,
+                              oasdata.parent_org_node_id       as oas_parent_org_node_id,
+                              oasdata.parent_org_node_name     as oas_parent_org_node_name,
+                              oasdata.lic_avl_in_db            as oas_lic_avl_in_db,
+                              oasdata.cum_lic_avl_in_db        as oas_cum_lic_avl_in_db,
+                              oasdata.lic_to_be_released       as oas_lic_to_be_released,
+                              oasdata.cum_lic_to_be_released   as oas_cum_lic_to_be_released,
+                              oasdata.lic_reserved_at_node     as oas_lic_reserved_at_node,
+                              oasdata.cum_lic_reserved         as oas_cum_lic_reserved,
+                              oasdata.lic_consumed_at_node     as oas_lic_consumed_at_node,
+                              oasdata.cum_lic_consumed         as oas_cum_lic_consumed,
+                              oasdata.node_lvl_available       as oas_node_lvl_available,
+                              oasdata.cum_available            as oas_cum_available,
+                              oasdata.node_net_available       as oas_node_net_available,
+                              oasdata.cum_net_available        as oas_cum_net_available,
+                              oasdata.lic_mod_consumed_at_node as oas_lic_mod_consumed_at_node,
+                              oasdata.cum_lic_mod_consumed     as oas_cum_lic_mod_consumed,
+                              oasdata.lic_mod_reserved_at_node as oas_lic_mod_reserved_at_node,
+                              oasdata.cum_lic_mod_reserved     as oas_cum_lic_mod_reserved,
+                              oasdata.activation_status        as as_activation_status,
+                              oasdata.extract_date_time        as oas_extract_date_time,
+                              oasdata.extract_seq_num          as oas_extract_seq_num
+                         from lm_usage_data_oas_stg oasdata
+                        where extract_seq_num = V_OAS_EXTRACT_SEQ_NUM) oaslmdata
+                 full outer join (select distinct sfmetadata.customer_id            as sf_customer_id,
+                                                 sfmetadata.oas_implementation_id  as sf_oas_implementation_id,
+                                                 sfmetadata.impl_record_type       as sf_impl_record_type,
+                                                 sfmetadata.customer_account_name  as sf_customer_account_name,
+                                                 sfmetadata.account_state          as sf_account_state,
+                                                 sfmetadata.org_node_id            as sf_org_node_id,
+                                                 sfmetadata.org_node_name          as sf_org_node_name,
+                                                 sfmetadata.contact_phone          as sf_contact_phone,
+                                                 sfmetadata.contact                as sf_contact,
+                                                 sfmetadata.contact_email          as sf_contact_email,
+                                                 sfmetadata.category_name          as sf_category_name,
+                                                 sfmetadata.category_level         as sf_category_level,
+                                                 sfmetadata.license_model          as sf_license_model,
+                                                 sflmcounts.license_count          as sf_license_count,
+                                                 sflmcounts.order_quantity         as sf_order_quantity,
+                                                 sfmetadata.license_distributed_to as sf_license_distributed_to,
+                                                 sfmetadata.created_date           as sf_created_date,
+                                                 sfmetadata.interval_name          as sf_interval_name,
+                                                 sfmetadata.load_date_time         as sf_load_date_time,
+                                                 sfmetadata.load_seq_num           as sf_load_seq_num
+                                   from lm_purchase_data_sf_stg sfmetadata,
+                                        (select customer_id,
+                                                org_node_id,
+                                                sum(decode(sign(license_count),
+                                                           -1,
+                                                           0,
+                                                           license_count)) license_count,
+                                                sum(decode(sign(order_quantity),
+                                                           -1,
+                                                           0,
+                                                           order_quantity)) order_quantity
+                                           from lm_purchase_data_sf_stg sftbl
+                                          where sftbl.load_seq_num = V_SF_LOAD_SEQ_NUM
+                                            and (select count(1)
+                                                   from lm_purchase_data_sf_stg
+                                                  where load_seq_num = V_SF_LOAD_SEQ_NUM
+                                                    and org_node_id =
+                                                        sftbl.org_node_id
+                                                    and customer_id =
+                                                        sftbl.customer_id) > 1
+                                          group by customer_id, org_node_id
+                                         
+                                         union
+                                         
+                                         select customer_id,
+                                                org_node_id,
+                                                license_count,
+                                                order_quantity
+                                           from lm_purchase_data_sf_stg sftbl
+                                          where sftbl.load_seq_num = V_SF_LOAD_SEQ_NUM
+                                            and (select count(1)
+                                                   from lm_purchase_data_sf_stg
+                                                  where load_seq_num = V_SF_LOAD_SEQ_NUM
+                                                    and org_node_id =
+                                                        sftbl.org_node_id
+                                                    and customer_id =
+                                                        sftbl.customer_id) = 1
+                                          order by customer_id, org_node_id) sflmcounts
+                                 
+                                  where sfmetadata.customer_id =
+                                        sflmcounts.customer_id
+                                    and sfmetadata.org_node_id =
+                                        sflmcounts.org_node_id
+                                    and sfmetadata.oas_implementation_id =
+                                        (select max(oas_implementation_id)
+                                           from lm_purchase_data_sf_stg
+                                          where customer_id =
+                                                sflmcounts.customer_id
+                                            and org_node_id =
+                                                sflmcounts.org_node_id
+                                            and load_seq_num = V_SF_LOAD_SEQ_NUM)) sflmdata
+               
+               on oaslmdata.oas_customer_id = sflmdata.sf_customer_id
+               and oaslmdata.oas_org_node_id = sflmdata.sf_org_node_id
+                order by oaslmdata.oas_customer_id,
+                         oaslmdata.oas_org_node_id,
+                         sflmdata.sf_customer_id,
+                         sflmdata.sf_org_node_id) derived);
+         COMMIT;
+         LOG_MESSAGE(V_CURR_CUSTOMER_ID,
+                     V_LOG_MESSAGE || ' :: ' || V_INPUTS || ' :: SUCCESSFULL');
+         --DBMS_OUTPUT.PUT_LINE('Merge LM Report data completed...');               
+    EXCEPTION
+        WHEN OTHERS THEN
+        LOG_MESSAGE(V_CURR_CUSTOMER_ID,
+                    V_LOG_MESSAGE || ' :: ' || V_INPUTS || ' :: FAILED - ' ||DBMS_UTILITY.FORMAT_ERROR_BACKTRACE);
+        ROLLBACK;
+  END MERGE_LM_REPORT_DATA;
 
 END LM_DATA_TRACKING_PKG;
 /
