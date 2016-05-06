@@ -1520,6 +1520,7 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
                                         sflmcounts.customer_id
                                     and sfmetadata.org_node_id =
                                         sflmcounts.org_node_id
+                                    and sfmetadata.load_seq_num =  V_SF_LOAD_SEQ_NUM -- condition added for defect #83355  
                                     and sfmetadata.oas_implementation_id =
                                         (select max(oas_implementation_id)
                                            from lm_purchase_data_sf_stg
