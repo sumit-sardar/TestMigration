@@ -1480,14 +1480,16 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
                                    from lm_purchase_data_sf_stg sfmetadata,
                                         (select customer_id,
                                                 org_node_id,
-                                                sum(decode(sign(license_count),
+                                                /*sum(decode(sign(license_count),
                                                            -1,
                                                            0,
                                                            license_count)) license_count,
                                                 sum(decode(sign(order_quantity),
                                                            -1,
                                                            0,
-                                                           order_quantity)) order_quantity
+                                                           order_quantity)) order_quantity*/ -- Commented due to change in SF data representation in scenarios having two transactions within a single SF export file -  1. Initial purchase of X/Y amount, and 2. Distribution of entire/partial licenses to other node. Check user story OAS-4688.
+                                                sum(license_count) license_count,
+                                                sum(order_quantity) order_quantity        
                                            from lm_purchase_data_sf_stg sftbl
                                           where sftbl.load_seq_num = V_SF_LOAD_SEQ_NUM
                                             and (select count(1)
