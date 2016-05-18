@@ -845,7 +845,7 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
        (select 1
                 from customer_configuration cc1
                where cc1.customer_id = cc.customer_id
-                 and cc1.customer_configuration_name = 'Allow_Subscription')
+                 and cc1.customer_configuration_name like '%Allow_Subscription%')
       /*and exists (select count(1)
        from customer_orgnode_license
       where customer_id = c.customer_id
@@ -1115,7 +1115,7 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
             END IF;        
          
              /* Determine LM Model for the customer: End */
-             
+            
             /* Modification for additional fields: Start*/
             SELECT C.CONTACT_NAME,
                    C.CONTACT_PHONE,
@@ -1142,13 +1142,13 @@ CREATE OR REPLACE PACKAGE BODY LM_DATA_TRACKING_PKG AS
               FROM CUSTOMER C, STATEPR_CODE SC, CUSTOMER_CONFIGURATION CC
              WHERE C.STATEPR = SC.STATEPR
                AND C.CUSTOMER_ID = CC.CUSTOMER_ID
-               AND C.CUSTOMER_ID = V_ARRAY_OF_INPUT_CUSTOMER_ID(I).CUSTOMER_ID
+               AND C.CUSTOMER_ID = V_ARRAY_OF_CUSTOMER_ID(I).CUSTOMER_ID
                AND CC.CUSTOMER_CONFIGURATION_NAME IN
                    ('TABE_Customer', 'LL_Customer', 'TASC_Customer',
                     'TERRANOVA_Customer');
             /* Modification for additional fields: End*/
             
-            
+           
             /**
              * FINAL PROCESS STARTS FOR LM CALCULATION.
             **/
