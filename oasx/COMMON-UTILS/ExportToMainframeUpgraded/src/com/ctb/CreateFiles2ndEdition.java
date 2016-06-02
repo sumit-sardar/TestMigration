@@ -69,6 +69,7 @@ public class CreateFiles2ndEdition {
 	static Logger logger = Logger.getLogger(CreateFiles2ndEdition.class.getName());
 			
 	private static final int BATCH_SIZE = 998;
+	private static final int LEVEL2_BATCH_SIZE = 300;
 	private String customerModelLevelValue = null;
 	private String customerState = null;
 	private String customerCity = null;
@@ -2637,16 +2638,55 @@ public class CreateFiles2ndEdition {
 			Connection irscon, SimpleCache cache, String rosterIds)
 			throws Exception {
 
-		StringBuilder rosterBuilder = new StringBuilder();
+		StringBuilder rosterBuilder = new StringBuilder();		
 		Set<Integer> rosterIdSet = new HashSet<Integer>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
+			//Level-1 split for data fetch: 998 rosters at a time
 			String[] str = rosterIds.split("#");
 			for (int i = 0; i < str.length; i++) {
-				String query = Constants.VALIDATE_SCORING_STATUS.replaceAll(
+				logger.info("Validating : Level-1 Roster Data : Batch no. ["+i+"] : Started :: Timestamp >> "+new Date(System.currentTimeMillis()));
+				//TODO: Split roster IDs into smaller batches to fetch data - for utility getting stuck for large data set issue
+				String rosterIdsStrOnLevel1Split = str[i].substring(0, str[i].lastIndexOf(","));
+				String[] level1SplitStrArray = rosterIdsStrOnLevel1Split.split(",");
+				StringBuilder rosterIDsForLevel2Split = new StringBuilder();
+				int counter = 0;
+				//Prepare rosterID string for level2 split: 300 roster at a time 
+				for(int k = 0; k < level1SplitStrArray.length; k++){
+					rosterIDsForLevel2Split.append(level1SplitStrArray[k]);
+					rosterIDsForLevel2Split.append(',');
+					counter++;
+					if(counter % LEVEL2_BATCH_SIZE == 0){
+						rosterIDsForLevel2Split.append('$');
+						counter = 0;
+					}			
+				}
+				//logger.info("RosterID string for level2 split >> "+rosterIDsForLevel2Split);
+				
+				//Level-2 split for data fetch: 300 roster at a time
+				String[] level2SplitStrArray = rosterIDsForLevel2Split.toString().split("\\$");
+				for (int m = 0; m < level2SplitStrArray.length; m++) {
+					logger.info("Validating : Level-2 Roster Data : Sub-Batch no. ["+m+"] : Started :: Timestamp >> "+new Date(System.currentTimeMillis()));
+					String query = Constants.VALIDATE_SCORING_STATUS.replaceAll(
+							"#IDS#", level2SplitStrArray[m].substring(0, level2SplitStrArray[m].lastIndexOf(",")));
+					ps = oascon.prepareStatement(query);
+					//System.out.println(query);
+					rs = ps.executeQuery();
+					rs.setFetchSize(100);
+					while (rs.next()) {
+						Integer testRosterId = rs.getInt(1);
+						cache.removeRoster(testRosterId);
+						rosterIdSet.add(testRosterId);
+						rosterBuilder.append(testRosterId).append("|");
+					}
+					SqlUtil.close(ps, rs);
+					logger.info("Validating : Level-2 Roster Data : Sub-Batch no. ["+m+"] : Completed :: Timestamp >> "+new Date(System.currentTimeMillis()));
+				}
+				/*String query = Constants.VALIDATE_SCORING_STATUS.replaceAll(
 						"#IDS#", str[i].substring(0, str[i].lastIndexOf(",")));
 				ps = oascon.prepareStatement(query);
+				System.out.println(query);
 				rs = ps.executeQuery();
 				rs.setFetchSize(100);
 				while (rs.next()) {
@@ -2655,7 +2695,8 @@ public class CreateFiles2ndEdition {
 					rosterIdSet.add(testRosterId);
 					rosterBuilder.append(testRosterId).append("|");
 				}
-				SqlUtil.close(ps, rs);
+				SqlUtil.close(ps, rs);*/
+				logger.info("Validating : Level-1 Roster Data : Batch no. ["+i+"] : Completed :: Timestamp >> "+new Date(System.currentTimeMillis()));
 			}
 			CreateFiles2ndEdition.unexportedRosters = rosterBuilder.toString();
 		} catch (SQLException e) {
